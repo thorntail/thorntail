@@ -20,7 +20,6 @@ import static io.restassured.RestAssured.given;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.InetSocketAddress;
 
 import org.eclipse.microprofile.openapi.tck.AppTestBase;
@@ -74,9 +73,10 @@ public abstract class BaseTckTest {
                 response = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
             } catch (Throwable e) {
                 e.printStackTrace();
-                t.getResponseHeaders().add("Content-Type", TEXT_PLAIN);
+                t.getResponseHeaders().add("Content-Type", APPLICATION_JSON);
                 OutputStream os = t.getResponseBody();
-                e.printStackTrace(new PrintStream(os));
+                os.write("{}".getBytes("UTF-8"));
+                os.flush();
                 os.close();
                 return;
             }

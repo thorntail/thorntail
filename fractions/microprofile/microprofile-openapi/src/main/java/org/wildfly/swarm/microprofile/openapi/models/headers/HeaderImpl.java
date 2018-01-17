@@ -36,7 +36,7 @@ public class HeaderImpl extends ExtensibleImpl implements Header, ModelImpl {
     private Boolean required;
     private Boolean deprecated;
     private Boolean allowEmptyValue;
-    private Style style;
+    private Style style = Style.SIMPLE;
     private Boolean explode;
     private Schema schema;
     private Object example;
