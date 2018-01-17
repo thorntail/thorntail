@@ -19,9 +19,7 @@ public class JaxrsTest {
     public void test() {
         UNimbus.run();
 
-        when()
-                .get()
-        .then()
+        when().get("/").then()
                 .statusCode(200)
                 .body(containsString("Hello from JAX-RS"));
     }

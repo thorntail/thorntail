@@ -1,37 +1,33 @@
 package org.jboss.unimbus.health;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
-import java.util.concurrent.Executors;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 
 /**
- * Created by bob on 1/16/18.
+ * Created by bob on 1/17/18.
  */
-public class HealthHandler implements HttpHandler {
-    public HealthHandler(Iterable<HealthCheck> checks) {
-        this.checks = checks;
-    }
+public class HealthServlet extends HttpServlet {
 
     @Override
-    public void handleRequest(HttpServerExchange exchange) throws Exception {
-        //exchange.startBlocking();
-        if ( exchange.isInIoThread()) {
-            exchange.dispatch(Executors.newSingleThreadExecutor(), this);
-            return;
-        }
-        exchange.startBlocking();
-        OutputStream out = exchange.getOutputStream();
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        OutputStream out = resp.getOutputStream();
         JsonWriter writer = Json.createWriter(out);
         writer.writeObject(jsonObject());
         writer.close();
@@ -86,5 +82,9 @@ public class HealthHandler implements HttpHandler {
         return builder.build();
     }
 
-    private final Iterable<HealthCheck> checks;
+    @Inject
+    @Any
+    private Instance<HealthCheck> checks;
 }
+
+

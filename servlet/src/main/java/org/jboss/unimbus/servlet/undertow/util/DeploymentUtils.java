@@ -18,6 +18,7 @@ import io.undertow.servlet.api.ServletInfo;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.ServletMetaData;
 import org.jboss.weld.environment.servlet.Listener;
+import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 
 /**
  * Created by bob on 1/17/18.
@@ -39,9 +40,7 @@ public class DeploymentUtils {
         info.addListener(new ListenerInfo(
                 Listener.class
         ));
-        System.err.println("in: " + meta.getServlets());
         info.addServlets(convert(meta.getServlets()));
-        System.err.println("out: " + info.getServlets());
         return info;
     }
 
@@ -78,18 +77,16 @@ public class DeploymentUtils {
     }
 
     static InstanceFactory<? extends Servlet> instanceFactory(Supplier<? extends Servlet> supplier) {
-        return () -> {
-            return new InstanceHandle<Servlet>() {
-                @Override
-                public Servlet getInstance() {
-                    return supplier.get();
-                }
+        return () -> new InstanceHandle<Servlet>() {
+            @Override
+            public Servlet getInstance() {
+                return supplier.get();
+            }
 
-                @Override
-                public void release() {
-                    // no-op;
-                }
-            };
+            @Override
+            public void release() {
+                // no-op;
+            }
         };
     }
 }

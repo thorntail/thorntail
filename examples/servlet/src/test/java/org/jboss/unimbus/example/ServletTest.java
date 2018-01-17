@@ -19,10 +19,12 @@ public class ServletTest {
     public void test() {
         UNimbus.run();
 
-        when()
-                .get("myservlet")
-        .then()
+        when().get("/").then()
                 .statusCode(200)
-                .body(containsString("Hello from Servlet!"));
+                .body(containsString("Hello from Servlet on port 8080"));
+
+        when().get("/other").then()
+                .statusCode(200)
+                .body(containsString("Hello from other Servlet on port 8080"));
     }
 }

@@ -18,7 +18,7 @@ public class UndertowHealthCheck implements HealthCheck {
     @Override
     public HealthCheckResponse call() {
         HealthCheckResponseBuilder response = HealthCheckResponse.named("undertow");
-        if ( ! undertow.getWorker().isShutdown() ) {
+        if ( ! this.undertow.getWorker().isShutdown() ) {
             response.up();
         }
         return response.build();

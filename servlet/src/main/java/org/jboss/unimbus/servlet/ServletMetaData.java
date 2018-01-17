@@ -13,7 +13,26 @@ import javax.servlet.Servlet;
  */
 public class ServletMetaData {
 
+    public ServletMetaData(String name, Class<? extends Servlet> type) {
+        this(name, type, () -> {
+            try {
+                return type.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public ServletMetaData(String name, Servlet servlet) {
+        this(name, servlet.getClass(), ()-> servlet);
+    }
+
     public ServletMetaData(Class<? extends Servlet> type, Supplier<? extends Servlet> supplier) {
+        this(type.getSimpleName(), type, supplier);
+    }
+
+    public ServletMetaData(String name, Class<? extends Servlet> type, Supplier<? extends Servlet> supplier) {
+        this.name = name;
         this.type = type;
         this.supplier = supplier;
     }
@@ -31,7 +50,7 @@ public class ServletMetaData {
     }
 
     public void addUrlPattern(String pattern) {
-        this.urlPatterns.add( pattern );
+        this.urlPatterns.add(pattern);
     }
 
     public List<String> getUrlPatterns() {
@@ -55,18 +74,25 @@ public class ServletMetaData {
     }
 
     public void addInitParam(String name, String value) {
-        this.initParams.put( name, value );
+        this.initParams.put(name, value);
     }
 
 
-    public Map<String,String> getInitParams() {
+    public Map<String, String> getInitParams() {
         return this.initParams;
     }
 
+    private final String name;
+
     private final Class<? extends Servlet> type;
+
     private final Supplier<? extends Servlet> supplier;
+
     private final List<String> urlPatterns = new ArrayList<>();
+
     private boolean asyncSupported;
+
     private Integer loadOnStartup;
-    private Map<String,String> initParams = new HashMap<>();
+
+    private Map<String, String> initParams = new HashMap<>();
 }

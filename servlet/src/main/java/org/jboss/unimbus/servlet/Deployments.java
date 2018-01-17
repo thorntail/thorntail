@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -16,18 +17,23 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class Deployments implements Iterable<DeploymentMetaData> {
 
+    @PostConstruct
+    void configureList() {
+        this.injectedDeployments.stream()
+                .filter(Objects::nonNull)
+                .forEach(this.deployments::add);
+    }
+
     @Override
     public Iterator<DeploymentMetaData> iterator() {
         return this.deployments.iterator();
     }
 
-    @PostConstruct
-    void configureList() {
-        this.injectedDeployments.forEach(this.deployments::add);
-    }
-
     public void addDeployment(DeploymentMetaData meta) {
-        this.deployments.add( meta);
+        if ( meta == null ) {
+            return;
+        }
+        this.deployments.add(meta);
     }
 
     public List getDeployments() {

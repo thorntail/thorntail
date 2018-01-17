@@ -20,9 +20,7 @@ public class PoCTest {
     public void test() {
         UNimbus.run();
 
-        when()
-                .get("/")
-                .then()
+        when().get("/").then()
                 .statusCode(200)
                 .body(containsString("Hello! 8080"));
     }

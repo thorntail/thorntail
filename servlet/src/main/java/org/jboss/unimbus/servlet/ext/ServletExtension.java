@@ -29,12 +29,9 @@ public class ServletExtension implements Extension {
     }
 
     void createServletMetaData(Bean<Servlet> servletBean, AfterBeanDiscovery event, BeanManager beanManager) {
-        System.err.println("process: " + servletBean);
         ServletMetaData meta = new ServletMetaData(getType(servletBean), supplier(servletBean, beanManager));
 
         processUrlPatterns(meta, servletBean);
-
-        System.err.println("meta; " + meta);
 
         event.addBean()
                 .scope(Dependent.class)
@@ -43,7 +40,6 @@ public class ServletExtension implements Extension {
                 .addType(ServletMetaData.class)
                 .addType(ServletMetaData.class)
                 .produceWith((obj) -> {
-                    System.err.println("PRODUCE WITH: " + obj + " returning " + meta);
                     return meta;
                 });
     }
@@ -64,7 +60,6 @@ public class ServletExtension implements Extension {
                 }
             }
         }
-        System.err.println(" ----> " + curClass);
         return curClass;
     }
 
