@@ -15,9 +15,11 @@
  */
 package org.jboss.unimbus;
 
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.se.SeContainer;
 import javax.enterprise.inject.se.SeContainerInitializer;
 
@@ -35,8 +37,8 @@ public class UNimbus {
     }
 
     public static void run(Class<? extends UNimbusConfiguration> uNimbusConfig) {
-        Logger parent = Logger.getLogger("");
-        parent.setLevel(Level.FINEST);
+        //Logger parent = Logger.getLogger("");
+        //parent.setLevel(Level.FINEST);
 
         SeContainerInitializer containerInitializer = SeContainerInitializer.newInstance();
         SeContainer container = containerInitializer.initialize();

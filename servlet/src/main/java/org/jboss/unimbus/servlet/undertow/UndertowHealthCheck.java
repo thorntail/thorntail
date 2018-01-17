@@ -1,4 +1,4 @@
-package org.jboss.unimbus.undertow;
+package org.jboss.unimbus.servlet.undertow;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

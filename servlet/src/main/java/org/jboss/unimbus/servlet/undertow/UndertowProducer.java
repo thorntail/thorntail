@@ -1,4 +1,4 @@
-package org.jboss.unimbus.undertow;
+package org.jboss.unimbus.servlet.undertow;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.logging.Logger;
 import org.jboss.unimbus.events.LifecycleEvent;
 
 /**

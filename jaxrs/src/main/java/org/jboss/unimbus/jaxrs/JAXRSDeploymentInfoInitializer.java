@@ -15,7 +15,6 @@ import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.unimbus.events.LifecycleEvent;
-import org.jboss.unimbus.undertow.UndertowDeploymentInfos;
 
 import static io.undertow.servlet.Servlets.servlet;
 
@@ -23,13 +22,13 @@ import static io.undertow.servlet.Servlets.servlet;
 /**
  * Created by bob on 1/15/18.
  */
-@ApplicationScoped
+//@ApplicationScoped
 public class JAXRSDeploymentInfoInitializer {
 
     public void deployments(@Observes LifecycleEvent.Scan event) {
         for (Application application : this.applications) {
             DeploymentInfo deploymentInfo = createDeployment(application);
-            this.deploymentInfos.add(deploymentInfo);
+            //this.deploymentInfos.add(deploymentInfo);
         }
     }
 
@@ -75,15 +74,6 @@ public class JAXRSDeploymentInfoInitializer {
                 );
     }
 
-    /**
-     * Creates a web deployment for your ResteasyDeployent so you can set up things like security constraints
-     * You'd call this method, add your servlet security constraints, then call createDeployment(DeploymentInfo)
-     *
-     * Note, only one ResteasyDeployment can be applied per DeploymentInfo.  Resteasy servlet is mapped to "/*"
-     *
-     * @param deployment
-     * @return
-     */
     public DeploymentInfo createUndertowDeployment(ResteasyDeployment deployment) {
         return createUndertowDeployment(deployment, "/");
     }
@@ -92,8 +82,8 @@ public class JAXRSDeploymentInfoInitializer {
     @Inject
     Instance<Application> applications;
 
-    @Inject
-    UndertowDeploymentInfos deploymentInfos;
+    //@Inject
+    //UndertowDeploymentInfos deploymentInfos;
 
     @Inject
     ResteasyCdiExtension extension;

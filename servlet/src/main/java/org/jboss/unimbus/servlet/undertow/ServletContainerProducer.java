@@ -1,4 +1,4 @@
-package org.jboss.unimbus.undertow;
+package org.jboss.unimbus.servlet.undertow;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -15,6 +15,7 @@ public class ServletContainerProducer {
     @Produces
     @ApplicationScoped
     ServletContainer servletContainer() {
-        return Servlets.defaultContainer();
+        //return Servlets.defaultContainer();
+        return ServletContainer.Factory.newInstance();
     }
 }
