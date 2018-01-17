@@ -19,12 +19,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.se.SeContainer;
 import javax.enterprise.inject.se.SeContainerInitializer;
 
-import org.jboss.unimbus.condition.ConditionExtension;
-import org.jboss.unimbus.config.ConfigExtension;
 import org.jboss.unimbus.events.EventEmitter;
 import org.jboss.unimbus.spi.UNimbusConfiguration;
 
@@ -37,8 +34,15 @@ public class UNimbus {
     }
 
     public static void run(Class<? extends UNimbusConfiguration> uNimbusConfig) {
-        //Logger parent = Logger.getLogger("");
-        //parent.setLevel(Level.FINEST);
+        /*
+        Logger rootLogger = Logger.getLogger("");
+        for (Handler handler : rootLogger.getHandlers()) {
+            handler.setLevel(Level.FINEST);
+        }
+
+        Logger weldLogger = Logger.getLogger("org.jboss.weld");
+        weldLogger.setLevel(Level.FINEST);
+        */
 
         SeContainerInitializer containerInitializer = SeContainerInitializer.newInstance();
         SeContainer container = containerInitializer.initialize();

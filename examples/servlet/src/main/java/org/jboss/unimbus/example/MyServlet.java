@@ -24,6 +24,6 @@ public class MyServlet extends HttpServlet {
     }
 
     @Inject
-    @ConfigProperty(name = "web.server.port")
+    @ConfigProperty(name = "web.public.port")
     int port;
 }

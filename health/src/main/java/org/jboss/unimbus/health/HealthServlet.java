@@ -38,6 +38,9 @@ public class HealthServlet extends HttpServlet {
         HealthCheckResponse.State outcome = HealthCheckResponse.State.UP;
 
         for (HealthCheck check : checks) {
+            if ( check == null ) {
+                continue;
+            }
             JsonObject each = jsonObject(check);
             results.add(each);
             if ( outcome == HealthCheckResponse.State.UP ) {

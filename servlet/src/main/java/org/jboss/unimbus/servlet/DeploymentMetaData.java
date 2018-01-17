@@ -21,6 +21,14 @@ public class DeploymentMetaData {
         return this.name;
     }
 
+    public void setManagement(boolean management) {
+        this.management = management;
+    }
+
+    public boolean isManagement() {
+        return this.management;
+    }
+
     public void setContextPath(String contextPath) {
         this.contextPath = contextPath;
     }
@@ -57,6 +65,8 @@ public class DeploymentMetaData {
     }
 
     private String name;
+
+    private boolean management;
 
     private String contextPath;
 
