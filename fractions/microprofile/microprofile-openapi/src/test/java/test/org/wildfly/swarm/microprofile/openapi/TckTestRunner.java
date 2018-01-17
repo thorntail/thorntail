@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -175,6 +176,12 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
                 }
             }
         }
+        children.sort(new Comparator<ProxiedTckTest>() {
+            @Override
+            public int compare(ProxiedTckTest o1, ProxiedTckTest o2) {
+                return o1.getTestMethod().getName().compareTo(o2.getTestMethod().getName());
+            }
+        });
         return children;
     }
 
