@@ -1,4 +1,4 @@
-package org.jboss.unimbus.annotations;
+package org.jboss.unimbus.servlet;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

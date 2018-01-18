@@ -1,10 +1,15 @@
-package org.jboss.unimbus.logging;
+package org.jboss.unimbus.logging.jdk;
 
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.unimbus.logging.Logging;
 
 /**
  * Created by bob on 1/16/18.
@@ -19,6 +24,9 @@ public class JDKLogging implements Logging {
         logger.setLevel(Level.INFO);
         for (Handler handler : logger.getHandlers()) {
             handler.setLevel(Level.ALL);
+            if ( handler instanceof ConsoleHandler ) {
+                handler.setFormatter( new DefaultConsoleFormatter(this.format) );
+            }
         }
 
     }
@@ -28,5 +36,9 @@ public class JDKLogging implements Logging {
         Logger logger = Logger.getLogger(name);
         logger.setLevel(level);
     }
+
+    @Inject
+    @ConfigProperty(name="logging.jdk.console.format")
+    String format;
 
 }

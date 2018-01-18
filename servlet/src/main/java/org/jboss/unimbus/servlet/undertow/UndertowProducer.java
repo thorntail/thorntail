@@ -12,11 +12,9 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 import io.undertow.Undertow;
-import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.unimbus.annotations.Management;
-import org.jboss.unimbus.annotations.Public;
+import org.jboss.unimbus.servlet.Management;
+import org.jboss.unimbus.servlet.Public;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.undertow.config.UndertowConfigurer;
 
@@ -49,14 +47,9 @@ public class UndertowProducer {
     }
 
     private Undertow configure(Undertow.Builder builder, Annotation annotation) {
-        System.err.println( "-- " + this.configurers.isUnsatisfied() + " // " + this.configurers.isAmbiguous() + " // " + this.configurers.isResolvable() );
-        for (UndertowConfigurer configurer : this.configurers) {
-            System.err.println( "configurer register: " + configurer);
-        }
 
         this.configurers.select(annotation)
                 .forEach( config->{
-                    System.err.println( "APPLY: " + config );
                     config.configure(builder);
                 });
 
@@ -76,18 +69,13 @@ public class UndertowProducer {
     }
 
     void start(@Observes LifecycleEvent.Start event) {
-        System.err.println( "**** START UNDERTOWS" );
         if ( this.selector.isUnified() ) {
-            System.err.println( "**** START UNIFIED " + this.publicUndertow );
-            System.err.println("Starting undertow");
             this.publicUndertow.start();
         } else {
             if ( selector.isPublicEnabled() ) {
-                System.err.println( "**** START PUBLIC " + this.publicUndertow );
                 this.publicUndertow.start();
             }
             if ( selector.isManagementEnabled() ) {
-                System.err.println( "**** START MANAGEMENT " + this.managementUndertow );
                 this.managementUndertow.start();
             }
         }

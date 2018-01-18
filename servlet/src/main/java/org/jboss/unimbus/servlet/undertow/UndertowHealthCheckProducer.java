@@ -6,8 +6,8 @@ import javax.inject.Inject;
 
 import io.undertow.Undertow;
 import org.eclipse.microprofile.health.Health;
-import org.jboss.unimbus.annotations.Management;
-import org.jboss.unimbus.annotations.Public;
+import org.jboss.unimbus.servlet.Management;
+import org.jboss.unimbus.servlet.Public;
 
 /**
  * Created by bob on 1/17/18.

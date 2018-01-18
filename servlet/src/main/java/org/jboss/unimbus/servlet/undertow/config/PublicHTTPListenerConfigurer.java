@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import io.undertow.Undertow;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.unimbus.annotations.Public;
+import org.jboss.unimbus.servlet.Public;
 
 /**
  * Created by bob on 1/17/18.
@@ -16,7 +16,6 @@ public class PublicHTTPListenerConfigurer implements UndertowConfigurer {
 
     @Override
     public void configure(Undertow.Builder builder) {
-        System.err.println( "configure public: " + this.host + ":" + this.port);
         builder.addHttpListener( this.port, this.host );
     }
 

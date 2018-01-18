@@ -20,10 +20,6 @@ public class HealthRegistry {
     @Produces
     @ApplicationScoped
     DeploymentMetaData deployment() {
-        for (HealthCheck healthCheck : this.healthChecks) {
-            System.err.println( "CHECK REG: " + healthCheck);
-        }
-
         DeploymentMetaData deployment = new DeploymentMetaData("microprofile-health");
         deployment.setContextPath("/health");
         deployment.addServlet( servlet() );

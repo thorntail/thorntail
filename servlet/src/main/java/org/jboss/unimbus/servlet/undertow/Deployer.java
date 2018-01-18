@@ -14,8 +14,8 @@ import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
-import org.jboss.unimbus.annotations.Management;
-import org.jboss.unimbus.annotations.Public;
+import org.jboss.unimbus.servlet.Management;
+import org.jboss.unimbus.servlet.Public;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.Deployments;
@@ -38,8 +38,6 @@ public class Deployer {
             if (effectiveRoot == null) {
                 continue;
             }
-
-            System.err.println( "root: " + effectiveRoot + " // " + each.isManagement() );
 
             DeploymentInfo info = DeploymentUtils.convert(each);
             info.addServletContextAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME, this.beanManager);
@@ -65,18 +63,15 @@ public class Deployer {
 
     PathHandler getEffectiveRoot(DeploymentMetaData meta) {
         if ( selector.isUnified() ) {
-            System.err.println( "return unified root: " + this.publicRoot );
             return this.publicRoot;
         }
 
         if (meta.isManagement()) {
             if (this.managementRoot != null) {
-                System.err.println( "return management root: " + this.managementRoot );
                 return this.managementRoot;
             }
         }
 
-        System.err.println( "return default root: " + this.publicRoot );
         return this.publicRoot;
     }
 

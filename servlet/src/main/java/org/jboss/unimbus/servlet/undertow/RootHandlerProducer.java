@@ -6,8 +6,8 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import io.undertow.server.handlers.PathHandler;
-import org.jboss.unimbus.annotations.Management;
-import org.jboss.unimbus.annotations.Public;
+import org.jboss.unimbus.servlet.Management;
+import org.jboss.unimbus.servlet.Public;
 
 /**
  * Created by bob on 1/15/18.
@@ -20,15 +20,12 @@ public class RootHandlerProducer {
         if ( this.selector.isUnified() ) {
             this.publicRoot = new PathHandler();
             this.managementRoot = this.publicRoot;
-            System.err.println( "create unified root " + this.publicRoot );
         } else {
             if ( this.selector.isPublicEnabled() ) {
                 this.publicRoot = new PathHandler();
-                System.err.println( "create public root " + this.publicRoot);
             }
             if ( this.selector.isManagementEnabled() ) {
                 this.managementRoot = new PathHandler();
-                System.err.println( "create management root " + this.managementRoot);
             }
         }
     }
