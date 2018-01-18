@@ -1,9 +1,12 @@
 package org.jboss.unimbus.config;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -69,8 +72,21 @@ public class ConfigExtension implements Extension {
     @Dependent
     private static final Object produceConfigurationValue(final InjectionPoint injectionPoint) {
         String name = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class).name();
-        Class<?> type = (Class<?>) injectionPoint.getType();
-        return ConfigProvider.getConfig().getValue(name, type);
+        Type type = injectionPoint.getType();
+        if (type instanceof Class) {
+            Class<?> cls = (Class<?>) injectionPoint.getType();
+            return ConfigProvider.getConfig().getValue(name, cls);
+        } else if (type instanceof ParameterizedType) {
+            if (((ParameterizedType) type).getRawType() == Optional.class) {
+                Type innerType = ((ParameterizedType) type).getActualTypeArguments()[0];
+                if (innerType instanceof Class) {
+                    return ConfigProvider.getConfig().getOptionalValue(name, (Class) innerType);
+                } else if (innerType instanceof ParameterizedType) {
+                    return ConfigProvider.getConfig().getOptionalValue(name, (Class) ((ParameterizedType) innerType).getRawType());
+                }
+            }
+        }
+        throw new RuntimeException("unable to resolve property to type: " + type.getTypeName());
     }
 
     private Set<Type> types = new HashSet<>();

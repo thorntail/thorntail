@@ -1,5 +1,6 @@
 package org.jboss.unimbus.servlet.ext;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -13,9 +14,12 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.servlet.Servlet;
+import javax.servlet.annotation.HttpConstraint;
+import javax.servlet.annotation.ServletSecurity;
 import javax.servlet.annotation.WebServlet;
 
 import org.jboss.unimbus.servlet.ServletMetaData;
+import org.jboss.unimbus.servlet.ServletSecurityMetaData;
 
 /**
  * Created by bob on 1/17/18.
@@ -32,6 +36,7 @@ public class ServletExtension implements Extension {
         ServletMetaData meta = new ServletMetaData(getType(servletBean), supplier(servletBean, beanManager));
 
         processUrlPatterns(meta, servletBean);
+        processSecurity(meta, servletBean);
 
         event.addBean()
                 .scope(Dependent.class)
@@ -89,6 +94,19 @@ public class ServletExtension implements Extension {
                     for (String pattern : anno.urlPatterns()) {
                         meta.addUrlPattern(pattern);
                     }
+                }
+            }
+        }
+    }
+
+    void processSecurity(ServletMetaData meta, Bean<Servlet> servletBean) {
+        Set<Type> types = servletBean.getTypes();
+        for (Type type : types) {
+            if (type instanceof Class) {
+                ServletSecurity anno = (ServletSecurity) ((Class) type).getAnnotation(ServletSecurity.class);
+                if ( anno != null ) {
+                    meta.setSecurity( new ServletSecurityMetaData(anno));
+                    break;
                 }
             }
         }

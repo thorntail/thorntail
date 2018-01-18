@@ -23,6 +23,9 @@ public class DeploymentMetaData {
 
     public void setManagement(boolean management) {
         this.management = management;
+        if ( management && this.realm == null ) {
+            setRealm("management");
+        }
     }
 
     public boolean isManagement() {
@@ -64,6 +67,22 @@ public class DeploymentMetaData {
         return this.servletContextAttributes;
     }
 
+    public void setRealm(String realm) {
+        this.realm = realm;
+    }
+
+    public String getRealm() {
+        return this.realm;
+    }
+
+    public void addAuthMethod(String authMethod) {
+        this.authMethods.add( authMethod );
+    }
+
+    public List<String> getAuthMethods() {
+        return this.authMethods;
+    }
+
     private String name;
 
     private boolean management;
@@ -73,4 +92,8 @@ public class DeploymentMetaData {
     private List<ServletMetaData> servlets = new ArrayList<>();
 
     private Map<String, Object> servletContextAttributes = new HashMap<>();
+
+    private String realm;
+
+    private List<String> authMethods = new ArrayList<>();
 }

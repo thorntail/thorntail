@@ -82,6 +82,11 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
+        <artifactId>security</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
         <artifactId>servlet</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
@@ -119,6 +124,7 @@
     <module>jpa</module>
     <module>jta</module>
 
+    <module>security</module>
     <module>servlet</module>
 
     <module>examples</module>

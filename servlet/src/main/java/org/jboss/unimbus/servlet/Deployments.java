@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -38,6 +39,10 @@ public class Deployments implements Iterable<DeploymentMetaData> {
 
     public List getDeployments() {
         return Collections.unmodifiableList(this.deployments);
+    }
+
+    public Stream<DeploymentMetaData> stream() {
+        return this.deployments.stream();
     }
 
     private List<DeploymentMetaData> deployments = new ArrayList<>();

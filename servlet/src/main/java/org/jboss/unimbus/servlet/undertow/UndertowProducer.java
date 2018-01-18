@@ -13,9 +13,9 @@ import javax.inject.Inject;
 
 import io.undertow.Undertow;
 import io.undertow.server.handlers.PathHandler;
+import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.Management;
 import org.jboss.unimbus.servlet.Public;
-import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.undertow.config.UndertowConfigurer;
 
 /**

@@ -82,6 +82,14 @@ public class ServletMetaData {
         return this.initParams;
     }
 
+    public void setSecurity(ServletSecurityMetaData security) {
+        this.security = security;
+    }
+
+    public ServletSecurityMetaData getSecurity() {
+        return this.security;
+    }
+
     private final String name;
 
     private final Class<? extends Servlet> type;
@@ -95,4 +103,6 @@ public class ServletMetaData {
     private Integer loadOnStartup;
 
     private Map<String, String> initParams = new HashMap<>();
+
+    private ServletSecurityMetaData security;
 }
