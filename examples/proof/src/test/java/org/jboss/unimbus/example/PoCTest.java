@@ -3,6 +3,7 @@ package org.jboss.unimbus.example;
 import io.restassured.RestAssured;
 import io.restassured.authentication.BasicAuthScheme;
 import org.jboss.unimbus.UNimbus;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,6 +19,11 @@ public class PoCTest {
         RestAssured.baseURI = "http://localhost:8080";
     }
 
+    @AfterClass
+    public static void teardown() {
+        RestAssured.reset();
+    }
+
     @Test
     public void test() {
         UNimbus.run();
@@ -27,8 +33,10 @@ public class PoCTest {
         auth.setPassword("pw");
         RestAssured.authentication = auth;
 
+        /*
         when().get("/health").then()
                 .statusCode(200)
                 .body(containsString("Hello! 8080"));
+                */
     }
 }

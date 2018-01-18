@@ -3,4 +3,5 @@ target
 .idea
 .java-version
 *.DS_Store
+*.swp
 log
