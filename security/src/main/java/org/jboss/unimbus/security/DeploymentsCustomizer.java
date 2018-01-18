@@ -13,6 +13,9 @@ import org.jboss.unimbus.condition.IfClassPresent;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.Deployments;
+import org.jboss.unimbus.servlet.HttpConstraintMetaData;
+import org.jboss.unimbus.servlet.ServletMetaData;
+import org.jboss.unimbus.servlet.ServletSecurityMetaData;
 
 /**
  * Created by bob on 1/18/18.
@@ -28,9 +31,16 @@ public class DeploymentsCustomizer {
 
     void customize(DeploymentMetaData deployment) {
         if (deployment.isManagement() && this.managementSecurity.isPresent()) {
-            //System.err.println("customize management deployment: " + deployment);
-            //System.err.println( "management security: " + managementSecurity.isPresent() );
             deployment.addAuthMethod(managementSecurity.get().toUpperCase());
+            for (ServletMetaData each : deployment.getServlets()) {
+                each.setSecurity(
+                        new ServletSecurityMetaData()
+                        .setHttpConstraint(new HttpConstraintMetaData()
+                                                   .setEmptyRoleSemantic(ServletSecurityMetaData.EmptyRoleSemantic.DENY)
+                        )
+                );
+            }
+
         }
     }
 
