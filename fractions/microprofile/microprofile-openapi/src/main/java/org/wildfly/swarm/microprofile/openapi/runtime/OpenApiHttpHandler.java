@@ -37,6 +37,17 @@ public class OpenApiHttpHandler implements HttpHandler {
     private static final String OAI = "/openapi";
     private static final String ALLOWED_METHODS = "GET, HEAD, OPTIONS";
     private static final String QUERY_PARAM_FORMAT = "format";
+    private static final String oaiJson;
+    private static final String oaiYaml;
+
+    static {
+        try {
+            oaiJson = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
+            oaiYaml = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.YAML);
+        } catch (IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
+    }
 
     private final HttpHandler next;
 
@@ -81,11 +92,15 @@ public class OpenApiHttpHandler implements HttpHandler {
             format = Format.JSON;
         }
 
-        String oai = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, format);
+        String oai = getCachedOaiString(format);
 
         addCorsResponseHeaders(exchange);
         exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, format.getMimeType());
         exchange.getResponseSender().send(oai);
+    }
+
+    private String getCachedOaiString(Format format) {
+        return format == Format.YAML ? oaiYaml : oaiJson;
     }
 
     private static void addCorsResponseHeaders(HttpServerExchange exchange) {
