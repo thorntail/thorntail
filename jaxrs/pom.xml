@@ -31,6 +31,12 @@
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-json-p-provider</artifactId>
+      <version>${version.resteasy}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-cdi</artifactId>
       <version>${version.resteasy}</version>
     </dependency>

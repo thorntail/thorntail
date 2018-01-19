@@ -1,31 +1,29 @@
-package org.jboss.unimbus.health;
+package org.jboss.unimbus.testsuite.jaxrs.jsonp;
 
 import java.net.URL;
 
 import javax.inject.Inject;
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.jboss.unimbus.servlet.Management;
+import org.jboss.unimbus.servlet.Primary;
 import org.jboss.unimbus.test.UNimbusTestRunner;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static io.restassured.RestAssured.when;
 import static org.fest.assertions.Assertions.assertThat;
 
 @RunWith(UNimbusTestRunner.class)
-public class EndpointTest {
+public class AppTest {
 
     @Before
     public void setup() {
-        RestAssured.baseURI = this.url.toExternalForm();
+        RestAssured.baseURI = "http://localhost:8080";
     }
 
     @After
@@ -33,24 +31,17 @@ public class EndpointTest {
         RestAssured.reset();
     }
 
-    @Test
+    @org.junit.Test
     public void test() {
-        Response response = when().get("/health").andReturn();
-
+        Response response = when().get("/").andReturn();
+                //.statusCode(200)
+                //.body(containsString("Hello from JAX-RS"));
         JsonReader reader = Json.createReader(response.asInputStream());
-        JsonObject root = reader.readObject();
-
-        assertThat(root.getString("outcome")).isEqualTo("UP");
-
-        JsonArray checks = root.getJsonArray("checks");
-        assertThat(checks.size()).isGreaterThan(0);
-
-        checks.forEach(check -> {
-            assertThat(((JsonObject) check).getString("state")).isEqualTo("UP");
-        });
+        JsonObject object = reader.readObject();
+        assertThat( object.getInt("tacos")).isEqualTo(42);
     }
 
     @Inject
-    @Management
+    @Primary
     URL url;
 }

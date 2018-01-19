@@ -169,7 +169,7 @@
     <module>servlet</module>
 
     <module>test</module>
-    <module>examples</module>
+    <module>testsuite</module>
   </modules>
 
   <build>

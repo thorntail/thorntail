@@ -4,14 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus</groupId>
-    <artifactId>unimbus-examples</artifactId>
+    <groupId>org.jboss.unimbus.testsuite</groupId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>example-proof</artifactId>
-  <name>Example Proof of Concept</name>
+  <artifactId>proof</artifactId>
+  <name>Testsuite: Proof of Concept</name>
 
   <properties>
     <version.h2>1.4.187</version.h2>
