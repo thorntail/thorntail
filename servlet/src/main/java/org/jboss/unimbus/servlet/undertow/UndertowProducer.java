@@ -89,7 +89,7 @@ public class UndertowProducer {
             }
             if (selector.isManagementEnabled()) {
                 this.managementUndertow.start();
-                for (Undertow.ListenerInfo each : this.primaryUndertow.getListenerInfo()) {
+                for (Undertow.ListenerInfo each : this.managementUndertow.getListenerInfo()) {
                     ServletMessages.MESSAGES.serverStarted("management", url(each));
                 }
             }
