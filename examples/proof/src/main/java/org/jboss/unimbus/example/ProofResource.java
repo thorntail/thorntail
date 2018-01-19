@@ -26,6 +26,6 @@ public class ProofResource {
     EntityManager entityManager;
 
     @Inject
-    @ConfigProperty(name="web.public.port")
+    @ConfigProperty(name="web.primary.port")
     int port;
 }

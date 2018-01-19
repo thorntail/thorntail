@@ -15,7 +15,7 @@ import io.undertow.Undertow;
 import io.undertow.server.handlers.PathHandler;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.Management;
-import org.jboss.unimbus.servlet.Public;
+import org.jboss.unimbus.servlet.Primary;
 import org.jboss.unimbus.servlet.undertow.config.UndertowConfigurer;
 
 /**
@@ -28,15 +28,15 @@ public class UndertowProducer {
     void init() {
         if (this.selector.isUnified()) {
             Undertow.Builder builder = Undertow.builder();
-            builder.setHandler(this.publicRoot);
-            Undertow undertow = configure(builder, new AnnotationLiteral<Public>() { });
-            this.publicUndertow = undertow;
+            builder.setHandler(this.primaryRoot);
+            Undertow undertow = configure(builder, new AnnotationLiteral<Primary>() { });
+            this.primaryUndertow = undertow;
             this.managementUndertow = undertow;
         } else {
-            if ( this.selector.isPublicEnabled() ) {
+            if ( this.selector.isPrimaryEnabled() ) {
                 Undertow.Builder builder = Undertow.builder();
-                builder.setHandler(this.publicRoot);
-                this.publicUndertow = configure(builder, new AnnotationLiteral<Public>() { });
+                builder.setHandler(this.primaryRoot);
+                this.primaryUndertow = configure(builder, new AnnotationLiteral<Primary>() { });
             }
             if ( this.selector.isManagementEnabled() ) {
                 Undertow.Builder builder = Undertow.builder();
@@ -57,9 +57,9 @@ public class UndertowProducer {
     }
 
     @Produces
-    @Public
-    Undertow publicUndertow() {
-        return this.publicUndertow;
+    @Primary
+    Undertow primaryUndertow() {
+        return this.primaryUndertow;
     }
 
     @Produces
@@ -70,10 +70,10 @@ public class UndertowProducer {
 
     void start(@Observes LifecycleEvent.Start event) {
         if ( this.selector.isUnified() ) {
-            this.publicUndertow.start();
+            this.primaryUndertow.start();
         } else {
-            if ( selector.isPublicEnabled() ) {
-                this.publicUndertow.start();
+            if ( selector.isPrimaryEnabled() ) {
+                this.primaryUndertow.start();
             }
             if ( selector.isManagementEnabled() ) {
                 this.managementUndertow.start();
@@ -85,14 +85,14 @@ public class UndertowProducer {
     UndertowSelector selector;
 
     @Inject
-    @Public
-    PathHandler publicRoot;
+    @Primary
+    PathHandler primaryRoot;
 
     @Inject
     @Management
     PathHandler managementRoot;
 
-    private Undertow publicUndertow;
+    private Undertow primaryUndertow;
     private Undertow managementUndertow;
 
     @Inject

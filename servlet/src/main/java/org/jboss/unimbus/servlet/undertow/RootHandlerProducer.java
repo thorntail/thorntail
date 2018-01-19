@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import io.undertow.server.handlers.PathHandler;
 import org.jboss.unimbus.servlet.Management;
-import org.jboss.unimbus.servlet.Public;
+import org.jboss.unimbus.servlet.Primary;
 
 /**
  * Created by bob on 1/15/18.
@@ -18,11 +18,11 @@ public class RootHandlerProducer {
     @PostConstruct
     void init() {
         if ( this.selector.isUnified() ) {
-            this.publicRoot = new PathHandler();
-            this.managementRoot = this.publicRoot;
+            this.primaryRoot = new PathHandler();
+            this.managementRoot = this.primaryRoot;
         } else {
-            if ( this.selector.isPublicEnabled() ) {
-                this.publicRoot = new PathHandler();
+            if ( this.selector.isPrimaryEnabled() ) {
+                this.primaryRoot = new PathHandler();
             }
             if ( this.selector.isManagementEnabled() ) {
                 this.managementRoot = new PathHandler();
@@ -31,21 +31,21 @@ public class RootHandlerProducer {
     }
 
     @Produces
-    @Public
-    PathHandler publicHandler() {
-        return this.publicRoot;
+    @Primary
+    PathHandler primaryRoot() {
+        return this.primaryRoot;
     }
 
     @Produces
     @Management
-    PathHandler managementHandler() {
+    PathHandler managementRoot() {
         return this.managementRoot;
     }
 
     @Inject
     private UndertowSelector selector;
 
-    private PathHandler publicRoot;
+    private PathHandler primaryRoot;
     private PathHandler managementRoot;
 
 }

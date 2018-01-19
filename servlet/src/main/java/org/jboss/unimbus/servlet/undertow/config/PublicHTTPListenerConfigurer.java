@@ -5,25 +5,27 @@ import javax.inject.Inject;
 
 import io.undertow.Undertow;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.unimbus.servlet.Public;
+import org.jboss.unimbus.servlet.Primary;
 
 /**
  * Created by bob on 1/17/18.
  */
-@Public
+@Primary
 @ApplicationScoped
 public class PublicHTTPListenerConfigurer implements UndertowConfigurer {
 
     @Override
     public void configure(Undertow.Builder builder) {
-        builder.addHttpListener( this.port, this.host );
+        if ( this.port > 0 ) {
+            builder.addHttpListener(this.port, this.host);
+        }
     }
 
     @Inject
-    @ConfigProperty(name="web.public.port")
+    @ConfigProperty(name="web.primary.port")
     private int port;
 
     @Inject
-    @ConfigProperty(name="web.public.host")
+    @ConfigProperty(name="web.primary.host")
     private String host;
 }

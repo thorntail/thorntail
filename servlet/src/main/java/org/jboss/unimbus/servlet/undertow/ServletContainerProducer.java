@@ -15,7 +15,6 @@ public class ServletContainerProducer {
     @Produces
     @ApplicationScoped
     ServletContainer servletContainer() {
-        //return Servlets.defaultContainer();
         return ServletContainer.Factory.newInstance();
     }
 }

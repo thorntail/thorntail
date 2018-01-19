@@ -15,7 +15,7 @@ import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
 import org.jboss.unimbus.servlet.Management;
-import org.jboss.unimbus.servlet.Public;
+import org.jboss.unimbus.servlet.Primary;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.Deployments;
@@ -79,7 +79,7 @@ public class Deployer {
     UndertowSelector selector;
 
     @Inject
-    @Public
+    @Primary
     PathHandler publicRoot;
 
     @Inject

@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import io.undertow.Undertow;
 import org.eclipse.microprofile.health.Health;
 import org.jboss.unimbus.servlet.Management;
-import org.jboss.unimbus.servlet.Public;
+import org.jboss.unimbus.servlet.Primary;
 
 /**
  * Created by bob on 1/17/18.
@@ -17,14 +17,14 @@ public class UndertowHealthCheckProducer {
 
     @Produces
     @Health
-    @Public
-    UndertowHealthCheck publicHealthCheck() {
+    @Primary
+    UndertowHealthCheck primaryHealthCheck() {
         if (selector.isUnified()) {
-            return new UndertowHealthCheck("undertow", this.publicUndertow);
+            return new UndertowHealthCheck("undertow", this.primaryUndertow);
         }
 
-        if (selector.isPublicEnabled()) {
-            return new UndertowHealthCheck("undertow-public", this.publicUndertow);
+        if (selector.isPrimaryEnabled()) {
+            return new UndertowHealthCheck("undertow-primary", this.primaryUndertow);
         }
 
         return null;
@@ -48,8 +48,8 @@ public class UndertowHealthCheckProducer {
     UndertowSelector selector;
 
     @Inject
-    @Public
-    Undertow publicUndertow;
+    @Primary
+    Undertow primaryUndertow;
 
     @Inject
     @Management
