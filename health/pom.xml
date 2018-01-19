@@ -44,6 +44,13 @@
       <version>${version.glassfish-json}</version>
     </dependency>
 
+
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
+      <artifactId>test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

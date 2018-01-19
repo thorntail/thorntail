@@ -2,6 +2,7 @@ package org.jboss.unimbus.health;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.inject.Any;
@@ -12,6 +13,8 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
+import javax.json.stream.JsonGenerator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,10 +28,15 @@ import org.eclipse.microprofile.health.HealthCheckResponse;
  */
 public class HealthServlet extends HttpServlet {
 
+    private static final Map<String,?> JSON_CONFIG = new HashMap<String,Object>() {{
+        put( JsonGenerator.PRETTY_PRINTING, true);
+    }};
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         OutputStream out = resp.getOutputStream();
-        JsonWriter writer = Json.createWriter(out);
+        JsonWriterFactory factory = Json.createWriterFactory(JSON_CONFIG);
+        JsonWriter writer = factory.createWriter(out);
         writer.writeObject(jsonObject());
         writer.close();
     }
