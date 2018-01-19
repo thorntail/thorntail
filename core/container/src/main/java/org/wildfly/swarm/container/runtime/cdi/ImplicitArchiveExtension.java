@@ -25,9 +25,7 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
-import javax.enterprise.inject.spi.ProcessProducer;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
@@ -38,15 +36,6 @@ import org.wildfly.swarm.container.runtime.ImplicitDeployment;
  */
 public class ImplicitArchiveExtension implements Extension {
 
-    @SuppressWarnings("unused")
-    <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> pat, BeanManager beanManager) throws Exception {
-    }
-
-    @SuppressWarnings("unused")
-    <X, T> void processProducer(@Observes ProcessProducer<X, T> pp, BeanManager beanManager) throws Exception {
-    }
-
-    @SuppressWarnings("unused")
     <T> void processBeanAttributes(@Observes ProcessBeanAttributes<T> pba, BeanManager beanManager) throws Exception {
         final BeanAttributes<T> beanAttributes = pba.getBeanAttributes();
         if (beanAttributes.getTypes().contains(Archive.class)) {

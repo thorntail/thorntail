@@ -25,7 +25,6 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Singleton;
 
 import org.jboss.weld.literal.AnyLiteral;
@@ -68,8 +67,7 @@ public class OutboundSocketBindingExtension implements Extension {
                 CommonBean<Customizer> customizerBean = CommonBeanBuilder.newBuilder(Customizer.class)
                         .beanClass(OutboundSocketBindingExtension.class)
                         .scope(Singleton.class)
-                        .addQualifier(new AnnotationLiteral<Pre>() {
-                        })
+                        .addQualifier(Pre.Literal.INSTANCE)
                         .addQualifier(AnyLiteral.INSTANCE)
                         .createSupplier(customizerSupplier)
                         .addType(Customizer.class)
