@@ -18,6 +18,11 @@ public class User {
         return this.identifier;
     }
 
+    public User setCredentials(String credentials) {
+        this.credentials = credentials;
+        return this;
+    }
+
     public User addRole(String role) {
         this.roles.add( role );
         return this;
@@ -28,11 +33,14 @@ public class User {
     }
 
     public boolean testCredentials(String candidate) {
+        if ( this.credentials == null ) {
+            return false;
+        }
         return this.credentials.equals(candidate);
     }
 
     private final String identifier;
-    private final String credentials;
+    private String credentials;
 
     private final Set<String> roles = new HashSet<>();
 }

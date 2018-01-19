@@ -25,13 +25,11 @@ public class BasicIdentityManager implements IdentityManager {
 
     @Override
     public Account verify(Account account) {
-        System.err.println( "verify-1: " + account);
         return null;
     }
 
     @Override
     public Account verify(String id, Credential credential) {
-        System.err.println( "verify-2: " + id + " // " + credential );
         User user = this.security.getUser(id);
         if ( user == null ) {
             return null;
@@ -44,7 +42,6 @@ public class BasicIdentityManager implements IdentityManager {
 
     @Override
     public Account verify(Credential credential) {
-        System.err.println( "verify-3: " + credential);
         return null;
     }
 

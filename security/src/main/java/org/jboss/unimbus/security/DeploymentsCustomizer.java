@@ -25,7 +25,6 @@ import org.jboss.unimbus.servlet.ServletSecurityMetaData;
 public class DeploymentsCustomizer {
 
     void customize(@Observes LifecycleEvent.Initialize event) {
-        System.err.println("firing customizer");
         this.deployments.stream().forEach(this::customize);
     }
 

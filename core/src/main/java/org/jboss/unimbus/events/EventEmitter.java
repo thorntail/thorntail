@@ -13,6 +13,10 @@ public class EventEmitter {
     @Inject
     Event<LifecycleEvent> event;
 
+    public void fireBootstrap() {
+        event.fire( new LifecycleEvent.Bootstrap() );
+    }
+
     public void fireScan() {
         event.fire( new LifecycleEvent.Scan() );
     }

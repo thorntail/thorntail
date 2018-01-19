@@ -5,6 +5,10 @@ package org.jboss.unimbus.events;
  */
 public class LifecycleEvent {
 
+    public static class Bootstrap extends LifecycleEvent {
+
+    }
+
     public static class Scan extends LifecycleEvent {
 
     }

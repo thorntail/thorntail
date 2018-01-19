@@ -92,7 +92,6 @@ public class DeploymentUtils {
         ServletSecurityMetaData security = meta.getSecurity();
         if (security != null) {
             info.setServletSecurityInfo(convert(security));
-            System.err.println( "set security: " + info.getServletSecurityInfo() );
         }
 
         return info;
@@ -101,10 +100,8 @@ public class DeploymentUtils {
     private static ServletSecurityInfo convert(ServletSecurityMetaData security) {
         ServletSecurityInfo info = new ServletSecurityInfo();
         HttpConstraintMetaData httpConstraint = security.getHttpConstraint();
-        System.err.println( "constraint: " + security.getHttpConstraint() );
         info.setTransportGuaranteeType(convert(httpConstraint.getTransportGuarantee()));
         info.setEmptyRoleSemantic(convert(httpConstraint.getEmptyRoleSemantic()));
-        System.err.println( "empty sem: " + info.getEmptyRoleSemantic() );
         info.addRolesAllowed(httpConstraint.getRolesAllowed());
         security.getHttpMethodConstraints().forEach(e -> {
             info.addHttpMethodSecurityInfo(convert(e));

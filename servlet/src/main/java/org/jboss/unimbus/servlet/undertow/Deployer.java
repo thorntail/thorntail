@@ -19,6 +19,7 @@ import org.jboss.unimbus.servlet.Primary;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.Deployments;
+import org.jboss.unimbus.servlet.ServletMessages;
 import org.jboss.unimbus.servlet.undertow.util.DeploymentUtils;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 
@@ -55,9 +56,21 @@ public class Deployer {
         }
     }
 
+    String type(DeploymentMetaData meta) {
+        if ( this.selector.isUnified() ) {
+            return "unified";
+        }
+
+        if ( this.selector.isManagementEnabled() && meta.isManagement() ) {
+            return "management";
+        }
+
+        return "primary";
+    }
+
     void announce(@Observes LifecycleEvent.AfterStart event) {
         for (DeploymentMetaData each : this.deployments) {
-            System.err.println(each.getName() + " mounted at " + each.getContextPath());
+            ServletMessages.MESSAGES.deployment( type(each), each.getName(), each.getContextPath() );
         }
     }
 

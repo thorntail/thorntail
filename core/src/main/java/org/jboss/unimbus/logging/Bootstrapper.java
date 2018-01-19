@@ -17,13 +17,12 @@ import org.jboss.unimbus.events.LifecycleEvent;
 /**
  * Created by bob on 1/16/18.
  */
-@Priority(Integer.MAX_VALUE)
 @ApplicationScoped
-public class LoggingInitializer {
+public class Bootstrapper {
 
     private static final String PREFIX = "logging.level.";
 
-    void initialize(@Observes LifecycleEvent.Initialize event) {
+    void initialize(@Observes LifecycleEvent.Bootstrap event) {
         Logging logging = this.logging.get();
         logging.initialize();
 
