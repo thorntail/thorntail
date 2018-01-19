@@ -4,7 +4,6 @@ import org.jboss.unimbus.UNimbus;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
-import org.junit.runners.model.Statement;
 
 /**
  * Created by bob on 1/19/18.
@@ -18,11 +17,6 @@ public class UNimbusTestRunner extends BlockJUnit4ClassRunner  {
     @Override
     protected Object createTest() throws Exception {
         return this.system.get(getTestClass().getJavaClass());
-    }
-
-    @Override
-    protected Statement withAfterClasses(Statement statement) {
-        return super.withAfterClasses(statement);
     }
 
     @Override
