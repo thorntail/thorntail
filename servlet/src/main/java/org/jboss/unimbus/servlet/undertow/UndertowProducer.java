@@ -1,13 +1,21 @@
 package org.jboss.unimbus.servlet.undertow;
 
 import java.lang.annotation.Annotation;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.SocketAddress;
+import java.net.URL;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Destroyed;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.util.AnnotationLiteral;
@@ -74,6 +82,54 @@ public class UndertowProducer {
         return this.managementUndertow;
     }
 
+    @Produces
+    @Primary
+    InetSocketAddress primaryAddress() {
+        if (this.selector.isPrimaryEnabled()) {
+            for (Undertow.ListenerInfo info : this.primaryUndertow.getListenerInfo()) {
+                return (InetSocketAddress) info.getAddress();
+            }
+        }
+
+        return null;
+    }
+
+    @Produces
+    @Management
+    InetSocketAddress managementAddress() {
+        if (this.selector.isManagementEnabled()) {
+            for (Undertow.ListenerInfo info : this.managementUndertow.getListenerInfo()) {
+                return (InetSocketAddress) info.getAddress();
+            }
+        }
+
+        return primaryAddress();
+    }
+
+    @Produces
+    @Primary
+    URL primaryURL() throws MalformedURLException {
+        if (this.selector.isPrimaryEnabled()) {
+            for (Undertow.ListenerInfo info : this.primaryUndertow.getListenerInfo()) {
+                return new URL(url(info));
+            }
+        }
+
+        return null;
+    }
+
+    @Produces
+    @Management
+    URL managementURL() throws MalformedURLException {
+        if (this.selector.isManagementEnabled()) {
+            for (Undertow.ListenerInfo info : this.managementUndertow.getListenerInfo()) {
+                return new URL( url( info ));
+            }
+        }
+
+        return primaryURL();
+    }
+
     void start(@Observes LifecycleEvent.Start event) {
         if (this.selector.isUnified()) {
             this.primaryUndertow.start();
@@ -96,6 +152,12 @@ public class UndertowProducer {
         }
     }
 
+    @PreDestroy
+    void destroy() {
+        this.primaryUndertow.stop();
+        this.managementUndertow.stop();
+    }
+
     String url(Undertow.ListenerInfo info) {
         StringBuffer str = new StringBuffer();
 
@@ -104,7 +166,16 @@ public class UndertowProducer {
         SocketAddress addr = info.getAddress();
         if (addr instanceof InetSocketAddress) {
             InetSocketAddress inet = (InetSocketAddress) addr;
-            if (inet.getAddress().isAnyLocalAddress()) {
+            if (inet.getAddress() instanceof Inet6Address) {
+                str.append("[");
+                String hostString = inet.getHostString();
+                if (hostString.equals("0:0:0:0:0:0:0:0")) {
+                    hostString = "::";
+                }
+                str.append(hostString);
+                str.append("]");
+
+            } else if (inet.getAddress().isAnyLocalAddress()) {
                 str.append("localhost");
             } else {
                 str.append(inet.getHostString());

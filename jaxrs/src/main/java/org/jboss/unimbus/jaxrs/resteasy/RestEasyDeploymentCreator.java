@@ -24,7 +24,7 @@ import org.jboss.unimbus.servlet.ServletMetaData;
  */
 @IfClassPresent("org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher")
 @ApplicationScoped
-public class DeploymentCreator {
+public class RestEasyDeploymentCreator {
 
     public void createDeployments(@Observes LifecycleEvent.Scan event) {
         for (Application application : this.applications) {

@@ -92,6 +92,33 @@
         <artifactId>servlet</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>test</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.junit}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.easytesting</groupId>
+        <artifactId>fest-assert</artifactId>
+        <version>${version.fest-assert}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>${version.rest-assured}</version>
+        <scope>test</scope>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -99,19 +126,16 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${version.junit}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.easytesting</groupId>
       <artifactId>fest-assert</artifactId>
-      <version>${version.fest-assert}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
-      <version>${version.rest-assured}</version>
       <scope>test</scope>
     </dependency>
 
@@ -144,6 +168,7 @@
     <module>security</module>
     <module>servlet</module>
 
+    <module>test</module>
     <module>examples</module>
   </modules>
 

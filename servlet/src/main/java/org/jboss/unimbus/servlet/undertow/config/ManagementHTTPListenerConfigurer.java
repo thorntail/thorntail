@@ -16,7 +16,9 @@ public class ManagementHTTPListenerConfigurer implements UndertowConfigurer {
 
     @Override
     public void configure(Undertow.Builder builder) {
-        builder.addHttpListener( this.port, this.host );
+        if ( this.port >= 0 ) {
+            builder.addHttpListener(this.port, this.host);
+        }
     }
 
     @Inject

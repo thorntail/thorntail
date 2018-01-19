@@ -9,8 +9,8 @@ import javax.naming.spi.InitialContextFactoryBuilder;
 
 public class InMemoryInitialContextFactoryBuilder implements InitialContextFactoryBuilder {
 
-    public InMemoryInitialContextFactoryBuilder(BeanManager beanManager) {
-        this.factory = new InMemoryContextFactory(beanManager);
+    public InMemoryInitialContextFactoryBuilder() {
+        this.factory = new InMemoryContextFactory();
     }
 
     @Override

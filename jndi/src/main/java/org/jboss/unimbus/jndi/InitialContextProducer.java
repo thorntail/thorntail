@@ -17,17 +17,23 @@ import org.jboss.unimbus.events.LifecycleEvent;
 @ApplicationScoped
 public class InitialContextProducer {
 
-    public void initialize(@Observes LifecycleEvent.Initialize event) {
+    public void initialize(@Observes LifecycleEvent.Bootstrap event) {
         // no-op is fine, but required.
     }
 
     @PostConstruct
     void init() {
         try {
-            NamingManager.setInitialContextFactoryBuilder(
-                    new InMemoryInitialContextFactoryBuilder( this.beanManager )
-            );
+            NamingManager.setInitialContextFactoryBuilder(new InMemoryInitialContextFactoryBuilder());
+        } catch (IllegalStateException e) {
+            // someone beat us to it.
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+
+        try {
             this.context = new InitialContext();
+            this.context.bind("java:app/BeanManager", this.beanManager);
         } catch (NamingException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,5 @@
 package org.jboss.unimbus.jndi;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -13,6 +12,7 @@ import javax.enterprise.util.TypeLiteral;
 import javax.naming.Binding;
 import javax.naming.CompositeName;
 import javax.naming.Context;
+import javax.naming.InvalidNameException;
 import javax.naming.Name;
 import javax.naming.NameClassPair;
 import javax.naming.NameParser;
@@ -21,8 +21,11 @@ import javax.naming.NamingException;
 
 public class InMemoryContext implements Context {
 
-    public InMemoryContext(BeanManager beanManager) {
-        this.beanManager = beanManager;
+    public InMemoryContext() {
+    }
+
+    BeanManager beanManager() throws InvalidNameException {
+        return (BeanManager) this.bindings.get(new CompositeName("java:app/BeanManager") );
     }
 
     @Override
@@ -34,13 +37,14 @@ public class InMemoryContext implements Context {
         return lookupBinding(name);
     }
 
+
     private Object lookupBinding(Name name) throws NamingException {
-        if (name.toString().equals("java:app/BeanManager")) {
-            return this.beanManager;
-        }
-        Set<Bean<?>> beans = this.beanManager.getBeans(new TypeLiteral<Binder<?>>() {}.getType() );
+        //if (name.toString().equals("java:app/BeanManager")) {
+            //return this.beanManager;
+        //}
+        Set<Bean<?>> beans = beanManager().getBeans(new TypeLiteral<Binder<?>>() {}.getType() );
         for (Bean<?> bean : beans) {
-            CreationalContext context = this.beanManager.createCreationalContext(bean);
+            CreationalContext context = beanManager().createCreationalContext(bean);
             Binder<?> binder = (Binder<?>) bean.create(context);
             if ( binder.getName().equals(name.toString())) {
                 Object result = binder.get();
@@ -193,9 +197,6 @@ public class InMemoryContext implements Context {
     public String getNameInNamespace() throws NamingException {
         return null;
     }
-
-
-    private final BeanManager beanManager;
 
     private final Map<Name, Object> bindings = new HashMap<>();
 }

@@ -15,19 +15,18 @@
  */
 package org.jboss.unimbus;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Handler;
+import java.lang.annotation.Annotation;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.inject.se.SeContainer;
-import javax.enterprise.inject.se.SeContainerInitializer;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
 
 import org.jboss.unimbus.events.EventEmitter;
-import org.jboss.unimbus.spi.UNimbusConfiguration;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
 
 /**
  * @author Ken Finnigan
@@ -44,8 +43,25 @@ public class UNimbus {
         UNimbus.run(null);
     }
 
-    public static void run(Class<? extends UNimbusConfiguration> uNimbusConfig) {
+    public static void run(Class<?> configClass) {
+        new UNimbus(configClass).start();
+    }
 
+    public UNimbus(Class<?> configClass) {
+        this.configClass = configClass;
+    }
+
+    public <T> T get(Class<? extends T> cls, Annotation...qualifiers) {
+        Set<Bean<?>> beans = this.container.getBeanManager().getBeans(cls, qualifiers);
+        Bean<T> bean = (Bean<T>) this.container.getBeanManager().resolve(beans);
+        CreationalContext<T> context = this.container.getBeanManager().createCreationalContext(bean);
+        return bean.create(context);
+    }
+
+    private final Class<?> configClass;
+
+    public UNimbus start() {
+        //new Exception().printStackTrace();
         long startTick = System.currentTimeMillis();
         /*
         Logger rootLogger = Logger.getLogger("");
@@ -60,32 +76,40 @@ public class UNimbus {
         noisy = Logger.getLogger("org.jboss.weld.Version");
         noisy.setLevel(Level.SEVERE);
 
-        SeContainerInitializer containerInitializer = SeContainerInitializer.newInstance();
-        SeContainer container = containerInitializer.initialize();
+        Weld weld = new Weld();
 
-        EventEmitter emitter = container.select(EventEmitter.class).get();
+        weld.addExtension( new UNimbusProvidingExtension(this) );
+
+        if (configClass != null) {
+            weld.addPackages(true, configClass);
+        }
+
+        this.container = weld.initialize();
+
+        EventEmitter emitter = this.container.select(EventEmitter.class).get();
         emitter.fireBootstrap();
         emitter.fireScan();
         emitter.fireInitialize();
         emitter.fireDeploy();
         emitter.fireBeforeStart();
-
-        if (uNimbusConfig != null) {
-            UNimbusConfiguration config = container.select(uNimbusConfig).get();
-            config.run();
-        }
-
         emitter.fireStart();
         emitter.fireAfterStart();
 
         long endTick = System.currentTimeMillis();
-
         CoreMessages.MESSAGES.started(format(endTick - startTick));
+
+        return this;
+    }
+
+    public void stop() {
+        this.container.shutdown();
     }
 
     private static String format(long ms) {
-        long seconds = ms/1000;
-        long milli = ms%1000;
+        long seconds = ms / 1000;
+        long milli = ms % 1000;
         return seconds + "." + milli + "s";
     }
+
+    private WeldContainer container;
 }

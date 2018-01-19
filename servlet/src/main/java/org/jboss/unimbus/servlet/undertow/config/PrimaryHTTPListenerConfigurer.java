@@ -12,11 +12,11 @@ import org.jboss.unimbus.servlet.Primary;
  */
 @Primary
 @ApplicationScoped
-public class PublicHTTPListenerConfigurer implements UndertowConfigurer {
+public class PrimaryHTTPListenerConfigurer implements UndertowConfigurer {
 
     @Override
     public void configure(Undertow.Builder builder) {
-        if ( this.port > 0 ) {
+        if ( this.port >= 0 ) {
             builder.addHttpListener(this.port, this.host);
         }
     }
