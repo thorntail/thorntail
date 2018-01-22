@@ -22,13 +22,19 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
+import org.jboss.jandex.AnnotationTarget.Kind;
 import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
+import org.jboss.jandex.MethodInfo;
 import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
+
+import com.fasterxml.jackson.jaxrs.cfg.Annotations;
 
 /**
  * Some utility methods for working with Jandex objects.
@@ -160,6 +166,15 @@ public class JandexUtil {
     }
 
     /**
+     * Returns true if the given annotation is void of any values (and thus is "empty").  An example
+     * of this would be if a jax-rs method were annotated with @Tag()
+     * @param annotation
+     */
+    public static boolean isEmpty(AnnotationInstance annotation) {
+        return Annotations.values().length == 0;
+    }
+
+    /**
      * Gets a single class annotation from the given class.  Returns null if no matching annotation
      * is found.
      * @param ct
@@ -173,6 +188,23 @@ public class JandexUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns a list of annotations of a given type found on the given method.
+     * @param method
+     * @param annotationName
+     */
+    public static List<AnnotationInstance> getAnnotations(MethodInfo method, DotName annotationName) {
+        List<AnnotationInstance> annotations = new ArrayList<>(method.annotations());
+        CollectionUtils.filter(annotations, new Predicate() {
+            @Override
+            public boolean evaluate(Object object) {
+                AnnotationInstance annotation = (AnnotationInstance) object;
+                return annotation.name().equals(annotationName);
+            }
+        });
+        return annotations;
     }
 
     /**
@@ -191,6 +223,24 @@ public class JandexUtil {
             }
         }
         return resourceClasses;
+    }
+
+    /**
+     * Returns all annotations configured for a single parameter of a method.
+     * @param method
+     * @param paramPosition
+     */
+    public static List<AnnotationInstance> getParameterAnnotations(MethodInfo method, short paramPosition) {
+        List<AnnotationInstance> annotations = new ArrayList<>(method.annotations());
+        CollectionUtils.filter(annotations, new Predicate() {
+            @Override
+            public boolean evaluate(Object object) {
+                AnnotationInstance annotation = (AnnotationInstance) object;
+                AnnotationTarget target = annotation.target();
+                return target != null && target.kind() == Kind.METHOD_PARAMETER && target.asMethodParameter().position() == paramPosition;
+            }
+        });
+        return annotations;
     }
 
 }

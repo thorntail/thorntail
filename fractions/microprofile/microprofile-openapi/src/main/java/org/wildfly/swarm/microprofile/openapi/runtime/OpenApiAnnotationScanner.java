@@ -19,6 +19,7 @@ package org.wildfly.swarm.microprofile.openapi.runtime;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.ws.rs.core.Application;
 
@@ -37,6 +39,7 @@ import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.Operation;
 import org.eclipse.microprofile.openapi.models.PathItem;
 import org.eclipse.microprofile.openapi.models.PathItem.HttpMethod;
+import org.eclipse.microprofile.openapi.models.Paths;
 import org.eclipse.microprofile.openapi.models.callbacks.Callback;
 import org.eclipse.microprofile.openapi.models.examples.Example;
 import org.eclipse.microprofile.openapi.models.headers.Header;
@@ -49,7 +52,9 @@ import org.eclipse.microprofile.openapi.models.media.Discriminator;
 import org.eclipse.microprofile.openapi.models.media.Encoding;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
+import org.eclipse.microprofile.openapi.models.parameters.Parameter.In;
 import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.eclipse.microprofile.openapi.models.responses.APIResponses;
@@ -63,12 +68,15 @@ import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
 import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationTarget;
+import org.jboss.jandex.AnnotationTarget.Kind;
 import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.ClassType;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
+import org.jboss.jandex.MethodParameterInfo;
 import org.jboss.jandex.Type;
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
@@ -78,6 +86,7 @@ import org.wildfly.swarm.microprofile.openapi.models.ExternalDocumentationImpl;
 import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
 import org.wildfly.swarm.microprofile.openapi.models.OperationImpl;
 import org.wildfly.swarm.microprofile.openapi.models.PathItemImpl;
+import org.wildfly.swarm.microprofile.openapi.models.PathsImpl;
 import org.wildfly.swarm.microprofile.openapi.models.callbacks.CallbackImpl;
 import org.wildfly.swarm.microprofile.openapi.models.examples.ExampleImpl;
 import org.wildfly.swarm.microprofile.openapi.models.headers.HeaderImpl;
@@ -166,6 +175,19 @@ public class OpenApiAnnotationScanner {
             processJaxRsResourceClass(oai, resourceClass);
         }
 
+        // Now that all paths have been created, sort them (we don't have a better way to organize them).
+        Paths paths = oai.getPaths();
+        if (paths != null) {
+            Paths sortedPaths = new PathsImpl();
+            TreeSet<String> sortedKeys = new TreeSet<>(paths.keySet());
+            for (String pathKey : sortedKeys) {
+                PathItem pathItem = paths.get(pathKey);
+                sortedPaths.addPathItem(pathKey, pathItem);
+            }
+            sortedPaths.setExtensions(paths.getExtensions());
+            oai.setPaths(sortedPaths);
+        }
+
         return oai;
     }
 
@@ -247,15 +269,29 @@ public class OpenApiAnnotationScanner {
                 tagRefs.add(tagRef);
             } else {
                 Tag tag = readTag(tagAnno);
-                openApi.addTag(tag);
-                tagRefs.add(tag.getName());
+                if (tag.getName() != null) {
+                    openApi.addTag(tag);
+                    tagRefs.add(tag.getName());
+                }
             }
         }
         AnnotationInstance tagsAnno = JandexUtil.getClassAnnotation(resourceClass, OpenApiConstants.DOTNAME_TAGS);
         if (tagsAnno != null) {
-            List<Tag> tags = readTags(tagsAnno.value());
-            for (Tag tag : tags) {
-                openApi.addTag(tag);
+            AnnotationValue tagsArrayVal = tagsAnno.value();
+            if (tagsArrayVal != null) {
+                AnnotationInstance[] tagsArray = tagsArrayVal.asNestedArray();
+                for (AnnotationInstance ta : tagsArray) {
+                    if (JandexUtil.isRef(ta)) {
+                        String tagRef = JandexUtil.stringValue(ta, OpenApiConstants.PROP_REF);
+                        tagRefs.add(tagRef);
+                    } else {
+                        Tag tag = readTag(ta);
+                        if (tag.getName() != null) {
+                            openApi.addTag(tag);
+                            tagRefs.add(tag.getName());
+                        }
+                    }
+                }
             }
 
             List<String> listValue = JandexUtil.stringListValue(tagsAnno, OpenApiConstants.PROP_REFS);
@@ -269,6 +305,26 @@ public class OpenApiAnnotationScanner {
             AnnotationInstance get = methodInfo.annotation(OpenApiConstants.DOTNAME_GET);
             if (get != null) {
                 processJaxRsMethod(openApi, resourceClass, methodInfo, get, HttpMethod.GET, tagRefs);
+            }
+            AnnotationInstance put = methodInfo.annotation(OpenApiConstants.DOTNAME_PUT);
+            if (put != null) {
+                processJaxRsMethod(openApi, resourceClass, methodInfo, put, HttpMethod.PUT, tagRefs);
+            }
+            AnnotationInstance post = methodInfo.annotation(OpenApiConstants.DOTNAME_POST);
+            if (post != null) {
+                processJaxRsMethod(openApi, resourceClass, methodInfo, post, HttpMethod.POST, tagRefs);
+            }
+            AnnotationInstance delete = methodInfo.annotation(OpenApiConstants.DOTNAME_DELETE);
+            if (delete != null) {
+                processJaxRsMethod(openApi, resourceClass, methodInfo, delete, HttpMethod.DELETE, tagRefs);
+            }
+            AnnotationInstance head = methodInfo.annotation(OpenApiConstants.DOTNAME_HEAD);
+            if (head != null) {
+                processJaxRsMethod(openApi, resourceClass, methodInfo, head, HttpMethod.HEAD, tagRefs);
+            }
+            AnnotationInstance options = methodInfo.annotation(OpenApiConstants.DOTNAME_OPTIONS);
+            if (options != null) {
+                processJaxRsMethod(openApi, resourceClass, methodInfo, options, HttpMethod.OPTIONS, tagRefs);
             }
         }
     }
@@ -285,12 +341,14 @@ public class OpenApiAnnotationScanner {
     private void processJaxRsMethod(OpenAPIImpl openApi, ClassInfo resource, MethodInfo method,
             AnnotationInstance methodAnno, HttpMethod methodType, Set<String> resourceTags) {
         // Figure out the path for the operation.  This is a combination of the App, Resource, and Method @Path annotations
-        String path = this.currentAppPath + this.currentResourcePath;
+        String path;
         if (method.hasAnnotation(OpenApiConstants.DOTNAME_PATH)) {
             AnnotationInstance pathAnno = method.annotation(OpenApiConstants.DOTNAME_PATH);
-            path += pathAnno.value().asString();
+            String methodPath = pathAnno.value().asString();
+            path = makePath(this.currentAppPath, this.currentResourcePath, methodPath);
+        } else {
+            path = makePath(this.currentAppPath, this.currentResourcePath);
         }
-        path = path.replace("//", "/");
 
         // Get or create a PathItem to hold the operation
         PathItem pathItem = ModelUtil.paths(openApi).get(path);
@@ -300,7 +358,9 @@ public class OpenApiAnnotationScanner {
         }
 
         Operation operation = new OperationImpl();
+
         // Process any @Operation annotation
+        /////////////////////////////////////////
         if (method.hasAnnotation(OpenApiConstants.DOTNAME_OPERATION)) {
             AnnotationInstance operationAnno = method.annotation(OpenApiConstants.DOTNAME_OPERATION);
             // If the operation is marked as hidden, just bail here because we don't want it as part of the model.
@@ -313,28 +373,120 @@ public class OpenApiAnnotationScanner {
             operation.setOperationId(JandexUtil.stringValue(operationAnno, OpenApiConstants.PROP_OPERATION_ID));
             operation.setDeprecated(JandexUtil.booleanValue(operationAnno, OpenApiConstants.PROP_DEPRECATED));
         }
-        // Handle tags - @Tag and @Tags annotations combines with the resource tags we've already found (passed in)
-        List<String> tags = new ArrayList<>();
-        tags.addAll(resourceTags);
-        method.annotations().forEach( annotation -> {
-            if (annotation.name().equals(OpenApiConstants.DOTNAME_TAG)) {
-                System.out.println("Processing @Tag annotation on a method: ");
-                System.out.println("\t@Tag:   " + annotation);
-                System.out.println("\tMethod: " + method);
 
-                if (JandexUtil.isRef(annotation)) {
-                    String tagRef = JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF);
-                    tags.add(tagRef);
-                } else {
-                    Tag tag = readTag(annotation);
+        // Process tags - @Tag and @Tags annotations combines with the resource tags we've already found (passed in)
+        /////////////////////////////////////////
+        boolean hasOpTags = false;
+        Set<String> tags = new HashSet<>();
+        if (method.hasAnnotation(OpenApiConstants.DOTNAME_TAG)) {
+            hasOpTags = true;
+            AnnotationInstance tagAnno = method.annotation(OpenApiConstants.DOTNAME_TAG);
+            if (JandexUtil.isRef(tagAnno)) {
+                String tagRef = JandexUtil.stringValue(tagAnno, OpenApiConstants.PROP_REF);
+                tags.add(tagRef);
+            } else if (JandexUtil.isEmpty(tagAnno)) {
+                // Nothing to do here.  The @Tag() was empty.
+            } else {
+                Tag tag = readTag(tagAnno);
+                if (tag.getName() != null) {
                     openApi.addTag(tag);
                     tags.add(tag.getName());
                 }
             }
-        });
+        }
+        if (method.hasAnnotation(OpenApiConstants.DOTNAME_TAGS)) {
+            hasOpTags = true;
+            AnnotationInstance tagsAnno = method.annotation(OpenApiConstants.DOTNAME_TAGS);
+            AnnotationValue tagsArrayVal = tagsAnno.value();
+            if (tagsArrayVal != null) {
+                AnnotationInstance[] tagsArray = tagsArrayVal.asNestedArray();
+                for (AnnotationInstance tagAnno : tagsArray) {
+                    if (JandexUtil.isRef(tagAnno)) {
+                        String tagRef = JandexUtil.stringValue(tagAnno, OpenApiConstants.PROP_REF);
+                        tags.add(tagRef);
+                    } else {
+                        Tag tag = readTag(tagAnno);
+                        if (tag.getName() != null) {
+                            openApi.addTag(tag);
+                            tags.add(tag.getName());
+                        }
+                    }
+                }
+            }
 
+            List<String> listValue = JandexUtil.stringListValue(tagsAnno, OpenApiConstants.PROP_REFS);
+            if (listValue != null) {
+                tags.addAll(listValue);
+            }
+        }
+        if (!hasOpTags) {
+            tags.addAll(resourceTags);
+        }
         if (!tags.isEmpty()) {
-            operation.setTags(tags);
+            operation.setTags(new ArrayList<>(tags));
+        }
+
+        // Process @Parameter annotations
+        /////////////////////////////////////////
+        List<AnnotationInstance> parameterAnnotations = JandexUtil.getAnnotations(method, OpenApiConstants.DOTNAME_PARAMETER);
+        if (method.hasAnnotation(OpenApiConstants.DOTNAME_PARAMETERS)) {
+            AnnotationInstance annotation = method.annotation(OpenApiConstants.DOTNAME_PARAMETERS);
+            AnnotationValue annotationValue = annotation.value();
+            if (annotationValue != null) {
+                AnnotationInstance[] nestedArray = annotationValue.asNestedArray();
+                parameterAnnotations.addAll(Arrays.asList(nestedArray));
+            }
+        }
+        System.out.println("Processing @Parameter annotations for: " + method);
+        for (AnnotationInstance annotation : parameterAnnotations) {
+            Parameter parameter = readParameter(annotation);
+            if (parameter == null) {
+                // Param was hidden
+                continue;
+            }
+
+            AnnotationTarget target = annotation.target();
+            // If target is null, then the @Parameter was found wrapped in a @Parameters
+            // If the target is METHOD, then the @Parameter is on the method itself
+            // If the target is METHOD_PARAMETER, then the @Parameter is on one of the method's arguments (THIS ONE WE CARE ABOUT)
+            if (target != null && target.kind() == Kind.METHOD_PARAMETER) {
+                In in = parameterIn(target.asMethodParameter());
+                parameter.setIn(in);
+            }
+
+            operation.addParameter(parameter);
+        }
+
+        // TODO need to handle the case where we have @PathParam annotations without @Parameter annotations
+        // TODO need to handle the case where we have @QueryParam annotations without @Parameter annotations
+        // TODO need to handle the case where we have @BeanParam annotations without @Parameter annotations
+        // TODO need to handle the case where we have @CookieParam annotations without @Parameter annotations
+        // TODO need to handle the case where we have @FormParam annotations without @Parameter annotations
+        // TODO need to handle the case where we have @HeaderParam annotations without @Parameter annotations
+
+        // Process @APIResponse annotations
+        /////////////////////////////////////////
+        List<AnnotationInstance> apiResponseAnnotations = new ArrayList<>();
+        if (method.hasAnnotation(OpenApiConstants.DOTNAME_API_RESPONSE)) {
+            AnnotationInstance annotation = method.annotation(OpenApiConstants.DOTNAME_API_RESPONSE);
+            apiResponseAnnotations.add(annotation);
+        }
+        if (method.hasAnnotation(OpenApiConstants.DOTNAME_API_RESPONSES)) {
+            AnnotationInstance annotation = method.annotation(OpenApiConstants.DOTNAME_API_RESPONSES);
+            AnnotationValue annotationValue = annotation.value();
+            if (annotationValue != null) {
+                AnnotationInstance[] nestedArray = annotationValue.asNestedArray();
+                apiResponseAnnotations.addAll(Arrays.asList(nestedArray));
+            }
+        }
+        for (AnnotationInstance annotation : apiResponseAnnotations) {
+            String responseCode = JandexUtil.stringValue(annotation, OpenApiConstants.PROP_RESPONSE_CODE);
+            if (responseCode == null) {
+                responseCode = APIResponses.DEFAULT;
+            }
+            APIResponse response = readResponse(annotation);
+            APIResponses responses = ModelUtil.responses(operation);
+            responses.addApiResponse(responseCode, response);
         }
 
         // Now set the operation on the PathItem as appropriate based on the Http method type
@@ -366,6 +518,58 @@ public class OpenApiAnnotationScanner {
             default:
                 break;
         }
+    }
+
+    /**
+     * Determines where an @Parameter can be found (examples include Query, Path,
+     * Header, Cookie, etc).
+     * @param target
+     */
+    private In parameterIn(MethodParameterInfo paramInfo) {
+        MethodInfo method = paramInfo.method();
+        short paramPosition = paramInfo.position();
+        List<AnnotationInstance> annotations = JandexUtil.getParameterAnnotations(method, paramPosition);
+        for (AnnotationInstance annotation : annotations) {
+            if (annotation.name().equals(OpenApiConstants.DOTNAME_QUERY_PARAM)) {
+                return In.QUERY;
+            }
+            if (annotation.name().equals(OpenApiConstants.DOTNAME_PATH_PARAM)) {
+                return In.PATH;
+            }
+            if (annotation.name().equals(OpenApiConstants.DOTNAME_HEADER_PARAM)) {
+                return In.HEADER;
+            }
+            if (annotation.name().equals(OpenApiConstants.DOTNAME_COOKIE_PARAM)) {
+                return In.COOKIE;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Make a path out of a number of path segments.
+     * @param segments
+     */
+    protected static String makePath(String ... segments) {
+        StringBuilder builder = new StringBuilder();
+        for (String segment : segments) {
+            if (segment.startsWith("/")) {
+                segment = segment.substring(1);
+            }
+            if (segment.endsWith("/")) {
+                segment = segment.substring(0, segment.length() - 1);
+            }
+            if (segment.isEmpty()) {
+                continue;
+            }
+            builder.append("/");
+            builder.append(segment);
+        }
+        String rval = builder.toString();
+        if (rval.isEmpty()) {
+            return "/";
+        }
+        return rval;
     }
 
     /**
@@ -449,7 +653,9 @@ public class OpenApiAnnotationScanner {
         AnnotationInstance[] nestedArray = tagAnnos.asNestedArray();
         List<Tag> tags = new ArrayList<>();
         for (AnnotationInstance tagAnno : nestedArray) {
-            tags.add(readTag(tagAnno));
+            if (!JandexUtil.isRef(tagAnno)) {
+                tags.add(readTag(tagAnno));
+            }
         }
         return tags;
     }
@@ -920,6 +1126,7 @@ public class OpenApiAnnotationScanner {
         }
 
         Parameter parameter = new ParameterImpl();
+        parameter.setName(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_NAME));
         parameter.setIn(JandexUtil.enumValue(annotation, OpenApiConstants.PROP_IN, org.eclipse.microprofile.openapi.models.parameters.Parameter.In.class));
         parameter.setDescription(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_DESCRIPTION));
         parameter.setRequired(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_REQUIRED));
@@ -1162,9 +1369,6 @@ public class OpenApiAnnotationScanner {
 
         Schema schema = new SchemaImpl();
 
-        // TODO handle the case where the an implementation class is provided - that is introspected *first* and then augmented with the other info
-        // TODO handle the case where an impl class is provided and the annotation "type" property is "array"
-
         //schema.setDescription(JandexUtil.stringValue(annotation, ModelConstants.OpenApiConstants.PROP_DESCRIPTION));  IMPLEMENTATION
         schema.setNot(readClassSchema(annotation.value(OpenApiConstants.PROP_NOT)));
         schema.setOneOf(readClassSchemas(annotation.value(OpenApiConstants.PROP_ONE_OF)));
@@ -1198,6 +1402,19 @@ public class OpenApiAnnotationScanner {
         schema.setMaxItems(JandexUtil.intValue(annotation, OpenApiConstants.PROP_MAX_ITEMS));
         schema.setMinItems(JandexUtil.intValue(annotation, OpenApiConstants.PROP_MIN_ITEMS));
         schema.setUniqueItems(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_UNIQUE_ITEMS));
+
+        Schema implSchema = readClassSchema(annotation.value(OpenApiConstants.PROP_IMPLEMENTATION));
+        if (schema.getType() == SchemaType.ARRAY) {
+            // If the @Schema annotation indicates an array type, then use the Schema
+            // generated from the implementation Class as the "items" for the array.
+            schema.setItems(implSchema);
+        } else {
+            // If there is an impl class - merge the @Schema properties *onto* the schema
+            // generated from the Class so that the annotation properties override the class
+            // properties (as required by the MP+OAI spec).
+            schema = MergeUtil.mergeObjects(implSchema, schema);
+        }
+
         return schema;
     }
 

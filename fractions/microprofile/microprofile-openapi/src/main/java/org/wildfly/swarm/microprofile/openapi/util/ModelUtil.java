@@ -18,10 +18,13 @@ package org.wildfly.swarm.microprofile.openapi.util;
 
 import org.eclipse.microprofile.openapi.models.Components;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.Operation;
 import org.eclipse.microprofile.openapi.models.Paths;
+import org.eclipse.microprofile.openapi.models.responses.APIResponses;
 import org.wildfly.swarm.microprofile.openapi.models.ComponentsImpl;
 import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
 import org.wildfly.swarm.microprofile.openapi.models.PathsImpl;
+import org.wildfly.swarm.microprofile.openapi.models.responses.APIResponsesImpl;
 
 /**
  * Class with some convenience methods useful for working with the OAI data model.
@@ -55,6 +58,18 @@ public class ModelUtil {
             openApi.setPaths(new PathsImpl());
         }
         return openApi.getPaths();
+    }
+
+    /**
+     * Gets the {@link APIResponses} child model from the given operation.  If it's null
+     * then it will be created and returned.
+     * @param operation
+     */
+    public static APIResponses responses(Operation operation) {
+        if (operation.getResponses() == null) {
+            operation.setResponses(new APIResponsesImpl());
+        }
+        return operation.getResponses();
     }
 
 }
