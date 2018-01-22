@@ -1,4 +1,4 @@
-package org.jboss.unimbus.example;
+package org.jboss.unimbus.testsuite.servlet;
 
 import io.restassured.RestAssured;
 import org.jboss.unimbus.UNimbus;
@@ -8,7 +8,7 @@ import org.junit.Test;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.containsString;
 
-public class JaxrsTest {
+public class ServletAppTest {
 
     @BeforeClass
     public static void setup() {
@@ -21,6 +21,10 @@ public class JaxrsTest {
 
         when().get("/").then()
                 .statusCode(200)
-                .body(containsString("Hello from JAX-RS"));
+                .body(containsString("Hello from Servlet on port 8080"));
+
+        when().get("/other").then()
+                .statusCode(200)
+                .body(containsString("Hello from other Servlet on port 8080"));
     }
 }

@@ -1,4 +1,4 @@
-package org.jboss.unimbus.example;
+package org.jboss.unimbus.testsuite.jaxrs;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

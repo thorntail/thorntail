@@ -1,4 +1,4 @@
-package org.jboss.unimbus.example;
+package org.jboss.unimbus.testsuite.proof;
 
 import java.util.Collections;
 import java.util.Set;

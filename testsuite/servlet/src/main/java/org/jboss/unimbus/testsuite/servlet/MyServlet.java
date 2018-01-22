@@ -1,4 +1,4 @@
-package org.jboss.unimbus.example;
+package org.jboss.unimbus.testsuite.servlet;
 
 import java.io.IOException;
 
@@ -15,12 +15,12 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  * @author Ken Finnigan
  */
 @WebServlet(
-        urlPatterns = {"/other"}
+        urlPatterns = {"/"}
 )
-public class MyOtherServlet extends HttpServlet {
+public class MyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().println("Hello from other Servlet on port " + port);
+        resp.getWriter().println("Hello from Servlet on port " + port);
     }
 
     @Inject

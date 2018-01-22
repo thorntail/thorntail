@@ -1,4 +1,4 @@
-package org.jboss.unimbus.example;
+package org.jboss.unimbus.testsuite.servlet;
 
 import org.jboss.unimbus.UNimbus;
 

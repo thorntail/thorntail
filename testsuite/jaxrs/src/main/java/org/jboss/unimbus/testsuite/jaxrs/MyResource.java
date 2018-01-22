@@ -1,4 +1,4 @@
-package org.jboss.unimbus.example;
+package org.jboss.unimbus.testsuite.jaxrs;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

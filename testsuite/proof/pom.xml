@@ -31,7 +31,7 @@
               <goal>build</goal>
             </goals>
             <configuration>
-              <appClass>org.jboss.unimbus.example.Main</appClass>
+              <appClass>org.jboss.unimbus.testsuite.proof.Main</appClass>
               <type>fat</type>
             </configuration>
           </execution>

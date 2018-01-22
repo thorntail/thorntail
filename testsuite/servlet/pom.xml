@@ -25,7 +25,7 @@
               <goal>build</goal>
             </goals>
             <configuration>
-              <appClass>org.jboss.unimbus.example.ServletMain</appClass>
+              <appClass>org.jboss.unimbus.testsuite.servlet.ServletMain</appClass>
               <type>fat</type>
             </configuration>
           </execution>

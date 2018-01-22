@@ -79,6 +79,11 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
+        <artifactId>json-p</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
         <artifactId>jta</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
@@ -164,6 +169,7 @@
     <module>jndi</module>
     <module>jpa</module>
     <module>jta</module>
+    <module>json-p</module>
 
     <module>security</module>
     <module>servlet</module>

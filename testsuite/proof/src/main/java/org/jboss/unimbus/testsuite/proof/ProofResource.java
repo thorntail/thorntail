@@ -1,4 +1,4 @@
-package org.jboss.unimbus.example;
+package org.jboss.unimbus.testsuite.proof;
 
 import java.net.InetSocketAddress;
 import java.net.URL;

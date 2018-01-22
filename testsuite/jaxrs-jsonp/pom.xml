@@ -15,7 +15,6 @@
 
   <properties>
     <version.javax-json>1.0</version.javax-json>
-    <version.glassfish-json>1.0</version.glassfish-json>
   </properties>
 
   <build>
@@ -44,15 +43,6 @@
       <groupId>org.jboss.unimbus</groupId>
       <artifactId>jaxrs</artifactId>
     </dependency>
-
-<!--
-    <dependency>
-      <groupId>javax.json</groupId>
-      <artifactId>javax.json-api</artifactId>
-      <version>${version.javax-json}</version>
-      <scope>provided</scope>
-    </dependency>
--->
 
   </dependencies>
 </project>

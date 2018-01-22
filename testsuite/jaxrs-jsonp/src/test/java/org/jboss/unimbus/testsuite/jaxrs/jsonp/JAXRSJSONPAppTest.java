@@ -19,7 +19,7 @@ import static io.restassured.RestAssured.when;
 import static org.fest.assertions.Assertions.assertThat;
 
 @RunWith(UNimbusTestRunner.class)
-public class AppTest {
+public class JAXRSJSONPAppTest {
 
     @Before
     public void setup() {
