@@ -17,23 +17,29 @@
 package org.wildfly.swarm.microprofile.openapi.util;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.AnnotationValue;
-import org.jboss.jandex.AnnotationValue.Kind;
+import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.DotName;
+import org.jboss.jandex.IndexView;
+import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 
 /**
- * Class that provides some generally useful methods for reading annotations.
+ * Some utility methods for working with Jandex objects.
  * @author eric.wittmann@gmail.com
  */
-public class AnnotationUtil {
+public class JandexUtil {
 
     /**
      * Constructor.
      */
-    private AnnotationUtil() {
+    private JandexUtil() {
     }
 
     /**
@@ -77,10 +83,10 @@ public class AnnotationUtil {
         if (value == null) {
             return null;
         }
-        if (value.kind() == Kind.DOUBLE) {
+        if (value.kind() == AnnotationValue.Kind.DOUBLE) {
             return new BigDecimal(value.asDouble());
         }
-        if (value.kind() == Kind.STRING) {
+        if (value.kind() == AnnotationValue.Kind.STRING) {
             return new BigDecimal(value.asString());
         }
         throw new RuntimeException("Call to bigDecimalValue failed because the annotation property was not a double or a String.");
@@ -142,6 +148,49 @@ public class AnnotationUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns true if the given annotation instance is a "ref".  An annotation is a ref if it has
+     * a non-null value for the "ref" property.
+     * @param annotation
+     */
+    public static boolean isRef(AnnotationInstance annotation) {
+        return annotation.value(OpenApiConstants.PROP_REF) != null;
+    }
+
+    /**
+     * Gets a single class annotation from the given class.  Returns null if no matching annotation
+     * is found.
+     * @param ct
+     * @param name
+     */
+    public static AnnotationInstance getClassAnnotation(ClassInfo ct, DotName name) {
+        Collection<AnnotationInstance> annotations = ct.classAnnotations();
+        for (AnnotationInstance annotationInstance : annotations) {
+            if (annotationInstance.name().equals(name)) {
+                return annotationInstance;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Use the jandex index to find all jax-rs resource classes.  This is done by searching for
+     * all Class-level @Path annotations.
+     * @param pathAnnotations
+     * @param index
+     */
+    public static Collection<ClassInfo> getJaxRsResourceClasses(IndexView index) {
+        Collection<ClassInfo> resourceClasses = new ArrayList<>();
+        Collection<AnnotationInstance> pathAnnotations = index.getAnnotations(OpenApiConstants.DOTNAME_PATH);
+        for (AnnotationInstance pathAnno : pathAnnotations) {
+            AnnotationTarget annotationTarget = pathAnno.target();
+            if (annotationTarget.kind() == AnnotationTarget.Kind.CLASS) {
+                resourceClasses.add(annotationTarget.asClass());
+            }
+        }
+        return resourceClasses;
     }
 
 }

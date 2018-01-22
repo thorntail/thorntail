@@ -67,6 +67,7 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
+import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
 import org.wildfly.swarm.microprofile.openapi.models.ComponentsImpl;
 import org.wildfly.swarm.microprofile.openapi.models.ExternalDocumentationImpl;
@@ -226,14 +227,14 @@ public class OpenApiParser {
      * @param model
      */
     private void readOpenAPI(JsonNode node, OpenAPIImpl model) {
-        model.setOpenapi(JsonUtil.stringProperty(node, ModelConstants.PROP_OPENAPI));
-        model.setInfo(readInfo(node.get(ModelConstants.PROP_INFO)));
-        model.setExternalDocs(readExternalDocs(node.get(ModelConstants.PROP_EXTERNAL_DOCS)));
-        model.setServers(readServers(node.get(ModelConstants.PROP_SERVERS)));
-        model.setSecurity(readSecurityRequirements(node.get(ModelConstants.PROP_SECURITY)));
-        model.setTags(readTags(node.get(ModelConstants.PROP_TAGS)));
-        model.setPaths(readPaths(node.get(ModelConstants.PROP_PATHS)));
-        model.setComponents(readComponents(node.get(ModelConstants.PROP_COMPONENTS)));
+        model.setOpenapi(JsonUtil.stringProperty(node, OpenApiConstants.PROP_OPENAPI));
+        model.setInfo(readInfo(node.get(OpenApiConstants.PROP_INFO)));
+        model.setExternalDocs(readExternalDocs(node.get(OpenApiConstants.PROP_EXTERNAL_DOCS)));
+        model.setServers(readServers(node.get(OpenApiConstants.PROP_SERVERS)));
+        model.setSecurity(readSecurityRequirements(node.get(OpenApiConstants.PROP_SECURITY)));
+        model.setTags(readTags(node.get(OpenApiConstants.PROP_TAGS)));
+        model.setPaths(readPaths(node.get(OpenApiConstants.PROP_PATHS)));
+        model.setComponents(readComponents(node.get(OpenApiConstants.PROP_COMPONENTS)));
         readExtensions(node, model);
     }
 
@@ -246,12 +247,12 @@ public class OpenApiParser {
             return null;
         }
         InfoImpl model = new InfoImpl();
-        model.setTitle(JsonUtil.stringProperty(node, ModelConstants.PROP_TITLE));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setTermsOfService(JsonUtil.stringProperty(node, ModelConstants.PROP_TERMS_OF_SERVICE));
-        model.setContact(readContact(node.get(ModelConstants.PROP_CONTACT)));
-        model.setLicense(readLicense(node.get(ModelConstants.PROP_LICENSE)));
-        model.setVersion(JsonUtil.stringProperty(node, ModelConstants.PROP_VERSION));
+        model.setTitle(JsonUtil.stringProperty(node, OpenApiConstants.PROP_TITLE));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setTermsOfService(JsonUtil.stringProperty(node, OpenApiConstants.PROP_TERMS_OF_SERVICE));
+        model.setContact(readContact(node.get(OpenApiConstants.PROP_CONTACT)));
+        model.setLicense(readLicense(node.get(OpenApiConstants.PROP_LICENSE)));
+        model.setVersion(JsonUtil.stringProperty(node, OpenApiConstants.PROP_VERSION));
         readExtensions(node, model);
         return model;
     }
@@ -265,9 +266,9 @@ public class OpenApiParser {
             return null;
         }
         ContactImpl model = new ContactImpl();
-        model.setName(JsonUtil.stringProperty(node, ModelConstants.PROP_NAME));
-        model.setUrl(JsonUtil.stringProperty(node, ModelConstants.PROP_URL));
-        model.setEmail(JsonUtil.stringProperty(node, ModelConstants.PROP_EMAIL));
+        model.setName(JsonUtil.stringProperty(node, OpenApiConstants.PROP_NAME));
+        model.setUrl(JsonUtil.stringProperty(node, OpenApiConstants.PROP_URL));
+        model.setEmail(JsonUtil.stringProperty(node, OpenApiConstants.PROP_EMAIL));
         readExtensions(node, model);
         return model;
     }
@@ -281,8 +282,8 @@ public class OpenApiParser {
             return null;
         }
         LicenseImpl model = new LicenseImpl();
-        model.setName(JsonUtil.stringProperty(node, ModelConstants.PROP_NAME));
-        model.setUrl(JsonUtil.stringProperty(node, ModelConstants.PROP_URL));
+        model.setName(JsonUtil.stringProperty(node, OpenApiConstants.PROP_NAME));
+        model.setUrl(JsonUtil.stringProperty(node, OpenApiConstants.PROP_URL));
         readExtensions(node, model);
         return model;
     }
@@ -296,8 +297,8 @@ public class OpenApiParser {
             return null;
         }
         ExternalDocumentationImpl model = new ExternalDocumentationImpl();
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setUrl(JsonUtil.stringProperty(node, ModelConstants.PROP_URL));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setUrl(JsonUtil.stringProperty(node, OpenApiConstants.PROP_URL));
         readExtensions(node, model);
         return model;
     }
@@ -314,9 +315,9 @@ public class OpenApiParser {
         List<Tag> rval = new ArrayList<>(nodes.size());
         for (JsonNode tagNode : nodes) {
             TagImpl model = new TagImpl();
-            model.setName(JsonUtil.stringProperty(tagNode, ModelConstants.PROP_NAME));
-            model.setDescription(JsonUtil.stringProperty(tagNode, ModelConstants.PROP_DESCRIPTION));
-            model.setExternalDocs(readExternalDocs(tagNode.get(ModelConstants.PROP_EXTERNAL_DOCS)));
+            model.setName(JsonUtil.stringProperty(tagNode, OpenApiConstants.PROP_NAME));
+            model.setDescription(JsonUtil.stringProperty(tagNode, OpenApiConstants.PROP_DESCRIPTION));
+            model.setExternalDocs(readExternalDocs(tagNode.get(OpenApiConstants.PROP_EXTERNAL_DOCS)));
             readExtensions(tagNode, model);
             rval.add(model);
         }
@@ -335,9 +336,9 @@ public class OpenApiParser {
         List<Server> rval = new ArrayList<>(nodes.size());
         for (JsonNode serverNode : nodes) {
             ServerImpl model = new ServerImpl();
-            model.setUrl(JsonUtil.stringProperty(serverNode, ModelConstants.PROP_URL));
-            model.setDescription(JsonUtil.stringProperty(serverNode, ModelConstants.PROP_DESCRIPTION));
-            model.setVariables(readServerVariables(serverNode.get(ModelConstants.PROP_VARIABLES)));
+            model.setUrl(JsonUtil.stringProperty(serverNode, OpenApiConstants.PROP_URL));
+            model.setDescription(JsonUtil.stringProperty(serverNode, OpenApiConstants.PROP_DESCRIPTION));
+            model.setVariables(readServerVariables(serverNode.get(OpenApiConstants.PROP_VARIABLES)));
             readExtensions(serverNode, model);
             rval.add(model);
         }
@@ -356,7 +357,7 @@ public class OpenApiParser {
 
         for (Iterator<String> iterator = node.fieldNames(); iterator.hasNext();) {
             String fieldName = iterator.next();
-            if (!fieldName.toLowerCase().startsWith(ModelConstants.EXTENSION_PROPERTY_PREFIX)) {
+            if (!fieldName.toLowerCase().startsWith(OpenApiConstants.EXTENSION_PROPERTY_PREFIX)) {
                 JsonNode varNode = node.get(fieldName);
                 ServerVariable varModel = readServerVariable(varNode);
                 model.put(fieldName, varModel);
@@ -376,7 +377,7 @@ public class OpenApiParser {
             return null;
         }
         ServerVariableImpl model = new ServerVariableImpl();
-        JsonNode enumNode = node.get(ModelConstants.PROP_ENUM);
+        JsonNode enumNode = node.get(OpenApiConstants.PROP_ENUM);
         if (enumNode != null && enumNode.isArray()) {
             List<String> enums = new ArrayList<>(enumNode.size());
             for (JsonNode n : enumNode) {
@@ -384,8 +385,8 @@ public class OpenApiParser {
             }
             model.setEnumeration(enums);
         }
-        model.setDefaultValue(JsonUtil.stringProperty(node, ModelConstants.PROP_DEFAULT));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
+        model.setDefaultValue(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DEFAULT));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
         readExtensions(node, model);
         return model;
     }
@@ -402,7 +403,7 @@ public class OpenApiParser {
         PathsImpl model = new PathsImpl();
         for (Iterator<String> fieldNames = node.fieldNames(); fieldNames.hasNext(); ) {
             String fieldName = fieldNames.next();
-            if (fieldName.startsWith(ModelConstants.EXTENSION_PROPERTY_PREFIX)) {
+            if (fieldName.startsWith(OpenApiConstants.EXTENSION_PROPERTY_PREFIX)) {
                 continue;
             }
             model.addPathItem(fieldName, readPathItem(node.get(fieldName)));
@@ -421,15 +422,15 @@ public class OpenApiParser {
         }
 
         ComponentsImpl model = new ComponentsImpl();
-        model.setSchemas(readSchemas(node.get(ModelConstants.PROP_SCHEMAS)));
-        model.setResponses(readResponses(node.get(ModelConstants.PROP_RESPONSES)));
-        model.setParameters(readParameters(node.get(ModelConstants.PROP_PARAMETERS)));
-        model.setExamples(readExamples(node.get(ModelConstants.PROP_EXAMPLES)));
-        model.setRequestBodies(readRequestBodies(node.get(ModelConstants.PROP_REQUEST_BODIES)));
-        model.setHeaders(readHeaders(node.get(ModelConstants.PROP_HEADERS)));
-        model.setSecuritySchemes(readSecuritySchemes(node.get(ModelConstants.PROP_SECURITY_SCHEMES)));
-        model.setLinks(readLinks(node.get(ModelConstants.PROP_LINKS)));
-        model.setCallbacks(readCallbacks(node.get(ModelConstants.PROP_CALLBACKS)));
+        model.setSchemas(readSchemas(node.get(OpenApiConstants.PROP_SCHEMAS)));
+        model.setResponses(readResponses(node.get(OpenApiConstants.PROP_RESPONSES)));
+        model.setParameters(readParameters(node.get(OpenApiConstants.PROP_PARAMETERS)));
+        model.setExamples(readExamples(node.get(OpenApiConstants.PROP_EXAMPLES)));
+        model.setRequestBodies(readRequestBodies(node.get(OpenApiConstants.PROP_REQUEST_BODIES)));
+        model.setHeaders(readHeaders(node.get(OpenApiConstants.PROP_HEADERS)));
+        model.setSecuritySchemes(readSecuritySchemes(node.get(OpenApiConstants.PROP_SECURITY_SCHEMES)));
+        model.setLinks(readLinks(node.get(OpenApiConstants.PROP_LINKS)));
+        model.setCallbacks(readCallbacks(node.get(OpenApiConstants.PROP_CALLBACKS)));
         readExtensions(node, model);
         return model;
     }
@@ -462,47 +463,47 @@ public class OpenApiParser {
         }
 
         SchemaImpl model = new SchemaImpl();
-        model.setRef(JsonUtil.stringProperty(node, ModelConstants.PROP_$REF));
-        model.setFormat(JsonUtil.stringProperty(node, ModelConstants.PROP_FORMAT));
-        model.setTitle(JsonUtil.stringProperty(node, ModelConstants.PROP_TITLE));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setDefaultValue(readObject(node.get(ModelConstants.PROP_DEFAULT)));
-        model.setMultipleOf(JsonUtil.bigDecimalProperty(node, ModelConstants.PROP_MULTIPLE_OF));
-        model.setMaximum(JsonUtil.bigDecimalProperty(node, ModelConstants.PROP_MAXIMUM));
-        model.setExclusiveMaximum(JsonUtil.booleanProperty(node, ModelConstants.PROP_EXCLUSIVE_MAXIMUM));
-        model.setMinimum(JsonUtil.bigDecimalProperty(node, ModelConstants.PROP_MINIMUM));
-        model.setExclusiveMinimum(JsonUtil.booleanProperty(node, ModelConstants.PROP_EXCLUSIVE_MINIMUM));
-        model.setMaxLength(JsonUtil.intProperty(node, ModelConstants.PROP_MAX_LENGTH));
-        model.setMinLength(JsonUtil.intProperty(node, ModelConstants.PROP_MIN_LENGTH));
-        model.setPattern(JsonUtil.stringProperty(node, ModelConstants.PROP_PATTERN));
-        model.setMaxItems(JsonUtil.intProperty(node, ModelConstants.PROP_MAX_ITEMS));
-        model.setMinItems(JsonUtil.intProperty(node, ModelConstants.PROP_MIN_ITEMS));
-        model.setUniqueItems(JsonUtil.booleanProperty(node, ModelConstants.PROP_UNIQUE_ITEMS));
-        model.setMaxProperties(JsonUtil.intProperty(node, ModelConstants.PROP_MAX_PROPERTIES));
-        model.setMinProperties(JsonUtil.intProperty(node, ModelConstants.PROP_MIN_PROPERTIES));
-        model.setRequired(readStringArray(node.get(ModelConstants.PROP_REQUIRED)));
-        model.setEnumeration(readObjectArray(node.get(ModelConstants.PROP_ENUM)));
-        model.setType(readSchemaType(node.get(ModelConstants.PROP_TYPE)));
-        model.setItems(readSchema(node.get(ModelConstants.PROP_ITEMS)));
-        model.setNot(readSchema(node.get(ModelConstants.PROP_NOT)));
-        model.setAllOf(readSchemaArray(node.get(ModelConstants.PROP_ALL_OF)));
-        model.setProperties(readSchemas(node.get(ModelConstants.PROP_PROPERTIES)));
-        if (node.has(ModelConstants.PROP_ADDITIONAL_PROPERTIES) && node.get(ModelConstants.PROP_ADDITIONAL_PROPERTIES).isObject()) {
-            model.setAdditionalProperties(readSchema(node.get(ModelConstants.PROP_ADDITIONAL_PROPERTIES)));
+        model.setRef(JsonUtil.stringProperty(node, OpenApiConstants.PROP_$REF));
+        model.setFormat(JsonUtil.stringProperty(node, OpenApiConstants.PROP_FORMAT));
+        model.setTitle(JsonUtil.stringProperty(node, OpenApiConstants.PROP_TITLE));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setDefaultValue(readObject(node.get(OpenApiConstants.PROP_DEFAULT)));
+        model.setMultipleOf(JsonUtil.bigDecimalProperty(node, OpenApiConstants.PROP_MULTIPLE_OF));
+        model.setMaximum(JsonUtil.bigDecimalProperty(node, OpenApiConstants.PROP_MAXIMUM));
+        model.setExclusiveMaximum(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_EXCLUSIVE_MAXIMUM));
+        model.setMinimum(JsonUtil.bigDecimalProperty(node, OpenApiConstants.PROP_MINIMUM));
+        model.setExclusiveMinimum(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_EXCLUSIVE_MINIMUM));
+        model.setMaxLength(JsonUtil.intProperty(node, OpenApiConstants.PROP_MAX_LENGTH));
+        model.setMinLength(JsonUtil.intProperty(node, OpenApiConstants.PROP_MIN_LENGTH));
+        model.setPattern(JsonUtil.stringProperty(node, OpenApiConstants.PROP_PATTERN));
+        model.setMaxItems(JsonUtil.intProperty(node, OpenApiConstants.PROP_MAX_ITEMS));
+        model.setMinItems(JsonUtil.intProperty(node, OpenApiConstants.PROP_MIN_ITEMS));
+        model.setUniqueItems(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_UNIQUE_ITEMS));
+        model.setMaxProperties(JsonUtil.intProperty(node, OpenApiConstants.PROP_MAX_PROPERTIES));
+        model.setMinProperties(JsonUtil.intProperty(node, OpenApiConstants.PROP_MIN_PROPERTIES));
+        model.setRequired(readStringArray(node.get(OpenApiConstants.PROP_REQUIRED)));
+        model.setEnumeration(readObjectArray(node.get(OpenApiConstants.PROP_ENUM)));
+        model.setType(readSchemaType(node.get(OpenApiConstants.PROP_TYPE)));
+        model.setItems(readSchema(node.get(OpenApiConstants.PROP_ITEMS)));
+        model.setNot(readSchema(node.get(OpenApiConstants.PROP_NOT)));
+        model.setAllOf(readSchemaArray(node.get(OpenApiConstants.PROP_ALL_OF)));
+        model.setProperties(readSchemas(node.get(OpenApiConstants.PROP_PROPERTIES)));
+        if (node.has(OpenApiConstants.PROP_ADDITIONAL_PROPERTIES) && node.get(OpenApiConstants.PROP_ADDITIONAL_PROPERTIES).isObject()) {
+            model.setAdditionalProperties(readSchema(node.get(OpenApiConstants.PROP_ADDITIONAL_PROPERTIES)));
         } else {
-            model.setAdditionalProperties(JsonUtil.booleanProperty(node, ModelConstants.PROP_ADDITIONAL_PROPERTIES));
+            model.setAdditionalProperties(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_ADDITIONAL_PROPERTIES));
         }
-        model.setReadOnly(JsonUtil.booleanProperty(node, ModelConstants.PROP_READ_ONLY));
-        model.setXml(readXML(node.get(ModelConstants.PROP_XML)));
-        model.setExternalDocs(readExternalDocs(node.get(ModelConstants.PROP_EXTERNAL_DOCS)));
-        model.setExample(readObject(node.get(ModelConstants.PROP_EXAMPLE)));
-        model.setOneOf(readSchemaArray(node.get(ModelConstants.PROP_ONE_OF)));
-        model.setAnyOf(readSchemaArray(node.get(ModelConstants.PROP_ANY_OF)));
-        model.setNot(readSchema(node.get(ModelConstants.PROP_NOT)));
-        model.setDiscriminator(readDiscriminator(node.get(ModelConstants.PROP_DISCRIMINATOR)));
-        model.setNullable(JsonUtil.booleanProperty(node, ModelConstants.PROP_NULLABLE));
-        model.setWriteOnly(JsonUtil.booleanProperty(node, ModelConstants.PROP_WRITE_ONLY));
-        model.setDeprecated(JsonUtil.booleanProperty(node, ModelConstants.PROP_DEPRECATED));
+        model.setReadOnly(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_READ_ONLY));
+        model.setXml(readXML(node.get(OpenApiConstants.PROP_XML)));
+        model.setExternalDocs(readExternalDocs(node.get(OpenApiConstants.PROP_EXTERNAL_DOCS)));
+        model.setExample(readObject(node.get(OpenApiConstants.PROP_EXAMPLE)));
+        model.setOneOf(readSchemaArray(node.get(OpenApiConstants.PROP_ONE_OF)));
+        model.setAnyOf(readSchemaArray(node.get(OpenApiConstants.PROP_ANY_OF)));
+        model.setNot(readSchema(node.get(OpenApiConstants.PROP_NOT)));
+        model.setDiscriminator(readDiscriminator(node.get(OpenApiConstants.PROP_DISCRIMINATOR)));
+        model.setNullable(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_NULLABLE));
+        model.setWriteOnly(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_WRITE_ONLY));
+        model.setDeprecated(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_DEPRECATED));
         readExtensions(node, model);
         return model;
     }
@@ -517,11 +518,11 @@ public class OpenApiParser {
         }
 
         XMLImpl model = new XMLImpl();
-        model.setName(JsonUtil.stringProperty(node, ModelConstants.PROP_NAME));
-        model.setNamespace(JsonUtil.stringProperty(node, ModelConstants.PROP_NAMESPACE));
-        model.setPrefix(JsonUtil.stringProperty(node, ModelConstants.PROP_PREFIX));
-        model.setAttribute(JsonUtil.booleanProperty(node, ModelConstants.PROP_ATTRIBUTE));
-        model.setWrapped(JsonUtil.booleanProperty(node, ModelConstants.PROP_WRAPPED));
+        model.setName(JsonUtil.stringProperty(node, OpenApiConstants.PROP_NAME));
+        model.setNamespace(JsonUtil.stringProperty(node, OpenApiConstants.PROP_NAMESPACE));
+        model.setPrefix(JsonUtil.stringProperty(node, OpenApiConstants.PROP_PREFIX));
+        model.setAttribute(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_ATTRIBUTE));
+        model.setWrapped(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_WRAPPED));
         readExtensions(node, model);
         return model;
     }
@@ -536,8 +537,8 @@ public class OpenApiParser {
         }
 
         DiscriminatorImpl model = new DiscriminatorImpl();
-        model.setPropertyName(JsonUtil.stringProperty(node, ModelConstants.PROP_PROPERTY_NAME));
-        model.setMapping(readStringMap(node.get(ModelConstants.PROP_MAPPING)));
+        model.setPropertyName(JsonUtil.stringProperty(node, OpenApiConstants.PROP_PROPERTY_NAME));
+        model.setMapping(readStringMap(node.get(OpenApiConstants.PROP_MAPPING)));
         return model;
     }
 
@@ -568,11 +569,11 @@ public class OpenApiParser {
             return null;
         }
         APIResponseImpl model = new APIResponseImpl();
-        model.setRef(JsonUtil.stringProperty(node, ModelConstants.PROP_$REF));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setHeaders(readHeaders(node.get(ModelConstants.PROP_HEADERS)));
-        model.setContent(readContent(node.get(ModelConstants.PROP_CONTENT)));
-        model.setLinks(readLinks(node.get(ModelConstants.PROP_LINKS)));
+        model.setRef(JsonUtil.stringProperty(node, OpenApiConstants.PROP_$REF));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setHeaders(readHeaders(node.get(OpenApiConstants.PROP_HEADERS)));
+        model.setContent(readContent(node.get(OpenApiConstants.PROP_CONTENT)));
+        model.setLinks(readLinks(node.get(OpenApiConstants.PROP_LINKS)));
         readExtensions(node, model);
         return model;
     }
@@ -603,10 +604,10 @@ public class OpenApiParser {
             return null;
         }
         MediaTypeImpl model = new MediaTypeImpl();
-        model.setSchema(readSchema(node.get(ModelConstants.PROP_SCHEMA)));
-        model.setExample(readObject(node.get(ModelConstants.PROP_EXAMPLE)));
-        model.setExamples(readExamples(node.get(ModelConstants.PROP_EXAMPLES)));
-        model.setEncoding(readEncodings(node.get(ModelConstants.PROP_ENCODING)));
+        model.setSchema(readSchema(node.get(OpenApiConstants.PROP_SCHEMA)));
+        model.setExample(readObject(node.get(OpenApiConstants.PROP_EXAMPLE)));
+        model.setExamples(readExamples(node.get(OpenApiConstants.PROP_EXAMPLES)));
+        model.setEncoding(readEncodings(node.get(OpenApiConstants.PROP_ENCODING)));
         readExtensions(node, model);
         return model;
     }
@@ -636,11 +637,11 @@ public class OpenApiParser {
             return null;
         }
         EncodingImpl model = new EncodingImpl();
-        model.setContentType(JsonUtil.stringProperty(node, ModelConstants.PROP_CONTENT_TYPE));
-        model.setHeaders(readHeaders(node.get(ModelConstants.PROP_HEADERS)));
-        model.setStyle(readEncodingStyle(node.get(ModelConstants.PROP_STYLE)));
-        model.setExplode(JsonUtil.booleanProperty(node, ModelConstants.PROP_EXPLODE));
-        model.setAllowReserved(JsonUtil.booleanProperty(node, ModelConstants.PROP_ALLOW_RESERVED));
+        model.setContentType(JsonUtil.stringProperty(node, OpenApiConstants.PROP_CONTENT_TYPE));
+        model.setHeaders(readHeaders(node.get(OpenApiConstants.PROP_HEADERS)));
+        model.setStyle(readEncodingStyle(node.get(OpenApiConstants.PROP_STYLE)));
+        model.setExplode(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_EXPLODE));
+        model.setAllowReserved(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_ALLOW_RESERVED));
         readExtensions(node, model);
         return model;
     }
@@ -684,20 +685,20 @@ public class OpenApiParser {
             return null;
         }
         Parameter model = new ParameterImpl();
-        model.setRef(JsonUtil.stringProperty(node, ModelConstants.PROP_$REF));
-        model.setName(JsonUtil.stringProperty(node, ModelConstants.PROP_NAME));
-        model.setIn(readParameterIn(node.get(ModelConstants.PROP_IN)));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setRequired(JsonUtil.booleanProperty(node, ModelConstants.PROP_REQUIRED));
-        model.setSchema(readSchema(node.get(ModelConstants.PROP_SCHEMA)));
-        model.setAllowEmptyValue(JsonUtil.booleanProperty(node, ModelConstants.PROP_ALLOW_EMPTY_VALUE));
-        model.setDeprecated(JsonUtil.booleanProperty(node, ModelConstants.PROP_DEPRECATED));
-        model.setStyle(readParameterStyle(node.get(ModelConstants.PROP_STYLE)));
-        model.setExplode(JsonUtil.booleanProperty(node, ModelConstants.PROP_EXPLODE));
-        model.setAllowReserved(JsonUtil.booleanProperty(node, ModelConstants.PROP_ALLOW_RESERVED));
-        model.setExample(readObject(node.get(ModelConstants.PROP_EXAMPLE)));
-        model.setExamples(readExamples(node.get(ModelConstants.PROP_EXAMPLES)));
-        model.setContent(readContent(node.get(ModelConstants.PROP_CONTENT)));
+        model.setRef(JsonUtil.stringProperty(node, OpenApiConstants.PROP_$REF));
+        model.setName(JsonUtil.stringProperty(node, OpenApiConstants.PROP_NAME));
+        model.setIn(readParameterIn(node.get(OpenApiConstants.PROP_IN)));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setRequired(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_REQUIRED));
+        model.setSchema(readSchema(node.get(OpenApiConstants.PROP_SCHEMA)));
+        model.setAllowEmptyValue(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_ALLOW_EMPTY_VALUE));
+        model.setDeprecated(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_DEPRECATED));
+        model.setStyle(readParameterStyle(node.get(OpenApiConstants.PROP_STYLE)));
+        model.setExplode(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_EXPLODE));
+        model.setAllowReserved(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_ALLOW_RESERVED));
+        model.setExample(readObject(node.get(OpenApiConstants.PROP_EXAMPLE)));
+        model.setExamples(readExamples(node.get(OpenApiConstants.PROP_EXAMPLES)));
+        model.setContent(readContent(node.get(OpenApiConstants.PROP_CONTENT)));
         readExtensions(node, model);
 
         return model;
@@ -741,11 +742,11 @@ public class OpenApiParser {
             return null;
         }
         ExampleImpl model = new ExampleImpl();
-        model.setRef(JsonUtil.stringProperty(node, ModelConstants.PROP_$REF));
-        model.setSummary(JsonUtil.stringProperty(node, ModelConstants.PROP_SUMMARY));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setValue(readObject(node.get(ModelConstants.PROP_VALUE)));
-        model.setExternalValue(JsonUtil.stringProperty(node, ModelConstants.PROP_EXTERNAL_VALUE));
+        model.setRef(JsonUtil.stringProperty(node, OpenApiConstants.PROP_$REF));
+        model.setSummary(JsonUtil.stringProperty(node, OpenApiConstants.PROP_SUMMARY));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setValue(readObject(node.get(OpenApiConstants.PROP_VALUE)));
+        model.setExternalValue(JsonUtil.stringProperty(node, OpenApiConstants.PROP_EXTERNAL_VALUE));
         readExtensions(node, model);
         return model;
     }
@@ -777,10 +778,10 @@ public class OpenApiParser {
             return null;
         }
         RequestBodyImpl model = new RequestBodyImpl();
-        model.setRef(JsonUtil.stringProperty(node, ModelConstants.PROP_$REF));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setContent(readContent(node.get(ModelConstants.PROP_CONTENT)));
-        model.setRequired(JsonUtil.booleanProperty(node, ModelConstants.PROP_REQUIRED));
+        model.setRef(JsonUtil.stringProperty(node, OpenApiConstants.PROP_$REF));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setContent(readContent(node.get(OpenApiConstants.PROP_CONTENT)));
+        model.setRequired(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_REQUIRED));
         readExtensions(node, model);
         return model;
     }
@@ -812,17 +813,17 @@ public class OpenApiParser {
             return null;
         }
         HeaderImpl model = new HeaderImpl();
-        model.setRef(JsonUtil.stringProperty(node, ModelConstants.PROP_$REF));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setRequired(JsonUtil.booleanProperty(node, ModelConstants.PROP_REQUIRED));
-        model.setDeprecated(JsonUtil.booleanProperty(node, ModelConstants.PROP_DEPRECATED));
-        model.setAllowEmptyValue(JsonUtil.booleanProperty(node, ModelConstants.PROP_ALLOW_EMPTY_VALUE));
-        model.setStyle(readHeaderStyle(node.get(ModelConstants.PROP_STYLE)));
-        model.setExplode(JsonUtil.booleanProperty(node, ModelConstants.PROP_EXPLODE));
-        model.setSchema(readSchema(node.get(ModelConstants.PROP_SCHEMA)));
-        model.setExample(readObject(node.get(ModelConstants.PROP_EXAMPLE)));
-        model.setExamples(readExamples(node.get(ModelConstants.PROP_EXAMPLES)));
-        model.setContent(readContent(node.get(ModelConstants.PROP_CONTENT)));
+        model.setRef(JsonUtil.stringProperty(node, OpenApiConstants.PROP_$REF));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setRequired(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_REQUIRED));
+        model.setDeprecated(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_DEPRECATED));
+        model.setAllowEmptyValue(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_ALLOW_EMPTY_VALUE));
+        model.setStyle(readHeaderStyle(node.get(OpenApiConstants.PROP_STYLE)));
+        model.setExplode(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_EXPLODE));
+        model.setSchema(readSchema(node.get(OpenApiConstants.PROP_SCHEMA)));
+        model.setExample(readObject(node.get(OpenApiConstants.PROP_EXAMPLE)));
+        model.setExamples(readExamples(node.get(OpenApiConstants.PROP_EXAMPLES)));
+        model.setContent(readContent(node.get(OpenApiConstants.PROP_CONTENT)));
         readExtensions(node, model);
         return model;
     }
@@ -865,15 +866,15 @@ public class OpenApiParser {
             return null;
         }
         SecuritySchemeImpl model = new SecuritySchemeImpl();
-        model.setRef(JsonUtil.stringProperty(node, ModelConstants.PROP_$REF));
-        model.setType(readSecuritySchemeType(node.get(ModelConstants.PROP_TYPE)));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setName(JsonUtil.stringProperty(node, ModelConstants.PROP_NAME));
-        model.setIn(readSecuritySchemeIn(node.get(ModelConstants.PROP_IN)));
-        model.setScheme(JsonUtil.stringProperty(node, ModelConstants.PROP_SCHEME));
-        model.setBearerFormat(JsonUtil.stringProperty(node, ModelConstants.PROP_BEARER_FORMAT));
-        model.setFlows(readOAuthFlows(node.get(ModelConstants.PROP_FLOWS)));
-        model.setOpenIdConnectUrl(JsonUtil.stringProperty(node, ModelConstants.PROP_OPEN_ID_CONNECT_URL));
+        model.setRef(JsonUtil.stringProperty(node, OpenApiConstants.PROP_$REF));
+        model.setType(readSecuritySchemeType(node.get(OpenApiConstants.PROP_TYPE)));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setName(JsonUtil.stringProperty(node, OpenApiConstants.PROP_NAME));
+        model.setIn(readSecuritySchemeIn(node.get(OpenApiConstants.PROP_IN)));
+        model.setScheme(JsonUtil.stringProperty(node, OpenApiConstants.PROP_SCHEME));
+        model.setBearerFormat(JsonUtil.stringProperty(node, OpenApiConstants.PROP_BEARER_FORMAT));
+        model.setFlows(readOAuthFlows(node.get(OpenApiConstants.PROP_FLOWS)));
+        model.setOpenIdConnectUrl(JsonUtil.stringProperty(node, OpenApiConstants.PROP_OPEN_ID_CONNECT_URL));
         readExtensions(node, model);
         return model;
     }
@@ -920,10 +921,10 @@ public class OpenApiParser {
             return null;
         }
         OAuthFlowsImpl model = new OAuthFlowsImpl();
-        model.setImplicit(readOAuthFlow(node.get(ModelConstants.PROP_IMPLICIT)));
-        model.setPassword(readOAuthFlow(node.get(ModelConstants.PROP_PASSWORD)));
-        model.setClientCredentials(readOAuthFlow(node.get(ModelConstants.PROP_CLIENT_CREDENTIALS)));
-        model.setAuthorizationCode(readOAuthFlow(node.get(ModelConstants.PROP_AUTHORIZATION_CODE)));
+        model.setImplicit(readOAuthFlow(node.get(OpenApiConstants.PROP_IMPLICIT)));
+        model.setPassword(readOAuthFlow(node.get(OpenApiConstants.PROP_PASSWORD)));
+        model.setClientCredentials(readOAuthFlow(node.get(OpenApiConstants.PROP_CLIENT_CREDENTIALS)));
+        model.setAuthorizationCode(readOAuthFlow(node.get(OpenApiConstants.PROP_AUTHORIZATION_CODE)));
         readExtensions(node, model);
         return model;
     }
@@ -937,10 +938,10 @@ public class OpenApiParser {
             return null;
         }
         OAuthFlowImpl model = new OAuthFlowImpl();
-        model.setAuthorizationUrl(JsonUtil.stringProperty(node, ModelConstants.PROP_AUTHORIZATION_URL));
-        model.setTokenUrl(JsonUtil.stringProperty(node, ModelConstants.PROP_TOKEN_URL));
-        model.setRefreshUrl(JsonUtil.stringProperty(node, ModelConstants.PROP_REFRESH_URL));
-        model.setScopes(readScopes(node.get(ModelConstants.PROP_SCOPES)));
+        model.setAuthorizationUrl(JsonUtil.stringProperty(node, OpenApiConstants.PROP_AUTHORIZATION_URL));
+        model.setTokenUrl(JsonUtil.stringProperty(node, OpenApiConstants.PROP_TOKEN_URL));
+        model.setRefreshUrl(JsonUtil.stringProperty(node, OpenApiConstants.PROP_REFRESH_URL));
+        model.setScopes(readScopes(node.get(OpenApiConstants.PROP_SCOPES)));
         readExtensions(node, model);
         return model;
     }
@@ -956,7 +957,7 @@ public class OpenApiParser {
         ScopesImpl model = new ScopesImpl();
         for (Iterator<String> fieldNames = node.fieldNames(); fieldNames.hasNext(); ) {
             String fieldName = fieldNames.next();
-            if (fieldName.startsWith(ModelConstants.EXTENSION_PROPERTY_PREFIX)) {
+            if (fieldName.startsWith(OpenApiConstants.EXTENSION_PROPERTY_PREFIX)) {
                 continue;
             }
             String value = JsonUtil.stringProperty(node, fieldName);
@@ -993,14 +994,14 @@ public class OpenApiParser {
             return null;
         }
         LinkImpl model = new LinkImpl();
-        model.setRef(JsonUtil.stringProperty(node, ModelConstants.PROP_$REF));
+        model.setRef(JsonUtil.stringProperty(node, OpenApiConstants.PROP_$REF));
 
-        model.setOperationRef(JsonUtil.stringProperty(node, ModelConstants.PROP_OPERATION_REF));
-        model.setOperationId(JsonUtil.stringProperty(node, ModelConstants.PROP_OPERATION_ID));
-        model.setParameters(readLinkParameters(node.get(ModelConstants.PROP_PARAMETERS)));
-        model.setRequestBody(readObject(node.get(ModelConstants.PROP_REQUEST_BODY)));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setServer(readServer(node.get(ModelConstants.PROP_SERVER)));
+        model.setOperationRef(JsonUtil.stringProperty(node, OpenApiConstants.PROP_OPERATION_REF));
+        model.setOperationId(JsonUtil.stringProperty(node, OpenApiConstants.PROP_OPERATION_ID));
+        model.setParameters(readLinkParameters(node.get(OpenApiConstants.PROP_PARAMETERS)));
+        model.setRequestBody(readObject(node.get(OpenApiConstants.PROP_REQUEST_BODY)));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setServer(readServer(node.get(OpenApiConstants.PROP_SERVER)));
         readExtensions(node, model);
         return model;
     }
@@ -1031,9 +1032,9 @@ public class OpenApiParser {
             return null;
         }
         ServerImpl model = new ServerImpl();
-        model.setUrl(JsonUtil.stringProperty(node, ModelConstants.PROP_URL));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setVariables(readServerVariables(node.get(ModelConstants.PROP_VARIABLES)));
+        model.setUrl(JsonUtil.stringProperty(node, OpenApiConstants.PROP_URL));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setVariables(readServerVariables(node.get(OpenApiConstants.PROP_VARIABLES)));
         readExtensions(node, model);
         return model;
     }
@@ -1065,10 +1066,10 @@ public class OpenApiParser {
             return null;
         }
         CallbackImpl model = new CallbackImpl();
-        model.setRef(JsonUtil.stringProperty(node, ModelConstants.PROP_$REF));
+        model.setRef(JsonUtil.stringProperty(node, OpenApiConstants.PROP_$REF));
         for (Iterator<String> fieldNames = node.fieldNames(); fieldNames.hasNext(); ) {
             String fieldName = fieldNames.next();
-            if (fieldName.startsWith(ModelConstants.EXTENSION_PROPERTY_PREFIX) || fieldName.equals(ModelConstants.PROP_$REF)) {
+            if (fieldName.startsWith(OpenApiConstants.EXTENSION_PROPERTY_PREFIX) || fieldName.equals(OpenApiConstants.PROP_$REF)) {
                 continue;
             }
             model.put(fieldName, readPathItem(node.get(fieldName)));
@@ -1086,19 +1087,19 @@ public class OpenApiParser {
             return null;
         }
         PathItemImpl model = new PathItemImpl();
-        model.setRef(JsonUtil.stringProperty(node, ModelConstants.PROP_$REF));
-        model.setSummary(JsonUtil.stringProperty(node, ModelConstants.PROP_SUMMARY));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setGET(readOperation(node.get(ModelConstants.PROP_GET)));
-        model.setPUT(readOperation(node.get(ModelConstants.PROP_PUT)));
-        model.setPOST(readOperation(node.get(ModelConstants.PROP_POST)));
-        model.setDELETE(readOperation(node.get(ModelConstants.PROP_DELETE)));
-        model.setOPTIONS(readOperation(node.get(ModelConstants.PROP_OPTIONS)));
-        model.setHEAD(readOperation(node.get(ModelConstants.PROP_HEAD)));
-        model.setPATCH(readOperation(node.get(ModelConstants.PROP_PATCH)));
-        model.setTRACE(readOperation(node.get(ModelConstants.PROP_TRACE)));
-        model.setParameters(readParameterList(node.get(ModelConstants.PROP_PARAMETERS)));
-        model.setServers(readServers(node.get(ModelConstants.PROP_SERVERS)));
+        model.setRef(JsonUtil.stringProperty(node, OpenApiConstants.PROP_$REF));
+        model.setSummary(JsonUtil.stringProperty(node, OpenApiConstants.PROP_SUMMARY));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setGET(readOperation(node.get(OpenApiConstants.PROP_GET)));
+        model.setPUT(readOperation(node.get(OpenApiConstants.PROP_PUT)));
+        model.setPOST(readOperation(node.get(OpenApiConstants.PROP_POST)));
+        model.setDELETE(readOperation(node.get(OpenApiConstants.PROP_DELETE)));
+        model.setOPTIONS(readOperation(node.get(OpenApiConstants.PROP_OPTIONS)));
+        model.setHEAD(readOperation(node.get(OpenApiConstants.PROP_HEAD)));
+        model.setPATCH(readOperation(node.get(OpenApiConstants.PROP_PATCH)));
+        model.setTRACE(readOperation(node.get(OpenApiConstants.PROP_TRACE)));
+        model.setParameters(readParameterList(node.get(OpenApiConstants.PROP_PARAMETERS)));
+        model.setServers(readServers(node.get(OpenApiConstants.PROP_SERVERS)));
         readExtensions(node, model);
         return model;
     }
@@ -1112,18 +1113,18 @@ public class OpenApiParser {
             return null;
         }
         OperationImpl model = new OperationImpl();
-        model.setTags(readStringArray(node.get(ModelConstants.PROP_TAGS)));
-        model.setSummary(JsonUtil.stringProperty(node, ModelConstants.PROP_SUMMARY));
-        model.setDescription(JsonUtil.stringProperty(node, ModelConstants.PROP_DESCRIPTION));
-        model.setExternalDocs(readExternalDocs(node.get(ModelConstants.PROP_EXTERNAL_DOCS)));
-        model.setOperationId(JsonUtil.stringProperty(node, ModelConstants.PROP_OPERATION_ID));
-        model.setParameters(readParameterList(node.get(ModelConstants.PROP_PARAMETERS)));
-        model.setRequestBody(readRequestBody(node.get(ModelConstants.PROP_REQUEST_BODY)));
-        model.setResponses(readAPIResponses(node.get(ModelConstants.PROP_RESPONSES)));
-        model.setCallbacks(readCallbacks(node.get(ModelConstants.PROP_CALLBACKS)));
-        model.setDeprecated(JsonUtil.booleanProperty(node, ModelConstants.PROP_DEPRECATED));
-        model.setSecurity(readSecurityRequirements(node.get(ModelConstants.PROP_SECURITY)));
-        model.setServers(readServers(node.get(ModelConstants.PROP_SERVERS)));
+        model.setTags(readStringArray(node.get(OpenApiConstants.PROP_TAGS)));
+        model.setSummary(JsonUtil.stringProperty(node, OpenApiConstants.PROP_SUMMARY));
+        model.setDescription(JsonUtil.stringProperty(node, OpenApiConstants.PROP_DESCRIPTION));
+        model.setExternalDocs(readExternalDocs(node.get(OpenApiConstants.PROP_EXTERNAL_DOCS)));
+        model.setOperationId(JsonUtil.stringProperty(node, OpenApiConstants.PROP_OPERATION_ID));
+        model.setParameters(readParameterList(node.get(OpenApiConstants.PROP_PARAMETERS)));
+        model.setRequestBody(readRequestBody(node.get(OpenApiConstants.PROP_REQUEST_BODY)));
+        model.setResponses(readAPIResponses(node.get(OpenApiConstants.PROP_RESPONSES)));
+        model.setCallbacks(readCallbacks(node.get(OpenApiConstants.PROP_CALLBACKS)));
+        model.setDeprecated(JsonUtil.booleanProperty(node, OpenApiConstants.PROP_DEPRECATED));
+        model.setSecurity(readSecurityRequirements(node.get(OpenApiConstants.PROP_SECURITY)));
+        model.setServers(readServers(node.get(OpenApiConstants.PROP_SERVERS)));
         readExtensions(node, model);
         return model;
     }
@@ -1137,10 +1138,10 @@ public class OpenApiParser {
             return null;
         }
         APIResponsesImpl model = new APIResponsesImpl();
-        model.setDefaultValue(readAPIResponse(node.get(ModelConstants.PROP_DEFAULT)));
+        model.setDefaultValue(readAPIResponse(node.get(OpenApiConstants.PROP_DEFAULT)));
         for (Iterator<String> fieldNames = node.fieldNames(); fieldNames.hasNext(); ) {
             String fieldName = fieldNames.next();
-            if (ModelConstants.PROP_DEFAULT.equals(fieldName)) {
+            if (OpenApiConstants.PROP_DEFAULT.equals(fieldName)) {
                 continue;
             }
             model.addApiResponse(fieldName, readAPIResponse(node.get(fieldName)));
@@ -1346,7 +1347,7 @@ public class OpenApiParser {
     private void readExtensions(JsonNode node, Extensible model) {
         for (Iterator<String> iterator = node.fieldNames(); iterator.hasNext();) {
             String fieldName = iterator.next();
-            if (fieldName.toLowerCase().startsWith(ModelConstants.EXTENSION_PROPERTY_PREFIX)) {
+            if (fieldName.toLowerCase().startsWith(OpenApiConstants.EXTENSION_PROPERTY_PREFIX)) {
                 Object value = readObject(node.get(fieldName));
                 model.addExtension(fieldName, value);
             }

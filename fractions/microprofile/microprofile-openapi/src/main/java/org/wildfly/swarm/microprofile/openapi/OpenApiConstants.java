@@ -14,12 +14,33 @@
  * limitations under the License.
  */
 
-package org.wildfly.swarm.microprofile.openapi.io;
+package org.wildfly.swarm.microprofile.openapi;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.OPTIONS;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Application;
+
+import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
+import org.eclipse.microprofile.openapi.annotations.security.SecuritySchemes;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.openapi.annotations.tags.Tags;
+import org.jboss.jandex.DotName;
 
 /**
  * @author eric.wittmann@gmail.com
  */
-public final class ModelConstants {
+public final class OpenApiConstants {
 
     public static final String EXTENSION_PROPERTY_PREFIX = "x-";
 
@@ -126,10 +147,45 @@ public final class ModelConstants {
     public static final String PROP_INFO = "info";
     public static final String PROP_OPENAPI = "openapi";
 
+    public static final String PROP_REF = "ref";
+    public static final String PROP_REFS = "refs";
+    public static final String PROP_METHOD = "method";
+    public static final String PROP_CALLBACK_URL_EXPRESSION = "callbackUrlExpression";
+    public static final String PROP_OPERATIONS = "operations";
+    public static final String PROP_EXTENSIONS = "extensions";
+    public static final String PROP_EXPRESSION = "expression";
+    public static final String PROP_HIDDEN = "hidden";
+    public static final String PROP_MEDIA_TYPE = "mediaType";
+    public static final String PROP_REQUIRED_PROPERTIES = "requiredProperties";
+    public static final String PROP_DEFAULT_VALUE = "defaultValue";
+    public static final String PROP_DISCRIMINATOR_MAPPING = "discriminatorMapping";
+    public static final String PROP_SECURITY_SCHEME_NAME = "securitySchemeName";
+    public static final String PROP_API_KEY_NAME = "apiKeyName";
+
+    public static final DotName DOTNAME_OPEN_API_DEFINITION = DotName.createSimple(OpenAPIDefinition.class.getName());
+    public static final DotName DOTNAME_SECURITY_SCHEME = DotName.createSimple(SecurityScheme.class.getName());
+    public static final DotName DOTNAME_SECURITY_SCHEMES = DotName.createSimple(SecuritySchemes.class.getName());
+    public static final DotName DOTNAME_SCHEMA = DotName.createSimple(Schema.class.getName());
+    public static final DotName DOTNAME_TAG = DotName.createSimple(Tag.class.getName());
+    public static final DotName DOTNAME_TAGS = DotName.createSimple(Tags.class.getName());
+    public static final DotName DOTNAME_OPERATION = DotName.createSimple(Operation.class.getName());
+
+    public static final DotName DOTNAME_APPLICATION = DotName.createSimple(Application.class.getName());
+    public static final DotName DOTNAME_APPLICATION_PATH = DotName.createSimple(ApplicationPath.class.getName());
+    public static final DotName DOTNAME_PATH = DotName.createSimple(Path.class.getName());
+    public static final DotName DOTNAME_PRODUCES = DotName.createSimple(Produces.class.getName());
+    public static final DotName DOTNAME_CONSUMES = DotName.createSimple(Consumes.class.getName());
+    public static final DotName DOTNAME_GET = DotName.createSimple(GET.class.getName());
+    public static final DotName DOTNAME_PUT = DotName.createSimple(PUT.class.getName());
+    public static final DotName DOTNAME_POST = DotName.createSimple(POST.class.getName());
+    public static final DotName DOTNAME_DELETE = DotName.createSimple(DELETE.class.getName());
+    public static final DotName DOTNAME_HEAD = DotName.createSimple(HEAD.class.getName());
+    public static final DotName DOTNAME_OPTIONS = DotName.createSimple(OPTIONS.class.getName());
+
     /**
      * Constructor.
      */
-    private ModelConstants() {
+    private OpenApiConstants() {
     }
 
 }
