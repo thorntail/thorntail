@@ -17,20 +17,31 @@
 package org.wildfly.swarm.microprofile.openapi;
 
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.MatrixParam;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
 
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameters;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.annotations.security.SecuritySchemes;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -161,6 +172,8 @@ public final class OpenApiConstants {
     public static final String PROP_DISCRIMINATOR_MAPPING = "discriminatorMapping";
     public static final String PROP_SECURITY_SCHEME_NAME = "securitySchemeName";
     public static final String PROP_API_KEY_NAME = "apiKeyName";
+    public static final String PROP_RESPONSE_CODE = "responseCode";
+    public static final String PROP_IMPLEMENTATION = "implementation";
 
     public static final DotName DOTNAME_OPEN_API_DEFINITION = DotName.createSimple(OpenAPIDefinition.class.getName());
     public static final DotName DOTNAME_SECURITY_SCHEME = DotName.createSimple(SecurityScheme.class.getName());
@@ -169,12 +182,24 @@ public final class OpenApiConstants {
     public static final DotName DOTNAME_TAG = DotName.createSimple(Tag.class.getName());
     public static final DotName DOTNAME_TAGS = DotName.createSimple(Tags.class.getName());
     public static final DotName DOTNAME_OPERATION = DotName.createSimple(Operation.class.getName());
+    public static final DotName DOTNAME_API_RESPONSE = DotName.createSimple(APIResponse.class.getName());
+    public static final DotName DOTNAME_API_RESPONSES = DotName.createSimple(APIResponses.class.getName());
+    public static final DotName DOTNAME_PARAMETER = DotName.createSimple(Parameter.class.getName());
+    public static final DotName DOTNAME_PARAMETERS = DotName.createSimple(Parameters.class.getName());
 
     public static final DotName DOTNAME_APPLICATION = DotName.createSimple(Application.class.getName());
     public static final DotName DOTNAME_APPLICATION_PATH = DotName.createSimple(ApplicationPath.class.getName());
     public static final DotName DOTNAME_PATH = DotName.createSimple(Path.class.getName());
     public static final DotName DOTNAME_PRODUCES = DotName.createSimple(Produces.class.getName());
     public static final DotName DOTNAME_CONSUMES = DotName.createSimple(Consumes.class.getName());
+    public static final DotName DOTNAME_QUERY_PARAM = DotName.createSimple(QueryParam.class.getName());
+    public static final DotName DOTNAME_FORM_PARAM = DotName.createSimple(FormParam.class.getName());
+    public static final DotName DOTNAME_COOKIE_PARAM = DotName.createSimple(CookieParam.class.getName());
+    public static final DotName DOTNAME_PATH_PARAM = DotName.createSimple(PathParam.class.getName());
+    public static final DotName DOTNAME_HEADER_PARAM = DotName.createSimple(HeaderParam.class.getName());
+    public static final DotName DOTNAME_MATRIX_PARAM = DotName.createSimple(MatrixParam.class.getName());
+    public static final DotName DOTNAME_BEAN_PARAM = DotName.createSimple(BeanParam.class.getName());
+
     public static final DotName DOTNAME_GET = DotName.createSimple(GET.class.getName());
     public static final DotName DOTNAME_PUT = DotName.createSimple(PUT.class.getName());
     public static final DotName DOTNAME_POST = DotName.createSimple(POST.class.getName());

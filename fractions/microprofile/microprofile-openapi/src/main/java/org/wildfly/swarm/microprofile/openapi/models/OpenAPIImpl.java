@@ -225,8 +225,19 @@ public class OpenAPIImpl extends ExtensibleImpl implements OpenAPI, ModelImpl {
         if (this.tags == null) {
             this.tags = new ArrayList<>();
         }
-        this.tags.add(tag);
+        if (!this.hasTag(tag.getName())) {
+            this.tags.add(tag);
+        }
         return this;
+    }
+
+    /**
+     * Returns true if the tag already exists in the OpenAPI document.
+     * @param name
+     */
+    private boolean hasTag(String name) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
     /**

@@ -70,7 +70,7 @@ public class MergeUtil {
      * @param object2
      */
     @SuppressWarnings({ "rawtypes" })
-    private static <T> T mergeObjects(T object1, T object2) {
+    public static <T> T mergeObjects(T object1, T object2) {
         if (object1 == null && object2 != null) {
             return object2;
         }
