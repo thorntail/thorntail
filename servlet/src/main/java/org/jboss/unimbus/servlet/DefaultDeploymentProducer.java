@@ -1,13 +1,10 @@
-package org.jboss.unimbus.servlet.undertow;
+package org.jboss.unimbus.servlet;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-
-import org.jboss.unimbus.servlet.DeploymentMetaData;
-import org.jboss.unimbus.servlet.ServletMetaData;
 
 /**
  * Created by bob on 1/17/18.

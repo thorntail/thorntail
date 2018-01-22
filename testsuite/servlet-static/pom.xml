@@ -10,8 +10,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>servlet</artifactId>
-  <name>Testsuite: Plain Servlet</name>
+  <artifactId>servlet-static</artifactId>
+  <name>Testsuite: Servlet and Static Content</name>
 
   <build>
     <plugins>
@@ -25,7 +25,7 @@
               <goal>build</goal>
             </goals>
             <configuration>
-              <appClass>org.jboss.unimbus.testsuite.servlet.ServletMain</appClass>
+              <appClass>org.jboss.unimbus.testsuite.servlet.staticcontent.ServletMain</appClass>
               <type>fat</type>
             </configuration>
           </execution>
@@ -39,11 +39,6 @@
       <groupId>org.jboss.unimbus</groupId>
       <artifactId>servlet</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>test</artifactId>
-    </dependency>
-
   </dependencies>
+
 </project>

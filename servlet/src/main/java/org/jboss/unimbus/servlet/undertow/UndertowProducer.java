@@ -22,7 +22,9 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 import io.undertow.Undertow;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
+import io.undertow.server.handlers.resource.ResourceHandler;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.Management;
 import org.jboss.unimbus.servlet.Primary;
@@ -39,7 +41,7 @@ public class UndertowProducer {
     void init() {
         if (this.selector.isUnified()) {
             Undertow.Builder builder = Undertow.builder();
-            builder.setHandler(this.primaryRoot);
+            builder.setHandler(wrap(this.primaryRoot));
             Undertow undertow = configure(builder, new AnnotationLiteral<Primary>() {
             });
             this.primaryUndertow = undertow;
@@ -47,7 +49,7 @@ public class UndertowProducer {
         } else {
             if (this.selector.isPrimaryEnabled()) {
                 Undertow.Builder builder = Undertow.builder();
-                builder.setHandler(this.primaryRoot);
+                builder.setHandler(wrap(this.primaryRoot));
                 this.primaryUndertow = configure(builder, new AnnotationLiteral<Primary>() {
                 });
             }
@@ -58,6 +60,11 @@ public class UndertowProducer {
                 });
             }
         }
+    }
+
+    private HttpHandler wrap(HttpHandler next) {
+        ResourceHandler handler = new ResourceHandler(this.resourceSupplier, next);
+        return handler;
     }
 
     private Undertow configure(Undertow.Builder builder, Annotation annotation) {
@@ -123,7 +130,7 @@ public class UndertowProducer {
     URL managementURL() throws MalformedURLException {
         if (this.selector.isManagementEnabled()) {
             for (Undertow.ListenerInfo info : this.managementUndertow.getListenerInfo()) {
-                return new URL( url( info ));
+                return new URL(url(info));
             }
         }
 
@@ -212,4 +219,7 @@ public class UndertowProducer {
     @Inject
     @Any
     private Instance<UndertowConfigurer> configurers;
+
+    @Inject
+    private InjectedResourceSupplier resourceSupplier;
 }

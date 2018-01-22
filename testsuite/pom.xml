@@ -27,6 +27,7 @@
 
   <modules>
     <module>servlet</module>
+    <module>servlet-static</module>
     <module>jaxrs</module>
     <module>jaxrs-jsonp</module>
     <module>proof</module>

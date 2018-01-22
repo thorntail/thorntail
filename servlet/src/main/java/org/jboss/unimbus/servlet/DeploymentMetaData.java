@@ -83,6 +83,14 @@ public class DeploymentMetaData {
         return this.authMethods;
     }
 
+    public void addFilter(FilterMetaData filter) {
+        this.filters.add( filter );
+    }
+
+    public List<FilterMetaData> getFilters() {
+        return this.filters;
+    }
+
     private String name;
 
     private boolean management;
@@ -96,4 +104,6 @@ public class DeploymentMetaData {
     private String realm;
 
     private List<String> authMethods = new ArrayList<>();
+
+    private List<FilterMetaData> filters = new ArrayList<>();
 }

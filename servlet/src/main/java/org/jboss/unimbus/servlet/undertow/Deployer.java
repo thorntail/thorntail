@@ -13,6 +13,7 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
+import io.undertow.servlet.api.FilterInfo;
 import io.undertow.servlet.api.ServletContainer;
 import org.jboss.unimbus.servlet.Management;
 import org.jboss.unimbus.servlet.Primary;
@@ -31,7 +32,6 @@ public class Deployer {
 
     void deploy(@Observes LifecycleEvent.Deploy event) {
         for (DeploymentMetaData each : this.deployments) {
-
             if (each == null) {
                 continue;
             }

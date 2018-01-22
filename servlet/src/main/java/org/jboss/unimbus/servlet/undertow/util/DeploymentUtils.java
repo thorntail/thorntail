@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.Servlet;
 
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
+import io.undertow.servlet.api.FilterInfo;
 import io.undertow.servlet.api.HttpMethodSecurityInfo;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.InstanceHandle;
@@ -20,6 +22,7 @@ import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.api.ServletSecurityInfo;
 import io.undertow.servlet.api.TransportGuaranteeType;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
+import org.jboss.unimbus.servlet.FilterMetaData;
 import org.jboss.unimbus.servlet.HttpConstraintMetaData;
 import org.jboss.unimbus.servlet.HttpMethodConstraintMetaData;
 import org.jboss.unimbus.servlet.ServletMetaData;
@@ -46,6 +49,18 @@ public class DeploymentUtils {
         info.setClassLoader(DeploymentUtils.class.getClassLoader());
 
         info.addServlets(convert(meta.getServlets()));
+
+        /*
+        meta.getFilters().forEach(e->{
+            System.err.println( "filter: " + e + " // " + e.getType());
+            info.addFilter(convert(e));
+            //info.addFilterUrlMapping(e.getName(), "/*", DispatcherType.FORWARD);
+            //info.addFilterUrlMapping(e.getName(), "/*", DispatcherType.ASYNC);
+            //info.addFilterUrlMapping(e.getName(), "/*", DispatcherType.ERROR);
+            info.addFilterUrlMapping(e.getName(), "/*", DispatcherType.REQUEST);
+            //info.addFilterUrlMapping(e.getName(), "/*", DispatcherType.INCLUDE);
+        });
+        */
 
         meta.getServletContextAttributes().entrySet().forEach(e -> {
             info.addServletContextAttribute(e.getKey(), e.getValue());
@@ -137,6 +152,15 @@ public class DeploymentUtils {
                 return TransportGuaranteeType.CONFIDENTIAL;
         }
         return TransportGuaranteeType.NONE;
+    }
+
+    private static FilterInfo convert(FilterMetaData meta) {
+        FilterInfo info = new FilterInfo(
+                meta.getName(),
+                meta.getType()
+        );
+
+        return info;
     }
 
 
