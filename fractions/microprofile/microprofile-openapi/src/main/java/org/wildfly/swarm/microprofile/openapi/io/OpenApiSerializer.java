@@ -87,8 +87,8 @@ public class OpenApiSerializer {
 
     /**
      * Serializes the given OpenAPI object into either JSON or YAML and returns it as a string.
-     * @param oai
-     * @param format
+     * @param oai the OpenAPI object
+     * @param format the serialization format
      */
     public static final String serialize(OpenAPI oai, Format format) throws IOException {
         try {

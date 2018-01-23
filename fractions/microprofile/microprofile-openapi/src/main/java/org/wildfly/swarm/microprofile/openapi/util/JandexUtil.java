@@ -137,6 +137,11 @@ public class JandexUtil {
         }
     }
 
+    public static Boolean booleanValueWithDefault(AnnotationInstance annotation, String propertyName) {
+        AnnotationValue value = annotation.value(propertyName);
+        return value != null && value.asBoolean();
+    }
+
     /**
      * Reads a Double property value from the given annotation instance.  If no value is found
      * this will return null.
@@ -184,7 +189,7 @@ public class JandexUtil {
         if (value == null) {
             return null;
         } else {
-            return Arrays.asList(value.asStringArray());
+            return new ArrayList<>(Arrays.asList(value.asStringArray()));
         }
     }
 
