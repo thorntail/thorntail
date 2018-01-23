@@ -19,6 +19,6 @@ public interface MetricsMessages extends BasicLogger {
     int OFFSET = 300;
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 0 + OFFSET, value = "registered %s metric: %s")
+    @Message(id = 0 + OFFSET, value = "registered metric: %s:%s")
     void registeredMetric(String scope, String metricName);
 }

@@ -307,7 +307,6 @@ public class PrometheusExporter implements Exporter {
 
         Double value = PrometheusUnit.scaleToBase(md.getUnit(), valIn);
         sb.append(SPACE).append(value).append("\n");
-
     }
 
 

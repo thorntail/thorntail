@@ -64,7 +64,6 @@ public class JMXRegistrar {
 
         if (metric != null) {
             this.registry.register(config, metric);
-            MetricsMessages.MESSAGES.registeredMetric("base", config.getName());
         }
     }
 

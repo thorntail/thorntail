@@ -59,11 +59,9 @@ public class MetricRegistryProducer {
     }
 
     public static MetricRegistry get(MetricRegistry.Type type) {
-
         synchronized (registries) {
             if (registries.get(type) == null) {
-
-                MetricRegistry result = new MetricsRegistryImpl();
+                MetricRegistry result = new MetricsRegistryImpl(type);
                 registries.put(type, result);
             }
         }

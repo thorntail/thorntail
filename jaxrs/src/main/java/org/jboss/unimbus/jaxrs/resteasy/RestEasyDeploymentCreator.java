@@ -87,7 +87,7 @@ public class RestEasyDeploymentCreator {
             servlet.addInitParam("resteasy.servlet.mapping.prefix", prefix);
         }
 
-        String appName = application.getClass().getName();
+        String appName = application.getClass().getSimpleName();
         int dollarLoc = appName.indexOf('$');
         if ( dollarLoc >0 ) {
             appName = appName.substring(0, dollarLoc);

@@ -28,8 +28,8 @@ public class Bootstrapper {
 
         List<String> loggingLevelPropNames = new ArrayList<>();
         for (String each : this.config.getPropertyNames()) {
-            if ( each.startsWith(PREFIX)) {
-                loggingLevelPropNames.add(each );
+            if (each.startsWith(PREFIX)) {
+                loggingLevelPropNames.add(each);
             }
         }
 
