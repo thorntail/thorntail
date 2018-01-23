@@ -50,18 +50,6 @@ public class DeploymentUtils {
 
         info.addServlets(convert(meta.getServlets()));
 
-        /*
-        meta.getFilters().forEach(e->{
-            System.err.println( "filter: " + e + " // " + e.getType());
-            info.addFilter(convert(e));
-            //info.addFilterUrlMapping(e.getName(), "/*", DispatcherType.FORWARD);
-            //info.addFilterUrlMapping(e.getName(), "/*", DispatcherType.ASYNC);
-            //info.addFilterUrlMapping(e.getName(), "/*", DispatcherType.ERROR);
-            info.addFilterUrlMapping(e.getName(), "/*", DispatcherType.REQUEST);
-            //info.addFilterUrlMapping(e.getName(), "/*", DispatcherType.INCLUDE);
-        });
-        */
-
         meta.getServletContextAttributes().entrySet().forEach(e -> {
             info.addServletContextAttribute(e.getKey(), e.getValue());
         });

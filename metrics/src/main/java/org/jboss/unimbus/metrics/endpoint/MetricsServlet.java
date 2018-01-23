@@ -1,48 +1,53 @@
 package org.jboss.unimbus.metrics.endpoint;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonWriter;
-import javax.json.JsonWriterFactory;
-import javax.json.stream.JsonGenerator;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.microprofile.metrics.Counter;
-import org.eclipse.microprofile.metrics.Gauge;
-import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.annotation.RegistryType;
+import org.jboss.unimbus.metrics.exporters.Exporter;
+import org.jboss.unimbus.metrics.exporters.JSONExporter;
+import org.jboss.unimbus.metrics.exporters.JSONMetadataExporter;
+import org.jboss.unimbus.metrics.exporters.PrometheusExporter;
 
 /**
  * Created by bob on 1/22/18.
  */
 public class MetricsServlet extends HttpServlet {
 
-    private static final Map<String, ?> JSON_CONFIG = new HashMap<String, Object>() {{
-        put(JsonGenerator.PRETTY_PRINTING, true);
-    }};
-
     @Override
-    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doOptions(req, resp);
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Exporter exporter = getExporterForOPOTIONS(request);
+        service( exporter, request, response );
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String path = req.getPathInfo();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Exporter exporter = getExporterForGET(request);
+        service( exporter, request, response );
+    }
+
+    protected void service(Exporter exporter, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (exporter == null) {
+            response.sendError(404);
+            return;
+        }
+
+        response.setContentType(exporter.getContentType());
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
+        response.addHeader("Access-Control-Allow-Credentials", "true");
+        response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+
+        String path = request.getPathInfo();
         if (path == null) {
-            getRoot(req, resp);
+            export(exporter.exportAllScopes(), response);
             return;
         }
 
@@ -56,40 +61,20 @@ public class MetricsServlet extends HttpServlet {
             metricName = parts[1];
         }
 
-        MetricRegistry registry = null;
-
-        switch (scope) {
-            case "application":
-                registry = this.applicationRegistry;
-                break;
-            case "vendor":
-                registry = this.vendorRegistry;
-                break;
-            case "base":
-                registry = this.baseRegistry;
-                break;
-        }
-
-        System.err.println("registry: " + registry);
-
-        if (registry == null) {
-            resp.sendError(404);
-            return;
-        }
+        MetricRegistry.Type registryType = MetricRegistry.Type.valueOf(scope.toUpperCase());
 
         if (metricName == null) {
-            send(registryJSON(registry), resp);
-        }
-
-        Metric metric = registry.getMetrics().get(metricName);
-        if (metric == null) {
-            resp.sendError(404);
+            export(exporter.exportOneScope(registryType), response);
             return;
         }
 
-        JsonObjectBuilder json = Json.createObjectBuilder();
-        metricJSON(json, metricName, metric);
-        send(json.build(), resp);
+        export(exporter.exportOneMetric(registryType, metricName), response);
+    }
+
+    private void export(StringBuffer data, HttpServletResponse response) throws IOException {
+        try (Writer out = new OutputStreamWriter(response.getOutputStream())) {
+            out.write(data.toString());
+        }
     }
 
     String[] partsOf(String path) {
@@ -101,84 +86,51 @@ public class MetricsServlet extends HttpServlet {
             path = path.substring(0, path.length() - 1);
         }
 
-        String[] parts = path.split("/");
+        return path.split("/");
+    }
 
-        for (String part : parts) {
-            System.err.println("one: [" + part + "]");
+    protected Exporter getExporterForGET(HttpServletRequest request) {
+        if ( "metadata".equalsIgnoreCase(request.getParameter("format" ) )) {
+            return this.jsonMetadataExporter;
+        }
+        if (isJSON(request)) {
+            return this.jsonExporter;
         }
 
-
-        return parts;
+        return this.prometheusExporter;
     }
 
-    private void send(JsonObject object, HttpServletResponse resp) throws IOException {
-        OutputStream out = resp.getOutputStream();
-        JsonWriterFactory factory = Json.createWriterFactory(JSON_CONFIG);
-        try (JsonWriter writer = factory.createWriter(out)) {
-            writer.writeObject(object);
+    protected Exporter getExporterForOPOTIONS(HttpServletRequest request) {
+        if ( isJSON(request)) {
+            return this.jsonMetadataExporter;
         }
+
+        return null;
     }
 
-    private void getRoot(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        send(rootJSON(), resp);
-    }
-
-    private JsonObject rootJSON() {
-        JsonObjectBuilder root = Json.createObjectBuilder();
-
-        root.add("base", registryJSON(this.baseRegistry));
-        root.add("vendor", registryJSON(this.vendorRegistry));
-        root.add("application", registryJSON(this.applicationRegistry));
-
-        return root.build();
-    }
-
-    private JsonObject registryJSON(MetricRegistry registry) {
-        JsonObjectBuilder registryJSON = Json.createObjectBuilder();
-        Map<String, Metric> metrics = registry.getMetrics();
-        metrics.entrySet().stream()
-                .sorted(Comparator.comparing(Map.Entry::getKey))
-                .forEach(e -> {
-                    metricJSON(registryJSON, e.getKey(), e.getValue());
-                });
-        return registryJSON.build();
-    }
-
-    private void metricJSON(JsonObjectBuilder registryJSON, String name, Metric metric) {
-        if (metric instanceof Counter) {
-            registryJSON.add(name, metricJSON((Counter) metric));
-        } else if (metric instanceof Gauge) {
-            Object value = ((Gauge) metric).getValue();
-            if (value instanceof Long) {
-                registryJSON.add(name, (long) value);
-            } else if (value instanceof Integer) {
-                registryJSON.add(name, (int) value);
-            } else if (value instanceof Double) {
-                registryJSON.add(name, (double) value);
-            } else if (value instanceof Float) {
-                registryJSON.add(name, (float) value);
+    protected boolean isJSON(HttpServletRequest request) {
+        String format = request.getParameter("format");
+        if (format != null && "json".equalsIgnoreCase(format)) {
+            return true;
+        }
+        String acceptHeader = request.getHeader("accept");
+        String[] types = acceptHeader.split(",");
+        for (String type : types) {
+            if (type.startsWith("application/json")) {
+                return true;
             }
         }
-    }
 
-    private long metricJSON(Counter counter) {
-        return counter.getCount();
-    }
-
-    private Object metricJSON(Gauge gauge) {
-        return gauge.getValue();
+        return false;
     }
 
     @Inject
-    @RegistryType(type = MetricRegistry.Type.BASE)
-    MetricRegistry baseRegistry;
+    JSONExporter jsonExporter;
 
     @Inject
-    @RegistryType(type = MetricRegistry.Type.VENDOR)
-    MetricRegistry vendorRegistry;
+    JSONMetadataExporter jsonMetadataExporter;
 
     @Inject
-    @RegistryType(type = MetricRegistry.Type.APPLICATION)
-    MetricRegistry applicationRegistry;
-
+    PrometheusExporter prometheusExporter;
 }
+

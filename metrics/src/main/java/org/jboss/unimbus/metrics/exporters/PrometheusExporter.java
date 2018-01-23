@@ -37,11 +37,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.enterprise.context.ApplicationScoped;
+
 /**
  * Export data in Prometheus text format
  *
  * @author Heiko W. Rupp
  */
+@ApplicationScoped
 public class PrometheusExporter implements Exporter {
 
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
@@ -54,17 +57,17 @@ public class PrometheusExporter implements Exporter {
     private static final String COUNTER = "counter";
     private static final String QUANTILE = "quantile";
 
-    public StringBuilder exportOneScope(MetricRegistry.Type scope) {
+    public StringBuffer exportOneScope(MetricRegistry.Type scope) {
 
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         getEntriesForScope(scope, sb);
 
         return sb;
     }
 
     @Override
-    public StringBuilder exportAllScopes() {
-        StringBuilder sb = new StringBuilder();
+    public StringBuffer exportAllScopes() {
+        StringBuffer sb = new StringBuffer();
 
         for (MetricRegistry.Type scope : MetricRegistry.Type.values()) {
             getEntriesForScope(scope, sb);
@@ -74,7 +77,7 @@ public class PrometheusExporter implements Exporter {
     }
 
     @Override
-    public StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName) {
+    public StringBuffer exportOneMetric(MetricRegistry.Type scope, String metricName) {
         MetricRegistry registry = MetricRegistryProducer.get(scope);
         Map<String, Metric> metricMap = registry.getMetrics();
 
@@ -83,7 +86,7 @@ public class PrometheusExporter implements Exporter {
         Map<String, Metric> outMap = new HashMap<>(1);
         outMap.put(metricName, m);
 
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         exposeEntries(scope, sb, registry, outMap);
         return sb;
     }
@@ -94,14 +97,14 @@ public class PrometheusExporter implements Exporter {
         return "text/plain";
     }
 
-    private void getEntriesForScope(MetricRegistry.Type scope, StringBuilder sb) {
+    private void getEntriesForScope(MetricRegistry.Type scope, StringBuffer sb) {
         MetricRegistry registry = MetricRegistryProducer.get(scope);
         Map<String, Metric> metricMap = registry.getMetrics();
 
         exposeEntries(scope, sb, registry, metricMap);
     }
 
-    private void exposeEntries(MetricRegistry.Type scope, StringBuilder sb, MetricRegistry registry, Map<String, Metric> metricMap) {
+    private void exposeEntries(MetricRegistry.Type scope, StringBuffer sb, MetricRegistry registry, Map<String, Metric> metricMap) {
         for (Map.Entry<String, Metric> entry : metricMap.entrySet()) {
             String key = entry.getKey();
             Metadata md = registry.getMetadata().get(key);
@@ -139,7 +142,7 @@ public class PrometheusExporter implements Exporter {
         }
     }
 
-    private void writeTimerValues(StringBuilder sb, MetricRegistry.Type scope, TimerImpl timer, Metadata md) {
+    private void writeTimerValues(StringBuffer sb, MetricRegistry.Type scope, TimerImpl timer, Metadata md) {
 
         String unit = md.getUnit();
         unit = PrometheusUnit.getBaseUnitAsPrometheusString(unit);
@@ -157,7 +160,7 @@ public class PrometheusExporter implements Exporter {
         writeSnapshotQuantiles(sb, scope, md, snapshot, theUnit);
     }
 
-    private void writeHistogramValues(StringBuilder sb, MetricRegistry.Type scope, HistogramImpl histogram, Metadata md) {
+    private void writeHistogramValues(StringBuffer sb, MetricRegistry.Type scope, HistogramImpl histogram, Metadata md) {
 
         Snapshot snapshot = histogram.getSnapshot();
         String unit = md.getUnit();
@@ -172,7 +175,7 @@ public class PrometheusExporter implements Exporter {
     }
 
 
-    private void writeSnapshotBasics(StringBuilder sb, MetricRegistry.Type scope, Metadata md, Snapshot snapshot, String unit) {
+    private void writeSnapshotBasics(StringBuffer sb, MetricRegistry.Type scope, Metadata md, Snapshot snapshot, String unit) {
 
         writeTypeAndValue(sb, scope, "_min" + unit, snapshot.getMin(), GAUGE, md);
         writeTypeAndValue(sb, scope, "_max" + unit, snapshot.getMax(), GAUGE, md);
@@ -180,7 +183,7 @@ public class PrometheusExporter implements Exporter {
         writeTypeAndValue(sb, scope, "_stddev" + unit, snapshot.getStdDev(), GAUGE, md);
     }
 
-    private void writeSnapshotQuantiles(StringBuilder sb, MetricRegistry.Type scope, Metadata md, Snapshot snapshot, String unit) {
+    private void writeSnapshotQuantiles(StringBuffer sb, MetricRegistry.Type scope, Metadata md, Snapshot snapshot, String unit) {
         writeValueLine(sb, scope, unit, snapshot.getMedian(), md, new Tag(QUANTILE, "0.5"));
         writeValueLine(sb, scope, unit, snapshot.get75thPercentile(), md, new Tag(QUANTILE, "0.75"));
         writeValueLine(sb, scope, unit, snapshot.get95thPercentile(), md, new Tag(QUANTILE, "0.95"));
@@ -189,29 +192,29 @@ public class PrometheusExporter implements Exporter {
         writeValueLine(sb, scope, unit, snapshot.get999thPercentile(), md, new Tag(QUANTILE, "0.999"));
     }
 
-    private void writeMeterValues(StringBuilder sb, MetricRegistry.Type scope, Metered metric, Metadata md) {
+    private void writeMeterValues(StringBuffer sb, MetricRegistry.Type scope, Metered metric, Metadata md) {
         writeTypeAndValue(sb, scope, "_total", metric.getCount(), COUNTER, md);
         writeMeterRateValues(sb, scope, metric, md);
     }
 
-    private void writeMeterRateValues(StringBuilder sb, MetricRegistry.Type scope, Metered metric, Metadata md) {
+    private void writeMeterRateValues(StringBuffer sb, MetricRegistry.Type scope, Metered metric, Metadata md) {
         writeTypeAndValue(sb, scope, "_rate_per_second", metric.getMeanRate(), GAUGE, md);
         writeTypeAndValue(sb, scope, "_one_min_rate_per_second", metric.getOneMinuteRate(), GAUGE, md);
         writeTypeAndValue(sb, scope, "_five_min_rate_per_second", metric.getFiveMinuteRate(), GAUGE, md);
         writeTypeAndValue(sb, scope, "_fifteen_min_rate_per_second", metric.getFifteenMinuteRate(), GAUGE, md);
     }
 
-    private void writeTypeAndValue(StringBuilder sb, MetricRegistry.Type scope, String suffix, double valueRaw, String type, Metadata md) {
+    private void writeTypeAndValue(StringBuffer sb, MetricRegistry.Type scope, String suffix, double valueRaw, String type, Metadata md) {
         String key = md.getName();
         writeTypeLine(sb, scope, key, md, suffix, type);
         writeValueLine(sb, scope, suffix, valueRaw, md);
     }
 
-    private void writeValueLine(StringBuilder sb, MetricRegistry.Type scope, String suffix, double valueRaw, Metadata md) {
+    private void writeValueLine(StringBuffer sb, MetricRegistry.Type scope, String suffix, double valueRaw, Metadata md) {
         writeValueLine(sb, scope, suffix, valueRaw, md, null);
     }
 
-    private void writeValueLine(StringBuilder sb, MetricRegistry.Type scope, String suffix, double valueRaw, Metadata md, Tag extraTag) {
+    private void writeValueLine(StringBuffer sb, MetricRegistry.Type scope, String suffix, double valueRaw, Metadata md, Tag extraTag) {
         String name = md.getName();
         name = getPrometheusMetricName(md, name);
         fillBaseName(sb, scope, name);
@@ -233,7 +236,7 @@ public class PrometheusExporter implements Exporter {
 
     }
 
-    private void addTags(StringBuilder sb, Map<String, String> tags) {
+    private void addTags(StringBuffer sb, Map<String, String> tags) {
         Iterator<Map.Entry<String, String>> iter = tags.entrySet().iterator();
         sb.append("{");
         while (iter.hasNext()) {
@@ -246,11 +249,11 @@ public class PrometheusExporter implements Exporter {
         sb.append("}");
     }
 
-    private void fillBaseName(StringBuilder sb, MetricRegistry.Type scope, String key) {
+    private void fillBaseName(StringBuffer sb, MetricRegistry.Type scope, String key) {
         sb.append(scope.getName().toLowerCase()).append(":").append(key);
     }
 
-    private void writeTypeLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, String suffix, String typeOverride) {
+    private void writeTypeLine(StringBuffer sb, MetricRegistry.Type scope, String key, Metadata md, String suffix, String typeOverride) {
         sb.append("# TYPE ");
         sb.append(scope.getName().toLowerCase());
         sb.append(':').append(getPrometheusMetricName(md, key));
@@ -270,7 +273,7 @@ public class PrometheusExporter implements Exporter {
         sb.append("\n");
     }
 
-    private void createSimpleValueLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, Metric metric) {
+    private void createSimpleValueLine(StringBuffer sb, MetricRegistry.Type scope, String key, Metadata md, Metric metric) {
 
         // value line
         fillBaseName(sb, scope, key);

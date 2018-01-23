@@ -28,22 +28,22 @@ import java.util.Map;
 /**
  * @author hrupp
  */
-public class JsonMetadataExporter implements Exporter {
+public class OLDJsonMetadataExporter implements Exporter {
 
     private static final String QUOTE_COMMA_LF = "\",\n";
     private static final String LF = "\n";
 
     @Override
-    public StringBuilder exportOneScope(MetricRegistry.Type scope) {
+    public StringBuffer exportOneScope(MetricRegistry.Type scope) {
 
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
 
         getDataForOneScope(scope, sb);
 
         return sb;
     }
 
-    private void getDataForOneScope(MetricRegistry.Type scope, StringBuilder sb) {
+    private void getDataForOneScope(MetricRegistry.Type scope, StringBuffer sb) {
         MetricRegistry registry = MetricRegistryProducer.get(scope);
         Map<String, Metadata> theMetadata = registry.getMetadata();
 
@@ -52,7 +52,7 @@ public class JsonMetadataExporter implements Exporter {
         sb.append("}");
     }
 
-    private void writeMetadataForMap(StringBuilder sb, Map<String, Metadata> theMetadata) {
+    private void writeMetadataForMap(StringBuffer sb, Map<String, Metadata> theMetadata) {
         Iterator<Map.Entry<String, Metadata>> iter = theMetadata.entrySet().iterator();
         while (iter.hasNext()) {
             Metadata entry = iter.next().getValue();
@@ -77,7 +77,7 @@ public class JsonMetadataExporter implements Exporter {
     }
 
     private String getTagsAsString(Map<String, String> tags) {
-        StringBuilder result = new StringBuilder();
+        StringBuffer result = new StringBuffer();
         Iterator<Map.Entry<String, String>> iterator = tags.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, String> pair = iterator.next();
@@ -91,8 +91,8 @@ public class JsonMetadataExporter implements Exporter {
 
 
     @Override
-    public StringBuilder exportAllScopes() {
-        StringBuilder sb = new StringBuilder();
+    public StringBuffer exportAllScopes() {
+        StringBuffer sb = new StringBuffer();
         sb.append("{");
 
         MetricRegistry.Type[] values = MetricRegistry.Type.values();
@@ -120,7 +120,7 @@ public class JsonMetadataExporter implements Exporter {
     }
 
     @Override
-    public StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName) {
+    public StringBuffer exportOneMetric(MetricRegistry.Type scope, String metricName) {
         MetricRegistry registry = MetricRegistryProducer.get(scope);
         Map<String, Metadata> metadataMap = registry.getMetadata();
 
@@ -129,7 +129,7 @@ public class JsonMetadataExporter implements Exporter {
         Map<String, Metadata> outMap = new HashMap<>(1);
         outMap.put(metricName, m);
 
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         sb.append("{");
         writeMetadataForMap(sb, outMap);
         sb.append("}");
