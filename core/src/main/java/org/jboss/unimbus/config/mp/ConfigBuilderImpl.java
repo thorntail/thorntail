@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
 import org.eclipse.microprofile.config.spi.Converter;
 import org.jboss.unimbus.config.mp.converters.BooleanConverter;
 import org.jboss.unimbus.config.mp.converters.ClassConverter;
@@ -92,6 +93,13 @@ class ConfigBuilderImpl implements ConfigBuilder {
             ServiceLoader<ConfigSource> discovered = ServiceLoader.load(ConfigSource.class);
             for (ConfigSource each : discovered) {
                 this.sources.add(each);
+            }
+            ServiceLoader<ConfigSourceProvider> discoveredProviders = ServiceLoader.load(ConfigSourceProvider.class);
+            for (ConfigSourceProvider each : discoveredProviders) {
+                Iterable<ConfigSource> providedSources = each.getConfigSources(this.classLoader);
+                for (ConfigSource providedSource : providedSources) {
+                    this.sources.add(providedSource);
+                }
             }
         }
 

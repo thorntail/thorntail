@@ -8,6 +8,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.jboss.unimbus.security.basic.BasicSecurity;
 import org.jboss.unimbus.servlet.Primary;
+import org.jboss.unimbus.test.EphemeralPorts;
 import org.jboss.unimbus.test.UNimbusTestRunner;
 import org.junit.After;
 import org.junit.Before;
@@ -17,11 +18,11 @@ import org.junit.runner.RunWith;
 import static io.restassured.RestAssured.when;
 
 @RunWith(UNimbusTestRunner.class)
+@EphemeralPorts
 public class ProofAppTest {
 
     @Before
     public void setup() {
-        RestAssured.baseURI = this.url.toExternalForm();
         security.addUser("bob", "password");
     }
 
@@ -35,10 +36,6 @@ public class ProofAppTest {
         Response response = when().get("/").andReturn();
         System.err.println( "response: " + response.asString());
     }
-
-    @Inject
-    @Primary
-    URL url;
 
     @Inject
     BasicSecurity security;
