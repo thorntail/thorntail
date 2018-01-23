@@ -24,11 +24,26 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>BOM_GROUPID</groupId>
+        <artifactId>bom-certified</artifactId>
+        <version>SWARM_VERSION</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
     FRACTIONS_FROM_BOM
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>fraction-metadata</artifactId>
+      <version>SWARM_VERSION</version>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
