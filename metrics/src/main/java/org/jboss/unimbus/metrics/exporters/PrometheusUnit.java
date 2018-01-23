@@ -83,6 +83,7 @@ public class PrometheusUnit {
 
     public static Double scaleToBase(String unit, Double value) {
 
+
         Double out;
 
         switch (unit) {
@@ -145,6 +146,7 @@ public class PrometheusUnit {
             default:
                 out = value;
         }
+
         return out;
     }
 }

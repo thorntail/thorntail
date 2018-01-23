@@ -14,6 +14,7 @@
 
   <properties>
     <version.mp-health>1.0</version.mp-health>
+    <version.mp-metrics>1.1</version.mp-metrics>
   </properties>
 
   <dependencies>
@@ -38,6 +39,14 @@
       <groupId>org.eclipse.microprofile.health</groupId>
       <artifactId>microprofile-health-api</artifactId>
       <version>${version.mp-health}</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.microprofile.metrics</groupId>
+      <artifactId>microprofile-metrics-api</artifactId>
+      <version>${version.mp-metrics}</version>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>

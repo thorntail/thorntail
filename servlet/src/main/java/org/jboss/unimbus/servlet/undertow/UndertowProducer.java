@@ -2,7 +2,6 @@ package org.jboss.unimbus.servlet.undertow;
 
 import java.lang.annotation.Annotation;
 import java.net.Inet6Address;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.SocketAddress;
@@ -10,12 +9,9 @@ import java.net.URL;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Destroyed;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.util.AnnotationLiteral;
@@ -41,7 +37,7 @@ public class UndertowProducer {
     void init() {
         if (this.selector.isUnified()) {
             Undertow.Builder builder = Undertow.builder();
-            builder.setHandler(wrap(this.primaryRoot));
+            builder.setHandler(wrapForStaticResources(this.primaryRoot));
             Undertow undertow = configure(builder, new AnnotationLiteral<Primary>() {
             });
             this.primaryUndertow = undertow;
@@ -49,7 +45,7 @@ public class UndertowProducer {
         } else {
             if (this.selector.isPrimaryEnabled()) {
                 Undertow.Builder builder = Undertow.builder();
-                builder.setHandler(wrap(this.primaryRoot));
+                builder.setHandler(wrapForStaticResources(this.primaryRoot));
                 this.primaryUndertow = configure(builder, new AnnotationLiteral<Primary>() {
                 });
             }
@@ -62,7 +58,7 @@ public class UndertowProducer {
         }
     }
 
-    private HttpHandler wrap(HttpHandler next) {
+    private HttpHandler wrapForStaticResources(HttpHandler next) {
         ResourceHandler handler = new ResourceHandler(this.resourceSupplier, next);
         return handler;
     }

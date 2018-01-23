@@ -17,8 +17,16 @@
 
 package org.jboss.unimbus.metrics.exporters;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.enterprise.context.ApplicationScoped;
+
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metered;
 import org.eclipse.microprofile.metrics.Metric;
@@ -26,18 +34,10 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Snapshot;
+import org.eclipse.microprofile.metrics.Timer;
 import org.jboss.logging.Logger;
-import org.jboss.unimbus.metrics.app.HistogramImpl;
 import org.jboss.unimbus.metrics.MetricRegistryProducer;
 import org.jboss.unimbus.metrics.jmx.Tag;
-import org.jboss.unimbus.metrics.app.MeterImpl;
-import org.jboss.unimbus.metrics.app.TimerImpl;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Export data in Prometheus text format
@@ -50,11 +50,17 @@ public class PrometheusExporter implements Exporter {
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
 
     private static final String LF = "\n";
+
     private static final String GAUGE = "gauge";
+
     private static final String SPACE = " ";
+
     private static final String SUMMARY = "summary";
+
     private static final String USCORE = "_";
+
     private static final String COUNTER = "counter";
+
     private static final String QUANTILE = "quantile";
 
     public StringBuffer exportOneScope(MetricRegistry.Type scope) {
@@ -124,15 +130,15 @@ public class PrometheusExporter implements Exporter {
                     createSimpleValueLine(sb, scope, key, md, metric);
                     break;
                 case METERED:
-                    MeterImpl meter = (MeterImpl) metric;
+                    Metered meter = (Metered) metric;
                     writeMeterValues(sb, scope, meter, md);
                     break;
                 case TIMER:
-                    TimerImpl timer = (TimerImpl) metric;
+                    Timer timer = (Timer) metric;
                     writeTimerValues(sb, scope, timer, md);
                     break;
                 case HISTOGRAM:
-                    HistogramImpl histogram = (HistogramImpl) metric;
+                    Histogram histogram = (Histogram) metric;
                     writeHistogramValues(sb, scope, histogram, md);
                     break;
                 default:
@@ -142,25 +148,25 @@ public class PrometheusExporter implements Exporter {
         }
     }
 
-    private void writeTimerValues(StringBuffer sb, MetricRegistry.Type scope, TimerImpl timer, Metadata md) {
+    private void writeTimerValues(StringBuffer sb, MetricRegistry.Type scope, Timer timer, Metadata md) {
 
         String unit = md.getUnit();
         unit = PrometheusUnit.getBaseUnitAsPrometheusString(unit);
 
         String theUnit = unit.equals("none") ? "" : USCORE + unit;
 
-        writeMeterRateValues(sb, scope, timer.getMeter(), md);
+        writeMeterRateValues(sb, scope, timer, md);
         Snapshot snapshot = timer.getSnapshot();
         writeSnapshotBasics(sb, scope, md, snapshot, theUnit);
 
         String suffix = USCORE + PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit());
-        writeTypeLine(sb,scope,md.getName(),md, suffix,SUMMARY);
-        writeValueLine(sb,scope,suffix + "_count",timer.getCount(),md);
+        writeTypeLine(sb, scope, md.getName(), md, suffix, SUMMARY);
+        writeValueLine(sb, scope, suffix + "_count", timer.getCount(), md);
 
         writeSnapshotQuantiles(sb, scope, md, snapshot, theUnit);
     }
 
-    private void writeHistogramValues(StringBuffer sb, MetricRegistry.Type scope, HistogramImpl histogram, Metadata md) {
+    private void writeHistogramValues(StringBuffer sb, MetricRegistry.Type scope, Histogram histogram, Metadata md) {
 
         Snapshot snapshot = histogram.getSnapshot();
         String unit = md.getUnit();
@@ -169,8 +175,8 @@ public class PrometheusExporter implements Exporter {
         String theUnit = unit.equals("none") ? "" : USCORE + unit;
 
         writeSnapshotBasics(sb, scope, md, snapshot, theUnit);
-        writeTypeLine(sb,scope,md.getName(),md, theUnit,SUMMARY);
-        writeValueLine(sb,scope,theUnit + "_count",histogram.getCount(),md);
+        writeTypeLine(sb, scope, md.getName(), md, theUnit, SUMMARY);
+        writeValueLine(sb, scope, theUnit + "_count", histogram.getCount(), md);
         writeSnapshotQuantiles(sb, scope, md, snapshot, theUnit);
     }
 
@@ -314,11 +320,17 @@ public class PrometheusExporter implements Exporter {
         out = out.replace("__", USCORE);
         out = out.replace(":_", ":");
 
+        if ( ! out.matches( VALID_NAME ) ) {
+            System.err.println( "INVALID NAME: " + out );
+        }
+
         return out;
     }
 
     private String decamelize(String in) {
         return in.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
     }
+
+    private static String VALID_NAME = "^[a-zA-Z][_a-zA-Z0-9]*$";
 
 }

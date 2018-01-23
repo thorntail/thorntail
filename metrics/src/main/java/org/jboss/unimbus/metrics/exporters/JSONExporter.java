@@ -15,8 +15,11 @@ import javax.json.stream.JsonGenerator;
 
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.Snapshot;
+import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
 
 /**
@@ -124,6 +127,10 @@ public class JSONExporter implements Exporter  {
     private void metricJSON(JsonObjectBuilder registryJSON, String name, Metric metric) {
         if (metric instanceof Counter) {
             registryJSON.add(name, metricJSON((Counter) metric));
+        } else if ( metric instanceof Timer) {
+            registryJSON.add(name, metricJSON((Timer) metric));
+        } else if ( metric instanceof Histogram ) {
+            registryJSON.add(name, metricJSON((Histogram) metric));
         } else if (metric instanceof Gauge) {
             Object value = ((Gauge) metric).getValue();
             if (value instanceof Long) {
@@ -144,6 +151,52 @@ public class JSONExporter implements Exporter  {
 
     private Object metricJSON(Gauge gauge) {
         return gauge.getValue();
+    }
+
+    private JsonObject metricJSON(Histogram histogram) {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+
+        Snapshot snap = histogram.getSnapshot();
+
+        builder.add("count", histogram.getCount());
+        builder.add("min", snap.getMin() );
+        builder.add("max", snap.getMax() );
+        builder.add("mean", snap.getMean() );
+        builder.add("stddev", snap.getStdDev() );
+        builder.add("p50", snap.getMedian() );
+        builder.add("p75", snap.get75thPercentile() );
+        builder.add("p95", snap.get95thPercentile() );
+        builder.add("p98", snap.get98thPercentile() );
+        builder.add("p99", snap.get99thPercentile() );
+        builder.add("p999", snap.get999thPercentile() );
+
+        return builder.build();
+    }
+
+    private JsonObject metricJSON(Timer timer) {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+
+        Snapshot snap = timer.getSnapshot();
+
+        builder.add( "meanRate", timer.getMeanRate() );
+        builder.add( "oneMinRate", timer.getOneMinuteRate() );
+        builder.add( "fiveMinRate", timer.getFiveMinuteRate() );
+        builder.add( "fifteenMinRate", timer.getFifteenMinuteRate() );
+
+        builder.add("count", timer.getCount());
+        builder.add("min", snap.getMin() );
+        builder.add("max", snap.getMax() );
+        builder.add("mean", snap.getMean() );
+        builder.add("stddev", snap.getStdDev() );
+        builder.add("p50", snap.getMedian() );
+        builder.add("p75", snap.get75thPercentile() );
+        builder.add("p95", snap.get95thPercentile() );
+        builder.add("p98", snap.get98thPercentile() );
+        builder.add("p99", snap.get99thPercentile() );
+        builder.add("p999", snap.get999thPercentile() );
+
+        return builder.build();
+
     }
 
     @Inject

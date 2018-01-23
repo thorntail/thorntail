@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -13,14 +14,14 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
-import io.undertow.servlet.api.FilterInfo;
 import io.undertow.servlet.api.ServletContainer;
-import org.jboss.unimbus.servlet.Management;
-import org.jboss.unimbus.servlet.Primary;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.Deployments;
+import org.jboss.unimbus.servlet.Management;
+import org.jboss.unimbus.servlet.Primary;
 import org.jboss.unimbus.servlet.ServletMessages;
+import org.jboss.unimbus.servlet.undertow.metrics.MetricsIntegration;
 import org.jboss.unimbus.servlet.undertow.util.DeploymentUtils;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 
@@ -48,12 +49,21 @@ public class Deployer {
 
             try {
                 HttpHandler handler = manager.start();
+                handler = wrapForMetrics(info.getDeploymentName(), handler);
                 effectiveRoot.addPrefixPath(info.getContextPath(), handler);
                 this.handlers.add(handler);
             } catch (ServletException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    protected HttpHandler wrapForMetrics(String deploymentName, HttpHandler handler) {
+        if ( this.metricsIntegration.isUnsatisfied() ) {
+            return handler;
+        }
+
+        return this.metricsIntegration.get().integrate( deploymentName, handler );
     }
 
     String type(DeploymentMetaData meta) {
@@ -111,4 +121,7 @@ public class Deployer {
 
     @Inject
     BeanManager beanManager;
+
+    @Inject
+    Instance<MetricsIntegration> metricsIntegration;
 }

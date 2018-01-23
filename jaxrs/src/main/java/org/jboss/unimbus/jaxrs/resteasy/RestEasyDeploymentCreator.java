@@ -52,16 +52,16 @@ public class RestEasyDeploymentCreator {
         deployment.setActualResourceClasses(extension.getResources());
         deployment.setActualProviderClasses(extension.getProviders());
 
-        DeploymentMetaData meta = createServletDeployment(deployment);
+        DeploymentMetaData meta = createServletDeployment(deployment, application);
         meta.setContextPath(contextPath);
         return meta;
     }
 
-    public DeploymentMetaData createServletDeployment(ResteasyDeployment deployment) {
-        return createServletDeployment(deployment, "/");
+    public DeploymentMetaData createServletDeployment(ResteasyDeployment deployment, Application application) {
+        return createServletDeployment(deployment, application, "/");
     }
 
-    public DeploymentMetaData createServletDeployment(ResteasyDeployment deployment, String mapping) {
+    public DeploymentMetaData createServletDeployment(ResteasyDeployment deployment, Application application, String mapping) {
         if (mapping == null) {
             mapping = "/";
         }
@@ -87,7 +87,14 @@ public class RestEasyDeploymentCreator {
             servlet.addInitParam("resteasy.servlet.mapping.prefix", prefix);
         }
 
-        DeploymentMetaData meta = new DeploymentMetaData("jaxrs-" + mapping);
+        String appName = application.getClass().getName();
+        int dollarLoc = appName.indexOf('$');
+        if ( dollarLoc >0 ) {
+            appName = appName.substring(0, dollarLoc);
+        }
+        appName = appName.replace('.', '_' );
+
+        DeploymentMetaData meta = new DeploymentMetaData("jaxrs-" + appName);
 
         meta.addServletContextAttribute(ResteasyDeployment.class.getName(), deployment);
         meta.addServlet(servlet);
