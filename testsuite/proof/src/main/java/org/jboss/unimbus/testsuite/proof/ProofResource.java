@@ -1,6 +1,5 @@
 package org.jboss.unimbus.testsuite.proof;
 
-import java.net.InetSocketAddress;
 import java.net.URL;
 
 import javax.inject.Inject;
@@ -10,7 +9,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.unimbus.condition.ConditionExtension;
+import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.jboss.unimbus.servlet.Primary;
 
 /**
@@ -21,6 +20,7 @@ public class ProofResource {
 
     @GET
     @Path("/")
+    @Counted(monotonic = true)
     public String get() {
         return "Hello! " + this.url + " // " + this.entityManager;
     }

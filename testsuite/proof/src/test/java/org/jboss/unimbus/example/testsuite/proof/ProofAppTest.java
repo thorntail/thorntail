@@ -5,13 +5,16 @@ import java.net.URL;
 import javax.inject.Inject;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import org.jboss.unimbus.security.basic.BasicSecurity;
-import org.jboss.unimbus.servlet.Management;
+import org.jboss.unimbus.servlet.Primary;
 import org.jboss.unimbus.test.UNimbusTestRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static io.restassured.RestAssured.when;
 
 @RunWith(UNimbusTestRunner.class)
 public class ProofAppTest {
@@ -29,22 +32,12 @@ public class ProofAppTest {
 
     @Test
     public void test() {
-        /*
-        BasicAuthScheme auth = new BasicAuthScheme();
-        auth.setUserName("bob");
-        auth.setPassword("password");
-        RestAssured.authentication = auth;
-
-        when().get("/health").then()
-                .statusCode(200)
-                .body(
-                        containsString("{\"name\":\"undertow-management\",\"state\":\"UP\"}")
-                );
-                */
+        Response response = when().get("/").andReturn();
+        System.err.println( "response: " + response.asString());
     }
 
     @Inject
-    @Management
+    @Primary
     URL url;
 
     @Inject

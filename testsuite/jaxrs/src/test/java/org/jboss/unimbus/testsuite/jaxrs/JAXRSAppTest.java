@@ -1,7 +1,6 @@
 package org.jboss.unimbus.testsuite.jaxrs;
 
 import io.restassured.RestAssured;
-import org.jboss.unimbus.UNimbus;
 import org.jboss.unimbus.test.UNimbusTestRunner;
 import org.junit.BeforeClass;
 import org.junit.Test;

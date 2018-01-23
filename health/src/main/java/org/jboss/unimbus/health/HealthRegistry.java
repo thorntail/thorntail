@@ -33,14 +33,6 @@ public class HealthRegistry {
     ServletMetaData servlet() {
         ServletMetaData servlet = new ServletMetaData("endpoint", HealthServlet.class);
         servlet.addUrlPattern("/");
-        /*
-        servlet.setSecurity(
-                new ServletSecurityMetaData()
-                        .setHttpConstraint(new HttpConstraintMetaData()
-                                                   .setEmptyRoleSemantic(ServletSecurityMetaData.EmptyRoleSemantic.DENY)
-                        )
-        );
-        */
         return servlet;
     }
 

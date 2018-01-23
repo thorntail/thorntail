@@ -7,7 +7,7 @@
   <artifactId>unimbus-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>uNimbus PoC Parent</name>
+  <name>uNimbus Parent</name>
 
   <packaging>pom</packaging>
 
@@ -85,6 +85,11 @@
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
         <artifactId>jta</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>metrics</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -170,7 +175,7 @@
     <module>jpa</module>
     <module>jta</module>
     <module>json-p</module>
-
+    <module>metrics</module>
     <module>security</module>
     <module>servlet</module>
 

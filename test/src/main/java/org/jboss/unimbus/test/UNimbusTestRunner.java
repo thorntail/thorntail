@@ -24,6 +24,9 @@ public class UNimbusTestRunner extends BlockJUnit4ClassRunner  {
         try {
             this.system = new UNimbus(getTestClass().getJavaClass()).start();
             super.run(notifier);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
         } finally {
             if ( this.system != null ) {
                 this.system.stop();
