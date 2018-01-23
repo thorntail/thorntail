@@ -243,4 +243,15 @@ public class JandexUtil {
         return annotations;
     }
 
+    /**
+     * Gets the name of an item from its ref.  For example, the ref might be "#/components/parameters/departureDate"
+     * which would result in a name of "departureDate".
+     * @param annotation
+     */
+    public static String nameFromRef(AnnotationInstance annotation) {
+        String ref = annotation.value(OpenApiConstants.PROP_REF).asString();
+        String[] split = ref.split("/");
+        return split[split.length - 1];
+    }
+
 }
