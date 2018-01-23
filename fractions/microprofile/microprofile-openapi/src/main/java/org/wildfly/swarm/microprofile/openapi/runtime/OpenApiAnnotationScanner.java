@@ -1724,9 +1724,7 @@ public class OpenApiAnnotationScanner {
      * @param ctype
      */
     private Schema introspectClassToSchema(ClassType ctype) {
-        // TODO Marc - replace this with something sensible.  You'll probably get a commit conflict
-        // on this line of code.  Sorry about that, but I needed to add this to fix a unit test NPE
-        return new SchemaImpl();
+        return OpenApiDataObjectScanner.process(index, ctype);
     }
 
     /**
