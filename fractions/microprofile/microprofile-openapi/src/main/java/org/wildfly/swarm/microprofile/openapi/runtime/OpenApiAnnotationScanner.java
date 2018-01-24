@@ -19,13 +19,11 @@ package org.wildfly.swarm.microprofile.openapi.runtime;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -140,6 +138,8 @@ public class OpenApiAnnotationScanner {
 
     private String currentAppPath = "";
     private String currentResourcePath = "";
+    private String[] currentConsumes;
+    private String[] currentProduces;
 
     /**
      * Constructor.
@@ -176,16 +176,18 @@ public class OpenApiAnnotationScanner {
         }
 
         // Now that all paths have been created, sort them (we don't have a better way to organize them).
-        Paths paths = oai.getPaths();
-        if (paths != null) {
-            Paths sortedPaths = new PathsImpl();
-            TreeSet<String> sortedKeys = new TreeSet<>(paths.keySet());
-            for (String pathKey : sortedKeys) {
-                PathItem pathItem = paths.get(pathKey);
-                sortedPaths.addPathItem(pathKey, pathItem);
+        if (oai != null) {
+            Paths paths = oai.getPaths();
+            if (paths != null) {
+                Paths sortedPaths = new PathsImpl();
+                TreeSet<String> sortedKeys = new TreeSet<>(paths.keySet());
+                for (String pathKey : sortedKeys) {
+                    PathItem pathItem = paths.get(pathKey);
+                    sortedPaths.addPathItem(pathKey, pathItem);
+                }
+                sortedPaths.setExtensions(paths.getExtensions());
+                oai.setPaths(sortedPaths);
             }
-            sortedPaths.setExtensions(paths.getExtensions());
-            oai.setPaths(sortedPaths);
         }
 
         return oai;
@@ -195,17 +197,17 @@ public class OpenApiAnnotationScanner {
      * Processes a JAX-RS {@link Application} and creates an {@link OpenAPI} model.  Performs
      * annotation scanning and other processing.  Returns a model unique to that single JAX-RS
      * app.
-     * @param classInfo
+     * @param applicationClass
      */
-    private OpenAPIImpl jaxRsApplicationToOpenApi(ClassInfo classInfo) {
+    private OpenAPIImpl jaxRsApplicationToOpenApi(ClassInfo applicationClass) {
         OpenAPIImpl oai = new OpenAPIImpl();
         oai.setOpenapi(OPEN_API_VERSION);
 
         // Get the @ApplicationPath info and save it for later (also support @Path which seems nonstandard but common).
         ////////////////////////////////////////
-        AnnotationInstance appPathAnno = JandexUtil.getClassAnnotation(classInfo, OpenApiConstants.DOTNAME_APPLICATION_PATH);
+        AnnotationInstance appPathAnno = JandexUtil.getClassAnnotation(applicationClass, OpenApiConstants.DOTNAME_APPLICATION_PATH);
         if (appPathAnno == null) {
-            appPathAnno = JandexUtil.getClassAnnotation(classInfo, OpenApiConstants.DOTNAME_PATH);
+            appPathAnno = JandexUtil.getClassAnnotation(applicationClass, OpenApiConstants.DOTNAME_PATH);
         }
         if (appPathAnno != null) {
             this.currentAppPath = appPathAnno.value().asString();
@@ -215,7 +217,7 @@ public class OpenApiAnnotationScanner {
 
         // Get the @OpenAPIDefinition annotation and process it.
         ////////////////////////////////////////
-        AnnotationInstance openApiDefAnno = JandexUtil.getClassAnnotation(classInfo, OpenApiConstants.DOTNAME_OPEN_API_DEFINITION);
+        AnnotationInstance openApiDefAnno = JandexUtil.getClassAnnotation(applicationClass, OpenApiConstants.DOTNAME_OPEN_API_DEFINITION);
         if (openApiDefAnno != null) {
             processDefinition(oai, openApiDefAnno);
         }
@@ -227,24 +229,18 @@ public class OpenApiAnnotationScanner {
 
         // Process @SecurityScheme annotations
         ////////////////////////////////////////
-        List<AnnotationInstance> securitySchemeAnnotations = new ArrayList<>();
-        AnnotationInstance securitySchemeAnno = JandexUtil.getClassAnnotation(classInfo, OpenApiConstants.DOTNAME_SECURITY_SCHEME);
-        if (securitySchemeAnno != null) {
-            securitySchemeAnnotations.add(securitySchemeAnno);
-        }
-        AnnotationInstance securitySchemesAnno = JandexUtil.getClassAnnotation(classInfo, OpenApiConstants.DOTNAME_SECURITY_SCHEMES);
-        if (securitySchemesAnno != null) {
-            AnnotationValue value = securitySchemeAnno.value();
-            if (value != null) {
-                AnnotationInstance[] nestedArray = value.asNestedArray();
-                securitySchemeAnnotations.addAll(Arrays.asList(nestedArray));
-            }
-        }
+        List<AnnotationInstance> securitySchemeAnnotations = JandexUtil.getRepeatableAnnotation(applicationClass,
+                OpenApiConstants.DOTNAME_SECURITY_SCHEME, OpenApiConstants.DOTNAME_SECURITY_SCHEMES);
         for (AnnotationInstance annotation : securitySchemeAnnotations) {
-            String name = JandexUtil.stringValue(securitySchemeAnno, OpenApiConstants.PROP_SECURITY_SCHEME_NAME);
-            SecurityScheme securityScheme = readSecurityScheme(annotation);
-            Components components = ModelUtil.components(oai);
-            components.addSecurityScheme(name, securityScheme);
+            String name = JandexUtil.stringValue(annotation, OpenApiConstants.PROP_SECURITY_SCHEME_NAME);
+            if (name == null && JandexUtil.isRef(annotation)) {
+                name = JandexUtil.nameFromRef(annotation);
+            }
+            if (name != null) {
+                SecurityScheme securityScheme = readSecurityScheme(annotation);
+                Components components = ModelUtil.components(oai);
+                components.addSecurityScheme(name, securityScheme);
+            }
         }
 
         return oai;
@@ -266,23 +262,17 @@ public class OpenApiAnnotationScanner {
 
         // Process @SecurityScheme annotations
         ////////////////////////////////////////
-        AnnotationInstance securitySchemeAnno = JandexUtil.getClassAnnotation(resourceClass, OpenApiConstants.DOTNAME_SECURITY_SCHEME);
-        if (securitySchemeAnno != null) {
-            String name = JandexUtil.stringValue(securitySchemeAnno, OpenApiConstants.PROP_SECURITY_SCHEME_NAME);
-            SecurityScheme securityScheme = readSecurityScheme(securitySchemeAnno);
-            Components components = ModelUtil.components(openApi);
-            components.addSecurityScheme(name, securityScheme);
-        }
-        AnnotationInstance securitySchemesAnno = JandexUtil.getClassAnnotation(resourceClass, OpenApiConstants.DOTNAME_SECURITY_SCHEMES);
-        if (securitySchemesAnno != null) {
-            Map<String, SecurityScheme> securitySchemes = readSecuritySchemes(securitySchemesAnno.value());
-            if (!securitySchemes.isEmpty()) {
+        List<AnnotationInstance> securitySchemeAnnotations = JandexUtil.getRepeatableAnnotation(resourceClass,
+                OpenApiConstants.DOTNAME_SECURITY_SCHEME, OpenApiConstants.DOTNAME_SECURITY_SCHEMES);
+        for (AnnotationInstance annotation : securitySchemeAnnotations) {
+            String name = JandexUtil.stringValue(annotation, OpenApiConstants.PROP_SECURITY_SCHEME_NAME);
+            if (name == null && JandexUtil.isRef(annotation)) {
+                name = JandexUtil.nameFromRef(annotation);
+            }
+            if (name != null) {
+                SecurityScheme securityScheme = readSecurityScheme(annotation);
                 Components components = ModelUtil.components(openApi);
-                for (Entry<String, SecurityScheme> entry : securitySchemes.entrySet()) {
-                    String name = entry.getKey();
-                    SecurityScheme securityScheme = entry.getValue();
-                    components.addSecurityScheme(name, securityScheme);
-                }
+                components.addSecurityScheme(name, securityScheme);
             }
         }
 
@@ -385,6 +375,35 @@ public class OpenApiAnnotationScanner {
             ModelUtil.paths(openApi).addPathItem(path, pathItem);
         }
 
+        // Figure out the current @Produces and @Consumes (if any)
+        currentConsumes = null;
+        currentProduces = null;
+        AnnotationInstance consumesAnno = method.annotation(OpenApiConstants.DOTNAME_CONSUMES);
+        if (consumesAnno == null) {
+            consumesAnno = JandexUtil.getClassAnnotation(method.declaringClass(), OpenApiConstants.DOTNAME_CONSUMES);
+        }
+        AnnotationInstance producesAnno = method.annotation(OpenApiConstants.DOTNAME_PRODUCES);
+        if (producesAnno == null) {
+            producesAnno = JandexUtil.getClassAnnotation(method.declaringClass(), OpenApiConstants.DOTNAME_PRODUCES);
+        }
+
+        if (consumesAnno != null) {
+            AnnotationValue annotationValue = consumesAnno.value();
+            if (annotationValue != null) {
+                currentConsumes = annotationValue.asStringArray();
+            } else {
+                currentConsumes = OpenApiConstants.DEFAULT_CONSUMES;
+            }
+        }
+        if (producesAnno != null) {
+            AnnotationValue annotationValue = producesAnno.value();
+            if (annotationValue != null) {
+                currentProduces = annotationValue.asStringArray();
+            } else {
+                currentProduces = OpenApiConstants.DEFAULT_CONSUMES;
+            }
+        }
+
         Operation operation = new OperationImpl();
 
         // Process any @Operation annotation
@@ -456,15 +475,8 @@ public class OpenApiAnnotationScanner {
 
         // Process @Parameter annotations
         /////////////////////////////////////////
-        List<AnnotationInstance> parameterAnnotations = JandexUtil.getAnnotations(method, OpenApiConstants.DOTNAME_PARAMETER);
-        if (method.hasAnnotation(OpenApiConstants.DOTNAME_PARAMETERS)) {
-            AnnotationInstance annotation = method.annotation(OpenApiConstants.DOTNAME_PARAMETERS);
-            AnnotationValue annotationValue = annotation.value();
-            if (annotationValue != null) {
-                AnnotationInstance[] nestedArray = annotationValue.asNestedArray();
-                parameterAnnotations.addAll(Arrays.asList(nestedArray));
-            }
-        }
+        List<AnnotationInstance> parameterAnnotations = JandexUtil.getRepeatableAnnotation(method,
+                OpenApiConstants.DOTNAME_PARAMETER, OpenApiConstants.DOTNAME_PARAMETERS);
         for (AnnotationInstance annotation : parameterAnnotations) {
             Parameter parameter = readParameter(annotation);
             if (parameter == null) {
@@ -491,21 +503,18 @@ public class OpenApiAnnotationScanner {
         // TODO need to handle the case where we have @FormParam annotations without @Parameter annotations
         // TODO need to handle the case where we have @HeaderParam annotations without @Parameter annotations
 
+
+        // Process any @RequestBody annotation
+        /////////////////////////////////////////
+        // note: the @RequestBody annotation can be found on a method argument *or* on the method
+//        AnnotationInstance annotation =
+//        JandexUtil.getAnnotations(method, null)
+
+
         // Process @APIResponse annotations
         /////////////////////////////////////////
-        List<AnnotationInstance> apiResponseAnnotations = new ArrayList<>();
-        if (method.hasAnnotation(OpenApiConstants.DOTNAME_API_RESPONSE)) {
-            AnnotationInstance annotation = method.annotation(OpenApiConstants.DOTNAME_API_RESPONSE);
-            apiResponseAnnotations.add(annotation);
-        }
-        if (method.hasAnnotation(OpenApiConstants.DOTNAME_API_RESPONSES)) {
-            AnnotationInstance annotation = method.annotation(OpenApiConstants.DOTNAME_API_RESPONSES);
-            AnnotationValue annotationValue = annotation.value();
-            if (annotationValue != null) {
-                AnnotationInstance[] nestedArray = annotationValue.asNestedArray();
-                apiResponseAnnotations.addAll(Arrays.asList(nestedArray));
-            }
-        }
+        List<AnnotationInstance> apiResponseAnnotations = JandexUtil.getRepeatableAnnotation(method,
+                OpenApiConstants.DOTNAME_API_RESPONSE, OpenApiConstants.DOTNAME_API_RESPONSES);
         for (AnnotationInstance annotation : apiResponseAnnotations) {
             String responseCode = JandexUtil.stringValue(annotation, OpenApiConstants.PROP_RESPONSE_CODE);
             if (responseCode == null) {
@@ -516,7 +525,39 @@ public class OpenApiAnnotationScanner {
             responses.addApiResponse(responseCode, response);
         }
 
+        // Process @SecurityRequirement annotations
+        ///////////////////////////////////////////
+        List<AnnotationInstance> securityRequirementAnnotations = JandexUtil.getRepeatableAnnotation(method,
+                OpenApiConstants.DOTNAME_SECURITY_REQUIREMENT, OpenApiConstants.DOTNAME_SECURITY_REQUIREMENTS);
+        for (AnnotationInstance annotation : securityRequirementAnnotations) {
+            SecurityRequirement requirement = readSecurityRequirement(annotation);
+            if (requirement != null) {
+                operation.addSecurityRequirement(requirement);
+            }
+        }
+
+        // Process @Callback annotations
+        /////////////////////////////////////////
+        List<AnnotationInstance> callbackAnnotations = JandexUtil.getRepeatableAnnotation(method,
+                OpenApiConstants.DOTNAME_CALLBACK, OpenApiConstants.DOTNAME_CALLBACKS);
+        Map<String, Callback> callbacks = new LinkedHashMap<>();
+        for (AnnotationInstance annotation : callbackAnnotations) {
+            String name = JandexUtil.stringValue(annotation, OpenApiConstants.PROP_NAME);
+            if (name == null && JandexUtil.isRef(annotation)) {
+                name = JandexUtil.nameFromRef(annotation);
+            }
+            if (name != null) {
+                callbacks.put(name, readCallback(annotation));
+            }
+
+            if (!callbacks.isEmpty()) {
+                operation.setCallbacks(callbacks);
+            }
+        }
+
+
         // Now set the operation on the PathItem as appropriate based on the Http method type
+        ///////////////////////////////////////////
         switch (methodType) {
             case DELETE:
                 pathItem.setDELETE(operation);
@@ -798,19 +839,31 @@ public class OpenApiAnnotationScanner {
         AnnotationInstance[] nestedArray = securityRequirementAnnos.asNestedArray();
         List<SecurityRequirement> requirements = new ArrayList<>();
         for (AnnotationInstance requirementAnno : nestedArray) {
-            String name = JandexUtil.stringValue(requirementAnno, OpenApiConstants.PROP_NAME);
-            if (name != null) {
-                List<String> scopes = JandexUtil.stringListValue(requirementAnno, OpenApiConstants.PROP_SCOPES);
-                SecurityRequirement requirement = new SecurityRequirementImpl();
-                if (scopes == null) {
-                    requirement.addScheme(name);
-                } else {
-                    requirement.addScheme(name, scopes);
-                }
+            SecurityRequirement requirement = readSecurityRequirement(requirementAnno);
+            if (requirement != null) {
                 requirements.add(requirement);
             }
         }
         return requirements;
+    }
+
+    /**
+     * Reads a single SecurityRequirement annotation.
+     * @param annotation
+     */
+    private SecurityRequirement readSecurityRequirement(AnnotationInstance annotation) {
+        String name = JandexUtil.stringValue(annotation, OpenApiConstants.PROP_NAME);
+        if (name != null) {
+            List<String> scopes = JandexUtil.stringListValue(annotation, OpenApiConstants.PROP_SCOPES);
+            SecurityRequirement requirement = new SecurityRequirementImpl();
+            if (scopes == null) {
+                requirement.addScheme(name);
+            } else {
+                requirement.addScheme(name, scopes);
+            }
+            return requirement;
+        }
+        return null;
     }
 
     /**
@@ -935,9 +988,9 @@ public class OpenApiAnnotationScanner {
         operation.setSummary(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_SUMMARY));
         operation.setDescription(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_DESCRIPTION));
         operation.setExternalDocs(readExternalDocs(annotation.value(OpenApiConstants.PROP_EXTERNAL_DOCS)));
-        operation.setParameters(readOperationParameters(annotation.value(OpenApiConstants.PROP_PARAMETERS)));
+        operation.setParameters(readCallbackOperationParameters(annotation.value(OpenApiConstants.PROP_PARAMETERS)));
         operation.setRequestBody(readRequestBody(annotation.value(OpenApiConstants.PROP_REQUEST_BODY)));
-        operation.setResponses(readOperationResponses(annotation.value(OpenApiConstants.PROP_RESPONSES)));
+        operation.setResponses(readCallbackOperationResponses(annotation.value(OpenApiConstants.PROP_RESPONSES)));
         operation.setSecurity(readSecurity(annotation.value(OpenApiConstants.PROP_SECURITY)));
         operation.setExtensions(readExtensions(annotation.value(OpenApiConstants.PROP_EXTENSIONS)));
         return operation;
@@ -947,7 +1000,7 @@ public class OpenApiAnnotationScanner {
      * Reads an array of Parameter annotations into a list.
      * @param value
      */
-    private List<Parameter> readOperationParameters(AnnotationValue value) {
+    private List<Parameter> readCallbackOperationParameters(AnnotationValue value) {
         if (value == null) {
             return null;
         }
@@ -964,7 +1017,7 @@ public class OpenApiAnnotationScanner {
      * Reads an array of APIResponse annotations into an {@link APIResponses} model.
      * @param value
      */
-    private APIResponses readOperationResponses(AnnotationValue value) {
+    private APIResponses readCallbackOperationResponses(AnnotationValue value) {
         if (value == null) {
             return null;
         }
@@ -972,9 +1025,9 @@ public class OpenApiAnnotationScanner {
         APIResponses responses = new APIResponsesImpl();
         AnnotationInstance[] nestedArray = value.asNestedArray();
         for (AnnotationInstance nested : nestedArray) {
-            String name = JandexUtil.stringValue(nested, OpenApiConstants.PROP_NAME);
-            if (name != null) {
-                responses.put(name, readResponse(nested));
+            String responseCode = JandexUtil.stringValue(nested, OpenApiConstants.PROP_RESPONSE_CODE);
+            if (responseCode != null) {
+                responses.put(responseCode, readResponse(nested));
             }
         }
         return responses;
@@ -1179,7 +1232,8 @@ public class OpenApiAnnotationScanner {
         parameter.setExplode(readExplode(JandexUtil.enumValue(annotation, OpenApiConstants.PROP_EXPLODE, org.eclipse.microprofile.openapi.annotations.enums.Explode.class)));
         parameter.setAllowReserved(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_ALLOW_RESERVED));
         parameter.setSchema(readSchema(annotation.value(OpenApiConstants.PROP_SCHEMA)));
-        parameter.setContent(readContent(annotation.value(OpenApiConstants.PROP_SERVER)));
+        // TODO revisit this - should we pass "input" here?  or do we need something else entirely?
+        parameter.setContent(readContent(annotation.value(OpenApiConstants.PROP_SERVER), ContentDirection.None));
         parameter.setExamples(readExamples(annotation.value(OpenApiConstants.PROP_EXAMPLES)));
         parameter.setExample(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_EXAMPLE));
         parameter.setRef(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF));
@@ -1205,7 +1259,7 @@ public class OpenApiAnnotationScanner {
      * Content annotations.
      * @param value
      */
-    private Content readContent(AnnotationValue value) {
+    private Content readContent(AnnotationValue value, ContentDirection direction) {
         if (value == null) {
             return null;
         }
@@ -1213,10 +1267,23 @@ public class OpenApiAnnotationScanner {
         Content content = new ContentImpl();
         AnnotationInstance[] nestedArray = value.asNestedArray();
         for (AnnotationInstance nested : nestedArray) {
-            String name = JandexUtil.stringValue(nested, OpenApiConstants.PROP_MEDIA_TYPE);
-            if (name != null) {
-                MediaType mediaType = readMediaType(nested);
-                content.addMediaType(name, mediaType);
+            String contentType = JandexUtil.stringValue(nested, OpenApiConstants.PROP_MEDIA_TYPE);
+            MediaType mediaTypeModel = readMediaType(nested);
+            if (contentType == null) {
+                // If the content type is not provided in the @Content annotation, then
+                // we assume it applies to all the jax-rs method's @Consumes or @Produces
+                String [] mimeTypes = {};
+                if (direction == ContentDirection.Input && currentConsumes != null) {
+                    mimeTypes = currentConsumes;
+                }
+                if (direction == ContentDirection.Output && currentProduces != null) {
+                    mimeTypes = currentProduces;
+                }
+                for (String mimeType : mimeTypes) {
+                    content.addMediaType(mimeType, mediaTypeModel);
+                }
+            } else {
+                content.addMediaType(contentType, mediaTypeModel);
             }
         }
         return content;
@@ -1321,7 +1388,7 @@ public class OpenApiAnnotationScanner {
         LOG.debug("Processing a single @RequestBody annotation.");
         RequestBody requestBody = new RequestBodyImpl();
         requestBody.setDescription(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_DESCRIPTION));
-        requestBody.setContent(readContent(annotation.value(OpenApiConstants.PROP_CONTENT)));
+        requestBody.setContent(readContent(annotation.value(OpenApiConstants.PROP_CONTENT), ContentDirection.Input));
         requestBody.setRequired(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_REQUIRED));
         requestBody.setRef(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF));
         return requestBody;
@@ -1363,7 +1430,7 @@ public class OpenApiAnnotationScanner {
         response.setDescription(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_DESCRIPTION));
         response.setHeaders(readHeaders(annotation.value(OpenApiConstants.PROP_HEADERS)));
         response.setLinks(readLinks(annotation.value(OpenApiConstants.PROP_LINKS)));
-        response.setContent(readContent(annotation.value(OpenApiConstants.PROP_CONTENT)));
+        response.setContent(readContent(annotation.value(OpenApiConstants.PROP_CONTENT), ContentDirection.Output));
         response.setRef(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF));
         return response;
     }
@@ -1647,6 +1714,15 @@ public class OpenApiAnnotationScanner {
             extensions.put(extName, extValue);
         }
         return extensions;
+    }
+
+    /**
+     * Simple enum to indicate whether an @Content annotation being processed is
+     * an input or an output.
+     * @author eric.wittmann@gmail.com
+     */
+    private static enum ContentDirection {
+        Input, Output, None
     }
 
 }

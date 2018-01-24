@@ -37,11 +37,15 @@ import javax.ws.rs.core.Application;
 
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.callbacks.Callback;
+import org.eclipse.microprofile.openapi.annotations.callbacks.Callbacks;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameters;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirements;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.annotations.security.SecuritySchemes;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -178,6 +182,10 @@ public final class OpenApiConstants {
     public static final DotName DOTNAME_OPEN_API_DEFINITION = DotName.createSimple(OpenAPIDefinition.class.getName());
     public static final DotName DOTNAME_SECURITY_SCHEME = DotName.createSimple(SecurityScheme.class.getName());
     public static final DotName DOTNAME_SECURITY_SCHEMES = DotName.createSimple(SecuritySchemes.class.getName());
+    public static final DotName DOTNAME_SECURITY_REQUIREMENT = DotName.createSimple(SecurityRequirement.class.getName());
+    public static final DotName DOTNAME_SECURITY_REQUIREMENTS = DotName.createSimple(SecurityRequirements.class.getName());
+    public static final DotName DOTNAME_CALLBACK = DotName.createSimple(Callback.class.getName());
+    public static final DotName DOTNAME_CALLBACKS = DotName.createSimple(Callbacks.class.getName());
     public static final DotName DOTNAME_SCHEMA = DotName.createSimple(Schema.class.getName());
     public static final DotName DOTNAME_TAG = DotName.createSimple(Tag.class.getName());
     public static final DotName DOTNAME_TAGS = DotName.createSimple(Tags.class.getName());
@@ -206,6 +214,9 @@ public final class OpenApiConstants {
     public static final DotName DOTNAME_DELETE = DotName.createSimple(DELETE.class.getName());
     public static final DotName DOTNAME_HEAD = DotName.createSimple(HEAD.class.getName());
     public static final DotName DOTNAME_OPTIONS = DotName.createSimple(OPTIONS.class.getName());
+
+    public static final String[] DEFAULT_CONSUMES = new String[] { "*/*" };
+    public static final String[] DEFAULT_PRODUCES = new String[] { "*/*" };
 
     /**
      * Constructor.
