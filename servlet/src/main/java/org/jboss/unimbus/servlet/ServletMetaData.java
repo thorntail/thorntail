@@ -24,7 +24,7 @@ public class ServletMetaData {
     }
 
     public ServletMetaData(String name, Servlet servlet) {
-        this(name, servlet.getClass(), ()-> servlet);
+        this(name, servlet.getClass(), () -> servlet);
     }
 
     public ServletMetaData(Class<? extends Servlet> type, Supplier<? extends Servlet> supplier) {
@@ -90,6 +90,8 @@ public class ServletMetaData {
         return this.security;
     }
 
+
+
     private final String name;
 
     private final Class<? extends Servlet> type;
@@ -105,4 +107,5 @@ public class ServletMetaData {
     private Map<String, String> initParams = new HashMap<>();
 
     private ServletSecurityMetaData security;
+
 }

@@ -17,16 +17,20 @@ import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.InstanceHandle;
 import io.undertow.servlet.api.ListenerInfo;
 import io.undertow.servlet.api.LoginConfig;
+import io.undertow.servlet.api.SecurityConstraint;
 import io.undertow.servlet.api.SecurityInfo;
 import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.api.ServletSecurityInfo;
 import io.undertow.servlet.api.TransportGuaranteeType;
+import io.undertow.servlet.api.WebResourceCollection;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.FilterMetaData;
 import org.jboss.unimbus.servlet.HttpConstraintMetaData;
 import org.jboss.unimbus.servlet.HttpMethodConstraintMetaData;
+import org.jboss.unimbus.servlet.SecurityConstraintMetaData;
 import org.jboss.unimbus.servlet.ServletMetaData;
 import org.jboss.unimbus.servlet.ServletSecurityMetaData;
+import org.jboss.unimbus.servlet.WebResourceCollectionMetaData;
 import org.jboss.weld.environment.servlet.Listener;
 
 /**
@@ -46,13 +50,17 @@ public class DeploymentUtils {
 
         info.setDeploymentName(meta.getName());
         info.setContextPath(meta.getContextPath());
-        info.setClassLoader(DeploymentUtils.class.getClassLoader());
+        info.setClassLoader(new SortingClassLoader(DeploymentUtils.class.getClassLoader()));
+
+
+        meta.getSecurityConstraints().forEach( e->{
+            info.addSecurityConstraint(convert(e));
+        });
 
         info.addServlets(convert(meta.getServlets()));
 
-        meta.getServletContextAttributes().entrySet().forEach(e -> {
-            info.addServletContextAttribute(e.getKey(), e.getValue());
-        });
+        meta.getInitParams().entrySet().forEach(e -> info.addInitParameter(e.getKey(), e.getValue()));
+        meta.getServletContextAttributes().entrySet().forEach(e -> info.addServletContextAttribute(e.getKey(), e.getValue()));
 
         if (meta.getRealm() != null && !meta.getAuthMethods().isEmpty()) {
             LoginConfig loginConfig = new LoginConfig(meta.getRealm());
@@ -60,6 +68,22 @@ public class DeploymentUtils {
             meta.getAuthMethods().forEach(loginConfig::addLastAuthMethod);
         }
 
+        return info;
+    }
+
+    private static SecurityConstraint convert(SecurityConstraintMetaData meta) {
+        SecurityConstraint info = new SecurityConstraint();
+        info.addRolesAllowed(meta.getRolesAllowed());
+        meta.getWebResourceCollections().forEach( e->{
+            info.addWebResourceCollection(convert(e));
+        });
+        info.setEmptyRoleSemantic( convert(meta.getEmptyRoleSemantic()) );
+        return info;
+    }
+
+    private static WebResourceCollection convert(WebResourceCollectionMetaData e) {
+        WebResourceCollection info = new WebResourceCollection();
+        info.addUrlPatterns(e.getUrlPatterns());
         return info;
     }
 
@@ -115,10 +139,10 @@ public class DeploymentUtils {
 
     private static HttpMethodSecurityInfo convert(HttpMethodConstraintMetaData meta) {
         HttpMethodSecurityInfo info = new HttpMethodSecurityInfo();
-        info.setMethod( meta.getMethod() );
-        info.setTransportGuaranteeType( convert( meta.getTransportGuarantee() ));
-        info.setEmptyRoleSemantic( convert(meta.getEmptyRoleSemantic()));
-        info.addRolesAllowed( meta.getRolesAllowed());
+        info.setMethod(meta.getMethod());
+        info.setTransportGuaranteeType(convert(meta.getTransportGuarantee()));
+        info.setEmptyRoleSemantic(convert(meta.getEmptyRoleSemantic()));
+        info.addRolesAllowed(meta.getRolesAllowed());
         return info;
     }
 

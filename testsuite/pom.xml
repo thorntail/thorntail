@@ -30,6 +30,8 @@
     <module>servlet-static</module>
     <module>jaxrs</module>
     <module>jaxrs-jsonp</module>
+
+    <module>keycloak</module>
     <module>proof</module>
   </modules>
 </project>

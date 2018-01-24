@@ -67,6 +67,14 @@ public class DeploymentMetaData {
         return this.servletContextAttributes;
     }
 
+    public void addInitParam(String name, String value) {
+        this.initParams.put(name, value);
+    }
+
+    public Map<String, String> getInitParams() {
+        return this.initParams;
+    }
+
     public void setRealm(String realm) {
         this.realm = realm;
     }
@@ -90,6 +98,13 @@ public class DeploymentMetaData {
     public List<FilterMetaData> getFilters() {
         return this.filters;
     }
+    public void addSecurityConstraint(SecurityConstraintMetaData meta) {
+        this.securityConstraints.add(meta);
+    }
+
+    public List<SecurityConstraintMetaData> getSecurityConstraints() {
+        return this.securityConstraints;
+    }
 
     private String name;
 
@@ -99,6 +114,7 @@ public class DeploymentMetaData {
 
     private List<ServletMetaData> servlets = new ArrayList<>();
 
+    private Map<String,String> initParams = new HashMap<>();
     private Map<String, Object> servletContextAttributes = new HashMap<>();
 
     private String realm;
@@ -106,4 +122,6 @@ public class DeploymentMetaData {
     private List<String> authMethods = new ArrayList<>();
 
     private List<FilterMetaData> filters = new ArrayList<>();
+
+    private List<SecurityConstraintMetaData> securityConstraints = new ArrayList<>();
 }

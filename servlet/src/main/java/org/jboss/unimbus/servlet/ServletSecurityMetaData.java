@@ -12,6 +12,7 @@ import javax.servlet.annotation.ServletSecurity;
  * Created by bob on 1/18/18.
  */
 public class ServletSecurityMetaData {
+    // TODO move these up in the hierarchy.
     public enum EmptyRoleSemantic {
         PERMIT,
         DENY,

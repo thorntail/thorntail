@@ -19,7 +19,7 @@ import org.jboss.unimbus.servlet.Primary;
 public class RestAssuredInitializer {
 
     void setupRestAssured(@Observes LifecycleEvent.AfterStart event) {
-        RestAssured.baseURI = primaryUrl.toExternalForm();
+        RestAssured.baseURI = this.primaryUrl.toExternalForm();
     }
 
     @Inject

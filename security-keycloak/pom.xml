@@ -9,8 +9,12 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>security</artifactId>
-  <name>Security</name>
+  <artifactId>security-keycloak</artifactId>
+  <name>Security - Keycloak</name>
+
+  <properties>
+    <version.keycloak>3.4.3.Final</version.keycloak>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -20,12 +24,28 @@
 
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
+      <artifactId>security</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-undertow-adapter</artifactId>
+      <version>${version.keycloak}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-authz-client</artifactId>
+      <version>${version.keycloak}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
       <artifactId>servlet</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
 
-<!--
     <dependency>
       <groupId>io.undertow</groupId>
       <artifactId>undertow-servlet</artifactId>
@@ -33,7 +53,6 @@
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
--->
 
   </dependencies>
 
