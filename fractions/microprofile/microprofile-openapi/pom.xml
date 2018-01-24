@@ -25,7 +25,7 @@
     <swarm.fraction.stability>experimental</swarm.fraction.stability>
     <swarm.fraction.tags>MicroProfile,OpenAPI,JaxRs,Web</swarm.fraction.tags>
     <!-- The MicroProfile OpenAPI Spec version -->
-    <mp.openapi.version>1.0</mp.openapi.version>
+    <mp.openapi.version>1.1-SNAPSHOT</mp.openapi.version>
     
     <!-- Dependencies -->
     <version.com.fasterxml.jackson.dataformat>2.9.2</version.com.fasterxml.jackson.dataformat>

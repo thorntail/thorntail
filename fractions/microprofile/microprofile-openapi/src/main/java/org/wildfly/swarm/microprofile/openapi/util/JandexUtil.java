@@ -191,23 +191,6 @@ public class JandexUtil {
     }
 
     /**
-     * Returns a list of annotations of a given type found on the given method.
-     * @param method
-     * @param annotationName
-     */
-    public static List<AnnotationInstance> getAnnotations(MethodInfo method, DotName annotationName) {
-        List<AnnotationInstance> annotations = new ArrayList<>(method.annotations());
-        CollectionUtils.filter(annotations, new Predicate() {
-            @Override
-            public boolean evaluate(Object object) {
-                AnnotationInstance annotation = (AnnotationInstance) object;
-                return annotation.name().equals(annotationName);
-            }
-        });
-        return annotations;
-    }
-
-    /**
      * Use the jandex index to find all jax-rs resource classes.  This is done by searching for
      * all Class-level @Path annotations.
      * @param pathAnnotations
@@ -252,6 +235,58 @@ public class JandexUtil {
         String ref = annotation.value(OpenApiConstants.PROP_REF).asString();
         String[] split = ref.split("/");
         return split[split.length - 1];
+    }
+
+    /**
+     * Many OAI annotations can either be found singly or as a wrapped array.  This method will
+     * look for both and return a list of all found.  Both the single and wrapper annotation names
+     * must be provided.
+     * @param method
+     * @param singleAnnotationName
+     * @param repeatableAnnotationName
+     */
+    public static List<AnnotationInstance> getRepeatableAnnotation(MethodInfo method,
+            DotName singleAnnotationName, DotName repeatableAnnotationName) {
+        List<AnnotationInstance> annotations = new ArrayList<>();
+        if (method.hasAnnotation(singleAnnotationName)) {
+            AnnotationInstance annotation = method.annotation(singleAnnotationName);
+            annotations.add(annotation);
+        }
+        if (method.hasAnnotation(repeatableAnnotationName)) {
+            AnnotationInstance annotation = method.annotation(repeatableAnnotationName);
+            AnnotationValue annotationValue = annotation.value();
+            if (annotationValue != null) {
+                AnnotationInstance[] nestedArray = annotationValue.asNestedArray();
+                annotations.addAll(Arrays.asList(nestedArray));
+            }
+        }
+        return annotations;
+    }
+
+    /**
+     * Many OAI annotations can either be found singly or as a wrapped array.  This method will
+     * look for both and return a list of all found.  Both the single and wrapper annotation names
+     * must be provided.
+     * @param clazz
+     * @param singleAnnotationName
+     * @param repeatableAnnotationName
+     */
+    public static List<AnnotationInstance> getRepeatableAnnotation(ClassInfo clazz,
+            DotName singleAnnotationName, DotName repeatableAnnotationName) {
+        List<AnnotationInstance> annotations = new ArrayList<>(clazz.classAnnotations());
+        AnnotationInstance single = JandexUtil.getClassAnnotation(clazz, singleAnnotationName);
+        AnnotationInstance repeatable = JandexUtil.getClassAnnotation(clazz, repeatableAnnotationName);
+        if (single != null) {
+            annotations.add(single);
+        }
+        if (repeatable != null) {
+            AnnotationValue annotationValue = repeatable.value();
+            if (annotationValue != null) {
+                AnnotationInstance[] nestedArray = annotationValue.asNestedArray();
+                annotations.addAll(Arrays.asList(nestedArray));
+            }
+        }
+        return annotations;
     }
 
 }
