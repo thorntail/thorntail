@@ -81,6 +81,12 @@ public class MergeUtil {
             return null;
         }
 
+        // It's uncommon, but in some cases (like Link Parameters or Examples) the values could
+        // be different types.  In this case, just take the 2nd one (the override).
+        if (!object1.getClass().equals(object2.getClass())) {
+            return object2;
+        }
+
         PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(object1);
         for (PropertyDescriptor descriptor : descriptors) {
             if (EXCLUDED_PROPERTIES.contains(descriptor.getName())) {

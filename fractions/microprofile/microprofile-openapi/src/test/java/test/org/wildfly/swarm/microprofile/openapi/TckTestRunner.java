@@ -16,16 +16,21 @@
 
 package test.org.wildfly.swarm.microprofile.openapi;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.tck.AppTestBase;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.jandex.IndexView;
@@ -33,6 +38,7 @@ import org.jboss.jandex.Indexer;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
@@ -41,8 +47,11 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.wildfly.microprofile.config.PropertiesConfigSourceProvider;
 import org.wildfly.microprofile.config.WildFlyConfigBuilder;
+import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer;
+import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
 import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiConfig;
 import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiDeploymentProcessor;
+import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiDocumentHolder;
 
 /**
  * A Junit 4 test runner used to quickly run the OpenAPI tck tests directly against the
@@ -59,6 +68,8 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
 
     private Class<?> testClass;
     private Class<? extends AppTestBase> tckTestClass;
+
+    public static Map<Class, OpenAPI> openApiDocs = new HashMap<>();
 
     /**
      * Constructor.
@@ -95,6 +106,21 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
         OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(config, archive, index);
         try {
             processor.process();
+
+            Assert.assertNotNull("Generated OAI document must not be null.", OpenApiDocumentHolder.document);
+
+            openApiDocs.put(testClass, OpenApiDocumentHolder.document);
+
+            // Output the /openapi content to a file for debugging purposes
+            File parent = new File("target", "TckTestRunner");
+            if (!parent.exists()) {
+                parent.mkdir();
+            }
+            File file = new File(parent, testClass.getName() + ".json");
+            String content = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
+            try (FileWriter writer = new FileWriter(file)) {
+                IOUtils.write(content, writer);
+            }
         } catch (Exception e) {
             throw new InitializationError(e);
         }
@@ -208,6 +234,8 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
      */
     @Override
     protected void runChild(final ProxiedTckTest child, final RunNotifier notifier) {
+        OpenApiDocumentHolder.document = TckTestRunner.openApiDocs.get(child.getTest().getClass());
+
         Description description = describeChild(child);
         if (isIgnored(child)) {
             notifier.fireTestIgnored(description);
