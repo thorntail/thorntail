@@ -24,13 +24,14 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
-import org.jboss.jandex.IndexView;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
 import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.io.OpenApiParser;
 import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
 import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
+import org.wildfly.swarm.microprofile.openapi.models.PathsImpl;
+import org.wildfly.swarm.microprofile.openapi.models.info.InfoImpl;
 import org.wildfly.swarm.microprofile.openapi.util.FilterUtil;
 import org.wildfly.swarm.microprofile.openapi.util.MergeUtil;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
@@ -45,19 +46,16 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
 
     private final OpenApiConfig config;
     private final Archive archive;
-    private final IndexView index;
 
     /**
      * Constructor.
      * @param config
      * @param archive
-     * @param index
      */
     @Inject
-    public OpenApiDeploymentProcessor(OpenApiConfig config, Archive archive, IndexView index) {
+    public OpenApiDeploymentProcessor(OpenApiConfig config, Archive archive) {
         this.config = config;
         this.archive = archive;
-        this.index = index;
     }
 
     /**
@@ -67,8 +65,6 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
      */
     @Override
     public void process() throws Exception {
-        System.out.println("Initializing OpenAPI support: scanning deployment.");
-
         // Phase 1:  Call OASModelReader
         OpenAPIImpl model = modelFromReader();
 
@@ -87,6 +83,20 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
             model.setOpenapi(OpenApiConstants.OPEN_API_VERSION);
         }
 
+        // Phase 6:  Provide missing required elements
+        if (model.getPaths() == null) {
+            model.setPaths(new PathsImpl());
+        }
+        if (model.getInfo() == null) {
+            model.setInfo(new InfoImpl());
+        }
+        if (model.getInfo().getTitle() == null) {
+            model.getInfo().setTitle((archive.getName() == null ? "Generated" : archive.getName()) + " API");
+        }
+        if (model.getInfo().getVersion() == null) {
+            model.getInfo().setVersion("1.0");
+        }
+
         OpenApiDocumentHolder.document = model;
     }
 
@@ -100,7 +110,6 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
         if (readerClassName == null) {
             return null;
         }
-        System.out.println("Creating OpenAPI model from OASReader.");
         try {
             Class c = Class.forName(readerClassName);
             OASModelReader reader = (OASModelReader) c.newInstance();
@@ -143,8 +152,6 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
             return null;
         }
 
-        System.out.println("Creating OpenAPI model from static file: " + node.toString());
-
         try (InputStream stream = node.getAsset().openStream()) {
             return OpenApiParser.parse(stream, format);
         } catch (IOException e) {
@@ -162,9 +169,7 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
             return null;
         }
 
-        System.out.println("Scanning for OpenAPI annotations.");
-
-        OpenApiAnnotationScanner scanner = new OpenApiAnnotationScanner(config, archive, index);
+        OpenApiAnnotationScanner scanner = new OpenApiAnnotationScanner(config, archive);
         return scanner.scan();
     }
 

@@ -42,12 +42,15 @@ import org.eclipse.microprofile.openapi.annotations.callbacks.Callbacks;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameters;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirements;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.annotations.security.SecuritySchemes;
+import org.eclipse.microprofile.openapi.annotations.servers.Server;
+import org.eclipse.microprofile.openapi.annotations.servers.Servers;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.openapi.annotations.tags.Tags;
 import org.jboss.jandex.DotName;
@@ -57,9 +60,14 @@ import org.jboss.jandex.DotName;
  */
 public final class OpenApiConstants {
 
-    public static final String OPEN_API_VERSION = "3.0.0";
+    public static final String OPEN_API_VERSION = "3.0.1";
+
+    public static final String CLASS_SUFFIX = ".class";
+    public static final String WEB_ARCHIVE_CLASS_PREFIX = "/WEB-INF/classes/";
 
     public static final String EXTENSION_PROPERTY_PREFIX = "x-";
+
+    public static final String[] DEFAULT_PARAMETER_MEDIA_TYPES = { "*/*" };
 
     public static final String PROP_TRACE = "trace";
     public static final String PROP_PATCH = "patch";
@@ -180,6 +188,7 @@ public final class OpenApiConstants {
     public static final String PROP_API_KEY_NAME = "apiKeyName";
     public static final String PROP_RESPONSE_CODE = "responseCode";
     public static final String PROP_IMPLEMENTATION = "implementation";
+    public static final String PROP_ENUMERATION = "enumeration";
 
     public static final DotName DOTNAME_OPEN_API_DEFINITION = DotName.createSimple(OpenAPIDefinition.class.getName());
     public static final DotName DOTNAME_SECURITY_SCHEME = DotName.createSimple(SecurityScheme.class.getName());
@@ -196,6 +205,9 @@ public final class OpenApiConstants {
     public static final DotName DOTNAME_API_RESPONSES = DotName.createSimple(APIResponses.class.getName());
     public static final DotName DOTNAME_PARAMETER = DotName.createSimple(Parameter.class.getName());
     public static final DotName DOTNAME_PARAMETERS = DotName.createSimple(Parameters.class.getName());
+    public static final DotName DOTNAME_REQUEST_BODY = DotName.createSimple(RequestBody.class.getName());
+    public static final DotName DOTNAME_SERVER = DotName.createSimple(Server.class.getName());
+    public static final DotName DOTNAME_SERVERS = DotName.createSimple(Servers.class.getName());
 
     public static final DotName DOTNAME_APPLICATION = DotName.createSimple(Application.class.getName());
     public static final DotName DOTNAME_APPLICATION_PATH = DotName.createSimple(ApplicationPath.class.getName());

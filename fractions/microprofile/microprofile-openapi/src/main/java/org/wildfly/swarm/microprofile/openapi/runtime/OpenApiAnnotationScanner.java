@@ -17,6 +17,7 @@
 package org.wildfly.swarm.microprofile.openapi.runtime;
 
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,11 +74,14 @@ import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.ClassType;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
+import org.jboss.jandex.Indexer;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.jandex.MethodParameterInfo;
 import org.jboss.jandex.Type;
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.Node;
 import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.ComponentsImpl;
 import org.wildfly.swarm.microprofile.openapi.models.ExternalDocumentationImpl;
@@ -111,6 +115,7 @@ import org.wildfly.swarm.microprofile.openapi.models.servers.ServerVariableImpl;
 import org.wildfly.swarm.microprofile.openapi.models.servers.ServerVariablesImpl;
 import org.wildfly.swarm.microprofile.openapi.models.tags.TagImpl;
 import org.wildfly.swarm.microprofile.openapi.util.JandexUtil;
+import org.wildfly.swarm.microprofile.openapi.util.JandexUtil.RefType;
 import org.wildfly.swarm.microprofile.openapi.util.MergeUtil;
 import org.wildfly.swarm.microprofile.openapi.util.ModelUtil;
 
@@ -143,12 +148,88 @@ public class OpenApiAnnotationScanner {
      * Constructor.
      * @param config
      * @param archive
-     * @param index
      */
-    public OpenApiAnnotationScanner(OpenApiConfig config, Archive archive, IndexView index) {
+    public OpenApiAnnotationScanner(OpenApiConfig config, Archive archive) {
         this.config = config;
         this.archive = archive;
-        this.index = index;
+        this.index = archiveToIndex(config, archive);
+    }
+
+    /**
+     * Index the archive to produce a jandex index.
+     * @param config
+     * @param archive
+     */
+    @SuppressWarnings("unchecked")
+    private static IndexView archiveToIndex(OpenApiConfig config, Archive archive) {
+        if (archive == null) {
+            throw new RuntimeException("Archive was null!");
+        }
+
+        Indexer indexer = new Indexer();
+        Map<ArchivePath, Node> c = archive.getContent();
+        try {
+            for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
+                ArchivePath archivePath = each.getKey();
+                if (archivePath.get().endsWith(OpenApiConstants.CLASS_SUFFIX) && acceptClassForScanning(config, archivePath.get())) {
+                    indexer.index(each.getValue().getAsset().openStream());
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return indexer.complete();
+    }
+
+    /**
+     * Returns true if the class represented by the given archive path should be included in
+     * the annotation index.
+     * @param config
+     * @param archivePath
+     */
+    private static boolean acceptClassForScanning(OpenApiConfig config, String archivePath) {
+        if (archivePath == null) {
+            return false;
+        }
+
+        Set<String> scanClasses = config.scanClasses();
+        Set<String> scanPackages = config.scanPackages();
+        Set<String> scanExcludeClasses = config.scanExcludeClasses();
+        Set<String> scanExcludePackages = config.scanExcludePackages();
+        if (scanClasses.isEmpty() && scanPackages.isEmpty() && scanExcludeClasses.isEmpty() && scanExcludePackages.isEmpty()) {
+            return true;
+        }
+
+        if (archivePath.startsWith(OpenApiConstants.WEB_ARCHIVE_CLASS_PREFIX)) {
+            archivePath = archivePath.substring(OpenApiConstants.WEB_ARCHIVE_CLASS_PREFIX.length());
+        }
+        String fqcn = archivePath.replaceAll("/", ".").substring(0, archivePath.lastIndexOf(OpenApiConstants.CLASS_SUFFIX));
+        String packageName = "";
+        if (fqcn.contains(".")) {
+            int idx = fqcn.lastIndexOf(".");
+            packageName = fqcn.substring(0, idx);
+        }
+
+        boolean accept;
+        // Includes
+        if (scanClasses.isEmpty() && scanPackages.isEmpty()) {
+            accept = true;
+        } else if (!scanClasses.isEmpty() && scanPackages.isEmpty()) {
+            accept = scanClasses.contains(fqcn);
+        } else if (scanClasses.isEmpty() && !scanPackages.isEmpty()) {
+            accept = scanPackages.contains(packageName);
+        } else {
+            accept = scanClasses.contains(fqcn) || scanPackages.contains(packageName);
+        }
+        // Excludes override includes
+        if (!scanExcludeClasses.isEmpty() && scanExcludeClasses.contains(fqcn)) {
+            accept = false;
+        }
+        if (!scanExcludePackages.isEmpty() && scanExcludePackages.contains(packageName)) {
+            accept = false;
+        }
+        return accept;
     }
 
     /**
@@ -158,7 +239,11 @@ public class OpenApiAnnotationScanner {
     public OpenAPIImpl scan() {
         LOG.debug("Scanning deployment for OpenAPI and JAX-RS Annotations.");
 
-        OpenAPIImpl oai = null;
+        // Initialize a new OAI document.  Even if nothing is found, this will be returned.
+        OpenAPIImpl oai = new OpenAPIImpl();
+        oai.setOpenapi(OpenApiConstants.OPEN_API_VERSION);
+
+        // Get all jax-rs applications and convert them to OAI models (and merge them into a single one)
         Collection<ClassInfo> applications = this.index.getAllKnownSubclasses(DotName.createSimple(Application.class.getName()));
         for (ClassInfo classInfo : applications) {
             oai = MergeUtil.merge(oai, jaxRsApplicationToOpenApi(classInfo));
@@ -239,6 +324,15 @@ public class OpenApiAnnotationScanner {
                 Components components = ModelUtil.components(oai);
                 components.addSecurityScheme(name, securityScheme);
             }
+        }
+
+        // Process @Server annotations
+        ///////////////////////////////////
+        List<AnnotationInstance> serverAnnotations = JandexUtil.getRepeatableAnnotation(applicationClass,
+                OpenApiConstants.DOTNAME_SERVER, OpenApiConstants.DOTNAME_SERVERS);
+        for (AnnotationInstance annotation : serverAnnotations) {
+            Server server = readServer(annotation);
+            oai.addServer(server);
         }
 
         return oai;
@@ -356,6 +450,9 @@ public class OpenApiAnnotationScanner {
      */
     private void processJaxRsMethod(OpenAPIImpl openApi, ClassInfo resource, MethodInfo method,
             AnnotationInstance methodAnno, HttpMethod methodType, Set<String> resourceTags) {
+
+        System.out.println("Processing jax-rs method: " + method);
+
         // Figure out the path for the operation.  This is a combination of the App, Resource, and Method @Path annotations
         String path;
         if (method.hasAnnotation(OpenApiConstants.DOTNAME_PATH)) {
@@ -473,6 +570,7 @@ public class OpenApiAnnotationScanner {
 
         // Process @Parameter annotations
         /////////////////////////////////////////
+        // TODO instead of processing the @Parameter annotations, process all the **Parameters**  That way we won't miss any.
         List<AnnotationInstance> parameterAnnotations = JandexUtil.getRepeatableAnnotation(method,
                 OpenApiConstants.DOTNAME_PARAMETER, OpenApiConstants.DOTNAME_PARAMETERS);
         for (AnnotationInstance annotation : parameterAnnotations) {
@@ -489,10 +587,19 @@ public class OpenApiAnnotationScanner {
             if (target != null && target.kind() == Kind.METHOD_PARAMETER) {
                 In in = parameterIn(target.asMethodParameter());
                 parameter.setIn(in);
+
+                // if the Parameter model we read does *NOT* have a Schema at this point, then create one from the method argument's type
+                if (!ModelUtil.parameterHasSchema(parameter)) {
+                    ClassType paramType = JandexUtil.getMethodParameterType(method, target.asMethodParameter().position());
+                    Schema schema = introspectClassToSchema(paramType);
+                    ModelUtil.setParameterSchema(parameter, schema);
+                }
             }
 
             operation.addParameter(parameter);
         }
+
+        // TODO @Parameter can be located on a field - what does that mean?
 
         // TODO need to handle the case where we have @PathParam annotations without @Parameter annotations
         // TODO need to handle the case where we have @QueryParam annotations without @Parameter annotations
@@ -505,8 +612,13 @@ public class OpenApiAnnotationScanner {
         // Process any @RequestBody annotation
         /////////////////////////////////////////
         // note: the @RequestBody annotation can be found on a method argument *or* on the method
-//        AnnotationInstance annotation =
-//        JandexUtil.getAnnotations(method, null)
+        List<AnnotationInstance> requestBodyAnnotations = JandexUtil.getRepeatableAnnotation(method, OpenApiConstants.DOTNAME_REQUEST_BODY, null);
+        for (AnnotationInstance annotation : requestBodyAnnotations) {
+            RequestBody requestBody = readRequestBody(annotation);
+            // TODO (FIX) if missing, set the schema of the request body by checking the ClassType of the parameter (not possible if @RequestBody is found on the method)
+            // TODO if the method argument type is Request, don't generate a Schema!
+            operation.setRequestBody(requestBody);
+        }
 
 
         // Process @APIResponse annotations
@@ -551,6 +663,19 @@ public class OpenApiAnnotationScanner {
             if (!callbacks.isEmpty()) {
                 operation.setCallbacks(callbacks);
             }
+        }
+
+        // Process @Server annotations
+        ///////////////////////////////////
+        List<AnnotationInstance> serverAnnotations = JandexUtil.getRepeatableAnnotation(method,
+                OpenApiConstants.DOTNAME_SERVER, OpenApiConstants.DOTNAME_SERVERS);
+        if (serverAnnotations.isEmpty()) {
+            serverAnnotations.addAll(JandexUtil.getRepeatableAnnotation(method.declaringClass(),
+                    OpenApiConstants.DOTNAME_SERVER, OpenApiConstants.DOTNAME_SERVERS));
+        }
+        for (AnnotationInstance annotation : serverAnnotations) {
+            Server server = readServer(annotation);
+            operation.addServer(server);
         }
 
 
@@ -819,8 +944,8 @@ public class OpenApiAnnotationScanner {
         LOG.debug("Processing a single @ServerVariable annotation.");
         ServerVariable variable = new ServerVariableImpl();
         variable.setDescription(JandexUtil.stringValue(serverVariableAnno, OpenApiConstants.PROP_DESCRIPTION));
-        variable.setEnumeration(JandexUtil.stringListValue(serverVariableAnno, OpenApiConstants.PROP_ENUM));
-        variable.setDefaultValue(JandexUtil.stringValue(serverVariableAnno, OpenApiConstants.PROP_DEFAULT));
+        variable.setEnumeration(JandexUtil.stringListValue(serverVariableAnno, OpenApiConstants.PROP_ENUMERATION));
+        variable.setDefaultValue(JandexUtil.stringValue(serverVariableAnno, OpenApiConstants.PROP_DEFAULT_VALUE));
         return variable;
     }
 
@@ -937,7 +1062,7 @@ public class OpenApiAnnotationScanner {
         }
         LOG.debug("Processing a single @Callback annotation.");
         Callback callback = new CallbackImpl();
-        callback.setRef(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF));
+        callback.setRef(JandexUtil.refValue(annotation, RefType.Callback));
         String expression = JandexUtil.stringValue(annotation, OpenApiConstants.PROP_CALLBACK_URL_EXPRESSION);
         callback.put(expression, readCallbackOperations(annotation.value(OpenApiConstants.PROP_OPERATIONS)));
         return callback;
@@ -1068,7 +1193,7 @@ public class OpenApiAnnotationScanner {
         example.setDescription(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_DESCRIPTION));
         example.setValue(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_VALUE));
         example.setExternalValue(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_EXTERNAL_VALUE));
-        example.setRef(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF));
+        example.setRef(JandexUtil.refValue(annotation, RefType.Example));
         return example;
     }
 
@@ -1110,7 +1235,7 @@ public class OpenApiAnnotationScanner {
         header.setRequired(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_REQUIRED));
         header.setDeprecated(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_DEPRECATED));
         header.setAllowEmptyValue(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_ALLOW_EMPTY_VALUE));
-        header.setRef(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF));
+        header.setRef(JandexUtil.refValue(annotation, RefType.Header));
         return header;
     }
 
@@ -1153,7 +1278,7 @@ public class OpenApiAnnotationScanner {
         link.setDescription(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_DESCRIPTION));
         link.setRequestBody(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REQUEST_BODY));
         link.setServer(readServer(annotation.value(OpenApiConstants.PROP_SERVER)));
-        link.setRef(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF));
+        link.setRef(JandexUtil.refValue(annotation, RefType.Link));
         return link;
     }
 
@@ -1230,11 +1355,10 @@ public class OpenApiAnnotationScanner {
         parameter.setExplode(readExplode(JandexUtil.enumValue(annotation, OpenApiConstants.PROP_EXPLODE, org.eclipse.microprofile.openapi.annotations.enums.Explode.class)));
         parameter.setAllowReserved(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_ALLOW_RESERVED));
         parameter.setSchema(readSchema(annotation.value(OpenApiConstants.PROP_SCHEMA)));
-        // TODO revisit this - should we pass "input" here?  or do we need something else entirely?
-        parameter.setContent(readContent(annotation.value(OpenApiConstants.PROP_SERVER), ContentDirection.None));
+        parameter.setContent(readContent(annotation.value(OpenApiConstants.PROP_CONTENT), ContentDirection.Parameter));
         parameter.setExamples(readExamples(annotation.value(OpenApiConstants.PROP_EXAMPLES)));
         parameter.setExample(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_EXAMPLE));
-        parameter.setRef(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF));
+        parameter.setRef(JandexUtil.refValue(annotation, RefType.Parameter));
         return parameter;
     }
 
@@ -1276,6 +1400,9 @@ public class OpenApiAnnotationScanner {
                 }
                 if (direction == ContentDirection.Output && currentProduces != null) {
                     mimeTypes = currentProduces;
+                }
+                if (direction == ContentDirection.Parameter) {
+                    mimeTypes = OpenApiConstants.DEFAULT_PARAMETER_MEDIA_TYPES;
                 }
                 for (String mimeType : mimeTypes) {
                     content.addMediaType(mimeType, mediaTypeModel);
@@ -1388,7 +1515,7 @@ public class OpenApiAnnotationScanner {
         requestBody.setDescription(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_DESCRIPTION));
         requestBody.setContent(readContent(annotation.value(OpenApiConstants.PROP_CONTENT), ContentDirection.Input));
         requestBody.setRequired(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_REQUIRED));
-        requestBody.setRef(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF));
+        requestBody.setRef(JandexUtil.refValue(annotation, RefType.RequestBody));
         return requestBody;
     }
 
@@ -1429,7 +1556,7 @@ public class OpenApiAnnotationScanner {
         response.setHeaders(readHeaders(annotation.value(OpenApiConstants.PROP_HEADERS)));
         response.setLinks(readLinks(annotation.value(OpenApiConstants.PROP_LINKS)));
         response.setContent(readContent(annotation.value(OpenApiConstants.PROP_CONTENT), ContentDirection.Output));
-        response.setRef(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF));
+        response.setRef(JandexUtil.refValue(annotation, RefType.Response));
         return response;
     }
 
@@ -1505,7 +1632,7 @@ public class OpenApiAnnotationScanner {
         schema.setRequired(JandexUtil.stringListValue(annotation, OpenApiConstants.PROP_REQUIRED_PROPERTIES));
         schema.setDescription(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_DESCRIPTION));
         schema.setFormat(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_FORMAT));
-        schema.setRef(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF));
+        schema.setRef(JandexUtil.refValue(annotation, RefType.Schema));
         schema.setNullable(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_NULLABLE));
         schema.setReadOnly(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_READ_ONLY));
         schema.setWriteOnly(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_WRITE_ONLY));
@@ -1588,7 +1715,7 @@ public class OpenApiAnnotationScanner {
         LOG.debug("Processing a list of @DiscriminatorMapping annotations.");
         Discriminator discriminator = new DiscriminatorImpl();
         AnnotationInstance[] nestedArray = value.asNestedArray();
-        for (AnnotationInstance nested : nestedArray) {
+        for (@SuppressWarnings("unused") AnnotationInstance nested : nestedArray) {
             // TODO iterate the discriminator mappings and do something sensible with them! :(
         }
         return discriminator;
@@ -1635,7 +1762,7 @@ public class OpenApiAnnotationScanner {
         securityScheme.setBearerFormat(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_BEARER_FORMAT));
         securityScheme.setFlows(readOAuthFlows(annotation.value(OpenApiConstants.PROP_FLOWS)));
         securityScheme.setOpenIdConnectUrl(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_OPEN_ID_CONNECT_URL));
-        securityScheme.setRef(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_REF));
+        securityScheme.setRef(JandexUtil.refValue(annotation, RefType.SecurityScheme));
         return securityScheme;
     }
 
@@ -1721,7 +1848,7 @@ public class OpenApiAnnotationScanner {
      * @author eric.wittmann@gmail.com
      */
     private static enum ContentDirection {
-        Input, Output, None
+        Input, Output, Parameter
     }
 
 }

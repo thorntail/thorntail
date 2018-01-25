@@ -18,7 +18,6 @@ package test.org.wildfly.swarm.microprofile.openapi;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -33,11 +32,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.tck.AppTestBase;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.jandex.IndexView;
-import org.jboss.jandex.Indexer;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Node;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.runner.Description;
@@ -64,8 +59,6 @@ import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiDocumentHolder;
 @SuppressWarnings("rawtypes")
 public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
 
-    private static final String CLASS_SUFFIX = ".class";
-
     private Class<?> testClass;
     private Class<? extends AppTestBase> tckTestClass;
 
@@ -83,8 +76,6 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
 
         // The Archive (shrinkwrap deployment)
         Archive archive = archive();
-        // Index the archive's annotations
-        IndexView index = archiveToIndex(archive);
         // MPConfig
         WildFlyConfigBuilder cfgBuilder = new WildFlyConfigBuilder();
         cfgBuilder.addDefaultSources();
@@ -103,7 +94,7 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
                 return mpConfig;
             }
         };
-        OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(config, archive, index);
+        OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(config, archive);
         try {
             processor.process();
 
@@ -142,31 +133,6 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
         } catch (Exception e) {
             throw new InitializationError(e);
         }
-    }
-
-    /**
-     * @param archive
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private IndexView archiveToIndex(Archive archive) {
-        if (archive == null) {
-            return null;
-        }
-
-        Indexer indexer = new Indexer();
-        Map<ArchivePath, Node> c = archive.getContent();
-        try {
-            for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
-                if (each.getKey().get().endsWith(CLASS_SUFFIX)) {
-                    indexer.index(each.getValue().getAsset().openStream());
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return indexer.complete();
     }
 
     /**
