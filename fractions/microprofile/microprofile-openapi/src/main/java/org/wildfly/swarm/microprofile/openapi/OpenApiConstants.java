@@ -57,6 +57,8 @@ import org.jboss.jandex.DotName;
  */
 public final class OpenApiConstants {
 
+    public static final String OPEN_API_VERSION = "3.0.0";
+
     public static final String EXTENSION_PROPERTY_PREFIX = "x-";
 
     public static final String PROP_TRACE = "trace";

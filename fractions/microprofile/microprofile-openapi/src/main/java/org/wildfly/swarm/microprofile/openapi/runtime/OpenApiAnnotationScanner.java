@@ -128,8 +128,6 @@ public class OpenApiAnnotationScanner {
 
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.openapi");
 
-    private static final String OPEN_API_VERSION = "3.0.0";
-
     @SuppressWarnings("unused")
     private final OpenApiConfig config;
     @SuppressWarnings("unused")
@@ -201,7 +199,7 @@ public class OpenApiAnnotationScanner {
      */
     private OpenAPIImpl jaxRsApplicationToOpenApi(ClassInfo applicationClass) {
         OpenAPIImpl oai = new OpenAPIImpl();
-        oai.setOpenapi(OPEN_API_VERSION);
+        oai.setOpenapi(OpenApiConstants.OPEN_API_VERSION);
 
         // Get the @ApplicationPath info and save it for later (also support @Path which seems nonstandard but common).
         ////////////////////////////////////////
@@ -1574,8 +1572,9 @@ public class OpenApiAnnotationScanner {
      * @param ctype
      */
     private Schema introspectClassToSchema(ClassType ctype) {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO Marc - replace this with something sensible.  You'll probably get a commit conflict
+        // on this line of code.  Sorry about that, but I needed to add this to fix a unit test NPE
+        return new SchemaImpl();
     }
 
     /**

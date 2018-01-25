@@ -27,6 +27,7 @@ import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.jboss.jandex.IndexView;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
+import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.io.OpenApiParser;
 import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
 import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
@@ -79,6 +80,12 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
 
         // Phase 4:  Filter model via OASFilter
         model = filterModel(model);
+
+        // Phase 5:  Default empty document if model == null
+        if (model == null) {
+            model = new OpenAPIImpl();
+            model.setOpenapi(OpenApiConstants.OPEN_API_VERSION);
+        }
 
         OpenApiDocumentHolder.document = model;
     }

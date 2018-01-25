@@ -49,7 +49,6 @@ public abstract class BaseTckTest {
     protected static final String TEXT_PLAIN = "text/plain";
 
     private static HttpServer server;
-    private static boolean didOutput = false;
 
     @BeforeClass
     public static final void setUp() throws Exception {
@@ -64,7 +63,6 @@ public abstract class BaseTckTest {
     @AfterClass
     public static final void tearDown() throws Exception {
         server.stop(0);
-        didOutput = false;
     }
 
     static class MyHandler implements HttpHandler {
@@ -73,10 +71,6 @@ public abstract class BaseTckTest {
             String response = null;
             try {
                 response = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
-                if (!didOutput) {
-                    System.out.println(response);
-                    didOutput = true;
-                }
             } catch (Throwable e) {
                 e.printStackTrace();
                 t.getResponseHeaders().add("Content-Type", APPLICATION_JSON);
