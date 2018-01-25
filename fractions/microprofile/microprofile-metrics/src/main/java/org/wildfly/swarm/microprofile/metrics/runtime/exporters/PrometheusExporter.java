@@ -115,7 +115,7 @@ public class PrometheusExporter implements Exporter {
                     key = getPrometheusMetricName(md, key);
                     String suffix = null;
                     if (!md.getUnit().equals(MetricUnits.NONE)) {
-                        suffix = "_" + PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit());
+                        suffix = USCORE + PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit());
                     }
                     writeTypeLine(sb, scope, key, md, suffix, null);
                     createSimpleValueLine(sb, scope, key, md, metric);
@@ -303,7 +303,7 @@ public class PrometheusExporter implements Exporter {
 
 
     private String getPrometheusMetricName(Metadata entry, String name) {
-        String out = name.replace('-', '_').replace('.', '_').replace(' ', '_');
+        String out = name.replaceAll("[^\\w]+",USCORE);
         out = decamelize(out);
         if (entry == null) {
             throw new IllegalStateException("No entry for " + name + " found");
