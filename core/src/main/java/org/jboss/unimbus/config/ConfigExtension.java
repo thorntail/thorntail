@@ -1,17 +1,21 @@
 package org.jboss.unimbus.config;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -21,11 +25,11 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
-import javax.enterprise.inject.spi.configurator.BeanConfigurator;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.unimbus.config.mp.ConfigImpl;
 
 public class ConfigExtension implements Extension {
 
@@ -33,8 +37,44 @@ public class ConfigExtension implements Extension {
         InjectionPoint ip = event.getInjectionPoint();
         Annotated annotated = ip.getAnnotated();
         if (annotated.isAnnotationPresent(ConfigProperty.class)) {
-            this.types.add(ip.getType());
+            ConfigProperty anno = annotated.getAnnotation(ConfigProperty.class);
+            this.injections.add(new Injection(
+                    ip,
+                    anno.name(),
+                    ip.getType(),
+                    !anno.defaultValue().equals(ConfigProperty.UNCONFIGURED_VALUE)
+            ));
         }
+    }
+
+    public void validate(@Observes AfterDeploymentValidation event) {
+        Config config = ConfigProvider.getConfig();
+
+        this.injections.forEach(each -> {
+            NoSuchElementException result = validate(config, each.injectionPoint, each.name, each.conversionType(), each.hasDefault, each.isOptional());
+            if (result != null) {
+                event.addDeploymentProblem(result);
+            }
+        });
+    }
+
+    <T> NoSuchElementException validate(Config config, InjectionPoint injectionPoint, String propertyName, Class<T> conversionType, boolean hasDefault, boolean isOptional) {
+        String name = determineName(injectionPoint);
+        Optional<T> val = config.getOptionalValue(name, conversionType);
+        if (val.isPresent() || hasDefault || isOptional) {
+            return null;
+        }
+
+        return new NoSuchElementException(name + " at " + injectionPoint);
+    }
+
+    static String determineName(InjectionPoint injectionPoint) {
+        ConfigProperty anno = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
+        if ( ! anno.name().equals("")) {
+            return anno.name();
+        }
+
+        return (injectionPoint.getMember().getDeclaringClass().getName() + "." + injectionPoint.getMember().getName()).replace('$', '.');
     }
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
@@ -47,7 +87,8 @@ public class ConfigExtension implements Extension {
 
         BeanAttributes<?> producerAttributes = beanManager.createBeanAttributes(producerMethod);
 
-        for (Type type : types) {
+        //this.injections.stream().map(e -> e.type).forEach((type) -> {
+        normalizedTypes().forEach((type) -> {
             BeanAttributes<Object> attributes = new DelegatingBeanAttributes<Object>(producerAttributes) {
                 @Override
                 public Set<Type> getTypes() {
@@ -65,17 +106,68 @@ public class ConfigExtension implements Extension {
 
                                                                ));
             event.addBean(producerBean);
+        });
+    }
+
+    Stream<Type> normalizedTypes() {
+        return this.injections.stream()
+                .map(e -> e.type)
+                .map(e -> normalizePrimitiveType(e))
+                .distinct();
+    }
+
+    Type normalizePrimitiveType(Type in) {
+        if (!(in instanceof Class)) {
+            return in;
         }
+
+        Class<?> cls = (Class<?>) in;
+        if ( ! cls.isPrimitive() )  {
+            return cls;
+        }
+
+        if ( cls == double.class ) {
+            return Double.class;
+        }
+        if ( cls == float.class ) {
+            return Float.class;
+        }
+        if ( cls == short.class ) {
+            return Short.class;
+        }
+        if ( cls == int.class ) {
+            return Integer.class;
+        }
+        if ( cls == long.class ) {
+            return Long.class;
+        }
+        if ( cls == boolean.class ) {
+            return Boolean.class;
+        }
+
+        return cls;
+
+
     }
 
     @ConfigProperty
     @Dependent
     private static final Object produceConfigurationValue(final InjectionPoint injectionPoint) {
-        String name = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class).name();
+        String name = determineName( injectionPoint );
         Type type = injectionPoint.getType();
         if (type instanceof Class) {
             Class<?> cls = (Class<?>) injectionPoint.getType();
-            return ConfigProvider.getConfig().getValue(name, cls);
+            Optional<?> value = ConfigProvider.getConfig().getOptionalValue(name, cls);
+            if (value.isPresent()) {
+                return value.get();
+            }
+            ConfigProperty anno = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
+            if (anno != null) {
+                String defaultValue = anno.defaultValue();
+                if (defaultValue != ConfigProperty.UNCONFIGURED_VALUE) {
+                    return ((ConfigImpl) ConfigProvider.getConfig()).convert(defaultValue, cls).get();
+                }
+            }
         } else if (type instanceof ParameterizedType) {
             if (((ParameterizedType) type).getRawType() == Optional.class) {
                 Type innerType = ((ParameterizedType) type).getActualTypeArguments()[0];
@@ -88,8 +180,6 @@ public class ConfigExtension implements Extension {
         }
         throw new RuntimeException("unable to resolve property to type: " + type.getTypeName());
     }
-
-    private Set<Type> types = new HashSet<>();
 
     static class DelegatingBeanAttributes<T> implements BeanAttributes<T> {
 
@@ -137,4 +227,47 @@ public class ConfigExtension implements Extension {
         }
 
     }
+
+    static class Injection {
+        Injection(InjectionPoint injectionPoint, String name, Type type, boolean hasDefault) {
+            this.injectionPoint = injectionPoint;
+            this.name = name;
+            this.type = type;
+            this.hasDefault = hasDefault;
+        }
+
+        Class<?> conversionType() {
+            if (this.type instanceof Class<?>) {
+                return (Class<?>) this.type;
+            }
+            if (this.type instanceof ParameterizedType) {
+                Type innerType = ((ParameterizedType) this.type).getActualTypeArguments()[0];
+                if (innerType instanceof Class) {
+                    return (Class<?>) innerType;
+                } else if (innerType instanceof ParameterizedType) {
+                    return (Class<?>) ((ParameterizedType) innerType).getRawType();
+                }
+            }
+
+            return null;
+        }
+
+        boolean isOptional() {
+            if (this.type instanceof ParameterizedType) {
+                return ((ParameterizedType) this.type).getRawType() == Optional.class;
+            }
+
+            return false;
+        }
+
+        private final InjectionPoint injectionPoint;
+
+        String name;
+
+        Type type;
+
+        boolean hasDefault;
+    }
+
+    private List<Injection> injections = new ArrayList<>();
 }

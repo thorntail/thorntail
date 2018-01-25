@@ -16,13 +16,15 @@ public class SimpleStaticMethodConverter implements FallbackConverter {
     @Override
     public <T> T convert(String value, Class<T> type) {
         Method method = findMethod(type);
-        if ( method == null ) {
+        if (method == null) {
             return null;
         }
         try {
             return type.cast(method.invoke(null, value));
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException e) {
             // ignore
+        } catch( InvocationTargetException e) {
+            throw new IllegalArgumentException(e.getCause());
         }
         return null;
     }
@@ -30,21 +32,21 @@ public class SimpleStaticMethodConverter implements FallbackConverter {
     private <T> Method findMethod(Class<T> type) {
         Method[] methods = type.getMethods();
         for (Method each : methods) {
-            if ( ! each.getName().equals(this.methodName) ) {
+            if (!each.getName().equals(this.methodName)) {
                 continue;
             }
             Class<?>[] params = each.getParameterTypes();
-            if ( params.length != 1 ) {
+            if (params.length != 1) {
                 continue;
             }
-            if ( ! this.parameterType.isAssignableFrom(params[0])) {
+            if (!this.parameterType.isAssignableFrom(params[0])) {
                 continue;
             }
             int modifiers = each.getModifiers();
-            if (! Modifier.isPublic(modifiers) || ! Modifier.isStatic(modifiers)) {
+            if (!Modifier.isPublic(modifiers) || !Modifier.isStatic(modifiers)) {
                 continue;
             }
-            if ( type.isAssignableFrom(each.getReturnType()) ) {
+            if (type.isAssignableFrom(each.getReturnType())) {
                 return each;
             }
         }
@@ -53,5 +55,6 @@ public class SimpleStaticMethodConverter implements FallbackConverter {
     }
 
     private final String methodName;
+
     private final Class<?> parameterType;
 }

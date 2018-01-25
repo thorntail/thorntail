@@ -101,6 +101,21 @@ class ConfigBuilderImpl implements ConfigBuilder {
                     this.sources.add(providedSource);
                 }
             }
+
+            if ( this.classLoader != null ) {
+                ServiceLoader<ConfigSource> directDiscovered = ServiceLoader.load(ConfigSource.class, this.classLoader);
+                for (ConfigSource each : directDiscovered) {
+                    this.sources.add(each);
+                }
+                ServiceLoader<ConfigSourceProvider> directDiscoveredProviders = ServiceLoader.load(ConfigSourceProvider.class, this.classLoader);
+                for (ConfigSourceProvider each : directDiscoveredProviders) {
+                    Iterable<ConfigSource> providedSources = each.getConfigSources(this.classLoader);
+                    for (ConfigSource providedSource : providedSources) {
+                        this.sources.add(providedSource);
+                    }
+                }
+            }
+
         }
 
         Map<Class<?>, Set<ConverterHolder<?>>> configConverters = new HashMap<>();
@@ -144,7 +159,7 @@ class ConfigBuilderImpl implements ConfigBuilder {
 
         List<FallbackConverter> fallbackConverters = new ArrayList<>();
 
-        fallbackConverters.add(new StringConstructorConverter());
+        //fallbackConverters.add(new StringConstructorConverter());
         fallbackConverters.add(new StaticValueOfConverter());
         fallbackConverters.add(new StaticParseConverter());
         fallbackConverters.add(new EnumValueOfConverter());

@@ -20,7 +20,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.Converter;
 import org.jboss.unimbus.config.mp.converters.FallbackConverter;
 
-class ConfigImpl implements Config {
+public class ConfigImpl implements Config {
 
     ConfigImpl(Set<ConfigSource> sources, Map<Class<?>, List<Converter<?>>> converters, List<FallbackConverter> fallbackConverters) {
         this.sources.addAll(sources);
@@ -43,7 +43,9 @@ class ConfigImpl implements Config {
                 .filter(Objects::nonNull)
                 .findFirst();
 
-        return convert(result, propertyType);
+        Optional<T> converted = convert(result, propertyType);
+
+        return converted;
     }
 
     protected <T> Optional<T> convert(Optional<String> value, Class<T> propertyType) {
@@ -53,7 +55,7 @@ class ConfigImpl implements Config {
         return convert(value.get(), propertyType);
     }
 
-    protected <T> Optional<T> convert(String value, Class<T> propertyType) {
+    public <T> Optional<T> convert(String value, Class<T> propertyType) {
         if (propertyType.isArray()) {
             return convertArray(value, propertyType);
         } else {
@@ -83,7 +85,7 @@ class ConfigImpl implements Config {
         }
 
         List<Converter<?>> candidates = this.converters.get(propertyType);
-        if (candidates != null && ! candidates.isEmpty()) {
+        if (candidates != null && !candidates.isEmpty()) {
             Optional<T> result = candidates.stream()
                     .map(e -> e.convert(value))
                     .filter(Objects::nonNull)
@@ -94,11 +96,16 @@ class ConfigImpl implements Config {
             }
         }
 
-        return this.fallbackConverters.stream()
+        Optional<T> result = this.fallbackConverters.stream()
                 .map(e -> e.convert(value, propertyType))
                 .filter(Objects::nonNull)
                 .map(propertyType::cast)
                 .findFirst();
+
+        if (result.isPresent()) {
+            return result;
+        }
+        throw new IllegalArgumentException("cannot convert '" + value + "' to " + propertyType);
     }
 
     Class<?> boxedType(Class<?> type) {

@@ -13,12 +13,16 @@ public class BooleanConverter implements Converter<Boolean> {
             return true;
         }
 
-        if (value.equals("YES") || value.equals("Y")) {
+        if (value.equalsIgnoreCase("YES") || value.equalsIgnoreCase("Y")) {
             return true;
         }
 
-        if (value.equals("ON")) {
+        if (value.equalsIgnoreCase("ON")) {
             return true;
+        }
+
+        if (value.equalsIgnoreCase("OFF")) {
+            return false;
         }
 
         return false;

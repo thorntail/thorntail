@@ -21,8 +21,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.unimbus.events.EventEmitter;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
@@ -46,21 +49,30 @@ public class UNimbus {
         new UNimbus(configClass).start();
     }
 
+    public UNimbus() {
+    }
+
     public UNimbus(Class<?> configClass) {
         this.configClass = configClass;
     }
 
-    public <T> T get(Class<? extends T> cls, Annotation...qualifiers) {
+    public UNimbus(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+
+    }
+
+    public <T> T get(Class<? extends T> cls, Annotation... qualifiers) {
         Set<Bean<?>> beans = this.container.getBeanManager().getBeans(cls, qualifiers);
+        if ( beans.isEmpty() ) {
+            throw new UnsatisfiedResolutionException();
+        }
         Bean<T> bean = (Bean<T>) this.container.getBeanManager().resolve(beans);
         CreationalContext<T> context = this.container.getBeanManager().createCreationalContext(bean);
         return bean.create(context);
     }
 
-    private final Class<?> configClass;
 
     public UNimbus start() {
-        //new Exception().printStackTrace();
         long startTick = System.currentTimeMillis();
         /*
         Logger rootLogger = Logger.getLogger("");
@@ -77,10 +89,15 @@ public class UNimbus {
 
         Weld weld = new Weld();
 
-        weld.addExtension( new UNimbusProvidingExtension(this) );
+        weld.addExtension(new UNimbusProvidingExtension(this));
 
-        if (configClass != null) {
-            weld.addPackages(true, configClass);
+        if (this.configClass != null) {
+            weld.addPackages(true, this.configClass);
+        }
+
+        if (this.classLoader != null) {
+            weld.setClassLoader(this.classLoader);
+            Thread.currentThread().setContextClassLoader(this.classLoader);
         }
 
         this.container = weld.initialize();
@@ -101,6 +118,7 @@ public class UNimbus {
     }
 
     public void stop() {
+        ConfigProviderResolver.instance().releaseConfig(ConfigProvider.getConfig());
         this.container.shutdown();
     }
 
@@ -109,6 +127,10 @@ public class UNimbus {
         long milli = ms % 1000;
         return seconds + "." + milli + "s";
     }
+
+    private ClassLoader classLoader;
+
+    private Class<?> configClass;
 
     private WeldContainer container;
 }

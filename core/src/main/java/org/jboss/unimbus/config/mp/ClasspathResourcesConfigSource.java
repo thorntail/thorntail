@@ -20,7 +20,22 @@ class ClasspathResourcesConfigSource extends MultiConfigSource {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            // ignore
+        }
+        if ( Thread.currentThread().getContextClassLoader() != classLoader ) {
+            try {
+                Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(path);
+                while (resources.hasMoreElements()) {
+                    URL each = resources.nextElement();
+                    try (InputStream in = each.openStream()) {
+                        Properties props = new Properties();
+                        props.load(in);
+                        addConfigSource(new PropertiesConfigSource(each.toExternalForm(), props));
+                    }
+                }
+            } catch (IOException e) {
+                // ignore
+            }
         }
     }
 

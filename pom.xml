@@ -116,6 +116,13 @@
       </dependency>
 
       <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>test-arquillian</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${version.junit}</version>
@@ -186,6 +193,9 @@
     <module>servlet</module>
 
     <module>test</module>
+    <module>test-arquillian</module>
+
+    <module>tck</module>
     <module>testsuite</module>
   </modules>
 
@@ -210,6 +220,23 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jboss.jandex</groupId>
+        <artifactId>jandex-maven-plugin</artifactId>
+        <version>1.0.5</version>
+        <executions>
+          <execution>
+            <id>make-index</id>
+            <goals>
+              <goal>jandex</goal>
+            </goals>
+            <!-- phase is 'process-classes by default' -->
+            <configuration>
+              <!-- Nothing needed here for simple cases -->
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
