@@ -34,6 +34,15 @@ import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 @DeploymentScoped
 public class OpenApiConfig {
 
+    private String modelReader;
+    private String filter;
+    private Boolean scanDisable;
+    private Set<String> scanPackages;
+    private Set<String> scanClasses;
+    private Set<String> scanExcludePackages;
+    private Set<String> scanExcludeClasses;
+    private Set<String> servers;
+
     /**
      * @return the MP config instance
      */
@@ -42,40 +51,64 @@ public class OpenApiConfig {
     }
 
     public String modelReader() {
-        return getConfig().getOptionalValue(OASConfig.MODEL_READER, String.class).orElse(null);
+        if (modelReader == null) {
+            modelReader = getConfig().getOptionalValue(OASConfig.MODEL_READER, String.class).orElse(null);
+        }
+        return modelReader;
     }
 
     public String filter() {
-        return getConfig().getOptionalValue(OASConfig.FILTER, String.class).orElse(null);
+        if (filter == null) {
+            filter = getConfig().getOptionalValue(OASConfig.FILTER, String.class).orElse(null);
+        }
+        return filter;
     }
 
     public boolean scanDisable() {
-        return getConfig().getOptionalValue(OASConfig.SCAN_DISABLE, Boolean.class).orElse(false);
+        if (scanDisable == null) {
+            scanDisable = getConfig().getOptionalValue(OASConfig.SCAN_DISABLE, Boolean.class).orElse(false);
+        }
+        return scanDisable;
     }
 
     public Set<String> scanPackages() {
-        String packages = getConfig().getOptionalValue(OASConfig.SCAN_PACKAGES, String.class).orElse(null);
-        return asCsvSet(packages);
+        if (scanPackages == null) {
+            String packages = getConfig().getOptionalValue(OASConfig.SCAN_PACKAGES, String.class).orElse(null);
+            scanPackages = asCsvSet(packages);
+        }
+        return scanPackages;
     }
 
     public Set<String> scanClasses() {
-        String classes = getConfig().getOptionalValue(OASConfig.SCAN_CLASSES, String.class).orElse(null);
-        return asCsvSet(classes);
+        if (scanClasses == null) {
+            String classes = getConfig().getOptionalValue(OASConfig.SCAN_CLASSES, String.class).orElse(null);
+            scanClasses = asCsvSet(classes);
+        }
+        return scanClasses;
     }
 
     public Set<String> scanExcludePackages() {
-        String packages = getConfig().getOptionalValue(OASConfig.SCAN_EXCLUDE_PACKAGES, String.class).orElse(null);
-        return asCsvSet(packages);
+        if (scanExcludePackages == null) {
+            String packages = getConfig().getOptionalValue(OASConfig.SCAN_EXCLUDE_PACKAGES, String.class).orElse(null);
+            scanExcludePackages = asCsvSet(packages);
+        }
+        return scanExcludePackages;
     }
 
     public Set<String> scanExcludeClasses() {
-        String classes = getConfig().getOptionalValue(OASConfig.SCAN_EXCLUDE_CLASSES, String.class).orElse(null);
-        return asCsvSet(classes);
+        if (scanExcludeClasses == null) {
+            String classes = getConfig().getOptionalValue(OASConfig.SCAN_EXCLUDE_CLASSES, String.class).orElse(null);
+            scanExcludeClasses = asCsvSet(classes);
+        }
+        return scanExcludeClasses;
     }
 
     public Set<String> servers() {
-        String servers = getConfig().getOptionalValue(OASConfig.SERVERS, String.class).orElse(null);
-        return asCsvSet(servers);
+        if (servers == null) {
+            String theServers = getConfig().getOptionalValue(OASConfig.SERVERS, String.class).orElse(null);
+            servers = asCsvSet(theServers);
+        }
+        return servers;
     }
 
     public Set<String> pathServers(String path) {

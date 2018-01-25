@@ -16,14 +16,22 @@
 
 package org.wildfly.swarm.microprofile.openapi.util;
 
+import java.util.Collection;
+
 import org.eclipse.microprofile.openapi.models.Components;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.Operation;
 import org.eclipse.microprofile.openapi.models.Paths;
+import org.eclipse.microprofile.openapi.models.media.Content;
+import org.eclipse.microprofile.openapi.models.media.MediaType;
+import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.eclipse.microprofile.openapi.models.parameters.Parameter;
 import org.eclipse.microprofile.openapi.models.responses.APIResponses;
+import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.ComponentsImpl;
 import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
 import org.wildfly.swarm.microprofile.openapi.models.PathsImpl;
+import org.wildfly.swarm.microprofile.openapi.models.media.MediaTypeImpl;
 import org.wildfly.swarm.microprofile.openapi.models.responses.APIResponsesImpl;
 
 /**
@@ -70,6 +78,60 @@ public class ModelUtil {
             operation.setResponses(new APIResponsesImpl());
         }
         return operation.getResponses();
+    }
+
+    /**
+     * Returns true only if the given {@link Parameter} has a schema defined
+     * for it.  A schema can be defined either via the parameter's "schema"
+     * property, or any "content.*.schema" property.
+     * @param parameter
+     */
+    public static boolean parameterHasSchema(Parameter parameter) {
+        if (parameter.getSchema() != null) {
+            return true;
+        }
+        if (parameter.getContent() != null && !parameter.getContent().isEmpty()) {
+            Collection<MediaType> mediaTypes = parameter.getContent().values();
+            for (MediaType mediaType : mediaTypes) {
+                if (mediaType.getSchema() != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Sets the given {@link Schema} on the given {@link Parameter}.  This is tricky
+     * because the paramater may EITHER have a schema property or it may have a
+     * {@link Content} child which itself has zero or more {@link MediaType} children
+     * which will contain the {@link Schema}.
+     *
+     * The OpenAPI specification requires that a parameter have *either* a schema
+     * or a content, but not both.
+     *
+     * @param parameter
+     * @param schema
+     */
+    public static void setParameterSchema(Parameter parameter, Schema schema) {
+        if (parameter.getContent() == null) {
+            parameter.schema(schema);
+            return;
+        }
+        Content content = parameter.getContent();
+        if (content.isEmpty()) {
+            String[] defMediaTypes = OpenApiConstants.DEFAULT_PARAMETER_MEDIA_TYPES;
+            for (String mediaTypeName : defMediaTypes) {
+                MediaType mediaType = new MediaTypeImpl();
+                mediaType.setSchema(schema);
+                content.addMediaType(mediaTypeName, mediaType);
+            }
+            return;
+        }
+        for (String mediaTypeName : content.keySet()) {
+            MediaType mediaType = content.get(mediaTypeName);
+            mediaType.setSchema(schema);
+        }
     }
 
 }

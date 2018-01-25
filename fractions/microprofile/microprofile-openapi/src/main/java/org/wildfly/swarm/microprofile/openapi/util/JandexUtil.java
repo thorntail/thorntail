@@ -29,9 +29,11 @@ import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.AnnotationTarget.Kind;
 import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.ClassType;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
+import org.jboss.jandex.Type;
 import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 
 import com.fasterxml.jackson.jaxrs.cfg.Annotations;
@@ -43,9 +45,66 @@ import com.fasterxml.jackson.jaxrs.cfg.Annotations;
 public class JandexUtil {
 
     /**
+     * Simple enum to indicate the type of a $ref being read/written.
+     * @author eric.wittmann@gmail.com
+     */
+    public static enum RefType {
+        Header, Schema, SecurityScheme, Callback, Link, Response, Parameter, Example, RequestBody
+    }
+
+    /**
      * Constructor.
      */
     private JandexUtil() {
+    }
+
+    /**
+     * Reads a string property named "ref" value from the given annotation and converts it
+     * to a value appropriate for setting on a model's "$ref" property.
+     * @param annotation
+     * @param refType
+     */
+    public static String refValue(AnnotationInstance annotation, RefType refType) {
+        AnnotationValue value = annotation.value(OpenApiConstants.PROP_REF);
+        if (value == null) {
+            return null;
+        }
+
+        String $ref = value.asString();
+        if ($ref.startsWith("#/")) {
+            return $ref;
+        }
+
+        switch (refType) {
+            case Callback:
+                $ref = "#/components/callbacks/" + $ref;
+                break;
+            case Example:
+                $ref = "#/components/examples/" + $ref;
+                break;
+            case Header:
+                $ref = "#/components/headers/" + $ref;
+                break;
+            case Link:
+                $ref = "#/components/links/" + $ref;
+                break;
+            case Parameter:
+                $ref = "#/components/parameters/" + $ref;
+                break;
+            case RequestBody:
+                $ref = "#/components/requestBodies/" + $ref;
+                break;
+            case Response:
+                $ref = "#/components/responses/" + $ref;
+                break;
+            case Schema:
+                $ref = "#/components/schemas/" + $ref;
+                break;
+            case SecurityScheme:
+                $ref = "#/components/securitySchemes/" + $ref;
+                break;
+        }
+        return $ref;
     }
 
     /**
@@ -181,6 +240,9 @@ public class JandexUtil {
      * @param name
      */
     public static AnnotationInstance getClassAnnotation(ClassInfo ct, DotName name) {
+        if (name == null) {
+            return null;
+        }
         Collection<AnnotationInstance> annotations = ct.classAnnotations();
         for (AnnotationInstance annotationInstance : annotations) {
             if (annotationInstance.name().equals(name)) {
@@ -247,12 +309,15 @@ public class JandexUtil {
      */
     public static List<AnnotationInstance> getRepeatableAnnotation(MethodInfo method,
             DotName singleAnnotationName, DotName repeatableAnnotationName) {
-        List<AnnotationInstance> annotations = new ArrayList<>();
-        if (method.hasAnnotation(singleAnnotationName)) {
-            AnnotationInstance annotation = method.annotation(singleAnnotationName);
-            annotations.add(annotation);
-        }
-        if (method.hasAnnotation(repeatableAnnotationName)) {
+        List<AnnotationInstance> annotations = new ArrayList<>(method.annotations());
+        CollectionUtils.filter(annotations, new Predicate() {
+            @Override
+            public boolean evaluate(Object object) {
+                AnnotationInstance annotation = (AnnotationInstance) object;
+                return annotation.name().equals(singleAnnotationName);
+            }
+        });
+        if (repeatableAnnotationName != null && method.hasAnnotation(repeatableAnnotationName)) {
             AnnotationInstance annotation = method.annotation(repeatableAnnotationName);
             AnnotationValue annotationValue = annotation.value();
             if (annotationValue != null) {
@@ -273,7 +338,7 @@ public class JandexUtil {
      */
     public static List<AnnotationInstance> getRepeatableAnnotation(ClassInfo clazz,
             DotName singleAnnotationName, DotName repeatableAnnotationName) {
-        List<AnnotationInstance> annotations = new ArrayList<>(clazz.classAnnotations());
+        List<AnnotationInstance> annotations = new ArrayList<>();
         AnnotationInstance single = JandexUtil.getClassAnnotation(clazz, singleAnnotationName);
         AnnotationInstance repeatable = JandexUtil.getClassAnnotation(clazz, repeatableAnnotationName);
         if (single != null) {
@@ -287,6 +352,19 @@ public class JandexUtil {
             }
         }
         return annotations;
+    }
+
+    /**
+     * Returns the class type of the method parameter at the given position.
+     * @param method
+     * @param position
+     */
+    public static ClassType getMethodParameterType(MethodInfo method, short position) {
+        Type type = method.parameters().get(position);
+        if (type.kind() == Type.Kind.CLASS) {
+            return type.asClassType();
+        }
+        return null;
     }
 
 }

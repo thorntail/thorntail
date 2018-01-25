@@ -19,7 +19,6 @@ package org.wildfly.swarm.microprofile.openapi.runtime;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -31,11 +30,7 @@ import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.PathItem;
-import org.jboss.jandex.IndexView;
-import org.jboss.jandex.Indexer;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.UrlAsset;
 import org.json.JSONException;
@@ -55,8 +50,6 @@ import org.wildfly.swarm.microprofile.openapi.runtime.app.TestApplication;
  */
 @SuppressWarnings("rawtypes")
 public class OpenApiDeploymentProcessorTest {
-
-    private static final String CLASS_SUFFIX = ".class";
 
     /**
      * Loads a resource as a string (reads the content at the URL).
@@ -100,8 +93,7 @@ public class OpenApiDeploymentProcessorTest {
             }
         };
         Archive archive = archive(staticResource);
-        IndexView index = archiveToIndex(archive);
-        OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(config, archive, index);
+        OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(config, archive);
         processor.process();
 
         String actual = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
@@ -121,33 +113,6 @@ public class OpenApiDeploymentProcessorTest {
             archive.addAsManifestResource(new UrlAsset(getClass().getResource(staticResource)), "openapi.json");
         }
         return archive;
-    }
-
-    /**
-     * @param archive
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private IndexView archiveToIndex(Archive archive) {
-        if (archive == null) {
-            return null;
-        }
-
-        // TODO re-use wf-swarm's implementation of this
-
-        Indexer indexer = new Indexer();
-        Map<ArchivePath, Node> c = archive.getContent();
-        try {
-            for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
-                if (each.getKey().get().endsWith(CLASS_SUFFIX)) {
-                    indexer.index(each.getValue().getAsset().openStream());
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return indexer.complete();
     }
 
 
