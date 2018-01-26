@@ -48,7 +48,7 @@ public class JandexUtil {
      * Simple enum to indicate the type of a $ref being read/written.
      * @author eric.wittmann@gmail.com
      */
-    public static enum RefType {
+    public enum RefType {
         Header, Schema, SecurityScheme, Callback, Link, Response, Parameter, Example, RequestBody
     }
 
@@ -103,6 +103,8 @@ public class JandexUtil {
             case SecurityScheme:
                 $ref = "#/components/securitySchemes/" + $ref;
                 break;
+            default:
+                throw new IllegalStateException("Unexpected Jandex RefType " + refType);
         }
         return $ref;
     }
