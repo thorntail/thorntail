@@ -17,6 +17,12 @@
 
 package org.wildfly.swarm.microprofile.metrics.runtime.exporters;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Metadata;
@@ -33,16 +39,15 @@ import org.wildfly.swarm.microprofile.metrics.runtime.app.HistogramImpl;
 import org.wildfly.swarm.microprofile.metrics.runtime.app.MeterImpl;
 import org.wildfly.swarm.microprofile.metrics.runtime.app.TimerImpl;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 /**
  * Export data in Prometheus text format
  *
  * @author Heiko W. Rupp
  */
 public class PrometheusExporter implements Exporter {
+
+    // This allows to suppress the (noisy) # HELP line
+    private static final String SWARM_MICROPROFILE_METRICS_OMIT_HELP_LINE = "swarm.microprofile.metrics.omitHelpLine";
 
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
 
@@ -53,6 +58,14 @@ public class PrometheusExporter implements Exporter {
     private static final String USCORE = "_";
     private static final String COUNTER = "counter";
     private static final String QUANTILE = "quantile";
+
+    private boolean writeHelpLine;
+
+    public PrometheusExporter() {
+        Config config = ConfigProvider.getConfig();
+        Optional<Boolean> tmp = config.getOptionalValue(SWARM_MICROPROFILE_METRICS_OMIT_HELP_LINE, Boolean.class);
+        writeHelpLine = !tmp.isPresent() || !tmp.get();
+    }
 
     public StringBuilder exportOneScope(MetricRegistry.Type scope) {
 
@@ -117,6 +130,7 @@ public class PrometheusExporter implements Exporter {
                     if (!md.getUnit().equals(MetricUnits.NONE)) {
                         suffix = USCORE + PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit());
                     }
+                    writeHelpLine(sb, scope, key, md, suffix);
                     writeTypeLine(sb, scope, key, md, suffix, null);
                     createSimpleValueLine(sb, scope, key, md, metric);
                     break;
@@ -151,6 +165,7 @@ public class PrometheusExporter implements Exporter {
         writeSnapshotBasics(sb, scope, md, snapshot, theUnit);
 
         String suffix = USCORE + PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit());
+        writeHelpLine(sb, scope, md.getName(), md, suffix);
         writeTypeLine(sb,scope,md.getName(),md, suffix,SUMMARY);
         writeValueLine(sb,scope,suffix + "_count",timer.getCount(),md);
 
@@ -165,6 +180,7 @@ public class PrometheusExporter implements Exporter {
 
         String theUnit = unit.equals("none") ? "" : USCORE + unit;
 
+        writeHelpLine(sb, scope, md.getName(), md, SUMMARY);
         writeSnapshotBasics(sb, scope, md, snapshot, theUnit);
         writeTypeLine(sb,scope,md.getName(),md, theUnit,SUMMARY);
         writeValueLine(sb,scope,theUnit + "_count",histogram.getCount(),md);
@@ -190,6 +206,7 @@ public class PrometheusExporter implements Exporter {
     }
 
     private void writeMeterValues(StringBuilder sb, MetricRegistry.Type scope, Metered metric, Metadata md) {
+        writeHelpLine(sb, scope, md.getName(), md, "_total");
         writeTypeAndValue(sb, scope, "_total", metric.getCount(), COUNTER, md);
         writeMeterRateValues(sb, scope, metric, md);
     }
@@ -250,6 +267,22 @@ public class PrometheusExporter implements Exporter {
         sb.append(scope.getName().toLowerCase()).append(":").append(key);
     }
 
+    private void writeHelpLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, String suffix) {
+        // Only write this line if we actually have a description in metadata
+        if (writeHelpLine && md.getDescription() != null) {
+            sb.append("# HELP ");
+            sb.append(scope.getName().toLowerCase());
+            sb.append(':').append(getPrometheusMetricName(md, key));
+            if (suffix != null) {
+                sb.append(suffix);
+            }
+            sb.append(SPACE);
+            sb.append(md.getDescription());
+            sb.append(LF);
+        }
+
+    }
+
     private void writeTypeLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, String suffix, String typeOverride) {
         sb.append("# TYPE ");
         sb.append(scope.getName().toLowerCase());
@@ -267,7 +300,7 @@ public class PrometheusExporter implements Exporter {
         } else {
             sb.append(md.getType());
         }
-        sb.append("\n");
+        sb.append(LF);
     }
 
     private void createSimpleValueLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, Metric metric) {
@@ -297,7 +330,7 @@ public class PrometheusExporter implements Exporter {
         }
 
         Double value = PrometheusUnit.scaleToBase(md.getUnit(), valIn);
-        sb.append(SPACE).append(value).append("\n");
+        sb.append(SPACE).append(value).append(LF);
 
     }
 
