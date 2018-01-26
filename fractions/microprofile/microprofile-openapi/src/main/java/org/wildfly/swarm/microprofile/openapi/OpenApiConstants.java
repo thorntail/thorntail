@@ -67,8 +67,9 @@ public final class OpenApiConstants {
 
     public static final String EXTENSION_PROPERTY_PREFIX = "x-";
 
-    public static final String[] DEFAULT_PARAMETER_MEDIA_TYPES = { "*/*" };
-    public static final String[] DEFAULT_REQUEST_BODY_TYPES = { "*/*" };
+    private static final String MIME_ANY = "*/*";
+    public static final String[] DEFAULT_PARAMETER_MEDIA_TYPES = {MIME_ANY};
+    public static final String[] DEFAULT_REQUEST_BODY_TYPES = {MIME_ANY};
 
     public static final String PROP_TRACE = "trace";
     public static final String PROP_PATCH = "patch";
@@ -230,8 +231,8 @@ public final class OpenApiConstants {
     public static final DotName DOTNAME_HEAD = DotName.createSimple(HEAD.class.getName());
     public static final DotName DOTNAME_OPTIONS = DotName.createSimple(OPTIONS.class.getName());
 
-    public static final String[] DEFAULT_CONSUMES = new String[] { "*/*" };
-    public static final String[] DEFAULT_PRODUCES = new String[] { "*/*" };
+    public static final String[] DEFAULT_CONSUMES = new String[] {MIME_ANY};
+    public static final String[] DEFAULT_PRODUCES = new String[] {MIME_ANY};
 
     /**
      * Constructor.

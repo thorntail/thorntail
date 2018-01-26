@@ -1419,7 +1419,7 @@ public class OpenApiAnnotationScanner {
             if (contentType == null) {
                 // If the content type is not provided in the @Content annotation, then
                 // we assume it applies to all the jax-rs method's @Consumes or @Produces
-                String [] mimeTypes = {};
+                String[] mimeTypes = {};
                 if (direction == ContentDirection.Input && currentConsumes != null) {
                     mimeTypes = currentConsumes;
                 }
