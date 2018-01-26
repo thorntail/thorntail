@@ -5,6 +5,8 @@
 - document logging OFFSETs
 - improve log categories.
 - support repeatable @IfClassPresent() etc.
+- Equivalent to "Hollow Jar", may require forking capsule plugin
+- Fuller testing of Java EE tech in testsuite
 
 . Low priority
 
