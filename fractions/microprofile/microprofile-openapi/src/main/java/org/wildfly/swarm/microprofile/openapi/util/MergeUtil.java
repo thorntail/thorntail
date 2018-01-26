@@ -30,6 +30,8 @@ import org.eclipse.microprofile.openapi.models.Constructible;
 import org.eclipse.microprofile.openapi.models.Extensible;
 import org.eclipse.microprofile.openapi.models.Reference;
 import org.eclipse.microprofile.openapi.models.responses.APIResponses;
+import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
+import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
 import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
 
@@ -222,6 +224,14 @@ public class MergeUtil {
             return mergeTagLists(values1, values2);
         }
 
+        if (values1.get(0) instanceof Server) {
+            return mergeServerLists(values1, values2);
+        }
+
+        if (values1.get(0) instanceof SecurityRequirement) {
+            return mergeSecurityRequirementLists(values1, values2);
+        }
+
         values1.addAll(values2);
         return values1;
     }
@@ -246,7 +256,6 @@ public class MergeUtil {
      * values1.
      * @param values1
      * @param values2
-     * @return
      */
     private static List<Tag> mergeTagLists(List<Tag> values1, List<Tag> values2) {
         for (Tag value2 : values2) {
@@ -262,6 +271,47 @@ public class MergeUtil {
             } else {
                 mergeObjects(match, value2);
             }
+        }
+        return values1;
+    }
+
+    /**
+     * Merge two lists of Servers.  Servers are a special case because they must be unique
+     * by the 'url' property each must have.
+     * @param values1
+     * @param values2
+     */
+    private static List<Server> mergeServerLists(List<Server> values1, List<Server> values2) {
+        for (Server value2 : values2) {
+            Server match = null;
+            for (Server value1 : values1) {
+                if (value1.getUrl() != null && value1.getUrl().equals(value2.getUrl())) {
+                    match = value1;
+                    break;
+                }
+            }
+            if (match == null) {
+                values1.add(value2);
+            } else {
+                mergeObjects(match, value2);
+            }
+        }
+        return values1;
+    }
+
+    /**
+     * Merge two lists of Security Requirements.  Security Requirement lists are are a
+     * special case because
+     * values1.
+     * @param values1
+     * @param values2
+     */
+    private static List<SecurityRequirement> mergeSecurityRequirementLists(List<SecurityRequirement> values1, List<SecurityRequirement> values2) {
+        for (SecurityRequirement value2 : values2) {
+            if (values1.contains(value2)) {
+                continue;
+            }
+            values1.add(value2);
         }
         return values1;
     }
