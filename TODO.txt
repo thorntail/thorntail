@@ -4,6 +4,7 @@
 - test keycloak integration using docker
 - document logging OFFSETs
 - improve log categories.
+- support repeatable @IfClassPresent() etc.
 
 . Low priority
 
