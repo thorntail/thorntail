@@ -617,7 +617,32 @@ public class OpenApiAnnotationScanner {
             RequestBody requestBody = readRequestBody(annotation);
             // TODO (FIX) if missing, set the schema of the request body by checking the ClassType of the parameter (not possible if @RequestBody is found on the method)
             // TODO if the method argument type is Request, don't generate a Schema!
+            if (!ModelUtil.requestBodyHasSchema(requestBody)) {
+                ClassType ctype = null;
+                if (annotation.target().kind() == AnnotationTarget.Kind.METHOD_PARAMETER) {
+                    ctype = JandexUtil.getMethodParameterType(method, annotation.target().asMethodParameter().position());
+                } else if (annotation.target().kind() == AnnotationTarget.Kind.METHOD) {
+                    ctype = JandexUtil.getRequestBodyParameterClassType(method);
+                }
+                if (ctype != null) {
+                    Schema schema = introspectClassToSchema(ctype);
+                    ModelUtil.setRequestBodySchema(requestBody, schema, currentConsumes);
+                }
+            }
             operation.setRequestBody(requestBody);
+        }
+        // If the requesty body is null, figure it out from the parameters.  Only if the
+        // method declares that it @Consumes data
+        if (operation.getRequestBody() == null && currentConsumes != null) {
+            ClassType ctype = JandexUtil.getRequestBodyParameterClassType(method);
+            if (ctype != null) {
+                Schema schema = introspectClassToSchema(ctype);
+                if (schema != null) {
+                    RequestBody requestBody = new RequestBodyImpl();
+                    ModelUtil.setRequestBodySchema(requestBody, schema, currentConsumes);
+                    operation.setRequestBody(requestBody);
+                }
+            }
         }
 
 
@@ -1424,7 +1449,7 @@ public class OpenApiAnnotationScanner {
         }
         LOG.debug("Processing a single @Content annotation as a MediaType.");
         MediaType mediaType = new MediaTypeImpl();
-        mediaType.setExamples(readExamples(annotation.value(OpenApiConstants.PROP_SERVER)));
+        mediaType.setExamples(readExamples(annotation.value(OpenApiConstants.PROP_EXAMPLES)));
         mediaType.setSchema(readSchema(annotation.value(OpenApiConstants.PROP_SCHEMA)));
         mediaType.setEncoding(readEncodings(annotation.value(OpenApiConstants.PROP_ENCODING)));
         return mediaType;

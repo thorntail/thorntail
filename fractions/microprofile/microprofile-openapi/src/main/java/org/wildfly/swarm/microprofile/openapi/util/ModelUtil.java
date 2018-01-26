@@ -26,11 +26,13 @@ import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
+import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.models.responses.APIResponses;
 import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.ComponentsImpl;
 import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
 import org.wildfly.swarm.microprofile.openapi.models.PathsImpl;
+import org.wildfly.swarm.microprofile.openapi.models.media.ContentImpl;
 import org.wildfly.swarm.microprofile.openapi.models.media.MediaTypeImpl;
 import org.wildfly.swarm.microprofile.openapi.models.responses.APIResponsesImpl;
 
@@ -109,7 +111,6 @@ public class ModelUtil {
      *
      * The OpenAPI specification requires that a parameter have *either* a schema
      * or a content, but not both.
-     *
      * @param parameter
      * @param schema
      */
@@ -122,6 +123,54 @@ public class ModelUtil {
         if (content.isEmpty()) {
             String[] defMediaTypes = OpenApiConstants.DEFAULT_PARAMETER_MEDIA_TYPES;
             for (String mediaTypeName : defMediaTypes) {
+                MediaType mediaType = new MediaTypeImpl();
+                mediaType.setSchema(schema);
+                content.addMediaType(mediaTypeName, mediaType);
+            }
+            return;
+        }
+        for (String mediaTypeName : content.keySet()) {
+            MediaType mediaType = content.get(mediaTypeName);
+            mediaType.setSchema(schema);
+        }
+    }
+
+    /**
+     * Returns true only if the given {@link RequestBody} has a schema defined
+     * for it.  A schema would be found within the request body's Content/MediaType
+     * children.
+     * @param requestBody
+     */
+    public static boolean requestBodyHasSchema(RequestBody requestBody) {
+        if (requestBody.getContent() != null && !requestBody.getContent().isEmpty()) {
+            Collection<MediaType> mediaTypes = requestBody.getContent().values();
+            for (MediaType mediaType : mediaTypes) {
+                if (mediaType.getSchema() != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Sets the given {@link Schema} on the given {@link RequestBody}.
+     * @param requestBody
+     * @param schema
+     * @param mediaTypes
+     */
+    public static void setRequestBodySchema(RequestBody requestBody, Schema schema, String[] mediaTypes) {
+        Content content = requestBody.getContent();
+        if (content == null) {
+            content = new ContentImpl();
+            requestBody.setContent(content);
+        }
+        if (content.isEmpty()) {
+            String[] requestBodyTypes = OpenApiConstants.DEFAULT_REQUEST_BODY_TYPES;
+            if (mediaTypes != null && mediaTypes.length > 0) {
+                requestBodyTypes = mediaTypes;
+            }
+            for (String mediaTypeName : requestBodyTypes) {
                 MediaType mediaType = new MediaTypeImpl();
                 mediaType.setSchema(schema);
                 content.addMediaType(mediaTypeName, mediaType);

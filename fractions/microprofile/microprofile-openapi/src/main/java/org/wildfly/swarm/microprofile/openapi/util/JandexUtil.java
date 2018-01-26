@@ -367,4 +367,22 @@ public class JandexUtil {
         return null;
     }
 
+    /**
+     * Go through the method parameters looking for one that is not annotated with a jax-rs
+     * annotation.  That will be the one that is the requesty body.
+     * @param method
+     */
+    public static ClassType getRequestBodyParameterClassType(MethodInfo method) {
+        List<Type> methodParams = method.parameters();
+        if (methodParams.isEmpty()) {
+            return null;
+        }
+        for (short i = 0; i < methodParams.size(); i++) {
+            if (JandexUtil.getParameterAnnotations(method, i).isEmpty()) {
+                return methodParams.get(i).asClassType();
+            }
+        }
+        return null;
+    }
+
 }
