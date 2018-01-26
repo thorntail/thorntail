@@ -12,10 +12,10 @@ import org.jboss.unimbus.UNimbus;
  * @author Ken Finnigan
  */
 @MessageLogger(projectCode = UNimbus.PROJECT_CODE)
-public interface JaxrsMessages extends BasicLogger, MessageOffsets {
+public interface JaxrsMessages extends BasicLogger {
     JaxrsMessages MESSAGES = Logger.getMessageLogger(JaxrsMessages.class, "org.jboss.unimbus.jaxrs");
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 1 + JAXRS_OFFSET, value = "Deployment created for %s")
+    @Message(id = 1 + MessageOffsets.JAXRS_OFFSET, value = "Deployment created for %s")
     void deploymentCreated(String deploymentName);
 }

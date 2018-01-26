@@ -13,10 +13,10 @@ import static org.jboss.unimbus.UNimbus.PROJECT_NAME;
  * Created by bob on 1/19/18.
  */
 @MessageLogger(projectCode = PROJECT_CODE, length = 6)
-public interface CoreMessages extends BasicLogger, MessageOffsets {
+public interface CoreMessages extends BasicLogger {
     CoreMessages MESSAGES = Logger.getMessageLogger(CoreMessages.class, "org.jboss.unimbus.core");
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 1 + CORE_OFFSET, value = PROJECT_NAME + " started in %s")
+    @Message(id = 1 + MessageOffsets.CORE_OFFSET, value = PROJECT_NAME + " started in %s")
     void started(String startTime);
 }
