@@ -14,31 +14,31 @@ public class EventEmitter {
     Event<LifecycleEvent> event;
 
     public void fireBootstrap() {
-        event.fire( new LifecycleEvent.Bootstrap() );
+        event.fire(new LifecycleEvent.Bootstrap());
     }
 
     public void fireScan() {
-        event.fire( new LifecycleEvent.Scan() );
+        event.fire(new LifecycleEvent.Scan());
     }
 
     public void fireInitialize() {
-        event.fire( new LifecycleEvent.Initialize() );
+        event.fire(new LifecycleEvent.Initialize());
     }
 
     public void fireDeploy() {
-        event.fire( new LifecycleEvent.Deploy() );
+        event.fire(new LifecycleEvent.Deploy());
     }
 
     public void fireBeforeStart() {
-        event.fire( new LifecycleEvent.BeforeStart());
+        event.fire(new LifecycleEvent.BeforeStart());
     }
 
     public void fireStart() {
-        event.fire( new LifecycleEvent.Start());
+        event.fire(new LifecycleEvent.Start());
     }
 
     public void fireAfterStart() {
-        event.fire( new LifecycleEvent.AfterStart());
+        event.fire(new LifecycleEvent.AfterStart());
     }
 
 }

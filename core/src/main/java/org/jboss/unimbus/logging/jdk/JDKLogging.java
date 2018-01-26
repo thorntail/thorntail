@@ -24,8 +24,8 @@ public class JDKLogging implements Logging {
         logger.setLevel(Level.INFO);
         for (Handler handler : logger.getHandlers()) {
             handler.setLevel(Level.ALL);
-            if ( handler instanceof ConsoleHandler ) {
-                handler.setFormatter( new DefaultConsoleFormatter(this.format) );
+            if (handler instanceof ConsoleHandler) {
+                handler.setFormatter(new DefaultConsoleFormatter(this.format));
             }
         }
 
@@ -38,7 +38,7 @@ public class JDKLogging implements Logging {
     }
 
     @Inject
-    @ConfigProperty(name="logging.jdk.console.format")
+    @ConfigProperty(name = "logging.jdk.console.format")
     String format;
 
 }

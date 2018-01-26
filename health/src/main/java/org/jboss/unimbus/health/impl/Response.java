@@ -10,7 +10,7 @@ import org.eclipse.microprofile.health.HealthCheckResponse;
  */
 class Response extends HealthCheckResponse {
 
-    Response(String name, State state, Map<String,Object> data) {
+    Response(String name, State state, Map<String, Object> data) {
         this.name = name;
         this.state = state;
         this.data = data;
@@ -32,6 +32,8 @@ class Response extends HealthCheckResponse {
     }
 
     private final String name;
+
     private final State state;
+
     private final Map<String, Object> data;
 }

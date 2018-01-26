@@ -63,7 +63,7 @@ public class UNimbus {
 
     public <T> T get(Class<? extends T> cls, Annotation... qualifiers) {
         Set<Bean<?>> beans = this.container.getBeanManager().getBeans(cls, qualifiers);
-        if ( beans.isEmpty() ) {
+        if (beans.isEmpty()) {
             throw new UnsatisfiedResolutionException();
         }
         Bean<T> bean = (Bean<T>) this.container.getBeanManager().resolve(beans);

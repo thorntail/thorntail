@@ -17,13 +17,13 @@
 
 package org.jboss.unimbus.metrics.exporters;
 
-import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.jboss.unimbus.metrics.MetricRegistryProducer;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.jboss.unimbus.metrics.MetricRegistryProducer;
 
 /**
  * @author hrupp
@@ -31,6 +31,7 @@ import java.util.Map;
 public class OLDJsonMetadataExporter implements Exporter {
 
     private static final String QUOTE_COMMA_LF = "\",\n";
+
     private static final String LF = "\n";
 
     @Override

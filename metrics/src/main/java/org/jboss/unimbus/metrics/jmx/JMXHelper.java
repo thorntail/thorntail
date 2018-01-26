@@ -16,17 +16,6 @@
  */
 package org.jboss.unimbus.metrics.jmx;
 
-import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.jboss.logging.Logger;
-import org.jboss.unimbus.metrics.MetricRegistryProducer;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.openmbean.CompositeData;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +24,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.openmbean.CompositeData;
+
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.jboss.unimbus.metrics.MetricRegistryProducer;
+
 /**
  * @author hrupp
  */
@@ -42,7 +42,9 @@ import java.util.Set;
 public class JMXHelper {
 
     private final String PLACEHOLDER = "%s";
+
     private MBeanServer mbs;
+
     private JMXHelper worker;
 
     private JMXHelper() { /* singleton */ }
@@ -150,13 +152,13 @@ public class JMXHelper {
                         String newName = entry.getName();
                         if (!newName.contains(PLACEHOLDER)) {
                             System.err.println("Name [" + newName + "] did not contain a %s, no replacement will be done, check" +
-                                    " the configuration");
+                                                       " the configuration");
                         }
                         newName = newName.replace(PLACEHOLDER, keyValue);
                         String newDisplayName = entry.getDisplayName().replace(PLACEHOLDER, keyValue);
                         String newDescription = entry.getDescription().replace(PLACEHOLDER, keyValue);
                         ExtendedMetadata newEntry = new ExtendedMetadata(newName, newDisplayName, newDescription,
-                                entry.getTypeRaw(), entry.getUnit());
+                                                                         entry.getTypeRaw(), entry.getUnit());
                         String newObjectName = oName.getCanonicalName() + "/" + attName;
                         newEntry.setMbean(newObjectName);
                         result.add(newEntry);

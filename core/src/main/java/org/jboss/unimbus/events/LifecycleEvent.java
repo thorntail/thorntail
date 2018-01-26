@@ -25,7 +25,7 @@ public class LifecycleEvent {
 
     }
 
-    public static class Start extends  LifecycleEvent {
+    public static class Start extends LifecycleEvent {
 
     }
 

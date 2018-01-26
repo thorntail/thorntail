@@ -14,12 +14,12 @@ public class DefaultDeploymentProducer {
 
     @Produces
     DeploymentMetaData defaultDeployment() {
-        if ( this.servlets.isUnsatisfied() ) {
+        if (this.servlets.isUnsatisfied()) {
             return null;
         }
         DeploymentMetaData deployment = new DeploymentMetaData("default");
         deployment.setContextPath("/");
-        deployment.addServlets( servlets );
+        deployment.addServlets(servlets);
         return deployment;
     }
 

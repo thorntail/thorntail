@@ -16,16 +16,16 @@ public class PrimaryHTTPListenerConfigurer implements UndertowConfigurer {
 
     @Override
     public void configure(Undertow.Builder builder) {
-        if ( this.port >= 0 ) {
+        if (this.port >= 0) {
             builder.addHttpListener(this.port, this.host);
         }
     }
 
     @Inject
-    @ConfigProperty(name="web.primary.port")
+    @ConfigProperty(name = "web.primary.port")
     private int port;
 
     @Inject
-    @ConfigProperty(name="web.primary.host")
+    @ConfigProperty(name = "web.primary.host")
     private String host;
 }

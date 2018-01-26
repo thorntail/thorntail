@@ -16,7 +16,7 @@ public class DefaultConsoleFormatter extends Formatter {
     }
 
     @Override
-    public synchronized  String format(LogRecord record) {
+    public synchronized String format(LogRecord record) {
         date.setTime(record.getMillis());
         String source;
         if (record.getSourceClassName() != null) {
@@ -47,5 +47,6 @@ public class DefaultConsoleFormatter extends Formatter {
     }
 
     private final String format;
+
     private final Date date = new Date();
 }

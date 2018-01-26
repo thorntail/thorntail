@@ -59,19 +59,19 @@ public class Deployer {
     }
 
     protected HttpHandler wrapForMetrics(String deploymentName, HttpHandler handler) {
-        if ( this.metricsIntegration.isUnsatisfied() ) {
+        if (this.metricsIntegration.isUnsatisfied()) {
             return handler;
         }
 
-        return this.metricsIntegration.get().integrate( deploymentName, handler );
+        return this.metricsIntegration.get().integrate(deploymentName, handler);
     }
 
     String type(DeploymentMetaData meta) {
-        if ( this.selector.isUnified() ) {
+        if (this.selector.isUnified()) {
             return "unified";
         }
 
-        if ( this.selector.isManagementEnabled() && meta.isManagement() ) {
+        if (this.selector.isManagementEnabled() && meta.isManagement()) {
             return "management";
         }
 
@@ -80,12 +80,12 @@ public class Deployer {
 
     void announce(@Observes LifecycleEvent.AfterStart event) {
         for (DeploymentMetaData each : this.deployments) {
-            ServletMessages.MESSAGES.deployment( type(each), each.getName(), each.getContextPath() );
+            ServletMessages.MESSAGES.deployment(type(each), each.getName(), each.getContextPath());
         }
     }
 
     PathHandler getEffectiveRoot(DeploymentMetaData meta) {
-        if ( selector.isUnified() ) {
+        if (selector.isUnified()) {
             return this.publicRoot;
         }
 

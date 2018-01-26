@@ -17,16 +17,16 @@ public class ConfigProviderResolverImpl extends ConfigProviderResolver {
 
     @Override
     public Config getConfig() {
-        return getConfig(Thread.currentThread().getContextClassLoader() );
+        return getConfig(Thread.currentThread().getContextClassLoader());
     }
 
     @Override
     public Config getConfig(ClassLoader loader) {
-        if ( loader == null ) {
+        if (loader == null) {
             loader = ClassLoader.getSystemClassLoader();
         }
         Config config = this.configs.get(loader);
-        if ( config == null ) {
+        if (config == null) {
             config = getBuilder()
                     .addDefaultSources()
                     .addDiscoveredConverters()
@@ -54,8 +54,8 @@ public class ConfigProviderResolverImpl extends ConfigProviderResolver {
                 .map(e -> e.getKey())
                 .collect(Collectors.toSet());
 
-        keys.forEach(e->this.configs.remove(e));
+        keys.forEach(e -> this.configs.remove(e));
     }
 
-    private Map<ClassLoader,Config> configs = new HashMap<>();
+    private Map<ClassLoader, Config> configs = new HashMap<>();
 }

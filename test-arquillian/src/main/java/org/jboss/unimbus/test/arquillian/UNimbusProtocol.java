@@ -15,7 +15,7 @@ import org.jboss.unimbus.UNimbus;
  */
 public class UNimbusProtocol implements Protocol<UNimbusProtocolConfiguration> {
 
-    public static final ProtocolDescription DESCRIPTION = new ProtocolDescription( UNimbus.PROJECT_NAME );
+    public static final ProtocolDescription DESCRIPTION = new ProtocolDescription(UNimbus.PROJECT_NAME);
 
     @Override
     public Class<UNimbusProtocolConfiguration> getProtocolConfigurationClass() {

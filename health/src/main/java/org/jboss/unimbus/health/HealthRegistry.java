@@ -9,10 +9,7 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
-import org.jboss.unimbus.servlet.HttpConstraintMetaData;
-import org.jboss.unimbus.servlet.HttpMethodConstraintMetaData;
 import org.jboss.unimbus.servlet.ServletMetaData;
-import org.jboss.unimbus.servlet.ServletSecurityMetaData;
 
 /**
  * Created by bob on 1/16/18.

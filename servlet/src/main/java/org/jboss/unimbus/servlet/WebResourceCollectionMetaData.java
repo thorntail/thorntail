@@ -13,7 +13,7 @@ public class WebResourceCollectionMetaData {
     }
 
     public WebResourceCollectionMetaData addUrlPattern(String pattern) {
-        this.urlPatterns.add( pattern );
+        this.urlPatterns.add(pattern);
         return this;
     }
 

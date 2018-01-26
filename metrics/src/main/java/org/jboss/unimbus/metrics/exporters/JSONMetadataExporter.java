@@ -13,10 +13,7 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonWriter;
 import javax.json.stream.JsonGenerator;
 
-import org.eclipse.microprofile.metrics.Counter;
-import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
 
@@ -24,7 +21,7 @@ import org.eclipse.microprofile.metrics.annotation.RegistryType;
  * Created by bob on 1/22/18.
  */
 @ApplicationScoped
-public class JSONMetadataExporter implements Exporter  {
+public class JSONMetadataExporter implements Exporter {
 
     @Override
     public String getContentType() {
@@ -45,7 +42,7 @@ public class JSONMetadataExporter implements Exporter  {
                 registry = this.vendorRegistry;
                 break;
         }
-        if ( registry == null ) {
+        if (registry == null) {
             return null;
         }
 
@@ -55,7 +52,7 @@ public class JSONMetadataExporter implements Exporter  {
 
     @Override
     public StringBuffer exportAllScopes() {
-        JsonObject obj =  rootJSON();
+        JsonObject obj = rootJSON();
         return stringify(obj);
     }
 
@@ -73,18 +70,18 @@ public class JSONMetadataExporter implements Exporter  {
                 registry = this.vendorRegistry;
                 break;
         }
-        if ( registry == null ) {
+        if (registry == null) {
             return null;
         }
 
         Metadata metric = registry.getMetadata().get(metricName);
 
-        if ( metric == null ) {
+        if (metric == null) {
             return null;
         }
 
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        metricJSON( builder, metricName, metric );
+        metricJSON(builder, metricName, metric);
         return stringify(builder.build());
     }
 
@@ -94,7 +91,7 @@ public class JSONMetadataExporter implements Exporter  {
 
     StringBuffer stringify(JsonObject obj) {
         StringWriter out = new StringWriter();
-        try ( JsonWriter writer = Json.createWriterFactory(JSON_CONFIG).createWriter(out) ) {
+        try (JsonWriter writer = Json.createWriterFactory(JSON_CONFIG).createWriter(out)) {
             writer.writeObject(obj);
         }
         return out.getBuffer();
@@ -129,19 +126,19 @@ public class JSONMetadataExporter implements Exporter  {
     private JsonObject metricJSON(Metadata metadata) {
         JsonObjectBuilder obj = Json.createObjectBuilder();
 
-        if ( metadata.getUnit() != null ) {
+        if (metadata.getUnit() != null) {
             obj.add("unit", metadata.getUnit());
         }
-        if ( metadata.getType() != null ) {
+        if (metadata.getType() != null) {
             obj.add("type", metadata.getType());
         }
-        if ( metadata.getDescription() != null ) {
+        if (metadata.getDescription() != null) {
             obj.add("description", metadata.getDescription());
         }
-        if ( metadata.getDisplayName() != null ) {
+        if (metadata.getDisplayName() != null) {
             obj.add("displayName", metadata.getDisplayName());
         }
-        if ( metadata.getTagsAsString() != null ) {
+        if (metadata.getTagsAsString() != null) {
             obj.add("tags", metadata.getTagsAsString());
         }
 

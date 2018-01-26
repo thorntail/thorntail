@@ -31,14 +31,14 @@
  */
 package org.jboss.unimbus.metrics.app;
 
-import org.eclipse.microprofile.metrics.Snapshot;
-
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+
+import org.eclipse.microprofile.metrics.Snapshot;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -48,7 +48,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class WeightedSnapshot extends Snapshot {
 
     private final long[] values;
+
     private final double[] normWeights;
+
     private final double[] quantiles;
 
 
@@ -220,6 +222,7 @@ public class WeightedSnapshot extends Snapshot {
      */
     public static class WeightedSample {
         public final long value;
+
         public final double weight;
 
         public WeightedSample(long value, double weight) {

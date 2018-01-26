@@ -16,13 +16,6 @@
 
 package org.jboss.unimbus.metrics.ext;
 
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.annotation.Counted;
-import org.eclipse.microprofile.metrics.annotation.Gauge;
-import org.eclipse.microprofile.metrics.annotation.Metered;
-import org.eclipse.microprofile.metrics.annotation.Timed;
-
-import javax.enterprise.inject.Vetoed;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -30,8 +23,16 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Collections;
 
+import javax.enterprise.inject.Vetoed;
+
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Gauge;
+import org.eclipse.microprofile.metrics.annotation.Metered;
+import org.eclipse.microprofile.metrics.annotation.Timed;
+
 @Vetoed
-/* package-private */ class MetricResolver {
+        /* package-private */ class MetricResolver {
 
 
     private MetricName metricName = new SeMetricName(Collections.emptySet());

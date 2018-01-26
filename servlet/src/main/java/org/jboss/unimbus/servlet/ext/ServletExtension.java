@@ -1,6 +1,5 @@
 package org.jboss.unimbus.servlet.ext;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -14,7 +13,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.servlet.Servlet;
-import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.annotation.ServletSecurity;
 import javax.servlet.annotation.WebServlet;
 
@@ -32,7 +30,7 @@ public class ServletExtension implements Extension {
         });
     }
 
-    void createServletMetaData(Bean<Servlet> servletBean, AfterBeanDiscovery event, BeanManager beanManager) {
+    private void createServletMetaData(Bean<Servlet> servletBean, AfterBeanDiscovery event, BeanManager beanManager) {
         ServletMetaData meta = new ServletMetaData(getType(servletBean), supplier(servletBean, beanManager));
 
         processUrlPatterns(meta, servletBean);
@@ -43,13 +41,10 @@ public class ServletExtension implements Extension {
                 .addQualifier(Default.Literal.INSTANCE)
                 .addType(Object.class)
                 .addType(ServletMetaData.class)
-                .addType(ServletMetaData.class)
-                .produceWith((obj) -> {
-                    return meta;
-                });
+                .produceWith((obj) -> meta);
     }
 
-    Class<? extends Servlet> getType(Bean<Servlet> servletBean) {
+    private Class<? extends Servlet> getType(Bean<Servlet> servletBean) {
         int curDepth = 0;
         Class<? extends Servlet> curClass = null;
         for (Type type : servletBean.getTypes()) {
@@ -68,7 +63,7 @@ public class ServletExtension implements Extension {
         return curClass;
     }
 
-    int depthOf(Class<?> cls) {
+    private int depthOf(Class<?> cls) {
         int depth = 1;
 
         while (cls.getSuperclass() != null) {
@@ -78,14 +73,14 @@ public class ServletExtension implements Extension {
         return depth;
     }
 
-    Supplier<Servlet> supplier(Bean<Servlet> servletBean, BeanManager beanManager) {
+    private Supplier<Servlet> supplier(Bean<Servlet> servletBean, BeanManager beanManager) {
         return () -> {
             CreationalContext<Servlet> ctx = beanManager.createCreationalContext(servletBean);
             return servletBean.create(ctx);
         };
     }
 
-    void processUrlPatterns(ServletMetaData meta, Bean<Servlet> servletBean) {
+    private void processUrlPatterns(ServletMetaData meta, Bean<Servlet> servletBean) {
         Set<Type> types = servletBean.getTypes();
         for (Type type : types) {
             if (type instanceof Class) {
@@ -99,13 +94,13 @@ public class ServletExtension implements Extension {
         }
     }
 
-    void processSecurity(ServletMetaData meta, Bean<Servlet> servletBean) {
+    private void processSecurity(ServletMetaData meta, Bean<Servlet> servletBean) {
         Set<Type> types = servletBean.getTypes();
         for (Type type : types) {
             if (type instanceof Class) {
                 ServletSecurity anno = (ServletSecurity) ((Class) type).getAnnotation(ServletSecurity.class);
-                if ( anno != null ) {
-                    meta.setSecurity( new ServletSecurityMetaData(anno));
+                if (anno != null) {
+                    meta.setSecurity(new ServletSecurityMetaData(anno));
                     break;
                 }
             }

@@ -91,7 +91,6 @@ public class ServletMetaData {
     }
 
 
-
     private final String name;
 
     private final Class<? extends Servlet> type;

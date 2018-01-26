@@ -30,7 +30,6 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
 import org.jboss.unimbus.events.LifecycleEvent;
-import org.jboss.unimbus.metrics.MetricsMessages;
 
 /**
  * Created by bob on 1/22/18.

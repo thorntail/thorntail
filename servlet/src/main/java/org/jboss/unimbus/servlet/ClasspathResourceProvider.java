@@ -8,7 +8,7 @@ import java.net.URL;
 public class ClasspathResourceProvider implements ResourceProvider {
 
     public ClasspathResourceProvider(String prefix) {
-        if ( prefix.startsWith("/" ) ) {
+        if (prefix.startsWith("/")) {
             prefix = prefix.substring(1);
         }
         this.prefix = prefix;

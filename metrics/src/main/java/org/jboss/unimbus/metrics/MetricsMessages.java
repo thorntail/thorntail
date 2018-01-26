@@ -7,7 +7,6 @@ import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
 
 import static org.jboss.unimbus.UNimbus.PROJECT_CODE;
-import static org.jboss.unimbus.UNimbus.PROJECT_NAME;
 
 /**
  * Created by bob on 1/19/18.

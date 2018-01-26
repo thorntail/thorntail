@@ -24,6 +24,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class Tag {
     String key;
+
     String value;
 
     public Tag() {

@@ -21,5 +21,6 @@ public class FilterMetaData {
     }
 
     private final String name;
+
     private final Class<? extends Filter> type;
 }

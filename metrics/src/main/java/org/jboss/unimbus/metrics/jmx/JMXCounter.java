@@ -18,7 +18,6 @@
 package org.jboss.unimbus.metrics.jmx;
 
 import org.eclipse.microprofile.metrics.Counter;
-import org.jboss.unimbus.metrics.jmx.JMXHelper;
 
 /**
  * @author hrupp
@@ -58,5 +57,6 @@ public class JMXCounter implements Counter {
     }
 
     private final JMXHelper helper;
+
     private String mbeanExpression;
 }

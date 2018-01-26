@@ -3,7 +3,6 @@ package org.jboss.unimbus.jpa;
 import java.net.URL;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 
 import org.hibernate.jpa.boot.internal.PersistenceXmlParser;

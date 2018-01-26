@@ -39,16 +39,16 @@ public class SortingClassLoader extends ClassLoader {
         List<URL> list = new ArrayList<>();
         List<URL> tail = new ArrayList<>();
 
-        while ( result.hasMoreElements() ) {
+        while (result.hasMoreElements()) {
             URL each = result.nextElement();
-            if ( each.getPath().contains("keycloak-undertow-adapter" )) {
-                tail.add( each );
+            if (each.getPath().contains("keycloak-undertow-adapter")) {
+                tail.add(each);
             } else {
-                list.add( each );
+                list.add(each);
             }
         }
 
-        list.addAll( tail );
+        list.addAll(tail);
 
         return Collections.enumeration(list);
     }

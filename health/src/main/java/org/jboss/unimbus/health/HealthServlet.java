@@ -28,8 +28,8 @@ import org.eclipse.microprofile.health.HealthCheckResponse;
  */
 public class HealthServlet extends HttpServlet {
 
-    private static final Map<String,?> JSON_CONFIG = new HashMap<String,Object>() {{
-        put( JsonGenerator.PRETTY_PRINTING, true);
+    private static final Map<String, ?> JSON_CONFIG = new HashMap<String, Object>() {{
+        put(JsonGenerator.PRETTY_PRINTING, true);
     }};
 
     @Override
@@ -46,14 +46,14 @@ public class HealthServlet extends HttpServlet {
         HealthCheckResponse.State outcome = HealthCheckResponse.State.UP;
 
         for (HealthCheck check : checks) {
-            if ( check == null ) {
+            if (check == null) {
                 continue;
             }
             JsonObject each = jsonObject(check);
             results.add(each);
-            if ( outcome == HealthCheckResponse.State.UP ) {
+            if (outcome == HealthCheckResponse.State.UP) {
                 String state = each.getString("state");
-                if ( state.equals("DOWN" ) ) {
+                if (state.equals("DOWN")) {
                     outcome = HealthCheckResponse.State.DOWN;
                 }
             }
@@ -62,8 +62,8 @@ public class HealthServlet extends HttpServlet {
         JsonObjectBuilder builder = Json.createObjectBuilder();
 
 
-        builder.add( "outcome", outcome.toString() );
-        builder.add( "checks", results );
+        builder.add("outcome", outcome.toString());
+        builder.add("checks", results);
 
         return builder.build();
     }

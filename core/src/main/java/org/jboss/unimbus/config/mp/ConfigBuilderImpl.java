@@ -24,11 +24,10 @@ import org.jboss.unimbus.config.mp.converters.FallbackConverter;
 import org.jboss.unimbus.config.mp.converters.FloatConverter;
 import org.jboss.unimbus.config.mp.converters.IntegerConverter;
 import org.jboss.unimbus.config.mp.converters.LongConverter;
+import org.jboss.unimbus.config.mp.converters.URLConverter;
 import org.jboss.unimbus.config.mp.converters.fallback.EnumValueOfConverter;
 import org.jboss.unimbus.config.mp.converters.fallback.StaticParseConverter;
 import org.jboss.unimbus.config.mp.converters.fallback.StaticValueOfConverter;
-import org.jboss.unimbus.config.mp.converters.fallback.StringConstructorConverter;
-import org.jboss.unimbus.config.mp.converters.URLConverter;
 
 class ConfigBuilderImpl implements ConfigBuilder {
 
@@ -102,7 +101,7 @@ class ConfigBuilderImpl implements ConfigBuilder {
                 }
             }
 
-            if ( this.classLoader != null ) {
+            if (this.classLoader != null) {
                 ServiceLoader<ConfigSource> directDiscovered = ServiceLoader.load(ConfigSource.class, this.classLoader);
                 for (ConfigSource each : directDiscovered) {
                     this.sources.add(each);

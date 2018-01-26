@@ -21,7 +21,7 @@ public class UndertowSelector {
     }
 
     public boolean isUnified() {
-        if ( ! isManagementEnabled() || ! isPrimaryEnabled() ) {
+        if (!isManagementEnabled() || !isPrimaryEnabled()) {
             return false;
         }
         return ((this.managementServerHost.equals(this.primaryServerHost))

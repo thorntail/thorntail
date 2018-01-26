@@ -96,7 +96,7 @@ public class AMetricRegistryFactory {
     }
 
     public MetricRegistry get(MetricRegistry.Type type) {
-        System.err.println( "GET -- " + type);
+        System.err.println("GET -- " + type);
         new Exception().printStackTrace();
         return registries.computeIfAbsent(type, key -> {
             try {

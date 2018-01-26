@@ -9,7 +9,7 @@ import org.eclipse.microprofile.metrics.MetricType;
  * Created by bob on 1/22/18.
  */
 @ApplicationScoped
-@RegistryTarget(type= MetricRegistry.Type.BASE)
+@RegistryTarget(type = MetricRegistry.Type.BASE)
 public class ThreadCount extends ExtendedMetadata {
 
     ThreadCount() {

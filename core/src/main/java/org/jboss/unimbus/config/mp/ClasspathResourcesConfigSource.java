@@ -22,7 +22,7 @@ class ClasspathResourcesConfigSource extends MultiConfigSource {
         } catch (IOException e) {
             // ignore
         }
-        if ( Thread.currentThread().getContextClassLoader() != classLoader ) {
+        if (Thread.currentThread().getContextClassLoader() != classLoader) {
             try {
                 Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(path);
                 while (resources.hasMoreElements()) {

@@ -20,7 +20,6 @@ package org.jboss.unimbus.metrics.exporters;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -319,8 +318,8 @@ public class PrometheusExporter implements Exporter {
         out = out.replace("__", USCORE);
         out = out.replace(":_", ":");
 
-        if ( ! out.matches( VALID_NAME ) ) {
-            System.err.println( "INVALID NAME: " + out );
+        if (!out.matches(VALID_NAME)) {
+            System.err.println("INVALID NAME: " + out);
         }
 
         return out;

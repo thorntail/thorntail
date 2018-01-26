@@ -17,8 +17,8 @@ public class ResourceProviders {
         URL resource = null;
 
         for (ResourceProvider provider : this.providers) {
-            resource = provider.getResource( path );
-            if ( resource != null ) {
+            resource = provider.getResource(path);
+            if (resource != null) {
                 break;
             }
         }

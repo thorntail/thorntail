@@ -29,6 +29,7 @@ import org.eclipse.microprofile.metrics.MetricType;
 public class ExtendedMetadata extends Metadata {
 
     private String mbean;
+
     boolean multi;
 
     public ExtendedMetadata() {

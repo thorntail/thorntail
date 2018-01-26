@@ -22,7 +22,7 @@ public class UNimbusProvidingExtension implements Extension {
                 .scope(ApplicationScoped.class)
                 .addQualifier(Default.Literal.INSTANCE)
                 .addQualifier(Any.Literal.INSTANCE)
-                .produceWith((obj)-> system);
+                .produceWith((obj) -> system);
     }
 
     private final UNimbus system;

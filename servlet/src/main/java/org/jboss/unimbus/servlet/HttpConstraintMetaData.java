@@ -1,16 +1,9 @@
 package org.jboss.unimbus.servlet;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.annotation.HttpConstraint;
-import javax.servlet.annotation.HttpMethodConstraint;
-import javax.servlet.annotation.ServletSecurity;
-import javax.servlet.annotation.WebServlet;
 
 /**
  * Created by bob on 1/18/18.
@@ -36,7 +29,7 @@ public class HttpConstraintMetaData {
             addRoleAllowed(role);
         }
 
-        switch ( anno.transportGuarantee() ) {
+        switch (anno.transportGuarantee()) {
             case NONE:
                 this.transportGuarantee = ServletSecurityMetaData.TransportGuarantee.NONE;
                 break;
@@ -74,6 +67,8 @@ public class HttpConstraintMetaData {
     }
 
     private ServletSecurityMetaData.TransportGuarantee transportGuarantee;
+
     private ServletSecurityMetaData.EmptyRoleSemantic emptyRoleSemantic;
+
     private final Set<String> rolesAllowed = new HashSet<>();
 }

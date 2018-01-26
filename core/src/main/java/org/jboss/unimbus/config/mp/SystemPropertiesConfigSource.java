@@ -1,6 +1,5 @@
 package org.jboss.unimbus.config.mp;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -24,11 +23,11 @@ public class SystemPropertiesConfigSource implements ConfigSource {
         return "system-properties";
     }
 
-    protected static Map<String,String> toMap(Properties props) {
-        Map<String,String> map = new HashMap<>();
+    protected static Map<String, String> toMap(Properties props) {
+        Map<String, String> map = new HashMap<>();
 
-        System.getProperties().stringPropertyNames().forEach(e->{
-            map.put( e, System.getProperty(e));
+        System.getProperties().stringPropertyNames().forEach(e -> {
+            map.put(e, System.getProperty(e));
         });
 
         return map;

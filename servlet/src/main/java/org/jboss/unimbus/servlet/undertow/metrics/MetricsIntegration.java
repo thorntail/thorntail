@@ -16,10 +16,10 @@ import org.jboss.unimbus.condition.IfClassPresent;
 public class MetricsIntegration {
 
     public HttpHandler integrate(String deploymentName, HttpHandler next) {
-        return new MetricsHandler(deploymentName, this.registry, next );
+        return new MetricsHandler(deploymentName, this.registry, next);
     }
 
     @Inject
-    @RegistryType(type= MetricRegistry.Type.VENDOR)
-    MetricRegistry registry;
+    @RegistryType(type = MetricRegistry.Type.VENDOR)
+    private MetricRegistry registry;
 }

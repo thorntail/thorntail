@@ -51,7 +51,6 @@ import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
-import org.jboss.logging.Logger;
 
 /**
  * @author hrupp
@@ -60,8 +59,10 @@ public class MetricCdiInjectionExtension implements Extension {
 
     private static final AnnotationLiteral<InterceptorBinding> INTERCEPTOR_BINDING = new AnnotationLiteral<InterceptorBinding>() {
     };
+
     private static final AnnotationLiteral<Nonbinding> NON_BINDING = new AnnotationLiteral<Nonbinding>() {
     };
+
     private static final AnnotationLiteral<MetricsBinding> METRICS_BINDING = new AnnotationLiteral<MetricsBinding>() {
     };
 
@@ -77,7 +78,7 @@ public class MetricCdiInjectionExtension implements Extension {
     }
 
 
-    private <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class, Timed.class }) ProcessAnnotatedType<X> pat) {
+    private <X> void metricsAnnotations(@Observes @WithAnnotations({Counted.class, Gauge.class, Metered.class, Timed.class}) ProcessAnnotatedType<X> pat) {
         AnnotatedTypeDecorator newPAT = new AnnotatedTypeDecorator<>(pat.getAnnotatedType(), METRICS_BINDING);
         //LOGGER.infof("annotations: %s", newPAT.getAnnotations());
         //LOGGER.infof("methods: %s", newPAT.getMethods());
@@ -102,9 +103,9 @@ public class MetricCdiInjectionExtension implements Extension {
         MetricName name = getReference(manager, MetricName.class);
         for (Map.Entry<Bean<?>, AnnotatedMember<?>> bean : metrics.entrySet()) {
             if (// skip non @Default beans
-            !bean.getKey().getQualifiers().contains(DEFAULT)
-                    // skip producer methods with injection point metadata
-                    || hasInjectionPointMetadata(bean.getValue())) {
+                    !bean.getKey().getQualifiers().contains(DEFAULT)
+                            // skip producer methods with injection point metadata
+                            || hasInjectionPointMetadata(bean.getValue())) {
                 continue;
             }
 
@@ -140,7 +141,7 @@ public class MetricCdiInjectionExtension implements Extension {
 
     private static <T> T getReference(BeanManager manager, Class<T> type) {
         Bean<?> bean = manager.resolve(manager.getBeans(type));
-        return getReference(manager, type, bean );
+        return getReference(manager, type, bean);
     }
 
     @SuppressWarnings("unchecked")

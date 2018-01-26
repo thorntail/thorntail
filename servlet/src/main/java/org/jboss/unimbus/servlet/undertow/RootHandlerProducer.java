@@ -17,14 +17,14 @@ public class RootHandlerProducer {
 
     @PostConstruct
     void init() {
-        if ( this.selector.isUnified() ) {
+        if (this.selector.isUnified()) {
             this.primaryRoot = new PathHandler();
             this.managementRoot = this.primaryRoot;
         } else {
-            if ( this.selector.isPrimaryEnabled() ) {
+            if (this.selector.isPrimaryEnabled()) {
                 this.primaryRoot = new PathHandler();
             }
-            if ( this.selector.isManagementEnabled() ) {
+            if (this.selector.isManagementEnabled()) {
                 this.managementRoot = new PathHandler();
             }
         }
@@ -46,6 +46,7 @@ public class RootHandlerProducer {
     private UndertowSelector selector;
 
     private PathHandler primaryRoot;
+
     private PathHandler managementRoot;
 
 }

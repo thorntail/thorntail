@@ -19,7 +19,7 @@ public class HttpMethodConstraintMetaData {
     public HttpMethodConstraintMetaData(HttpMethodConstraint anno) {
         this.method = anno.value();
 
-        switch ( anno.emptyRoleSemantic() ) {
+        switch (anno.emptyRoleSemantic()) {
             case PERMIT:
                 this.emptyRoleSemantic = ServletSecurityMetaData.EmptyRoleSemantic.PERMIT;
                 break;
@@ -32,7 +32,7 @@ public class HttpMethodConstraintMetaData {
             addRoleAllowed(role);
         }
 
-        switch ( anno.transportGuarantee() ) {
+        switch (anno.transportGuarantee()) {
             case NONE:
                 this.transportGuarantee = ServletSecurityMetaData.TransportGuarantee.NONE;
                 break;
@@ -61,7 +61,7 @@ public class HttpMethodConstraintMetaData {
     }
 
     public HttpMethodConstraintMetaData addRoleAllowed(String role) {
-        this.rolesAllowed.add( role );
+        this.rolesAllowed.add(role);
         return this;
     }
 

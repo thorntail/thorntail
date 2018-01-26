@@ -33,7 +33,6 @@ import org.eclipse.microprofile.metrics.MetricFilter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.Timer;
-import org.jboss.logging.Logger;
 import org.jboss.unimbus.metrics.app.CounterImpl;
 import org.jboss.unimbus.metrics.app.ExponentiallyDecayingReservoir;
 import org.jboss.unimbus.metrics.app.HistogramImpl;

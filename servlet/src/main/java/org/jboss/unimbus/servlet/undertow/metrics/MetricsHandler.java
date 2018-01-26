@@ -16,7 +16,7 @@ import org.eclipse.microprofile.metrics.Timer;
  */
 public class MetricsHandler implements HttpHandler {
 
-    public MetricsHandler(String deploymentName, MetricRegistry registry, HttpHandler next) {
+    MetricsHandler(String deploymentName, MetricRegistry registry, HttpHandler next) {
         this.next = next;
         this.deploymentName = deploymentName;
         this.registry = registry;
@@ -69,19 +69,19 @@ public class MetricsHandler implements HttpHandler {
 
     }
 
-    Counter counter(String name, Consumer<Metadata> consumer) {
+    private Counter counter(String name, Consumer<Metadata> consumer) {
         Metadata meta = new Metadata(metricName(name), MetricType.COUNTER);
         consumer.accept(meta);
         return registry.counter(meta);
     }
 
-    Timer timer(String name, Consumer<Metadata> consumer) {
+    private Timer timer(String name, Consumer<Metadata> consumer) {
         Metadata meta = new Metadata(metricName(name), MetricType.TIMER);
         consumer.accept(meta);
         return registry.timer(meta);
     }
 
-    String metricName(String name) {
+    private String metricName(String name) {
         return "deployment." + this.deploymentName + "." + name;
     }
 

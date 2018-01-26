@@ -31,11 +31,11 @@
  */
 package org.jboss.unimbus.metrics.app;
 
-import org.eclipse.microprofile.metrics.Meter;
-
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
+
+import org.eclipse.microprofile.metrics.Meter;
 
 /**
  * A meter metric which measures mean throughput and one-, five-, and fifteen-minute
@@ -47,12 +47,17 @@ public class MeterImpl implements Meter {
     private static final long TICK_INTERVAL = TimeUnit.SECONDS.toNanos(5);
 
     private final EWMA m1Rate = EWMA.oneMinuteEWMA();
+
     private final EWMA m5Rate = EWMA.fiveMinuteEWMA();
+
     private final EWMA m15Rate = EWMA.fifteenMinuteEWMA();
 
     private final LongAdder count = new LongAdder();
+
     private final long startTime;
+
     private final AtomicLong lastTick;
+
     private final Clock clock;
 
     /**

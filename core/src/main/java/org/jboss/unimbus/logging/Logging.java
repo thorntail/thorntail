@@ -7,5 +7,6 @@ import java.util.logging.Level;
  */
 public interface Logging {
     void initialize();
+
     void setLevel(String name, Level level);
 }

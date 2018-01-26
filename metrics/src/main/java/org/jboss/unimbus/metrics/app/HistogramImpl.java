@@ -31,10 +31,10 @@
  */
 package org.jboss.unimbus.metrics.app;
 
+import java.util.concurrent.atomic.LongAdder;
+
 import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Snapshot;
-
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * A metric which calculates the distribution of a value.
@@ -44,6 +44,7 @@ import java.util.concurrent.atomic.LongAdder;
  */
 public class HistogramImpl implements Histogram {
     private final Reservoir reservoir;
+
     private final LongAdder count;
 
     /**

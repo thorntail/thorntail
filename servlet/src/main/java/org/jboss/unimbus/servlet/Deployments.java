@@ -31,7 +31,7 @@ public class Deployments implements Iterable<DeploymentMetaData> {
     }
 
     public void addDeployment(DeploymentMetaData meta) {
-        if ( meta == null ) {
+        if (meta == null) {
             return;
         }
         this.deployments.add(meta);

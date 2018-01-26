@@ -11,7 +11,7 @@ import java.util.Set;
 public class SecurityConstraintMetaData {
 
     public SecurityConstraintMetaData addWebResourceCollection(WebResourceCollectionMetaData collection) {
-        this.webResourceCollections.add( collection );
+        this.webResourceCollections.add(collection);
         return this;
     }
 
@@ -20,7 +20,7 @@ public class SecurityConstraintMetaData {
     }
 
     public SecurityConstraintMetaData addRoleAllowed(String role) {
-        this.rolesAllowed.add( role );
+        this.rolesAllowed.add(role);
         return this;
     }
 

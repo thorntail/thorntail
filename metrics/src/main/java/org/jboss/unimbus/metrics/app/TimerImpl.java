@@ -31,11 +31,11 @@
  */
 package org.jboss.unimbus.metrics.app;
 
-import org.eclipse.microprofile.metrics.Snapshot;
-import org.eclipse.microprofile.metrics.Timer;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+
+import org.eclipse.microprofile.metrics.Snapshot;
+import org.eclipse.microprofile.metrics.Timer;
 
 /**
  * A timer metric which aggregates timing durations and provides duration statistics, plus
@@ -44,7 +44,9 @@ import java.util.concurrent.TimeUnit;
 public class TimerImpl implements Timer {
 
     private final MeterImpl meter;
+
     private final HistogramImpl histogram;
+
     private final Clock clock;
 
 
@@ -178,7 +180,9 @@ public class TimerImpl implements Timer {
      */
     public static class Context implements Timer.Context {
         private final TimerImpl timer;
+
         private final Clock clock;
+
         private final long startTime;
 
         private Context(TimerImpl timer, Clock clock) {

@@ -26,7 +26,7 @@ import org.eclipse.microprofile.metrics.annotation.RegistryType;
  * Created by bob on 1/22/18.
  */
 @ApplicationScoped
-public class JSONExporter implements Exporter  {
+public class JSONExporter implements Exporter {
 
     @Override
     public String getContentType() {
@@ -47,7 +47,7 @@ public class JSONExporter implements Exporter  {
                 registry = this.vendorRegistry;
                 break;
         }
-        if ( registry == null ) {
+        if (registry == null) {
             return null;
         }
 
@@ -57,7 +57,7 @@ public class JSONExporter implements Exporter  {
 
     @Override
     public StringBuffer exportAllScopes() {
-        JsonObject obj =  rootJSON();
+        JsonObject obj = rootJSON();
         return stringify(obj);
     }
 
@@ -75,18 +75,18 @@ public class JSONExporter implements Exporter  {
                 registry = this.vendorRegistry;
                 break;
         }
-        if ( registry == null ) {
+        if (registry == null) {
             return null;
         }
 
         Metric metric = registry.getMetrics().get(metricName);
 
-        if ( metric == null ) {
+        if (metric == null) {
             return null;
         }
 
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        metricJSON( builder, metricName, metric );
+        metricJSON(builder, metricName, metric);
         return stringify(builder.build());
     }
 
@@ -96,7 +96,7 @@ public class JSONExporter implements Exporter  {
 
     StringBuffer stringify(JsonObject obj) {
         StringWriter out = new StringWriter();
-        try ( JsonWriter writer = Json.createWriterFactory(JSON_CONFIG).createWriter(out) ) {
+        try (JsonWriter writer = Json.createWriterFactory(JSON_CONFIG).createWriter(out)) {
             writer.writeObject(obj);
         }
         return out.getBuffer();
@@ -127,9 +127,9 @@ public class JSONExporter implements Exporter  {
     private void metricJSON(JsonObjectBuilder registryJSON, String name, Metric metric) {
         if (metric instanceof Counter) {
             registryJSON.add(name, metricJSON((Counter) metric));
-        } else if ( metric instanceof Timer) {
+        } else if (metric instanceof Timer) {
             registryJSON.add(name, metricJSON((Timer) metric));
-        } else if ( metric instanceof Histogram ) {
+        } else if (metric instanceof Histogram) {
             registryJSON.add(name, metricJSON((Histogram) metric));
         } else if (metric instanceof Gauge) {
             Object value = ((Gauge) metric).getValue();
@@ -159,16 +159,16 @@ public class JSONExporter implements Exporter  {
         Snapshot snap = histogram.getSnapshot();
 
         builder.add("count", histogram.getCount());
-        builder.add("min", snap.getMin() );
-        builder.add("max", snap.getMax() );
-        builder.add("mean", snap.getMean() );
-        builder.add("stddev", snap.getStdDev() );
-        builder.add("p50", snap.getMedian() );
-        builder.add("p75", snap.get75thPercentile() );
-        builder.add("p95", snap.get95thPercentile() );
-        builder.add("p98", snap.get98thPercentile() );
-        builder.add("p99", snap.get99thPercentile() );
-        builder.add("p999", snap.get999thPercentile() );
+        builder.add("min", snap.getMin());
+        builder.add("max", snap.getMax());
+        builder.add("mean", snap.getMean());
+        builder.add("stddev", snap.getStdDev());
+        builder.add("p50", snap.getMedian());
+        builder.add("p75", snap.get75thPercentile());
+        builder.add("p95", snap.get95thPercentile());
+        builder.add("p98", snap.get98thPercentile());
+        builder.add("p99", snap.get99thPercentile());
+        builder.add("p999", snap.get999thPercentile());
 
         return builder.build();
     }
@@ -178,22 +178,22 @@ public class JSONExporter implements Exporter  {
 
         Snapshot snap = timer.getSnapshot();
 
-        builder.add( "meanRate", timer.getMeanRate() );
-        builder.add( "oneMinRate", timer.getOneMinuteRate() );
-        builder.add( "fiveMinRate", timer.getFiveMinuteRate() );
-        builder.add( "fifteenMinRate", timer.getFifteenMinuteRate() );
+        builder.add("meanRate", timer.getMeanRate());
+        builder.add("oneMinRate", timer.getOneMinuteRate());
+        builder.add("fiveMinRate", timer.getFiveMinuteRate());
+        builder.add("fifteenMinRate", timer.getFifteenMinuteRate());
 
         builder.add("count", timer.getCount());
-        builder.add("min", snap.getMin() );
-        builder.add("max", snap.getMax() );
-        builder.add("mean", snap.getMean() );
-        builder.add("stddev", snap.getStdDev() );
-        builder.add("p50", snap.getMedian() );
-        builder.add("p75", snap.get75thPercentile() );
-        builder.add("p95", snap.get95thPercentile() );
-        builder.add("p98", snap.get98thPercentile() );
-        builder.add("p99", snap.get99thPercentile() );
-        builder.add("p999", snap.get999thPercentile() );
+        builder.add("min", snap.getMin());
+        builder.add("max", snap.getMax());
+        builder.add("mean", snap.getMean());
+        builder.add("stddev", snap.getStdDev());
+        builder.add("p50", snap.getMedian());
+        builder.add("p75", snap.get75thPercentile());
+        builder.add("p95", snap.get95thPercentile());
+        builder.add("p98", snap.get98thPercentile());
+        builder.add("p99", snap.get99thPercentile());
+        builder.add("p999", snap.get999thPercentile());
 
         return builder.build();
 

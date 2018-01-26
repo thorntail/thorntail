@@ -23,7 +23,7 @@ public class DeploymentMetaData {
 
     public void setManagement(boolean management) {
         this.management = management;
-        if ( management && this.realm == null ) {
+        if (management && this.realm == null) {
             setRealm("management");
         }
     }
@@ -84,7 +84,7 @@ public class DeploymentMetaData {
     }
 
     public void addAuthMethod(String authMethod) {
-        this.authMethods.add( authMethod );
+        this.authMethods.add(authMethod);
     }
 
     public List<String> getAuthMethods() {
@@ -92,12 +92,13 @@ public class DeploymentMetaData {
     }
 
     public void addFilter(FilterMetaData filter) {
-        this.filters.add( filter );
+        this.filters.add(filter);
     }
 
     public List<FilterMetaData> getFilters() {
         return this.filters;
     }
+
     public void addSecurityConstraint(SecurityConstraintMetaData meta) {
         this.securityConstraints.add(meta);
     }
@@ -114,7 +115,8 @@ public class DeploymentMetaData {
 
     private List<ServletMetaData> servlets = new ArrayList<>();
 
-    private Map<String,String> initParams = new HashMap<>();
+    private Map<String, String> initParams = new HashMap<>();
+
     private Map<String, Object> servletContextAttributes = new HashMap<>();
 
     private String realm;

@@ -70,7 +70,7 @@ public class ConfigExtension implements Extension {
 
     static String determineName(InjectionPoint injectionPoint) {
         ConfigProperty anno = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
-        if ( ! anno.name().equals("")) {
+        if (!anno.name().equals("")) {
             return anno.name();
         }
 
@@ -122,26 +122,26 @@ public class ConfigExtension implements Extension {
         }
 
         Class<?> cls = (Class<?>) in;
-        if ( ! cls.isPrimitive() )  {
+        if (!cls.isPrimitive()) {
             return cls;
         }
 
-        if ( cls == double.class ) {
+        if (cls == double.class) {
             return Double.class;
         }
-        if ( cls == float.class ) {
+        if (cls == float.class) {
             return Float.class;
         }
-        if ( cls == short.class ) {
+        if (cls == short.class) {
             return Short.class;
         }
-        if ( cls == int.class ) {
+        if (cls == int.class) {
             return Integer.class;
         }
-        if ( cls == long.class ) {
+        if (cls == long.class) {
             return Long.class;
         }
-        if ( cls == boolean.class ) {
+        if (cls == boolean.class) {
             return Boolean.class;
         }
 
@@ -153,7 +153,7 @@ public class ConfigExtension implements Extension {
     @ConfigProperty
     @Dependent
     private static final Object produceConfigurationValue(final InjectionPoint injectionPoint) {
-        String name = determineName( injectionPoint );
+        String name = determineName(injectionPoint);
         Type type = injectionPoint.getType();
         if (type instanceof Class) {
             Class<?> cls = (Class<?>) injectionPoint.getType();

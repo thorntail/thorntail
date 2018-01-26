@@ -1,15 +1,11 @@
 package org.jboss.unimbus.test.arquillian;
 
-import java.util.Map;
-
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePath;
-import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.jboss.unimbus.UNimbus;
 import org.jboss.unimbus.test.arquillian.util.ClassLoaderUtil;

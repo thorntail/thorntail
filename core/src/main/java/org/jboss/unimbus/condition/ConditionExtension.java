@@ -28,7 +28,7 @@ public class ConditionExtension implements Extension {
             }
         }
 
-        if ( ! allowed ) {
+        if (!allowed) {
             event.veto();
         }
     }
@@ -52,7 +52,7 @@ public class ConditionExtension implements Extension {
             }
         }
 
-        if ( ! allowed ) {
+        if (!allowed) {
             event.veto();
         }
     }

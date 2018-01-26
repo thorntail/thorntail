@@ -1,7 +1,6 @@
 package org.jboss.unimbus.jpa;
 
 import java.util.Collections;
-import java.util.HashMap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;

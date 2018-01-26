@@ -7,7 +7,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 class MapConfigSource implements ConfigSource {
 
-    MapConfigSource(String name, Map<String,String> props) {
+    MapConfigSource(String name, Map<String, String> props) {
         this.name = name;
         this.props = props;
     }
@@ -32,6 +32,7 @@ class MapConfigSource implements ConfigSource {
         return (this == that);
     }
 
-    private final Map<String,String> props;
+    private final Map<String, String> props;
+
     private final String name;
 }

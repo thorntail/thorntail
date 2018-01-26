@@ -19,19 +19,19 @@ class ResponseBuilder extends HealthCheckResponseBuilder {
 
     @Override
     public HealthCheckResponseBuilder withData(String key, String value) {
-        this.data.put( key, value );
+        this.data.put(key, value);
         return this;
     }
 
     @Override
     public HealthCheckResponseBuilder withData(String key, long value) {
-        this.data.put( key, value );
+        this.data.put(key, value);
         return this;
     }
 
     @Override
     public HealthCheckResponseBuilder withData(String key, boolean value) {
-        this.data.put( key, value );
+        this.data.put(key, value);
         return this;
     }
 
@@ -49,7 +49,7 @@ class ResponseBuilder extends HealthCheckResponseBuilder {
 
     @Override
     public HealthCheckResponseBuilder state(boolean up) {
-        if ( up ) {
+        if (up) {
             return up();
         }
 
@@ -58,10 +58,12 @@ class ResponseBuilder extends HealthCheckResponseBuilder {
 
     @Override
     public HealthCheckResponse build() {
-        return new Response( this.name, this.state, this.data.isEmpty() ? null : this.data );
+        return new Response(this.name, this.state, this.data.isEmpty() ? null : this.data);
     }
 
     private String name;
+
     private HealthCheckResponse.State state = HealthCheckResponse.State.DOWN;
-    private Map<String,Object> data = new HashMap<>();
+
+    private Map<String, Object> data = new HashMap<>();
 }

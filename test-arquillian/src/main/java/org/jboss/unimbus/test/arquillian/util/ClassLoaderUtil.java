@@ -5,7 +5,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,7 +20,6 @@ import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.classloader.ShrinkWrapClassLoader;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -90,7 +88,7 @@ public class ClassLoaderUtil {
             lib.as(ZipImporter.class).importFrom(asset.openStream());
             archives.add(lib);
             for (ArchivePath archivePath : lib.getContent().keySet()) {
-                seenClasses.add( archivePath.get());
+                seenClasses.add(archivePath.get());
             }
 
         });
@@ -103,11 +101,11 @@ public class ClassLoaderUtil {
         JavaArchive classes = ShrinkWrap.create(JavaArchive.class, "test-classes.jar");
         webInfClassesContents.entrySet().forEach(e -> {
             if (e.getValue().getAsset() != null) {
-                String path = e.getKey().get().substring( "/WEB-INF/classes".length());
-                if ( seenClasses.contains(path)) {
+                String path = e.getKey().get().substring("/WEB-INF/classes".length());
+                if (seenClasses.contains(path)) {
                     return;
                 }
-                seenClasses.add( path );
+                seenClasses.add(path);
                 classes.add(e.getValue().getAsset(), path);
             }
         });

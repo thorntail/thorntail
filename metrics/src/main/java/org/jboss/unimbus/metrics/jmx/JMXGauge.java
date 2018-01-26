@@ -18,7 +18,6 @@
 package org.jboss.unimbus.metrics.jmx;
 
 import org.eclipse.microprofile.metrics.Gauge;
-import org.jboss.unimbus.metrics.jmx.JMXHelper;
 
 /**
  * @author hrupp
@@ -36,5 +35,6 @@ public class JMXGauge implements Gauge {
     }
 
     private final JMXHelper helper;
+
     private String mBeanExpression;
 }

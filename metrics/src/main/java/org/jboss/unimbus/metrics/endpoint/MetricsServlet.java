@@ -24,13 +24,13 @@ public class MetricsServlet extends HttpServlet {
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Exporter exporter = getExporterForOPOTIONS(request);
-        service( exporter, request, response );
+        service(exporter, request, response);
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Exporter exporter = getExporterForGET(request);
-        service( exporter, request, response );
+        service(exporter, request, response);
     }
 
     protected void service(Exporter exporter, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -90,7 +90,7 @@ public class MetricsServlet extends HttpServlet {
     }
 
     protected Exporter getExporterForGET(HttpServletRequest request) {
-        if ( "metadata".equalsIgnoreCase(request.getParameter("format" ) )) {
+        if ("metadata".equalsIgnoreCase(request.getParameter("format"))) {
             return this.jsonMetadataExporter;
         }
         if (isJSON(request)) {
@@ -101,7 +101,7 @@ public class MetricsServlet extends HttpServlet {
     }
 
     protected Exporter getExporterForOPOTIONS(HttpServletRequest request) {
-        if ( isJSON(request)) {
+        if (isJSON(request)) {
             return this.jsonMetadataExporter;
         }
 

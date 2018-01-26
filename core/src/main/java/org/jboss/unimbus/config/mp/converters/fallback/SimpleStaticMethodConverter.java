@@ -23,7 +23,7 @@ public class SimpleStaticMethodConverter implements FallbackConverter {
             return type.cast(method.invoke(null, value));
         } catch (IllegalAccessException e) {
             // ignore
-        } catch( InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             throw new IllegalArgumentException(e.getCause());
         }
         return null;

@@ -3,7 +3,6 @@ package org.jboss.unimbus.servlet.undertow;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
-import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.ServletContainer;
 
 /**

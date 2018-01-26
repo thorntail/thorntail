@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import javax.servlet.DispatcherType;
 import javax.servlet.Servlet;
 
 import io.undertow.servlet.Servlets;
@@ -53,7 +52,7 @@ public class DeploymentUtils {
         info.setClassLoader(new SortingClassLoader(DeploymentUtils.class.getClassLoader()));
 
 
-        meta.getSecurityConstraints().forEach( e->{
+        meta.getSecurityConstraints().forEach(e -> {
             info.addSecurityConstraint(convert(e));
         });
 
@@ -74,10 +73,10 @@ public class DeploymentUtils {
     private static SecurityConstraint convert(SecurityConstraintMetaData meta) {
         SecurityConstraint info = new SecurityConstraint();
         info.addRolesAllowed(meta.getRolesAllowed());
-        meta.getWebResourceCollections().forEach( e->{
+        meta.getWebResourceCollections().forEach(e -> {
             info.addWebResourceCollection(convert(e));
         });
-        info.setEmptyRoleSemantic( convert(meta.getEmptyRoleSemantic()) );
+        info.setEmptyRoleSemantic(convert(meta.getEmptyRoleSemantic()));
         return info;
     }
 

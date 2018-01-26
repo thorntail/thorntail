@@ -1,9 +1,7 @@
 package org.jboss.unimbus.servlet;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.annotation.HttpMethodConstraint;
 import javax.servlet.annotation.ServletSecurity;
@@ -31,7 +29,7 @@ public class ServletSecurityMetaData {
         this.httpConstraint = new HttpConstraintMetaData(anno.value());
 
         for (HttpMethodConstraint each : anno.httpMethodConstraints()) {
-            addHttpMethodConstraint( new HttpMethodConstraintMetaData(each));
+            addHttpMethodConstraint(new HttpMethodConstraintMetaData(each));
         }
     }
 
@@ -45,7 +43,7 @@ public class ServletSecurityMetaData {
     }
 
     public ServletSecurityMetaData addHttpMethodConstraint(HttpMethodConstraintMetaData constraint) {
-        this.httpMethodConstraints.add( constraint );
+        this.httpMethodConstraints.add(constraint);
         return this;
     }
 
@@ -54,5 +52,6 @@ public class ServletSecurityMetaData {
     }
 
     private HttpConstraintMetaData httpConstraint;
+
     private List<HttpMethodConstraintMetaData> httpMethodConstraints = new ArrayList<>();
 }

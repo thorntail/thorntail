@@ -31,14 +31,14 @@
  */
 package org.jboss.unimbus.metrics.app;
 
-import org.eclipse.microprofile.metrics.Snapshot;
-
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.eclipse.microprofile.metrics.Snapshot;
 
 import static java.lang.Math.exp;
 import static java.lang.Math.min;
@@ -54,16 +54,25 @@ import static java.lang.Math.min;
  */
 public class ExponentiallyDecayingReservoir implements Reservoir {
     private static final int DEFAULT_SIZE = 1028;
+
     private static final double DEFAULT_ALPHA = 0.015;
+
     private static final long RESCALE_THRESHOLD = TimeUnit.HOURS.toNanos(1);
 
     private final ConcurrentSkipListMap<Double, WeightedSnapshot.WeightedSample> values;
+
     private final ReentrantReadWriteLock lock;
+
     private final double alpha;
+
     private final int size;
+
     private final AtomicLong count;
+
     private volatile long startTime;
+
     private final AtomicLong nextScaleTime;
+
     private final Clock clock;
 
     /**
