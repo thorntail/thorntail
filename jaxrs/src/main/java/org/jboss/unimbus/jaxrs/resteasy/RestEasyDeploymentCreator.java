@@ -12,7 +12,7 @@ import org.jboss.resteasy.cdi.CdiInjectorFactory;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.spi.ResteasyDeployment;
-import org.jboss.unimbus.condition.IfClassPresent;
+import org.jboss.unimbus.condition.RequiredClassPresent;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.Deployments;
@@ -22,7 +22,7 @@ import org.jboss.unimbus.servlet.ServletMetaData;
 /**
  * Created by bob on 1/15/18.
  */
-@IfClassPresent("org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher")
+@RequiredClassPresent("org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher")
 @ApplicationScoped
 public class RestEasyDeploymentCreator {
 

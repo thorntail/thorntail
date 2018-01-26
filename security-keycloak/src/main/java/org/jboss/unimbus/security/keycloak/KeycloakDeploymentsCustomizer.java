@@ -5,7 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.unimbus.condition.IfClassPresent;
+import org.jboss.unimbus.condition.RequiredClassPresent;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.Deployments;
@@ -14,7 +14,7 @@ import org.jboss.unimbus.servlet.Deployments;
  * Created by bob on 1/18/18.
  */
 @ApplicationScoped
-@IfClassPresent("org.jboss.unimbus.servlet.Deployments")
+@RequiredClassPresent("org.jboss.unimbus.servlet.Deployments")
 public class KeycloakDeploymentsCustomizer {
 
     void customize(@Observes @Priority(100) LifecycleEvent.Initialize event) {

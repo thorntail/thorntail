@@ -6,13 +6,13 @@ import javax.inject.Inject;
 import io.undertow.server.HttpHandler;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
-import org.jboss.unimbus.condition.IfClassPresent;
+import org.jboss.unimbus.condition.RequiredClassPresent;
 
 /**
  * Created by bob on 1/23/18.
  */
 @ApplicationScoped
-@IfClassPresent("org.eclipse.microprofile.metrics.MetricRegistry")
+@RequiredClassPresent("org.eclipse.microprofile.metrics.MetricRegistry")
 public class MetricsIntegration {
 
     public HttpHandler integrate(String deploymentName, HttpHandler next) {

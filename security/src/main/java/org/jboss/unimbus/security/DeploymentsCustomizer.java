@@ -10,7 +10,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.unimbus.condition.IfClassPresent;
+import org.jboss.unimbus.condition.RequiredClassPresent;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.Deployments;
@@ -24,7 +24,7 @@ import org.jboss.unimbus.servlet.WebResourceCollectionMetaData;
  * Created by bob on 1/18/18.
  */
 @ApplicationScoped
-@IfClassPresent("org.jboss.unimbus.servlet.Deployments")
+@RequiredClassPresent("org.jboss.unimbus.servlet.Deployments")
 public class DeploymentsCustomizer {
 
     void customize(@Observes @Priority(1) LifecycleEvent.Initialize event) {

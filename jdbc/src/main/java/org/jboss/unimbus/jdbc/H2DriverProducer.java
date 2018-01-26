@@ -7,10 +7,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
-import org.jboss.unimbus.condition.IfClassPresent;
+import org.jboss.unimbus.condition.RequiredClassPresent;
 
 @ApplicationScoped
-@IfClassPresent("org.h2.Driver")
+@RequiredClassPresent("org.h2.Driver")
 public class H2DriverProducer {
 
     @Produces

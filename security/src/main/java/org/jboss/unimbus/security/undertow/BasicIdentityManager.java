@@ -1,6 +1,5 @@
 package org.jboss.unimbus.security.undertow;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -8,14 +7,14 @@ import io.undertow.security.idm.Account;
 import io.undertow.security.idm.Credential;
 import io.undertow.security.idm.IdentityManager;
 import io.undertow.security.idm.PasswordCredential;
-import org.jboss.unimbus.condition.IfClassPresent;
+import org.jboss.unimbus.condition.RequiredClassPresent;
 import org.jboss.unimbus.security.basic.BasicSecurity;
 import org.jboss.unimbus.security.basic.User;
 
 /**
  * Created by bob on 1/18/18.
  */
-@IfClassPresent("io.undertow.Undertow")
+@RequiredClassPresent("io.undertow.Undertow")
 @Dependent
 public class BasicIdentityManager implements IdentityManager {
 
