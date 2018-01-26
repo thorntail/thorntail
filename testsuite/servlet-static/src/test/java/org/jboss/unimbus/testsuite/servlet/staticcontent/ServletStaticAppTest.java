@@ -1,10 +1,6 @@
 package org.jboss.unimbus.testsuite.servlet.staticcontent;
 
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
-import org.jboss.unimbus.UNimbus;
 import org.jboss.unimbus.test.UNimbusTestRunner;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -13,11 +9,6 @@ import static org.hamcrest.Matchers.containsString;
 
 @RunWith(UNimbusTestRunner.class)
 public class ServletStaticAppTest {
-
-    @BeforeClass
-    public static void setup() {
-        RestAssured.baseURI = "http://localhost:8080";
-    }
 
     @Test
     public void testRootServlet() {

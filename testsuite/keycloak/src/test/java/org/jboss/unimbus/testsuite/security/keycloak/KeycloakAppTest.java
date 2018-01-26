@@ -1,8 +1,6 @@
 package org.jboss.unimbus.testsuite.security.keycloak;
 
-import io.restassured.RestAssured;
 import org.jboss.unimbus.test.UNimbusTestRunner;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
