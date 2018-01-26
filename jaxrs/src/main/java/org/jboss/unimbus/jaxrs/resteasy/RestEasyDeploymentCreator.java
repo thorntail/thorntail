@@ -28,7 +28,9 @@ public class RestEasyDeploymentCreator {
 
     public void createDeployments(@Observes LifecycleEvent.Scan event) {
         for (Application application : this.applications) {
-            this.deployments.addDeployment(createDeployment(application));
+            DeploymentMetaData metaData = createDeployment(application);
+            this.deployments.addDeployment(metaData);
+            JaxrsMessages.MESSAGES.deploymentCreated(metaData.getName());
         }
     }
 
