@@ -1,0 +1,10 @@
+. High priority
+
+- Replace c3p0 with ironjacamar
+- test keycloak integration using docker
+- document logging OFFSETs
+- improve log categories.
+
+. Low priority
+
+
