@@ -68,6 +68,7 @@ public final class OpenApiConstants {
     public static final String EXTENSION_PROPERTY_PREFIX = "x-";
 
     public static final String[] DEFAULT_PARAMETER_MEDIA_TYPES = { "*/*" };
+    public static final String[] DEFAULT_REQUEST_BODY_TYPES = { "*/*" };
 
     public static final String PROP_TRACE = "trace";
     public static final String PROP_PATCH = "patch";
