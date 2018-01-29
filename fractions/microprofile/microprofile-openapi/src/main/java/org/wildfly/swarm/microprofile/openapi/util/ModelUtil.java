@@ -17,6 +17,7 @@
 package org.wildfly.swarm.microprofile.openapi.util;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.microprofile.openapi.models.Components;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
@@ -184,6 +185,36 @@ public class ModelUtil {
             MediaType mediaType = content.get(mediaTypeName);
             mediaType.setSchema(schema);
         }
+    }
+
+    /**
+     * Returns true if the given operation has a parameter with the given name.
+     * @param operation
+     * @param name
+     */
+    public static boolean operationHasParameter(Operation operation, String name) {
+        List<Parameter> parameters = operation.getParameters();
+        if (parameters == null) {
+            return false;
+        }
+        for (Parameter parameter : parameters) {
+            if (parameter.getName() != null && parameter.getName().equals(name)) {
+                return true;
+            }
+            if (parameter.getRef() != null && ModelUtil.nameFromRef(parameter.getRef()).equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the name component of the ref.
+     * @param ref
+     */
+    public static String nameFromRef(String ref) {
+        String[] split = ref.split("/");
+        return split[split.length - 1];
     }
 
 }

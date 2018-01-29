@@ -24,6 +24,8 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.eclipse.microprofile.openapi.models.parameters.Parameter;
+import org.eclipse.microprofile.openapi.models.parameters.Parameter.In;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.AnnotationTarget.Kind;
@@ -301,8 +303,7 @@ public class JandexUtil {
      */
     public static String nameFromRef(AnnotationInstance annotation) {
         String ref = annotation.value(OpenApiConstants.PROP_REF).asString();
-        String[] split = ref.split("/");
-        return split[split.length - 1];
+        return ModelUtil.nameFromRef(ref);
     }
 
     /**
@@ -386,6 +387,79 @@ public class JandexUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns jax-rs info about the parameter at the given index.  If the index is invalid
+     * or does not refer to a jax-rs parameter (ie is not annoted with e.g. @PathParam) then
+     * this will return null.  Otherwise it will return a {@link JaxRsParameterInfo} object
+     * with the name and type of the param.
+     * @param method
+     * @param idx
+     */
+    public static JaxRsParameterInfo getMethodParameterJaxRsInfo(MethodInfo method, int idx) {
+        AnnotationInstance jaxRsAnno = JandexUtil.getMethodParameterAnnotation(method, idx, OpenApiConstants.DOTNAME_PATH_PARAM);
+        if (jaxRsAnno != null) {
+            JaxRsParameterInfo info = new JaxRsParameterInfo();
+            info.in = In.PATH;
+            info.name = JandexUtil.stringValue(jaxRsAnno, OpenApiConstants.PROP_VALUE);
+            return info;
+        }
+
+        jaxRsAnno = JandexUtil.getMethodParameterAnnotation(method, idx, OpenApiConstants.DOTNAME_QUERY_PARAM);
+        if (jaxRsAnno != null) {
+            JaxRsParameterInfo info = new JaxRsParameterInfo();
+            info.in = In.QUERY;
+            info.name = JandexUtil.stringValue(jaxRsAnno, OpenApiConstants.PROP_VALUE);
+            return info;
+        }
+
+        jaxRsAnno = JandexUtil.getMethodParameterAnnotation(method, idx, OpenApiConstants.DOTNAME_COOKIE_PARAM);
+        if (jaxRsAnno != null) {
+            JaxRsParameterInfo info = new JaxRsParameterInfo();
+            info.in = In.COOKIE;
+            info.name = JandexUtil.stringValue(jaxRsAnno, OpenApiConstants.PROP_VALUE);
+            return info;
+        }
+
+        jaxRsAnno = JandexUtil.getMethodParameterAnnotation(method, idx, OpenApiConstants.DOTNAME_HEADER_PARAM);
+        if (jaxRsAnno != null) {
+            JaxRsParameterInfo info = new JaxRsParameterInfo();
+            info.in = In.HEADER;
+            info.name = JandexUtil.stringValue(jaxRsAnno, OpenApiConstants.PROP_VALUE);
+            return info;
+        }
+
+        return null;
+    }
+
+    /**
+     * Finds an annotation (if present) with the given name, on a particular parameter of a
+     * method.  Returns null if not found.
+     * @param method
+     * @param parameterIndex
+     * @param annotationName
+     */
+    private static AnnotationInstance getMethodParameterAnnotation(MethodInfo method, int parameterIndex,
+            DotName annotationName) {
+        for (AnnotationInstance annotation : method.annotations()) {
+            if (annotation.target().kind() == Kind.METHOD_PARAMETER &&
+                    annotation.target().asMethodParameter().position() == parameterIndex &&
+                    annotation.name().equals(annotationName)) {
+                return annotation;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Holds relevant information about a jax-rs method parameter.  Specifically its name
+     * and type (path, query, cookie, etc).
+     * @author eric.wittmann@gmail.com
+     */
+    public static class JaxRsParameterInfo {
+        public String name;
+        public Parameter.In in;
     }
 
 }

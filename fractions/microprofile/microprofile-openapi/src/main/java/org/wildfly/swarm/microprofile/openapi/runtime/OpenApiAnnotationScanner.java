@@ -115,6 +115,7 @@ import org.wildfly.swarm.microprofile.openapi.models.servers.ServerVariableImpl;
 import org.wildfly.swarm.microprofile.openapi.models.servers.ServerVariablesImpl;
 import org.wildfly.swarm.microprofile.openapi.models.tags.TagImpl;
 import org.wildfly.swarm.microprofile.openapi.util.JandexUtil;
+import org.wildfly.swarm.microprofile.openapi.util.JandexUtil.JaxRsParameterInfo;
 import org.wildfly.swarm.microprofile.openapi.util.JandexUtil.RefType;
 import org.wildfly.swarm.microprofile.openapi.util.MergeUtil;
 import org.wildfly.swarm.microprofile.openapi.util.ModelUtil;
@@ -572,7 +573,6 @@ public class OpenApiAnnotationScanner {
 
         // Process @Parameter annotations
         /////////////////////////////////////////
-        // TODO instead of processing the @Parameter annotations, process all the **Parameters**  That way we won't miss any.
         List<AnnotationInstance> parameterAnnotations = JandexUtil.getRepeatableAnnotation(method,
                 OpenApiConstants.DOTNAME_PARAMETER, OpenApiConstants.DOTNAME_PARAMETERS);
         for (AnnotationInstance annotation : parameterAnnotations) {
@@ -596,19 +596,32 @@ public class OpenApiAnnotationScanner {
                     Schema schema = typeToSchema(paramType);
                     ModelUtil.setParameterSchema(parameter, schema);
                 }
+            } else {
+                // TODO if the @Parameter is on the method, we could perhaps find the one it refers to by name
+                // and use its type to create a Schema (if missing)
             }
 
             operation.addParameter(parameter);
         }
+        // Now process any jax-rs parameters that were NOT annotated with @Parameter (do not yet exist in the model)
+        List<Type> parameters = method.parameters();
+        for (int idx = 0; idx < parameters.size(); idx++) {
+            JaxRsParameterInfo paramInfo = JandexUtil.getMethodParameterJaxRsInfo(method, idx);
+            if (paramInfo != null && !ModelUtil.operationHasParameter(operation, paramInfo.name)) {
+                Type paramType = parameters.get(idx);
+                Parameter parameter = new ParameterImpl();
+                parameter.setName(paramInfo.name);
+                parameter.setIn(paramInfo.in);
+                parameter.setRequired(true);
+                Schema schema = typeToSchema(paramType);
+                parameter.setSchema(schema);
+                operation.addParameter(parameter);
+            }
+
+        }
 
         // TODO @Parameter can be located on a field - what does that mean?
-
-        // TODO need to handle the case where we have @PathParam annotations without @Parameter annotations
-        // TODO need to handle the case where we have @QueryParam annotations without @Parameter annotations
-        // TODO need to handle the case where we have @BeanParam annotations without @Parameter annotations
-        // TODO need to handle the case where we have @CookieParam annotations without @Parameter annotations
-        // TODO need to handle the case where we have @FormParam annotations without @Parameter annotations
-        // TODO need to handle the case where we have @HeaderParam annotations without @Parameter annotations
+        // TODO need to handle the case where we have @BeanParam annotations
 
 
         // Process any @RequestBody annotation
@@ -617,7 +630,6 @@ public class OpenApiAnnotationScanner {
         List<AnnotationInstance> requestBodyAnnotations = JandexUtil.getRepeatableAnnotation(method, OpenApiConstants.DOTNAME_REQUEST_BODY, null);
         for (AnnotationInstance annotation : requestBodyAnnotations) {
             RequestBody requestBody = readRequestBody(annotation);
-            // TODO (FIX) if missing, set the schema of the request body by checking the ClassType of the parameter (not possible if @RequestBody is found on the method)
             // TODO if the method argument type is Request, don't generate a Schema!
             if (!ModelUtil.requestBodyHasSchema(requestBody)) {
                 Type requestBodyType = null;
