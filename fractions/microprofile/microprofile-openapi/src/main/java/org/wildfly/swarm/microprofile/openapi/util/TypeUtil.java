@@ -40,21 +40,29 @@ public class TypeUtil {
 
         // B64 String
         TYPE_MAP.put(DotName.createSimple(Byte.class.getName()), BYTE_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(byte.class.getName()), BYTE_FORMAT);
         TYPE_MAP.put(DotName.createSimple(Character.class.getName()), CHAR_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(char.class.getName()), CHAR_FORMAT);
 
         // Decimal
         TYPE_MAP.put(DotName.createSimple(BigDecimal.class.getName()), BIGDECIMAL_FORMAT); // HMM! There is no equivalent format for BigDecimal
         TYPE_MAP.put(DotName.createSimple(Double.class.getName()), DOUBLE_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(double.class.getName()), DOUBLE_FORMAT);
         TYPE_MAP.put(DotName.createSimple(Float.class.getName()), FLOAT_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(float.class.getName()), FLOAT_FORMAT);
 
         // Integer
         TYPE_MAP.put(DotName.createSimple(BigInteger.class.getName()), BIGINTEGER_FORMAT); // HMM! There is no equivalent format for BigInteger
         TYPE_MAP.put(DotName.createSimple(Integer.class.getName()), INTEGER_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(int.class.getName()), INTEGER_FORMAT);
         TYPE_MAP.put(DotName.createSimple(Long.class.getName()), LONG_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(long.class.getName()), LONG_FORMAT);
         TYPE_MAP.put(DotName.createSimple(Short.class.getName()), SHORT_FORMAT); // No equivalent?
+        TYPE_MAP.put(DotName.createSimple(short.class.getName()), SHORT_FORMAT); // No equivalent?
 
         // Boolean
         TYPE_MAP.put(DotName.createSimple(Boolean.class.getName()), BOOLEAN_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(boolean.class.getName()), BOOLEAN_FORMAT);
     }
 
     private TypeUtil() {
@@ -81,27 +89,8 @@ public class TypeUtil {
         }
     }
 
-    public static TypeWithFormat getTypeFormat(PrimitiveType.Primitive primitive) {
-        switch (primitive) {
-            case BYTE:
-                return BYTE_FORMAT;
-            case CHAR:
-                return CHAR_FORMAT;
-            case DOUBLE:
-                return DOUBLE_FORMAT;
-            case FLOAT:
-                return FLOAT_FORMAT;
-            case INT:
-                return INTEGER_FORMAT;
-            case LONG:
-                return LONG_FORMAT;
-            case SHORT:
-                return SHORT_FORMAT;
-            case BOOLEAN:
-                return BOOLEAN_FORMAT;
-            default:
-                throw new IllegalStateException("Unexpected primitive " + primitive);
-        }
+    public static TypeWithFormat getTypeFormat(PrimitiveType primitiveType) {
+        return TYPE_MAP.get(primitiveType.name());
     }
 
 

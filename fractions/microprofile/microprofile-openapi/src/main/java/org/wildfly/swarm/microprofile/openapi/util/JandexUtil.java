@@ -29,7 +29,6 @@ import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.AnnotationTarget.Kind;
 import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassInfo;
-import org.jboss.jandex.ClassType;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
@@ -366,20 +365,17 @@ public class JandexUtil {
      * @param method
      * @param position
      */
-    public static ClassType getMethodParameterType(MethodInfo method, short position) {
+    public static Type getMethodParameterType(MethodInfo method, short position) {
         Type type = method.parameters().get(position);
-        if (type.kind() == Type.Kind.CLASS) {
-            return type.asClassType();
-        }
-        return null;
+        return type;
     }
 
     /**
      * Go through the method parameters looking for one that is not annotated with a jax-rs
-     * annotation.  That will be the one that is the requesty body.
+     * annotation.  That will be the one that is the request body.
      * @param method
      */
-    public static ClassType getRequestBodyParameterClassType(MethodInfo method) {
+    public static Type getRequestBodyParameterClassType(MethodInfo method) {
         List<Type> methodParams = method.parameters();
         if (methodParams.isEmpty()) {
             return null;

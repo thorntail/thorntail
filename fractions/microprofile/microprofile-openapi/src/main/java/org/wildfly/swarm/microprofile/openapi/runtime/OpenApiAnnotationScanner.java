@@ -118,6 +118,8 @@ import org.wildfly.swarm.microprofile.openapi.util.JandexUtil;
 import org.wildfly.swarm.microprofile.openapi.util.JandexUtil.RefType;
 import org.wildfly.swarm.microprofile.openapi.util.MergeUtil;
 import org.wildfly.swarm.microprofile.openapi.util.ModelUtil;
+import org.wildfly.swarm.microprofile.openapi.util.TypeUtil;
+import org.wildfly.swarm.microprofile.openapi.util.TypeUtil.TypeWithFormat;
 
 /**
  * Scans a deployment (using the archive and jandex annotation index) for JAX-RS and
@@ -590,8 +592,8 @@ public class OpenApiAnnotationScanner {
 
                 // if the Parameter model we read does *NOT* have a Schema at this point, then create one from the method argument's type
                 if (!ModelUtil.parameterHasSchema(parameter)) {
-                    ClassType paramType = JandexUtil.getMethodParameterType(method, target.asMethodParameter().position());
-                    Schema schema = introspectClassToSchema(paramType);
+                    Type paramType = JandexUtil.getMethodParameterType(method, target.asMethodParameter().position());
+                    Schema schema = typeToSchema(paramType);
                     ModelUtil.setParameterSchema(parameter, schema);
                 }
             }
@@ -618,25 +620,25 @@ public class OpenApiAnnotationScanner {
             // TODO (FIX) if missing, set the schema of the request body by checking the ClassType of the parameter (not possible if @RequestBody is found on the method)
             // TODO if the method argument type is Request, don't generate a Schema!
             if (!ModelUtil.requestBodyHasSchema(requestBody)) {
-                ClassType ctype = null;
+                Type requestBodyType = null;
                 if (annotation.target().kind() == AnnotationTarget.Kind.METHOD_PARAMETER) {
-                    ctype = JandexUtil.getMethodParameterType(method, annotation.target().asMethodParameter().position());
+                    requestBodyType = JandexUtil.getMethodParameterType(method, annotation.target().asMethodParameter().position());
                 } else if (annotation.target().kind() == AnnotationTarget.Kind.METHOD) {
-                    ctype = JandexUtil.getRequestBodyParameterClassType(method);
+                    requestBodyType = JandexUtil.getRequestBodyParameterClassType(method);
                 }
-                if (ctype != null) {
-                    Schema schema = introspectClassToSchema(ctype);
+                if (requestBodyType != null) {
+                    Schema schema = typeToSchema(requestBodyType);
                     ModelUtil.setRequestBodySchema(requestBody, schema, currentConsumes);
                 }
             }
             operation.setRequestBody(requestBody);
         }
-        // If the requesty body is null, figure it out from the parameters.  Only if the
+        // If the request body is null, figure it out from the parameters.  Only if the
         // method declares that it @Consumes data
         if (operation.getRequestBody() == null && currentConsumes != null) {
-            ClassType ctype = JandexUtil.getRequestBodyParameterClassType(method);
-            if (ctype != null) {
-                Schema schema = introspectClassToSchema(ctype);
+            Type requestBodyType = JandexUtil.getRequestBodyParameterClassType(method);
+            if (requestBodyType != null) {
+                Schema schema = typeToSchema(requestBodyType);
                 if (schema != null) {
                     RequestBody requestBody = new RequestBodyImpl();
                     ModelUtil.setRequestBodySchema(requestBody, schema, currentConsumes);
@@ -734,6 +736,28 @@ public class OpenApiAnnotationScanner {
             default:
                 break;
         }
+    }
+
+    /**
+     * Converts a jandex type to a {@link Schema} model.
+     * @param paramType
+     * @return
+     */
+    private Schema typeToSchema(Type paramType) {
+        Schema schema = null;
+        if (paramType.kind() == Type.Kind.CLASS) {
+            schema = introspectClassToSchema(paramType.asClassType());
+        } else if (paramType.kind() == Type.Kind.PRIMITIVE) {
+            TypeWithFormat typeFormat = TypeUtil.getTypeFormat(paramType.asPrimitiveType());
+            schema = new SchemaImpl();
+            schema.setType(typeFormat.getSchemaType());
+            schema.setFormat(typeFormat.getFormat().format());
+        } else if (paramType.kind() == Type.Kind.ARRAY) {
+            schema = new SchemaImpl();
+            schema.setType(SchemaType.ARRAY);
+            schema.setItems(typeToSchema(paramType.asArrayType().component()));
+        }
+        return schema;
     }
 
     /**
