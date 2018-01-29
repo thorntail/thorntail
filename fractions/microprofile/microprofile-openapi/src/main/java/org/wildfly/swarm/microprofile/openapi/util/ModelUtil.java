@@ -115,6 +115,9 @@ public class ModelUtil {
      * @param schema
      */
     public static void setParameterSchema(Parameter parameter, Schema schema) {
+        if (schema == null) {
+            return;
+        }
         if (parameter.getContent() == null) {
             parameter.schema(schema);
             return;

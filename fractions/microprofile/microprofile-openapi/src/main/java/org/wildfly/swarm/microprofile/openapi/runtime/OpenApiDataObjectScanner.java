@@ -207,7 +207,6 @@ public class OpenApiDataObjectScanner {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private Schema readSchemaAnnotatedField(AnnotationInstance annotation,
                                             FieldInfo fieldInfo,
                                             SchemaImpl parent,
@@ -249,7 +248,7 @@ public class OpenApiDataObjectScanner {
             case CLASS:
                 return TypeUtil.getTypeFormat(fieldType.asClassType());
             case PRIMITIVE:
-                return TypeUtil.getTypeFormat(fieldType.asPrimitiveType().primitive());
+                return TypeUtil.getTypeFormat(fieldType.asPrimitiveType());
             case ARRAY:
                 return TypeUtil.getTypeFormat(fieldType.asArrayType());
             case VOID:

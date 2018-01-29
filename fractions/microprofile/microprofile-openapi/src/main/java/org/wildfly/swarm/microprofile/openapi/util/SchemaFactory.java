@@ -21,6 +21,7 @@ public class SchemaFactory {
     private SchemaFactory() {
     }
 
+    @SuppressWarnings("unchecked")
     public static Schema readSchema(Schema schema,
                                     AnnotationInstance annotation,
                                     Map<String, Object> overrides) {
