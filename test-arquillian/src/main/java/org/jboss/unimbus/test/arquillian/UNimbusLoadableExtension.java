@@ -11,6 +11,5 @@ public class UNimbusLoadableExtension implements LoadableExtension {
     @Override
     public void register(ExtensionBuilder extensionBuilder) {
         extensionBuilder.service(DeployableContainer.class, UNimbusDeployableContainer.class);
-        extensionBuilder.service(Protocol.class, UNimbusProtocol.class);
     }
 }

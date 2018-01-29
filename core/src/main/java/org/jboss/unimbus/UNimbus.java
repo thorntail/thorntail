@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
@@ -126,6 +127,10 @@ public class UNimbus {
         long seconds = ms / 1000;
         long milli = ms % 1000;
         return seconds + "." + milli + "s";
+    }
+
+    public BeanManager getBeanManager() {
+        return this.container.getBeanManager();
     }
 
     private ClassLoader classLoader;
