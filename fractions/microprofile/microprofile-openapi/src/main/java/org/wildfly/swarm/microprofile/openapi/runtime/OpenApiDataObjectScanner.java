@@ -72,6 +72,11 @@ public class OpenApiDataObjectScanner {
     }
 
     public Schema process() {
+        // If top level item is not indexed
+        if (rootClassInfo == null) {
+            return null;
+        }
+
         // If top level item is simple
         if (isTerminalType(rootClassType)) {
             SchemaImpl simpleSchema = new SchemaImpl();
