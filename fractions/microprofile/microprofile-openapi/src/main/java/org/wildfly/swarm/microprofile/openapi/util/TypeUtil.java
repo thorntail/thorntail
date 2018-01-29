@@ -2,14 +2,21 @@ package org.wildfly.swarm.microprofile.openapi.util;
 
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.jboss.jandex.ArrayType;
-import org.jboss.jandex.ClassType;
+import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
+import org.jboss.jandex.FieldInfo;
+import org.jboss.jandex.IndexView;
 import org.jboss.jandex.PrimitiveType;
+import org.jboss.jandex.Type;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,7 +36,11 @@ public class TypeUtil {
     private static final TypeWithFormat LONG_FORMAT = new TypeWithFormat(SchemaType.INTEGER, DataFormat.INT64);
     private static final TypeWithFormat SHORT_FORMAT = new TypeWithFormat(SchemaType.INTEGER, DataFormat.NONE);
     private static final TypeWithFormat BOOLEAN_FORMAT = new TypeWithFormat(SchemaType.BOOLEAN, DataFormat.NONE);
+    // SPECIAL FORMATS
     private static final TypeWithFormat ARRAY_FORMAT = new TypeWithFormat(SchemaType.ARRAY, DataFormat.NONE);
+    private static final TypeWithFormat OBJECT_FORMAT = new TypeWithFormat(SchemaType.OBJECT, DataFormat.NONE);
+    private static final TypeWithFormat DATE_FORMAT = new TypeWithFormat(SchemaType.STRING, DataFormat.DATE);
+    private static final TypeWithFormat DATE_TIME_FORMAT = new TypeWithFormat(SchemaType.STRING, DataFormat.DATE_TIME);
 
     private static final Map<DotName, TypeWithFormat> TYPE_MAP = new LinkedHashMap<>();
 
@@ -63,17 +74,35 @@ public class TypeUtil {
         // Boolean
         TYPE_MAP.put(DotName.createSimple(Boolean.class.getName()), BOOLEAN_FORMAT);
         TYPE_MAP.put(DotName.createSimple(boolean.class.getName()), BOOLEAN_FORMAT);
+
+        // Date
+        TYPE_MAP.put(DotName.createSimple(Date.class.getName()), DATE_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(java.sql.Date.class.getName()), DATE_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(java.time.LocalDate.class.getName()), DATE_FORMAT);
+
+        // Date Time
+        TYPE_MAP.put(DotName.createSimple(java.time.LocalDateTime.class.getName()), DATE_TIME_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(java.time.ZonedDateTime.class.getName()), DATE_TIME_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(java.time.OffsetDateTime.class.getName()), DATE_TIME_FORMAT);
     }
 
     private TypeUtil() {
     }
 
+    public static TypeWithFormat getTypeFormat(PrimitiveType primitiveType) {
+        return TYPE_MAP.get(primitiveType.name());
+    }
+
     // TODO: consider additional checks for Number interface?
-    public static TypeWithFormat getTypeFormat(ClassType classType) {
+    public static TypeWithFormat getTypeFormat(Type classType) {
         return Optional
                 .ofNullable(TYPE_MAP.get(classType.name()))
                 // Otherwise it's some object without a well-known format mapping
                 .orElse(new TypeWithFormat(SchemaType.OBJECT, DataFormat.NONE));
+    }
+
+    public static TypeWithFormat objectFormat() {
+        return OBJECT_FORMAT;
     }
 
     // WIP
@@ -81,18 +110,54 @@ public class TypeUtil {
         return ARRAY_FORMAT;
     }
 
-    public static Class<?> getClass(ClassType type) {
+    public static Class<?> getClass(Type type) {
+        return getClass(type.name().toString());
+    }
+
+    public static Class<?> getClass(String name) {
         try {
-            return Class.forName(type.name().toString());
+            return Class.forName(name);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static TypeWithFormat getTypeFormat(PrimitiveType primitiveType) {
-        return TYPE_MAP.get(primitiveType.name());
+    /**
+     * Test whether testSubject is an instanceof type test.
+     *
+     * For example, test whether List is a Collection.
+     *
+     * Attempts to work with both Jandex and using standard class.
+     *
+     * @param index Jandex index
+     * @param testSubject type to test
+     * @param testObject type to test against
+     * @return true if is of type
+     */
+    public static boolean isA(IndexView index, Type testSubject, Type testObject) {
+        // First, look in Jandex, as target might not be in our classloader
+        ClassInfo jandexKlazz = index.getClassByName(testSubject.name());
+        if (jandexKlazz != null) {
+            return jandexKlazz.interfaceNames().contains(testObject.name()); //|| jandexKlazz.superClassType(); TODO do inheritance test
+        } else {
+            Class<?> subjectKlazz= TypeUtil.getClass(testSubject);
+            Class<?> objectKlazz = TypeUtil.getClass(testObject);
+            return objectKlazz.isAssignableFrom(subjectKlazz);
+        }
     }
 
+    public static List<FieldInfo> getAllFields(IndexView index, ClassInfo leaf) {
+        List<FieldInfo> fields = new ArrayList<>(leaf.fields());
+        ClassInfo currentClass = leaf;
+        while (currentClass.superClassType() != null) {
+            currentClass = index.getClassByName(currentClass.superClassType().name());
+            if (currentClass == null)
+                break;
+            fields.addAll(currentClass.fields());
+        }
+        Collections.reverse(fields);
+        return fields;
+    }
 
     public static final class TypeWithFormat {
         private final SchemaType schemaType;

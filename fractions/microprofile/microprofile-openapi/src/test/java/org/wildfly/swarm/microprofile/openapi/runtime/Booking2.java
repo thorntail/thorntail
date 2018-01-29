@@ -18,6 +18,8 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.apps.airlines.model.CreditCard;
 import org.eclipse.microprofile.openapi.apps.airlines.model.Flight;
 
+import java.util.List;
+
 /**
  * Customised version of {@link org.eclipse.microprofile.openapi.apps.airlines.model.Booking} for testing purposes.
  */
@@ -48,9 +50,6 @@ public class Booking2 {
     public int primitiveFoo;
 
     @Schema(required = true)
-    public Booking2 bookingCycle;
-
-    @Schema(required = true)
     private long inferMeImImportant = 24;
 
 // TODO
@@ -59,9 +58,17 @@ public class Booking2 {
 //    @Schema(required = true)
 //    private CreditCard[] creditCardArray = new CreditCard[2];
 
-// Handle generic type List (collection)
-//    @Schema(required = true)
-//    private List<CreditCard> creditCardList;
+    // Handle generic type List (collection)
+    @Schema(required = true)
+    private List<CreditCard2> stringList;
+
+    // Custom generic types
+    @Schema(required = true)
+    private KustomPair<String, Integer> somePair;
+
+//    // Nesting generic types.
+//    KustomPair<KustomPair<String, String>, Integer> blah;
+//    Void foo;
 
 // Handle ?
 //    @Schema(required = true)
