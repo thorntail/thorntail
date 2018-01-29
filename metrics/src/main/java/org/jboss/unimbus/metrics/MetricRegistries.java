@@ -30,35 +30,35 @@ import org.eclipse.microprofile.metrics.annotation.RegistryType;
  * @author hrupp
  */
 @ApplicationScoped
-public class MetricRegistryProducer {
+public class MetricRegistries {
 
-    private static final Map<MetricRegistry.Type, MetricRegistry> registries = new HashMap<>();
-
-    private MetricRegistryProducer() { /* Singleton */ }
+    private MetricRegistries() {
+        /* Singleton */
+    }
 
     @Produces
     @Default
     @RegistryType(type = MetricRegistry.Type.APPLICATION)
     @ApplicationScoped
-    public static MetricRegistry getApplicationRegistry() {
+    public MetricRegistry getApplicationRegistry() {
         return get(MetricRegistry.Type.APPLICATION);
     }
 
     @Produces
     @ApplicationScoped
     @RegistryType(type = MetricRegistry.Type.BASE)
-    public static MetricRegistry getBaseRegistry() {
+    public MetricRegistry getBaseRegistry() {
         return get(MetricRegistry.Type.BASE);
     }
 
     @Produces
     @ApplicationScoped
     @RegistryType(type = MetricRegistry.Type.VENDOR)
-    public static MetricRegistry getVendorRegistry() {
+    public MetricRegistry getVendorRegistry() {
         return get(MetricRegistry.Type.VENDOR);
     }
 
-    public static MetricRegistry get(MetricRegistry.Type type) {
+    public MetricRegistry get(MetricRegistry.Type type) {
         synchronized (registries) {
             if (registries.get(type) == null) {
                 MetricRegistry result = new MetricsRegistryImpl(type);
@@ -68,4 +68,7 @@ public class MetricRegistryProducer {
 
         return registries.get(type);
     }
+
+    private final Map<MetricRegistry.Type, MetricRegistry> registries = new HashMap<>();
+
 }

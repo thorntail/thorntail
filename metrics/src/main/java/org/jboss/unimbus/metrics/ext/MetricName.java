@@ -18,7 +18,7 @@ package org.jboss.unimbus.metrics.ext;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-/* package-private */ interface MetricName {
+public interface MetricName {
 
     String of(InjectionPoint point);
 

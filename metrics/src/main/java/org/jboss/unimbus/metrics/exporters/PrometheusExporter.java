@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
@@ -35,7 +36,7 @@ import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Snapshot;
 import org.eclipse.microprofile.metrics.Timer;
 import org.jboss.logging.Logger;
-import org.jboss.unimbus.metrics.MetricRegistryProducer;
+import org.jboss.unimbus.metrics.MetricRegistries;
 import org.jboss.unimbus.metrics.jmx.Tag;
 
 /**
@@ -83,7 +84,7 @@ public class PrometheusExporter implements Exporter {
 
     @Override
     public StringBuffer exportOneMetric(MetricRegistry.Type scope, String metricName) {
-        MetricRegistry registry = MetricRegistryProducer.get(scope);
+        MetricRegistry registry = this.registries.get(scope);
         Map<String, Metric> metricMap = registry.getMetrics();
 
         Metric m = metricMap.get(metricName);
@@ -103,7 +104,7 @@ public class PrometheusExporter implements Exporter {
     }
 
     private void getEntriesForScope(MetricRegistry.Type scope, StringBuffer sb) {
-        MetricRegistry registry = MetricRegistryProducer.get(scope);
+        MetricRegistry registry = this.registries.get(scope);
         Map<String, Metric> metricMap = registry.getMetrics();
 
         exposeEntries(scope, sb, registry, metricMap);
@@ -331,4 +332,7 @@ public class PrometheusExporter implements Exporter {
 
     private static String VALID_NAME = "^[a-zA-Z][_a-zA-Z0-9]*$";
 
+
+    @Inject
+    private MetricRegistries registries;
 }

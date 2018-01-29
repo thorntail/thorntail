@@ -112,7 +112,7 @@ public class MetricsRegistryImpl extends MetricRegistry {
         }
 
         if (metricMap.keySet().contains(metadata.getName()) && !reusableFlag) {
-            throw new IllegalArgumentException("A metric with name " + metadata.getName() + " already exists");
+            throw new IllegalArgumentException(" A metric with name " + metadata.getName() + " already exists");
         }
 
         if (existingMetadata != null && !existingMetadata.getTypeRaw().equals(metadata.getTypeRaw())) {

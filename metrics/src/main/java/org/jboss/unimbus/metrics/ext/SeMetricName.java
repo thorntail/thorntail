@@ -30,7 +30,7 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 
 @Vetoed
-        /* package-private */ class SeMetricName implements MetricName {
+class SeMetricName implements MetricName {
 
     private final Set<MetricsParameter> parameters;
 

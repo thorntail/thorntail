@@ -13,7 +13,9 @@ public class ConditionExtension implements Extension {
     public <T> void ifClassPresent(@WithAnnotations({MultipleRequiredClassPresent.class, RequiredClassPresent.class}) @Observes ProcessAnnotatedType<T> event) {
         boolean allowed = true;
 
+
         AnnotatedType<?> type = event.getAnnotatedType();
+
         if (type.isAnnotationPresent(MultipleRequiredClassPresent.class)) {
             Set<MultipleRequiredClassPresent> annos = type.getAnnotations(MultipleRequiredClassPresent.class);
 

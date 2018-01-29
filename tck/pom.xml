@@ -29,5 +29,6 @@
 
   <modules>
     <module>config</module>
+    <module>metrics</module>
   </modules>
 </project>

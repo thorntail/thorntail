@@ -74,6 +74,7 @@ public class UNimbus {
 
 
     public UNimbus start() {
+        CoreMessages.MESSAGES.starting();
         long startTick = System.currentTimeMillis();
         /*
         Logger rootLogger = Logger.getLogger("");
@@ -119,8 +120,10 @@ public class UNimbus {
     }
 
     public void stop() {
+        CoreMessages.MESSAGES.stopping();
         ConfigProviderResolver.instance().releaseConfig(ConfigProvider.getConfig());
         this.container.shutdown();
+        CoreMessages.MESSAGES.stopped();
     }
 
     private static String format(long ms) {

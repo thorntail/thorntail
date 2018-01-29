@@ -91,7 +91,7 @@ public class MetricCdiInjectionExtension implements Extension {
     }
 
     private void metricProducerMethod(@Observes ProcessProducerMethod<? extends Metric, ?> ppm) {
-        if (!ppm.getBean().getBeanClass().equals(AMetricRegistryFactory.class)) {
+        if (!ppm.getBean().getBeanClass().equals(MetricProducer.class)) {
             //LOGGER.infof("Metrics producer method discovered: %s", ppm.getAnnotatedProducerMethod());
             metrics.put(ppm.getBean(), ppm.getAnnotatedProducerMethod());
         }

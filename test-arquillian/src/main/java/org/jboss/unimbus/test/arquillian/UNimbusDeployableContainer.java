@@ -48,13 +48,16 @@ public class UNimbusDeployableContainer implements DeployableContainer<UNimbusCo
 
     @Override
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
-        ClassLoader cl = ClassLoaderUtil.of(archive);
-        ProtocolMetaData meta = new ProtocolMetaData();
-        this.system = new UNimbus(cl);
-        meta.addContext(this.system);
-        system.start();
-        this.beanManagerProducer.set(system.getBeanManager());
-        return meta;
+        try {
+            ClassLoader cl = ClassLoaderUtil.of(archive);
+            this.system = new UNimbus(cl);
+            this.system.start();
+            this.beanManagerProducer.set(this.system.getBeanManager());
+            return new ProtocolMetaData();
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw t;
+        }
     }
 
     @Override

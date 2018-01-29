@@ -26,6 +26,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -33,7 +34,7 @@ import javax.management.openmbean.CompositeData;
 
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.jboss.unimbus.metrics.MetricRegistryProducer;
+import org.jboss.unimbus.metrics.MetricRegistries;
 
 /**
  * @author hrupp
@@ -57,7 +58,7 @@ public class JMXHelper {
 
     public Map<String, Double> getMetrics(MetricRegistry.Type scope) {
 
-        Map<String, Metadata> metadataMap = MetricRegistryProducer.get(scope).getMetadata();
+        Map<String, Metadata> metadataMap = this.registries.get(scope).getMetadata();
         Map<String, Double> outcome = new HashMap<>();
 
         for (Metadata m : metadataMap.values()) {
@@ -183,4 +184,7 @@ public class JMXHelper {
         }
         return keyHolder;
     }
+
+    @Inject
+    MetricRegistries registries;
 }

@@ -17,16 +17,10 @@
  */
 package org.jboss.unimbus.metrics.ext;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Default;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
@@ -38,29 +32,39 @@ import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
-import org.jboss.unimbus.metrics.api.RegistryFactory;
 
 /**
  * @author hrupp
  */
-public class AMetricRegistryFactory {
+@ApplicationScoped
+public class MetricProducer {
 
     @Inject
     private MetricName metricName;
 
-    private ConcurrentMap<MetricRegistry.Type, MetricRegistry> registries;
+    //private ConcurrentMap<MetricRegistry.Type, MetricRegistry> registries;
 
-    @PostConstruct
-    void init() {
-        registries = new ConcurrentHashMap<>();
+    @Inject
+    @RegistryType(type=MetricRegistry.Type.APPLICATION)
+    MetricRegistry applicationRegistry;
+
+    //@PostConstruct
+    //void init() {
+        //registries = new ConcurrentHashMap<>();
+    //}
+
+    public MetricRegistry getApplicationRegistry() {
+        return this.applicationRegistry;
     }
 
+    /*
     @Default
     @Produces
     @RegistryType(type = MetricRegistry.Type.APPLICATION)
     public MetricRegistry getApplicationRegistry() {
         return get(MetricRegistry.Type.APPLICATION);
     }
+    */
 
     @Produces
     private <T> Gauge<T> gauge(InjectionPoint ip) {
@@ -95,6 +99,7 @@ public class AMetricRegistryFactory {
         return getApplicationRegistry().timer(getMetadata(ip, MetricType.TIMER));
     }
 
+    /*
     public MetricRegistry get(MetricRegistry.Type type) {
         System.err.println("GET -- " + type);
         new Exception().printStackTrace();
@@ -109,6 +114,7 @@ public class AMetricRegistryFactory {
             }
         });
     }
+    */
 
     private Metadata getMetadata(InjectionPoint ip, MetricType type) {
         Metadata metadata = new Metadata(metricName.of(ip), type);
