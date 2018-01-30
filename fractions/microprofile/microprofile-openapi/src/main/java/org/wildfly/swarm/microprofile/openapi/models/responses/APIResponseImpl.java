@@ -23,6 +23,7 @@ import org.eclipse.microprofile.openapi.models.headers.Header;
 import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
+import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
 import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
@@ -50,6 +51,9 @@ public class APIResponseImpl extends ExtensibleImpl implements APIResponse, Mode
      */
     @Override
     public void setRef(String ref) {
+        if (ref != null && !ref.contains("/")) {
+            ref = OpenApiConstants.REF_PREFIX_API_RESPONSE + ref;
+        }
         this.$ref = ref;
     }
 
@@ -58,7 +62,7 @@ public class APIResponseImpl extends ExtensibleImpl implements APIResponse, Mode
      */
     @Override
     public APIResponse ref(String ref) {
-        this.$ref = ref;
+        setRef(ref);
         return this;
     }
 

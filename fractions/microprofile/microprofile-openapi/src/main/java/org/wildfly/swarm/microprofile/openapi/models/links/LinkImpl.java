@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.servers.Server;
+import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
 import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
@@ -50,6 +51,9 @@ public class LinkImpl extends ExtensibleImpl implements Link, ModelImpl {
      */
     @Override
     public void setRef(String ref) {
+        if (ref != null && !ref.contains("/")) {
+            ref = OpenApiConstants.REF_PREFIX_LINK + ref;
+        }
         this.$ref = ref;
     }
 
@@ -58,7 +62,7 @@ public class LinkImpl extends ExtensibleImpl implements Link, ModelImpl {
      */
     @Override
     public Link ref(String ref) {
-        this.$ref = ref;
+        setRef(ref);
         return this;
     }
 

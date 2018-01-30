@@ -27,6 +27,7 @@ import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.XML;
+import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
 import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
@@ -86,6 +87,9 @@ public class SchemaImpl extends ExtensibleImpl implements Schema, ModelImpl {
      */
     @Override
     public void setRef(String ref) {
+        if (ref != null && !ref.contains("/")) {
+            ref = OpenApiConstants.REF_PREFIX_SCHEMA + ref;
+        }
         this.$ref = ref;
     }
 
@@ -94,7 +98,7 @@ public class SchemaImpl extends ExtensibleImpl implements Schema, ModelImpl {
      */
     @Override
     public Schema ref(String ref) {
-        this.$ref = ref;
+        setRef(ref);
         return this;
     }
 

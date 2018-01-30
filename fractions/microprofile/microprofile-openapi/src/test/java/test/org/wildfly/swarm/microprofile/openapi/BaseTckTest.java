@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
-import org.eclipse.microprofile.openapi.tck.AppTestBase;
 import org.eclipse.microprofile.openapi.tck.FilterTest;
+import org.jboss.arquillian.testng.Arquillian;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -104,7 +104,7 @@ public abstract class BaseTckTest {
      * this so that the correct test delegate is created *and* its callEndpoint()
      * method can be properly overridden.
      */
-    public abstract AppTestBase getDelegate();
+    public abstract Arquillian getDelegate();
 
     /**
      * Arguments to pass to each of the test methods in the TCK test.  This is

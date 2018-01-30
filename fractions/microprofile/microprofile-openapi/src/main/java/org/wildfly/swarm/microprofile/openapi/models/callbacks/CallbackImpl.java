@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.PathItem;
 import org.eclipse.microprofile.openapi.models.callbacks.Callback;
+import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
 /**
@@ -73,6 +74,9 @@ public class CallbackImpl extends LinkedHashMap<String, PathItem> implements Cal
      */
     @Override
     public void setRef(String ref) {
+        if (ref != null && !ref.contains("/")) {
+            ref = OpenApiConstants.REF_PREFIX_CALLBACK + ref;
+        }
         this.$ref = ref;
     }
 
@@ -81,7 +85,7 @@ public class CallbackImpl extends LinkedHashMap<String, PathItem> implements Cal
      */
     @Override
     public Callback ref(String ref) {
-        this.$ref = ref;
+        setRef(ref);
         return this;
     }
 

@@ -234,6 +234,16 @@ public final class OpenApiConstants {
     public static final String[] DEFAULT_CONSUMES = new String[] {MIME_ANY};
     public static final String[] DEFAULT_PRODUCES = new String[] {MIME_ANY};
 
+    public static final String REF_PREFIX_API_RESPONSE = "#/components/responses/";
+    public static final String REF_PREFIX_CALLBACK = "#/components/callbacks/";
+    public static final String REF_PREFIX_EXAMPLE = "#/components/examples/";
+    public static final String REF_PREFIX_HEADER = "#/components/headers/";
+    public static final String REF_PREFIX_LINK = "#/components/links/";
+    public static final String REF_PREFIX_PARAMETER = "#/components/parameters/";
+    public static final String REF_PREFIX_REQUEST_BODY = "#/components/requestBodies/";
+    public static final String REF_PREFIX_SCHEMA = "#/components/schemas/";
+    public static final String REF_PREFIX_SECURITY_SCHEME = "#/components/securitySchemes/";
+
     /**
      * Constructor.
      */

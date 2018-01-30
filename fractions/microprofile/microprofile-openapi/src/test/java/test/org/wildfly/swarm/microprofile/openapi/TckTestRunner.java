@@ -30,8 +30,8 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
-import org.eclipse.microprofile.openapi.tck.AppTestBase;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -60,7 +60,7 @@ import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiDocumentHolder;
 public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
 
     private Class<?> testClass;
-    private Class<? extends AppTestBase> tckTestClass;
+    private Class<? extends Arquillian> tckTestClass;
 
     public static Map<Class, OpenAPI> openApiDocs = new HashMap<>();
 
@@ -139,7 +139,7 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
      * Figures out what TCK test is being run.
      * @throws InitializationError
      */
-    private Class<? extends AppTestBase> determineTckTestClass(Class<?> testClass) throws InitializationError {
+    private Class<? extends Arquillian> determineTckTestClass(Class<?> testClass) throws InitializationError {
         TckTest anno = testClass.getAnnotation(TckTest.class);
         if (anno == null) {
             throw new InitializationError("Missing annotation @TckTest");
@@ -182,9 +182,9 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
      * and calling its "getDelegate()" method.  If no such method exists then an error
      * is thrown.
      */
-    private AppTestBase createDelegate(Object testObj) throws Exception {
+    private Arquillian createDelegate(Object testObj) throws Exception {
         Object delegate = testObj.getClass().getMethod("getDelegate").invoke(testObj);
-        return (AppTestBase) delegate;
+        return (Arquillian) delegate;
     }
 
     /**
@@ -213,7 +213,15 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
                         Object [] args = (Object[]) child.getTest().getClass().getMethod("getTestArguments").invoke(child.getTest());
                         child.getTestMethod().invoke(child.getDelegate(), args);
                     } catch (InvocationTargetException e) {
-                        throw e.getCause();
+                        Throwable cause = e.getCause();
+                        org.testng.annotations.Test testAnno = child.getTestMethod().getAnnotation(org.testng.annotations.Test.class);
+                        Class[] expectedExceptions = testAnno.expectedExceptions();
+                        if (expectedExceptions != null && expectedExceptions.length > 0) {
+                            Class expectedException = expectedExceptions[0];
+                            Assert.assertEquals(expectedException, cause.getClass());
+                        } else {
+                            throw cause;
+                        }
                     }
                 }
             };

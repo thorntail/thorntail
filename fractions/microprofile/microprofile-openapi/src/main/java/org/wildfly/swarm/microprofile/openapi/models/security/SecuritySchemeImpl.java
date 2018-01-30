@@ -18,6 +18,7 @@ package org.wildfly.swarm.microprofile.openapi.models.security;
 
 import org.eclipse.microprofile.openapi.models.security.OAuthFlows;
 import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
+import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
 import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
@@ -49,6 +50,9 @@ public class SecuritySchemeImpl extends ExtensibleImpl implements SecurityScheme
      */
     @Override
     public void setRef(String ref) {
+        if (ref != null && !ref.contains("/")) {
+            ref = OpenApiConstants.REF_PREFIX_SECURITY_SCHEME + ref;
+        }
         this.$ref = ref;
     }
 
@@ -57,7 +61,7 @@ public class SecuritySchemeImpl extends ExtensibleImpl implements SecurityScheme
      */
     @Override
     public SecurityScheme ref(String ref) {
-        this.$ref = ref;
+        setRef(ref);
         return this;
     }
 
