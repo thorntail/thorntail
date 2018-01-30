@@ -42,7 +42,7 @@ ifdef::product[]
 ----
 
 The reason is that the WildFly Swarm productized rutime artifact BOM imports the EAP runtime artifacts BOM (`org.jboss.bom:eap-runtime-artifacts`), which excludes the `commons-logging` artifact from the `org.apache.httpcomponents:httpclient` and `org.apache.james:apache-mime4j` artifacts.
-As a result, when running tests in a Maven project that imports the WildFly Swarm productized rutime artifact BOM, neither the Apache HTTP Client nor any other artifact that depends on it (for example, the JAX-RS Client) work.
+As a result, when running tests in a Maven project that imports the WildFly Swarm productized runtime artifact BOM, neither the Apache HTTP Client nor any other artifact that depends on it (for example, the JAX-RS Client) works.
 --
 endif::[]
 
