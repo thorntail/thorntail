@@ -26,7 +26,7 @@ import static org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisp
  */
 @DeploymentModule(name = "org.wildfly.swarm.microprofile.restclient", slot = "deployment", metaInf = IMPORT,
         export = true, services = Module.ServiceHandling.IMPORT)
-@DeploymentModule(name = "org.eclipse.microprofile.config.api")
+//@DeploymentModule(name = "org.eclipse.microprofile.config.api")
 public class RestClientFraction implements Fraction<RestClientFraction> {
 
 }
