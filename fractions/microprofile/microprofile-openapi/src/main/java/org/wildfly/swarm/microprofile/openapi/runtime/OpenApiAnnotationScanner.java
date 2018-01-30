@@ -136,10 +136,6 @@ public class OpenApiAnnotationScanner {
 
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.openapi");
 
-    @SuppressWarnings("unused")
-    private final OpenApiConfig config;
-    @SuppressWarnings("unused")
-    private final Archive archive;
     private final IndexView index;
 
     private String currentAppPath = "";
@@ -153,8 +149,6 @@ public class OpenApiAnnotationScanner {
      * @param archive
      */
     public OpenApiAnnotationScanner(OpenApiConfig config, Archive archive) {
-        this.config = config;
-        this.archive = archive;
         this.index = archiveToIndex(config, archive);
     }
 
@@ -181,6 +175,8 @@ public class OpenApiAnnotationScanner {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        // TODO extract any JAR dependencies within the archive and index those as well (option to disable?)
 
         return indexer.complete();
     }
@@ -716,7 +712,6 @@ public class OpenApiAnnotationScanner {
             Server server = readServer(annotation);
             operation.addServer(server);
         }
-
 
         // Now set the operation on the PathItem as appropriate based on the Http method type
         ///////////////////////////////////////////
