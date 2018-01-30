@@ -18,6 +18,7 @@ package org.wildfly.swarm.microprofile.openapi.models.parameters;
 
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
+import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
 import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
@@ -44,6 +45,9 @@ public class RequestBodyImpl extends ExtensibleImpl implements RequestBody, Mode
      */
     @Override
     public void setRef(String ref) {
+        if (ref != null && !ref.contains("/")) {
+            ref = OpenApiConstants.REF_PREFIX_REQUEST_BODY + ref;
+        }
         this.$ref = ref;
     }
 
@@ -52,7 +56,7 @@ public class RequestBodyImpl extends ExtensibleImpl implements RequestBody, Mode
      */
     @Override
     public RequestBody ref(String ref) {
-        this.$ref = ref;
+        setRef(ref);
         return this;
     }
 

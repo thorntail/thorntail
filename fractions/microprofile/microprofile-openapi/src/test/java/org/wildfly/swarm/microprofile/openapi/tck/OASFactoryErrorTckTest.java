@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 
-package test.org.wildfly.swarm.microprofile.openapi;
+package org.wildfly.swarm.microprofile.openapi.tck;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.eclipse.microprofile.openapi.tck.OASFactoryErrorTest;
 
-import org.jboss.arquillian.testng.Arquillian;
+import test.org.wildfly.swarm.microprofile.openapi.BaseTckTest;
+import test.org.wildfly.swarm.microprofile.openapi.TckTest;
 
 /**
- * Use this annotation along with @TckTestRunner to indicate the specific Tck that is
- * under test.
  * @author eric.wittmann@gmail.com
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Inherited
-public @interface TckTest {
+@TckTest(test=OASFactoryErrorTest.class, configProperties="")
+public class OASFactoryErrorTckTest extends BaseTckTest {
 
-    Class<? extends Arquillian> test();
+    @Override
+    public OASFactoryErrorTest getDelegate() {
+        return new OASFactoryErrorTest();
+    }
 
-    String configProperties();
+    @Override
+    public Object[] getTestArguments() {
+        return new Object[] {};
+    }
 
 }

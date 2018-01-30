@@ -23,6 +23,7 @@ import org.eclipse.microprofile.openapi.models.examples.Example;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
+import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
 import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
@@ -59,6 +60,9 @@ public class ParameterImpl extends ExtensibleImpl implements Parameter, ModelImp
      */
     @Override
     public void setRef(String ref) {
+        if (ref != null && !ref.contains("/")) {
+            ref = OpenApiConstants.REF_PREFIX_PARAMETER + ref;
+        }
         this.$ref = ref;
     }
 
@@ -67,7 +71,7 @@ public class ParameterImpl extends ExtensibleImpl implements Parameter, ModelImp
      */
     @Override
     public Parameter ref(String ref) {
-        this.$ref = ref;
+        setRef(ref);
         return this;
     }
 
@@ -192,7 +196,7 @@ public class ParameterImpl extends ExtensibleImpl implements Parameter, ModelImp
      */
     @Override
     public Parameter allowEmptyValue(Boolean allowEmptyValue) {
-        // TODO Auto-generated method stub
+        this.allowEmptyValue = allowEmptyValue;
         return this;
     }
 

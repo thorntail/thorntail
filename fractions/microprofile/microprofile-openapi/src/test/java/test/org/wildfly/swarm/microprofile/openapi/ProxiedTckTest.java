@@ -18,14 +18,14 @@ package test.org.wildfly.swarm.microprofile.openapi;
 
 import java.lang.reflect.Method;
 
-import org.eclipse.microprofile.openapi.tck.AppTestBase;
+import org.jboss.arquillian.testng.Arquillian;
 
 /**
  * @author eric.wittmann@gmail.com
  */
 public class ProxiedTckTest {
 
-    private AppTestBase delegate;
+    private Arquillian delegate;
     private Object test;
     private Method testMethod;
 
@@ -38,14 +38,14 @@ public class ProxiedTckTest {
     /**
      * @return the delegate
      */
-    public AppTestBase getDelegate() {
+    public Arquillian getDelegate() {
         return delegate;
     }
 
     /**
      * @param delegate the delegate to set
      */
-    public void setDelegate(AppTestBase delegate) {
+    public void setDelegate(Arquillian delegate) {
         this.delegate = delegate;
     }
 

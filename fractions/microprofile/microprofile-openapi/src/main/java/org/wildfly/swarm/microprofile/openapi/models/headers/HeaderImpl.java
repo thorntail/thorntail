@@ -23,6 +23,7 @@ import org.eclipse.microprofile.openapi.models.examples.Example;
 import org.eclipse.microprofile.openapi.models.headers.Header;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.ExtensibleImpl;
 import org.wildfly.swarm.microprofile.openapi.models.ModelImpl;
 
@@ -56,6 +57,9 @@ public class HeaderImpl extends ExtensibleImpl implements Header, ModelImpl {
      */
     @Override
     public void setRef(String ref) {
+        if (ref != null && !ref.contains("/")) {
+            ref = OpenApiConstants.REF_PREFIX_HEADER + ref;
+        }
         this.$ref = ref;
     }
 
@@ -64,7 +68,7 @@ public class HeaderImpl extends ExtensibleImpl implements Header, ModelImpl {
      */
     @Override
     public Header ref(String ref) {
-        this.$ref = ref;
+        setRef(ref);
         return this;
     }
 
