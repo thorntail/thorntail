@@ -34,6 +34,7 @@ import org.wildfly.swarm.microprofile.openapi.models.PathsImpl;
 import org.wildfly.swarm.microprofile.openapi.models.info.InfoImpl;
 import org.wildfly.swarm.microprofile.openapi.util.FilterUtil;
 import org.wildfly.swarm.microprofile.openapi.util.MergeUtil;
+import org.wildfly.swarm.microprofile.openapi.util.ServersUtil;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 
@@ -96,6 +97,9 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
         if (model.getInfo().getVersion() == null) {
             model.getInfo().setVersion("1.0");
         }
+
+        // Phase 7:  Use Config values to add Servers (global, pathItem, operation)
+        ServersUtil.configureServers(config, model);
 
         OpenApiDocumentHolder.document = model;
     }

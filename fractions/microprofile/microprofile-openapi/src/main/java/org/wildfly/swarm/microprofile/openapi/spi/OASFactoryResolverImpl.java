@@ -137,14 +137,17 @@ public class OASFactoryResolverImpl extends OASFactoryResolver {
     @SuppressWarnings("unchecked")
     @Override
     public <T extends Constructible> T createObject(Class<T> clazz) {
+        if (clazz == null) {
+            throw new NullPointerException();
+        }
         try {
             Class<? extends Constructible> implClass = registry.get(clazz);
             if (implClass == null) {
-                throw new RuntimeException("Class '" + clazz.getName() + "' is not Constructible.");
+                throw new IllegalArgumentException();
             }
             return (T) implClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 
