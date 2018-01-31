@@ -167,7 +167,14 @@ public final class JsonUtil {
         if (propertyValue == null) {
             return;
         }
-        node.set(propertyName, factory.numberNode(propertyValue));
+        if (isIntegerValue(propertyValue)) {
+            node.set(propertyName, factory.numberNode(propertyValue.toBigInteger()));
+        } else {
+            node.set(propertyName, factory.numberNode(propertyValue));
+        }
     }
 
+    private static boolean isIntegerValue(BigDecimal bd) {
+        return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
+    }
 }
