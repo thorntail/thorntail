@@ -7,6 +7,6 @@ import javax.enterprise.context.ApplicationScoped;
  */
 @ApplicationScoped
 @RequiredClassPresent("io.restassured.RestAssured")
-@RequiredClassPresent("org.jboss.unimbus.config.mp.ConfigImpl")
+@RequiredClassPresent("org.jboss.unimbus.config.impl.ConfigImpl")
 public class TwoRequiredBean {
 }

@@ -29,7 +29,7 @@ import javax.enterprise.inject.spi.ProcessInjectionPoint;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.unimbus.config.mp.ConfigImpl;
+import org.jboss.unimbus.config.impl.ConfigImpl;
 
 public class ConfigExtension implements Extension {
 

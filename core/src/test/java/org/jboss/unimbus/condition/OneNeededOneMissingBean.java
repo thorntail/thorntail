@@ -7,6 +7,6 @@ import javax.enterprise.context.ApplicationScoped;
  */
 @ApplicationScoped
 @RequiredClassNotPresent("org.jboss.unimbus.servlet.Primary")
-@RequiredClassPresent("org.jboss.unimbus.config.mp.ConfigImpl")
+@RequiredClassPresent("org.jboss.unimbus.config.impl.ConfigImpl")
 public class OneNeededOneMissingBean {
 }
