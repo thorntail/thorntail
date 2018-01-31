@@ -675,6 +675,9 @@ public class OpenApiAnnotationScanner {
         ///////////////////////////////////////////
         List<AnnotationInstance> securityRequirementAnnotations = JandexUtil.getRepeatableAnnotation(method,
                 OpenApiConstants.DOTNAME_SECURITY_REQUIREMENT, OpenApiConstants.DOTNAME_SECURITY_REQUIREMENTS);
+        securityRequirementAnnotations.addAll(
+            JandexUtil.getRepeatableAnnotation(resource, OpenApiConstants.DOTNAME_SECURITY_REQUIREMENT, OpenApiConstants.DOTNAME_SECURITY_REQUIREMENTS)
+        );
         for (AnnotationInstance annotation : securityRequirementAnnotations) {
             SecurityRequirement requirement = readSecurityRequirement(annotation);
             if (requirement != null) {
@@ -1696,7 +1699,7 @@ public class OpenApiAnnotationScanner {
         schema.setExternalDocs(readExternalDocs(annotation.value(OpenApiConstants.PROP_EXTERNAL_DOCS)));
         schema.setDeprecated(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_DEPRECATED));
         schema.setType(JandexUtil.enumValue(annotation, OpenApiConstants.PROP_TYPE, org.eclipse.microprofile.openapi.models.media.Schema.SchemaType.class));
-        schema.setEnumeration((List<Object>) (Object) JandexUtil.stringListValue(annotation, OpenApiConstants.PROP_ENUM));
+        schema.setEnumeration((List<Object>) (Object) JandexUtil.stringListValue(annotation, OpenApiConstants.PROP_ENUMERATION));
         schema.setDefaultValue(JandexUtil.stringValue(annotation, OpenApiConstants.PROP_DEFAULT_VALUE));
         schema.setDiscriminator(readDiscriminatorMappings(annotation.value(OpenApiConstants.PROP_DISCRIMINATOR_MAPPING)));
         schema.setMaxItems(JandexUtil.intValue(annotation, OpenApiConstants.PROP_MAX_ITEMS));
