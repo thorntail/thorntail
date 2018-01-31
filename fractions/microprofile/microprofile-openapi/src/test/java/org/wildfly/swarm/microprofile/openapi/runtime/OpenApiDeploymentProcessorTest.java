@@ -228,22 +228,6 @@ public class OpenApiDeploymentProcessorTest {
      * Test method for {@link org.wildfly.swarm.microprofile.openapi.runtime.OpenApiDeploymentProcessor#process()}.
      */
     @Test
-    public void testProcess_All() throws Exception {
-        // TODO implement this test
-    }
-
-    /**
-     * Test method for {@link org.wildfly.swarm.microprofile.openapi.runtime.OpenApiDeploymentProcessor#process()}.
-     */
-    @Test
-    public void testProcess_Annotations() throws Exception {
-        // TODO implement this test
-    }
-
-    /**
-     * Test method for {@link org.wildfly.swarm.microprofile.openapi.runtime.OpenApiDeploymentProcessor#process()}.
-     */
-    @Test
     public void testProcess_Filtered() throws Exception {
         doTest(null, "_filtered/static.json", true, TestFilter.class, "_filtered/_expected.json");
     }

@@ -669,6 +669,7 @@ public class OpenApiAnnotationScanner {
             APIResponses responses = ModelUtil.responses(operation);
             responses.addApiResponse(responseCode, response);
         }
+        // TODO handle method responses when no annotation is provided
 
         // Process @SecurityRequirement annotations
         ///////////////////////////////////////////

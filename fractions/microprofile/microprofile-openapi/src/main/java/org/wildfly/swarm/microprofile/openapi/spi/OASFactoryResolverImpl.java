@@ -143,7 +143,7 @@ public class OASFactoryResolverImpl extends OASFactoryResolver {
         try {
             Class<? extends Constructible> implClass = registry.get(clazz);
             if (implClass == null) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Class '" + clazz + "' is not Constructible.");
             }
             return (T) implClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {

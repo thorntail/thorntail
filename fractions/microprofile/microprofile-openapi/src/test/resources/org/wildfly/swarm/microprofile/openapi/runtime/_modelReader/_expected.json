@@ -9,5 +9,6 @@
 			"email": "support@example.com"
 		},
 		"version": "1.17"
-	}
+	},
+	"paths": {}
 }
