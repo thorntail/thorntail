@@ -1670,7 +1670,6 @@ public class OpenApiAnnotationScanner {
 
         Schema schema = new SchemaImpl();
 
-        //schema.setDescription(JandexUtil.stringValue(annotation, ModelConstants.OpenApiConstants.PROP_DESCRIPTION));  IMPLEMENTATION
         schema.setNot(readClassSchema(annotation.value(OpenApiConstants.PROP_NOT)));
         schema.setOneOf(readClassSchemas(annotation.value(OpenApiConstants.PROP_ONE_OF)));
         schema.setAnyOf(readClassSchemas(annotation.value(OpenApiConstants.PROP_ANY_OF)));
