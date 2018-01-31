@@ -2,7 +2,6 @@
 
 - Replace c3p0 with ironjacamar
 - test keycloak integration using docker
-- improve log categories.
 - Equivalent to "Hollow Jar", may require forking capsule plugin
 - Fuller testing of Java EE tech in testsuite
 

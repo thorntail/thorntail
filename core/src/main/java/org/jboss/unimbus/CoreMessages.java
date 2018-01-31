@@ -14,22 +14,23 @@ import static org.jboss.unimbus.UNimbus.PROJECT_NAME;
  */
 @MessageLogger(projectCode = PROJECT_CODE, length = 6)
 public interface CoreMessages extends BasicLogger {
-    CoreMessages MESSAGES = Logger.getMessageLogger(CoreMessages.class, "org.jboss.unimbus.core");
+    CoreMessages MESSAGES = Logger.getMessageLogger(CoreMessages.class, UNimbus.loggerCategory("core"));
+
+    int OFFSET = MessageOffsets.CORE_OFFSET;
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 0 + MessageOffsets.CORE_OFFSET, value = PROJECT_NAME + " starting")
+    @Message(id = 0 + OFFSET, value = PROJECT_NAME + " starting")
     void starting();
 
-
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 1 + MessageOffsets.CORE_OFFSET, value = PROJECT_NAME + " started in %s")
+    @Message(id = 1 + OFFSET, value = PROJECT_NAME + " started in %s")
     void started(String startTime);
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 2 + MessageOffsets.CORE_OFFSET, value = PROJECT_NAME + " stopping")
+    @Message(id = 2 + OFFSET, value = PROJECT_NAME + " stopping")
     void stopping();
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 3 + MessageOffsets.CORE_OFFSET, value = PROJECT_NAME + " stopped")
+    @Message(id = 3 + OFFSET, value = PROJECT_NAME + " stopped")
     void stopped();
 }

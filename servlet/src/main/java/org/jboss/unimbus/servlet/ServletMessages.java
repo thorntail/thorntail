@@ -5,6 +5,8 @@ import org.jboss.logging.Logger;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.unimbus.MessageOffsets;
+import org.jboss.unimbus.UNimbus;
 
 import static org.jboss.unimbus.UNimbus.PROJECT_CODE;
 
@@ -13,9 +15,9 @@ import static org.jboss.unimbus.UNimbus.PROJECT_CODE;
  */
 @MessageLogger(projectCode = PROJECT_CODE, length = 6)
 public interface ServletMessages extends BasicLogger {
-    ServletMessages MESSAGES = Logger.getMessageLogger(ServletMessages.class, "org.jboss.unimbus");
+    ServletMessages MESSAGES = Logger.getMessageLogger(ServletMessages.class, UNimbus.loggerCategory("servlet"));
 
-    int OFFSET = 200;
+    int OFFSET = MessageOffsets.SERVLET_OFFSET;
 
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 1 + OFFSET, value = "%-10s: server started at: %s")

@@ -5,6 +5,7 @@ import org.jboss.logging.Logger;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.unimbus.MessageOffsets;
 import org.jboss.unimbus.UNimbus;
 
 /**
@@ -12,9 +13,9 @@ import org.jboss.unimbus.UNimbus;
  */
 @MessageLogger(projectCode = UNimbus.PROJECT_CODE, length = 6)
 public interface SecurityKeycloakMessages extends BasicLogger {
-    SecurityKeycloakMessages MESSAGES = Logger.getMessageLogger(SecurityKeycloakMessages.class, "org.jboss.unimbus");
+    SecurityKeycloakMessages MESSAGES = Logger.getMessageLogger(SecurityKeycloakMessages.class, UNimbus.loggerCategory("security.keycloak"));
 
-    int OFFSET = 300;
+    int OFFSET = MessageOffsets.KEYCLOAK_OFFSET;
 
     /*
     @LogMessage(level = Logger.Level.INFO)
