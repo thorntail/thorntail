@@ -40,7 +40,11 @@ public class OpenApiDataObjectScannerTest {
     public void test() throws IOException {
         Indexer indexer = new Indexer();
 
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Foo.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Bar.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/KustomPair.class");
         index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Booking2.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/CreditCard2.class");
         index(indexer, "org/eclipse/microprofile/openapi/apps/airlines/model/CreditCard.class");
         index(indexer, "org/eclipse/microprofile/openapi/apps/airlines/model/Flight.class");
         index(indexer, "org/eclipse/microprofile/openapi/apps/airlines/model/Airline.class");
@@ -69,6 +73,11 @@ public class OpenApiDataObjectScannerTest {
         comp.setSchemas(map);
         oai.setComponents(comp);
 
+//        Schema arrayThing = new SchemaImpl();
+//        arrayThing.setType(Schema.SchemaType.ARRAY);
+//        arrayThing.items(new SchemaImpl());
+//        schema.addProperty("arrayThingie", arrayThing);
         System.out.println(OpenApiSerializer.serialize(oai, OpenApiSerializer.Format.JSON));
     }
+
 }

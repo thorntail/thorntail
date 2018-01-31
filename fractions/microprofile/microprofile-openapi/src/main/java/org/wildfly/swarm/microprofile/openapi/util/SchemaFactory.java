@@ -5,6 +5,7 @@ import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassType;
 import org.jboss.jandex.Type;
+import org.wildfly.swarm.microprofile.openapi.models.media.SchemaImpl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class SchemaFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static Schema readSchema(Schema schema,
+    public static SchemaImpl readSchema(SchemaImpl schema,
                                     AnnotationInstance annotation,
                                     Map<String, Object> overrides) {
         if (annotation == null) {
@@ -69,7 +70,7 @@ public class SchemaFactory {
         schema.setMinItems((Integer) overrides.getOrDefault(PROP_MIN_ITEMS, JandexUtil.intValue(annotation, PROP_MIN_ITEMS)));
         schema.setUniqueItems((Boolean) overrides.getOrDefault(PROP_UNIQUE_ITEMS, JandexUtil.booleanValue(annotation, PROP_UNIQUE_ITEMS)));
 
-        Schema implSchema = readClassSchema(annotation.value(PROP_IMPLEMENTATION));
+        SchemaImpl implSchema = readClassSchema(annotation.value(PROP_IMPLEMENTATION));
         if (schema.getType() == Schema.SchemaType.ARRAY) {
             // If the @Schema annotation indicates an array type, then use the Schema
             // generated from the implementation Class as the "items" for the array.
@@ -87,12 +88,12 @@ public class SchemaFactory {
      * Introspect into the given Class to generate a Schema model.
      * @param value
      */
-    private static Schema readClassSchema(AnnotationValue value) {
+    private static SchemaImpl readClassSchema(AnnotationValue value) {
         if (value == null) {
             return null;
         }
         ClassType ctype = (ClassType) value.asClass();
-        Schema schema = introspectClassToSchema(ctype);
+        SchemaImpl schema = introspectClassToSchema(ctype);
         return schema;
     }
 
@@ -100,20 +101,20 @@ public class SchemaFactory {
      * Introspects the given class type to generate a Schema model.
      * @param ctype
      */
-    private static Schema introspectClassToSchema(ClassType ctype) {
+    private static SchemaImpl introspectClassToSchema(ClassType ctype) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    private static List<Schema> readClassSchemas(AnnotationValue value) {
+    private static List<SchemaImpl> readClassSchemas(AnnotationValue value) {
         if (value == null) {
             return null;
         }
         Type[] classArray = value.asClassArray();
-        List<Schema> schemas = new ArrayList<>(classArray.length);
+        List<SchemaImpl> schemas = new ArrayList<>(classArray.length);
         for (Type type : classArray) {
             ClassType ctype = (ClassType) type;
-            Schema schema = introspectClassToSchema(ctype);
+            SchemaImpl schema = introspectClassToSchema(ctype);
             schemas.add(schema);
         }
         return schemas;
