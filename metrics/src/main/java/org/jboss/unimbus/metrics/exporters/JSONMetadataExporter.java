@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -139,7 +140,11 @@ public class JSONMetadataExporter implements Exporter {
             obj.add("displayName", metadata.getDisplayName());
         }
         if (metadata.getTagsAsString() != null) {
-            obj.add("tags", metadata.getTagsAsString());
+            //obj.add("tags", metadata.getTagsAsString());
+            String str = metadata.getTags().entrySet().stream()
+                    .map(e-> e.getKey() + "=" + e.getValue())
+                    .collect(Collectors.joining(","));
+            obj.add( "tags", str );
         }
 
         return obj.build();

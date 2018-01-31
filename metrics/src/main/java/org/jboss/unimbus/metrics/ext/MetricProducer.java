@@ -42,29 +42,9 @@ public class MetricProducer {
     @Inject
     private MetricName metricName;
 
-    //private ConcurrentMap<MetricRegistry.Type, MetricRegistry> registries;
-
     @Inject
     @RegistryType(type=MetricRegistry.Type.APPLICATION)
     MetricRegistry applicationRegistry;
-
-    //@PostConstruct
-    //void init() {
-        //registries = new ConcurrentHashMap<>();
-    //}
-
-    public MetricRegistry getApplicationRegistry() {
-        return this.applicationRegistry;
-    }
-
-    /*
-    @Default
-    @Produces
-    @RegistryType(type = MetricRegistry.Type.APPLICATION)
-    public MetricRegistry getApplicationRegistry() {
-        return get(MetricRegistry.Type.APPLICATION);
-    }
-    */
 
     @Produces
     private <T> Gauge<T> gauge(InjectionPoint ip) {
@@ -74,47 +54,30 @@ public class MetricProducer {
             @SuppressWarnings("unchecked")
             public T getValue() {
                 // TODO: better error report when the gauge doesn't exist
-                return ((Gauge<T>) getApplicationRegistry().getGauges().get(metricName.of(ip))).getValue();
+                return ((Gauge<T>) applicationRegistry.getGauges().get(metricName.of(ip))).getValue();
             }
         };
     }
 
     @Produces
     public Counter getCounter(InjectionPoint ip) {
-        return getApplicationRegistry().counter(getMetadata(ip, MetricType.COUNTER));
+        return this.applicationRegistry.counter(getMetadata(ip, MetricType.COUNTER));
     }
 
     @Produces
     public Histogram getHistogram(InjectionPoint ip) {
-        return getApplicationRegistry().histogram(getMetadata(ip, MetricType.HISTOGRAM));
+        return this.applicationRegistry.histogram(getMetadata(ip, MetricType.HISTOGRAM));
     }
 
     @Produces
     public Meter getMeter(InjectionPoint ip) {
-        return getApplicationRegistry().meter(getMetadata(ip, MetricType.METERED));
+        return this.applicationRegistry.meter(getMetadata(ip, MetricType.METERED));
     }
 
     @Produces
     public Timer getTimer(InjectionPoint ip) {
-        return getApplicationRegistry().timer(getMetadata(ip, MetricType.TIMER));
+        return this.applicationRegistry.timer(getMetadata(ip, MetricType.TIMER));
     }
-
-    /*
-    public MetricRegistry get(MetricRegistry.Type type) {
-        System.err.println("GET -- " + type);
-        new Exception().printStackTrace();
-        return registries.computeIfAbsent(type, key -> {
-            try {
-                InitialContext context = new InitialContext();
-                Object o = context.lookup("jboss/swarm/metrics");
-                RegistryFactory factory = (RegistryFactory) o;
-                return factory.get(type);
-            } catch (NamingException e) {
-                throw new IllegalStateException("RegistryFactory not found");
-            }
-        });
-    }
-    */
 
     private Metadata getMetadata(InjectionPoint ip, MetricType type) {
         Metadata metadata = new Metadata(metricName.of(ip), type);
@@ -134,6 +97,7 @@ public class MetricProducer {
                     metadata.addTags(tag);
                 }
             }
+            System.err.println( "META: " + metadata.getName() + " // " + metadata.getTagsAsString() );
         }
         return metadata;
     }

@@ -9,6 +9,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.jboss.unimbus.servlet.Primary;
 
 /**
@@ -19,7 +20,7 @@ public class ProofResource {
 
     @GET
     @Path("/")
-    //@Counted(monotonic = true)
+    @Counted(monotonic = true, tags = "app=proof")
     public String get() {
         return "Hello! " + this.url + " // " + this.entityManager;
     }

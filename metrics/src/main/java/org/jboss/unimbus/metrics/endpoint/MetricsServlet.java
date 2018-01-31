@@ -6,6 +6,8 @@ import java.io.Writer;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +25,11 @@ public class MetricsServlet extends HttpServlet {
 
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Exporter exporter = getExporterForOPOTIONS(request);
+        Exporter exporter = getExporterForOPTIONS(request);
+        if ( exporter == null ) {
+            response.sendError(406);
+            return;
+        }
         service(exporter, request, response);
     }
 
@@ -61,12 +67,19 @@ public class MetricsServlet extends HttpServlet {
             metricName = parts[1];
         }
 
-        MetricRegistry.Type registryType = MetricRegistry.Type.valueOf(scope.toUpperCase());
+        MetricRegistry.Type registryType = null;
+        try {
+            registryType = MetricRegistry.Type.valueOf(scope.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            response.sendError(404);
+            return;
+        }
 
         if (metricName == null) {
             export(exporter.exportOneScope(registryType), response);
             return;
         }
+
 
         export(exporter.exportOneMetric(registryType, metricName), response);
     }
@@ -100,7 +113,7 @@ public class MetricsServlet extends HttpServlet {
         return this.prometheusExporter;
     }
 
-    protected Exporter getExporterForOPOTIONS(HttpServletRequest request) {
+    protected Exporter getExporterForOPTIONS(HttpServletRequest request) {
         if (isJSON(request)) {
             return this.jsonMetadataExporter;
         }

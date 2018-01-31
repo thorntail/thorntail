@@ -19,8 +19,10 @@ import javax.inject.Inject;
 
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
+import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.resource.ResourceHandler;
+import io.undertow.util.Methods;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.Management;
 import org.jboss.unimbus.servlet.Primary;
@@ -59,8 +61,15 @@ public class UndertowProducer {
     }
 
     private HttpHandler wrapForStaticResources(HttpHandler next) {
-        ResourceHandler handler = new ResourceHandler(this.resourceSupplier, next);
-        return handler;
+        ResourceHandler resourceHandler = new ResourceHandler(this.resourceSupplier, next);
+
+        return exchange -> {
+            if ( ! exchange.getRequestMethod().equals(Methods.OPTIONS)) {
+                resourceHandler.handleRequest(exchange);
+            } else {
+                next.handleRequest(exchange);
+            }
+        };
     }
 
     private Undertow configure(Undertow.Builder builder, Annotation annotation) {

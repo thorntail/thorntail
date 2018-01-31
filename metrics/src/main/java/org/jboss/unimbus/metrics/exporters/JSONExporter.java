@@ -16,6 +16,7 @@ import javax.json.stream.JsonGenerator;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.Snapshot;
@@ -106,9 +107,15 @@ public class JSONExporter implements Exporter {
     private JsonObject rootJSON() {
         JsonObjectBuilder root = Json.createObjectBuilder();
 
-        root.add("base", registryJSON(this.baseRegistry));
-        root.add("vendor", registryJSON(this.vendorRegistry));
-        root.add("application", registryJSON(this.applicationRegistry));
+        if ( ! this.baseRegistry.getMetrics().isEmpty() ) {
+            root.add("base", registryJSON(this.baseRegistry));
+        }
+        if ( ! this.vendorRegistry.getMetrics().isEmpty() ) {
+            root.add("vendor", registryJSON(this.vendorRegistry));
+        }
+        if ( ! this.applicationRegistry.getMetrics().isEmpty() ) {
+            root.add("application", registryJSON(this.applicationRegistry));
+        }
 
         return root.build();
     }
@@ -127,6 +134,8 @@ public class JSONExporter implements Exporter {
     private void metricJSON(JsonObjectBuilder registryJSON, String name, Metric metric) {
         if (metric instanceof Counter) {
             registryJSON.add(name, metricJSON((Counter) metric));
+        } else if (metric instanceof Meter) {
+            registryJSON.add(name, metricJSON((Meter) metric));
         } else if (metric instanceof Timer) {
             registryJSON.add(name, metricJSON((Timer) metric));
         } else if (metric instanceof Histogram) {
@@ -147,6 +156,18 @@ public class JSONExporter implements Exporter {
 
     private long metricJSON(Counter counter) {
         return counter.getCount();
+    }
+
+    private JsonObject metricJSON(Meter meter) {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+
+        builder.add( "count", meter.getCount() );
+        builder.add( "meanRate", meter.getMeanRate() );
+        builder.add( "oneMinRate", meter.getOneMinuteRate() );
+        builder.add( "fiveMinRate", meter.getFiveMinuteRate() );
+        builder.add( "fifteenMinRate", meter.getFifteenMinuteRate() );
+
+        return builder.build();
     }
 
     private Object metricJSON(Gauge gauge) {

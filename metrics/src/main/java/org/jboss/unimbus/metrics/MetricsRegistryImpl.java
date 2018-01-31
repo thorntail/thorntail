@@ -89,9 +89,7 @@ public class MetricsRegistryImpl extends MetricRegistry {
 
     @Override
     public <T extends Metric> T register(String name, T metric, Metadata metadata) throws IllegalArgumentException {
-
         metadata.setName(name);
-
         return register(metadata, metric);
     }
 
@@ -119,13 +117,34 @@ public class MetricsRegistryImpl extends MetricRegistry {
             throw new IllegalArgumentException("Passed metric type does not match existing type");
         }
 
+        if ( existingMetadata != null && ( existingMetadata.isReusable() != metadata.isReusable() ) ) {
+            throw new IllegalArgumentException( "Reusable flag differs from previous usage");
+        }
+
         metricMap.put(name, metric);
-        metadataMap.put(name, metadata);
+        metadataMap.put(name, duplicate(metadata));
 
         MetricsMessages.MESSAGES.registeredMetric(this.type.getName(), name);
 
         return metric;
     }
+
+    protected Metadata duplicate(Metadata meta) {
+        return meta;
+    }
+    /*
+        Metadata copy = new Metadata( meta.getName(), meta.getTypeRaw() );
+        copy.setDescription( meta.getDescription() );
+        copy.setUnit( meta.getUnit() );
+        copy.setDisplayName( meta.getDisplayName() );
+        copy.setReusable( meta.isReusable() );
+
+        HashMap<String,String> tagsCopy = new HashMap<>();
+        tagsCopy.putAll( meta.getTags() );
+        copy.setTags( tagsCopy );
+        return copy;
+    }
+    */
 
     @Override
     public Counter counter(String name) {
@@ -163,7 +182,8 @@ public class MetricsRegistryImpl extends MetricRegistry {
             throw new IllegalArgumentException("Name must not be null or empty");
         }
 
-        if (!metadataMap.containsKey(name)) {
+        Metadata previous = metadataMap.get(name);
+        if (previous == null) {
             Metric m;
             switch (type) {
 
@@ -186,7 +206,7 @@ public class MetricsRegistryImpl extends MetricRegistry {
                     throw new IllegalStateException("Must not happen");
             }
             register(metadata, m);
-        } else if (!metadataMap.get(name).getTypeRaw().equals(metadata.getTypeRaw())) {
+        } else if (!previous.getTypeRaw().equals(metadata.getTypeRaw())) {
             throw new IllegalArgumentException("Type of existing previously registered metric " + name + " does not " +
                                                        "match passed type");
         }

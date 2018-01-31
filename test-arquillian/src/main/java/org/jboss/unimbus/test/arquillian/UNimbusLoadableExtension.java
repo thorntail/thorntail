@@ -1,8 +1,8 @@
 package org.jboss.unimbus.test.arquillian;
 
 import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
-import org.jboss.arquillian.container.test.spi.client.protocol.Protocol;
 import org.jboss.arquillian.core.spi.LoadableExtension;
+import org.jboss.arquillian.test.spi.TestEnricher;
 
 /**
  * Created by bob on 1/25/18.

@@ -21,13 +21,14 @@ public class JDKLogging implements Logging {
     @Override
     public void initialize() {
         Logger logger = Logger.getLogger("");
-        logger.setLevel(Level.INFO);
+        logger.setLevel(Level.ALL);
         for (Handler handler : logger.getHandlers()) {
             handler.setLevel(Level.ALL);
             if (handler instanceof ConsoleHandler) {
                 handler.setFormatter(new DefaultConsoleFormatter(this.format));
             }
         }
+        logger.setLevel(Level.INFO);
 
     }
 

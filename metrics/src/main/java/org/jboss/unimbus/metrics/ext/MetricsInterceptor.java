@@ -43,8 +43,6 @@ import org.jboss.logging.Logger;
 @Priority(Interceptor.Priority.LIBRARY_BEFORE)
 class MetricsInterceptor {
 
-    private static final Logger LOGGER = Logger.getLogger(MetricsInterceptor.class);
-
     private final MetricRegistry registry;
 
     private final MetricResolver resolver;
@@ -59,7 +57,6 @@ class MetricsInterceptor {
     @AroundConstruct
     private Object metrics(InvocationContext context) throws Exception {
         Class<?> bean = context.getConstructor().getDeclaringClass();
-        LOGGER.infof("MetricsInterceptor, bean=%s\n", bean);
         // Registers the bean constructor metrics
         registerMetrics(bean, context.getConstructor());
 
@@ -85,7 +82,7 @@ class MetricsInterceptor {
                 MetricResolver.Of<Gauge> gauge = resolver.gauge(bean, method);
                 if (gauge.isPresent()) {
                     Gauge g = gauge.metricAnnotation();
-                    Metadata metadata = getMetadata(gauge.metricName(), g.unit(), g.description(), g.displayName(), MetricType.GAUGE, g.tags());
+                    Metadata metadata = getMetadata(gauge.metricName(), g.unit(), g.description(), g.displayName(), MetricType.GAUGE, false, g.tags());
                     registry.register(metadata, new ForwardingGauge(method, context.getTarget()));
                 }
             }
@@ -99,16 +96,16 @@ class MetricsInterceptor {
         MetricResolver.Of<Counted> counted = resolver.counted(bean, element);
         if (counted.isPresent()) {
             Counted t = counted.metricAnnotation();
-            Metadata metadata = getMetadata(counted.metricName(), t.unit(), t.description(), t.displayName(), MetricType.COUNTER, t.tags());
+            Metadata metadata = getMetadata(counted.metricName(), t.unit(), t.description(), t.displayName(), MetricType.COUNTER, t.reusable(), t.tags());
 
-            registry.counter(counted.metricName());
+            registry.counter(metadata);
         }
 
 
         MetricResolver.Of<Metered> metered = resolver.metered(bean, element);
         if (metered.isPresent()) {
             Metered t = metered.metricAnnotation();
-            Metadata metadata = getMetadata(metered.metricName(), t.unit(), t.description(), t.displayName(), MetricType.METERED, t.tags());
+            Metadata metadata = getMetadata(metered.metricName(), t.unit(), t.description(), t.displayName(), MetricType.METERED, t.reusable(), t.tags());
 
             registry.meter(metadata);
         }
@@ -116,12 +113,12 @@ class MetricsInterceptor {
         MetricResolver.Of<Timed> timed = resolver.timed(bean, element);
         if (timed.isPresent()) {
             Timed t = timed.metricAnnotation();
-            Metadata metadata = getMetadata(timed.metricName(), t.unit(), t.description(), t.displayName(), MetricType.TIMER, t.tags());
+            Metadata metadata = getMetadata(timed.metricName(), t.unit(), t.description(), t.displayName(), MetricType.TIMER, t.reusable(), t.tags());
             registry.timer(metadata);
         }
     }
 
-    private Metadata getMetadata(String name, String unit, String description, String displayName, MetricType type, String... tags) {
+    private Metadata getMetadata(String name, String unit, String description, String displayName, MetricType type, boolean reusable, String... tags) {
 
         Metadata metadata = new Metadata(name, type);
         if (!unit.isEmpty()) {
@@ -133,6 +130,7 @@ class MetricsInterceptor {
         if (!displayName.isEmpty()) {
             metadata.setDisplayName(displayName);
         }
+        metadata.setReusable(reusable);
         if (tags != null && tags.length > 0) {
             for (String tag : tags) {
                 metadata.addTags(tag);

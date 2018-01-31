@@ -26,13 +26,15 @@
         <configuration>
           <dependenciesToScan>
             <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-api-tck</dependency>
-<!--
             <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-rest-tck</dependency>
--->
           </dependenciesToScan>
           <environmentVariables>
             <MP_METRICS_TAGS>tier=integration</MP_METRICS_TAGS>
           </environmentVariables>
+          <excludes>
+            <exclude>**/*$*</exclude>
+            <exclude>**/ReusableMetricsTest</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>
@@ -60,6 +62,12 @@
     <dependency>
       <groupId>org.eclipse.microprofile.metrics</groupId>
       <artifactId>microprofile-metrics-api-tck</artifactId>
+      <version>${version.mp-metrics}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.metrics</groupId>
+      <artifactId>microprofile-metrics-rest-tck</artifactId>
       <version>${version.mp-metrics}</version>
       <scope>test</scope>
     </dependency>

@@ -22,6 +22,7 @@ public class Bootstrapper {
     private static final String PREFIX = "logging.level.";
 
     void initialize(@Observes LifecycleEvent.Bootstrap event) {
+
         Logging logging = this.logging.get();
         logging.initialize();
 
