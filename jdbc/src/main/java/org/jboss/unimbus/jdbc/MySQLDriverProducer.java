@@ -13,18 +13,21 @@ import org.jboss.unimbus.condition.RequiredClassPresent;
 @RequiredClassPresent("com.mysql.jdbc.Driver")
 public class MySQLDriverProducer {
 
+    /*
     @Produces
     @ApplicationScoped
     @Named("jdbc.driver.mysql")
     Driver driver() throws SQLException {
         return new com.mysql.jdbc.Driver();
     }
+    */
 
     @Produces
     @ApplicationScoped
-    @Named("jdbc.driver-info.mysql")
     DriverInfo driverInfo() {
-        return new DriverInfo(com.mysql.jdbc.Driver.class.getName());
+        return new DriverInfo("mysql")
+                .setDriverClassName(com.mysql.jdbc.Driver.class.getName())
+                .setDataSourceClassName(com.mysql.jdbc.jdbc2.optional.MysqlDataSource.class.getName());
     }
 
 }

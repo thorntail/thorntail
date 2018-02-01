@@ -4,17 +4,39 @@ import javax.enterprise.inject.Vetoed;
 
 public class DriverInfo {
 
-    public DriverInfo() {
-        this(null);
+    public DriverInfo(String id) {
+        this.id = id;
     }
 
-    public DriverInfo(String driverClassName) {
+    public String getId() {
+        return this.id;
+    }
+
+    public DriverInfo setDriverClassName(String driverClassName) {
         this.driverClassName = driverClassName;
+        return this;
     }
 
     public String getDriverClassName() {
         return this.driverClassName;
     }
 
-    private final String driverClassName;
+    public DriverInfo setDataSourceClassName(String dataSourceClassName) {
+        this.dataSourceClassName = dataSourceClassName;
+        return this;
+    }
+
+    public String getDataSourceClassName() {
+        return this.dataSourceClassName;
+    }
+
+    public String toString() {
+        return this.driverClassName;
+    }
+
+    private final String id;
+
+    private String driverClassName;
+
+    private String dataSourceClassName;
 }

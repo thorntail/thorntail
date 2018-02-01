@@ -25,12 +25,45 @@
       <groupId>org.jboss.unimbus</groupId>
       <artifactId>jdbc</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
+      <artifactId>jta</artifactId>
+    </dependency>
 
+    <dependency>
+      <groupId>org.jboss.ironjacamar</groupId>
+      <artifactId>ironjacamar-jdbc</artifactId>
+      <version>1.4.6.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.ironjacamar</groupId>
+      <artifactId>ironjacamar-spec-api</artifactId>
+      <version>1.4.6.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.ironjacamar</groupId>
+      <artifactId>ironjacamar-core-api</artifactId>
+      <version>1.4.6.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.ironjacamar</groupId>
+      <artifactId>ironjacamar-common-api</artifactId>
+      <version>1.4.6.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.ironjacamar</groupId>
+      <artifactId>ironjacamar-core-impl</artifactId>
+      <version>1.4.6.Final</version>
+    </dependency>
+<!--
     <dependency>
       <groupId>com.mchange</groupId>
       <artifactId>c3p0</artifactId>
       <version>${version.c3p0}</version>
     </dependency>
+-->
 
   </dependencies>
 

@@ -39,6 +39,7 @@ public class InMemoryContext implements Context {
 
 
     private Object lookupBinding(Name name) throws NamingException {
+        System.err.println( "LOOKUP " + name );
         //if (name.toString().equals("java:app/BeanManager")) {
             //return this.beanManager;
         //}
@@ -46,6 +47,8 @@ public class InMemoryContext implements Context {
         for (Bean<?> bean : beans) {
             CreationalContext context = beanManager().createCreationalContext(bean);
             Binder<?> binder = (Binder<?>) bean.create(context);
+            System.err.println( "binder: " + binder.getName());
+
             if ( binder.getName().equals(name.toString())) {
                 Object result = binder.get();
                 if ( result != null ) {
