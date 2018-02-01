@@ -13,10 +13,6 @@
   <artifactId>config</artifactId>
   <name>TCK: MicroProfile Config</name>
   
-  <properties>
-    <microprofile.config.version>1.1</microprofile.config.version>
-  </properties>
-
   <build>
     <plugins>
       <plugin>
@@ -42,13 +38,12 @@
     <dependency>
       <groupId>org.eclipse.microprofile.config</groupId>
       <artifactId>microprofile-config-api</artifactId>
-      <version>${microprofile.config.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.eclipse.microprofile.config</groupId>
       <artifactId>microprofile-config-tck</artifactId>
-      <version>${microprofile.config.version}</version>
+      <version>${version.mp-config}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -59,21 +54,6 @@
       <scope>test</scope>
 -->
     </dependency>
-
-
-
-<!--
-
-    <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>test</artifactId>
-    </dependency>
--->
 
   </dependencies>
 </project>

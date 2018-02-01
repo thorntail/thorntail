@@ -12,10 +12,6 @@
   <artifactId>testing-arquillian</artifactId>
   <name>Testing: Arquillian</name>
 
-  <properties>
-    <version.arquillian-core>1.2.1.Final</version.arquillian-core>
-  </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>

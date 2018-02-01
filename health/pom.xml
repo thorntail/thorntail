@@ -12,10 +12,6 @@
   <artifactId>health</artifactId>
   <name>Health</name>
 
-  <properties>
-    <version.mp-health>1.0</version.mp-health>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>

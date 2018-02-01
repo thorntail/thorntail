@@ -21,11 +21,18 @@
     <version.resteasy>3.1.4.Final</version.resteasy>
     <version.undertow>1.4.21.Final</version.undertow>
 
+    <version.javax-transaction>1.0.1.Final</version.javax-transaction>
+    <version.javax-json>1.1.2</version.javax-json>
+    <version.glassfish-json>1.1.2</version.glassfish-json>
+
     <version.h2>1.4.187</version.h2>
     <version.mysql>5.1.39</version.mysql>
 
+    <version.mp-health>1.0</version.mp-health>
     <version.mp-config>1.2</version.mp-config>
+    <version.mp-metrics>1.1</version.mp-metrics>
 
+    <version.arquillian-core>1.2.1.Final</version.arquillian-core>
     <version.fest-assert>1.4</version.fest-assert>
     <version.junit>4.12</version.junit>
     <version.rest-assured>3.0.6</version.rest-assured>
@@ -45,7 +52,6 @@
         <artifactId>core</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
-
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
         <artifactId>datasources</artifactId>
@@ -107,13 +113,24 @@
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
 
+
+      <dependency>
+        <groupId>org.eclipse.microprofile.config</groupId>
+        <artifactId>microprofile-config-api</artifactId>
+        <version>${version.mp-config}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.microprofile.metrics</groupId>
+        <artifactId>microprofile-metrics-api</artifactId>
+        <version>${version.mp-metrics}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
         <artifactId>testing</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
-
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
         <artifactId>testing-arquillian</artifactId>

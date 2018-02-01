@@ -12,11 +12,6 @@
   <artifactId>json-p</artifactId>
   <name>JSON-P</name>
 
-  <properties>
-    <version.javax-json>1.1.2</version.javax-json>
-    <version.glassfish-json>1.1.2</version.glassfish-json>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>

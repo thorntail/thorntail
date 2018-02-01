@@ -12,11 +12,6 @@
   <artifactId>servlet</artifactId>
   <name>Servlet</name>
 
-  <properties>
-    <version.mp-health>1.0</version.mp-health>
-    <version.mp-metrics>1.1</version.mp-metrics>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>

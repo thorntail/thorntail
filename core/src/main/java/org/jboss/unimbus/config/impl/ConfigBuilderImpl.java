@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import javax.annotation.Priority;
+
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -28,6 +30,7 @@ import org.jboss.unimbus.config.impl.converters.URLConverter;
 import org.jboss.unimbus.config.impl.converters.fallback.EnumValueOfConverter;
 import org.jboss.unimbus.config.impl.converters.fallback.StaticParseConverter;
 import org.jboss.unimbus.config.impl.converters.fallback.StaticValueOfConverter;
+import org.jboss.unimbus.config.impl.converters.fallback.StringConstructorConverter;
 
 class ConfigBuilderImpl implements ConfigBuilder {
 
@@ -68,7 +71,7 @@ class ConfigBuilderImpl implements ConfigBuilder {
     @Override
     public ConfigBuilder withConverters(Converter<?>... converters) {
         for (Converter<?> converter : converters) {
-            this.converters.add(new ConverterHolder(null, 100, converter));
+            this.converters.add(new ConverterHolder(typeOf(converter), priorityOf(converter), converter));
         }
         return this;
     }
@@ -128,7 +131,7 @@ class ConfigBuilderImpl implements ConfigBuilder {
         withConverter(URL.class, 1, new URLConverter());
 
         for (ConverterHolder each : this.converters) {
-            Class<?> type = typeOf(each.converter);
+            Class<?> type = each.type;
             Set<ConverterHolder<?>> set = configConverters.get(type);
             if (set == null) {
                 set = new TreeSet<>();
@@ -158,7 +161,7 @@ class ConfigBuilderImpl implements ConfigBuilder {
 
         List<FallbackConverter> fallbackConverters = new ArrayList<>();
 
-        //fallbackConverters.add(new StringConstructorConverter());
+        fallbackConverters.add(new StringConstructorConverter());
         fallbackConverters.add(new StaticValueOfConverter());
         fallbackConverters.add(new StaticParseConverter());
         fallbackConverters.add(new EnumValueOfConverter());
@@ -174,6 +177,15 @@ class ConfigBuilderImpl implements ConfigBuilder {
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private int priorityOf(Converter converter) {
+        Priority anno = converter.getClass().getAnnotation(Priority.class);
+        if ( anno == null ) {
+            return 100;
+        }
+
+        return anno.value();
     }
 
     private Set<ConfigSource> sources = new TreeSet<>(new OrdinalComparator());

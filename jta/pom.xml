@@ -12,10 +12,6 @@
   <artifactId>jta</artifactId>
   <name>JTA</name>
 
-  <properties>
-    <version.javax-transaction>1.0.1.Final</version.javax-transaction>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>

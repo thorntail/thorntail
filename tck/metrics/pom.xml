@@ -13,10 +13,6 @@
   <artifactId>metrics</artifactId>
   <name>TCK: MicroProfile Metrics</name>
   
-  <properties>
-    <version.mp-metrics>1.1</version.mp-metrics>
-  </properties>
-
   <build>
     <plugins>
       <plugin>

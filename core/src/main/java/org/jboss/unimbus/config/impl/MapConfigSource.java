@@ -1,13 +1,18 @@
 package org.jboss.unimbus.config.impl;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
-class MapConfigSource implements ConfigSource {
+public class MapConfigSource implements ConfigSource {
 
-    MapConfigSource(String name, Map<String, String> props) {
+    public MapConfigSource(String name) {
+        this( name, new HashMap<>());
+    }
+
+    public MapConfigSource(String name, Map<String, String> props) {
         this.name = name;
         this.props = props;
     }
@@ -20,6 +25,10 @@ class MapConfigSource implements ConfigSource {
     @Override
     public String getValue(String propertyName) {
         return this.props.get(propertyName);
+    }
+
+    public void setValue(String propertyName, String value) {
+        this.props.put(propertyName, value);
     }
 
     @Override

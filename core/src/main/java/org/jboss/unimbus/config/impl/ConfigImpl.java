@@ -65,18 +65,20 @@ public class ConfigImpl implements Config {
     }
 
     protected <T> Optional<T> convertArray(String value, Class<T> arrayType) {
-        String[] components = value.split(",");
-        Object converted = Array.newInstance(arrayType.getComponentType(), components.length);
+        List<String> components = ArraySplitter.split(value);
+        Object converted = Array.newInstance(arrayType.getComponentType(), components.size());
 
         Class<?> componentType = arrayType.getComponentType();
         Class<?> boxedType = boxedType(componentType);
 
-        for (int i = 0; i < components.length; ++i) {
-            Array.set(converted, i, convertNonArray(components[i], boxedType).get());
+        for (int i = 0; i < components.size(); ++i) {
+            Array.set(converted, i, convertNonArray(components.get(i), boxedType).get());
         }
 
         return Optional.of((T) converted);
     }
+
+
 
     protected <T> Optional<T> convertNonArray(String value, Class<T> propertyType) {
         if (propertyType.equals(String.class)) {

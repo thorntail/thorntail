@@ -12,9 +12,6 @@
   <artifactId>jndi</artifactId>
   <name>JNDI</name>
 
-  <properties>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
