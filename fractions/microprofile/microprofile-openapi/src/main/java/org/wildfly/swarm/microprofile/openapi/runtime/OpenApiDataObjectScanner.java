@@ -16,6 +16,7 @@
 package org.wildfly.swarm.microprofile.openapi.runtime;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
+import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.ClassType;
@@ -87,6 +88,8 @@ public class OpenApiDataObjectScanner {
     }
 
     public Schema process() {
+
+        System.out.println("Processing class: " + this.rootClassType.name());
         // If top level item is simple
         if (isTerminalType(rootClassType)) {
             SchemaImpl simpleSchema = new SchemaImpl();
@@ -258,8 +261,9 @@ public class OpenApiDataObjectScanner {
             readParamType(schema, fieldInfo.type().asParameterizedType());
             return fieldInfo.type();
         } else if (fieldInfo.type().kind() == Type.Kind.ARRAY) {
-            // TODO treat as list
-            throw new UnsupportedOperationException("array support needs implementing not yet supported.");
+//            // TODO treat as list
+//            throw new UnsupportedOperationException("array support needs implementing not yet supported.");
+            return fieldInfo.type();
         } else if (fieldInfo.type().kind() == Type.Kind.TYPE_VARIABLE) {
             // Type variable (e.g. A in List<A>)
             Type resolvedType = pathEntry.resolvedTypes.pop();
@@ -330,7 +334,7 @@ public class OpenApiDataObjectScanner {
             }
         } else if (isA(pType, MAP_TYPE)) {
             // TODO if is a Java Map interface, treat as object/map.
-            throw new IllegalArgumentException("Map type; we don't handle that yet");
+            schema.setType(SchemaType.OBJECT);
         } else {
             // This attempts to allow us to resolve the types issue.
             ClassInfo klazz = index.getClassByName(pType.name());
@@ -383,6 +387,7 @@ public class OpenApiDataObjectScanner {
             this.schema = schema;
         }
 
+        @SuppressWarnings("unused")
         PathEntry(ClassInfo clazz, SchemaImpl schema, Type... types) {
             this.clazz = clazz;
             this.schema = schema;
@@ -395,14 +400,17 @@ public class OpenApiDataObjectScanner {
             this.resolvedTypes.addAll(types);
         }
 
+        @SuppressWarnings("unused")
         ClassInfo getClazz() {
             return clazz;
         }
 
+        @SuppressWarnings("unused")
         SchemaImpl getSchema() {
             return schema;
         }
 
+        @SuppressWarnings("unused")
         Deque<Type> getResolvedTypes() {
             return resolvedTypes;
         }
