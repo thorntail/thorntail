@@ -14,7 +14,7 @@ import javax.inject.Inject;
  * Created by bob on 2/1/18.
  */
 @ApplicationScoped
-public class DriverRegistry implements Iterable<DriverInfo> {
+public class JDBCDriverRegistry implements Iterable<DriverInfo> {
 
     @PostConstruct
     private void register() {
@@ -23,7 +23,7 @@ public class DriverRegistry implements Iterable<DriverInfo> {
         }
     }
 
-    public DriverRegistry() {
+    public JDBCDriverRegistry() {
 
     }
 

@@ -30,36 +30,9 @@ public class InMemoryContext implements Context {
 
     @Override
     public Object lookup(Name name) throws NamingException {
-        Object result = this.bindings.get(name);
-        if (result != null) {
-            return result;
-        }
-        return lookupBinding(name);
+        return this.bindings.get(name);
     }
 
-
-    private Object lookupBinding(Name name) throws NamingException {
-        System.err.println( "LOOKUP " + name );
-        //if (name.toString().equals("java:app/BeanManager")) {
-            //return this.beanManager;
-        //}
-        Set<Bean<?>> beans = beanManager().getBeans(new TypeLiteral<Binder<?>>() {}.getType() );
-        for (Bean<?> bean : beans) {
-            CreationalContext context = beanManager().createCreationalContext(bean);
-            Binder<?> binder = (Binder<?>) bean.create(context);
-            System.err.println( "binder: " + binder.getName());
-
-            if ( binder.getName().equals(name.toString())) {
-                Object result = binder.get();
-                if ( result != null ) {
-                    bind(name, result);
-                    return result;
-                }
-            }
-        }
-
-        return null;
-    }
 
     @Override
     public Object lookup(String name) throws NamingException {

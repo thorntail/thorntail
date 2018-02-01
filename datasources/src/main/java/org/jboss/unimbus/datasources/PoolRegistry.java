@@ -1,7 +1,13 @@
 package org.jboss.unimbus.datasources;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.resource.spi.ManagedConnectionFactory;
 
@@ -15,27 +21,44 @@ import org.jboss.jca.core.connectionmanager.pool.mcp.SemaphoreArrayListManagedCo
  * Created by bob on 1/31/18.
  */
 @ApplicationScoped
-public class PoolProducer {
+public class PoolRegistry {
 
-    @Produces
-    Pool pool() {
-        return poolFactory.create(
+    @PostConstruct
+    void init() {
+        this.managedConnectionFactoryRegistry.getFactories().entrySet()
+                .forEach(e -> {
+                    init(e.getKey(), e.getValue());
+                });
+    }
+
+    void init(String id, ManagedConnectionFactory factory) {
+        Pool pool = poolFactory.create(
                 this.strategy,
-                this.managedConnectionFactory,
+                factory,
                 this.poolConfiguration,
                 this.noTxSeparatePools,
                 this.shareable,
                 this.managedConnectionPool
         );
+
+        register( id, pool );
     }
+
+    public void register(String id, Pool pool) {
+        this.pools.put( id, pool );
+    }
+
+    public Map<String,Pool> getPools() {
+        return Collections.unmodifiableMap(this.pools);
+    }
+
+    @Inject
+    ManagedConnectionFactoryRegistry managedConnectionFactoryRegistry;
 
     @Inject
     PoolFactory poolFactory;
 
     private PoolStrategy strategy = PoolStrategy.ONE_POOL;
-
-    @Inject
-    private ManagedConnectionFactory managedConnectionFactory;
 
     private PoolConfiguration poolConfiguration = new PoolConfiguration();
 
@@ -44,4 +67,6 @@ public class PoolProducer {
     private boolean shareable;
 
     private String managedConnectionPool = SemaphoreArrayListManagedConnectionPool.class.getName();
+
+    private Map<String, Pool> pools = new HashMap<>();
 }

@@ -8,7 +8,7 @@ public interface MessageOffsets {
 
     int SERVLET_OFFSET = 1000;
     int JAXRS_OFFSET = 2000;
-    int DATASOURCE_OFFSET = 3000;
+    int DATASOURCES_OFFSET = 3000;
     int HEALTH_OFFSET = 4000;
     int JDBC_OFFSET = 5000;
     int JNDI_OFFSET = 6000;

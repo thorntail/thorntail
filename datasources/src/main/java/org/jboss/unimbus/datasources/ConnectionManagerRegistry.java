@@ -1,7 +1,10 @@
 package org.jboss.unimbus.datasources;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.resource.spi.ConnectionManager;
 import javax.resource.spi.TransactionSupport;
@@ -11,8 +14,8 @@ import org.jboss.jca.common.api.metadata.common.FlushStrategy;
 import org.jboss.jca.core.api.connectionmanager.ccm.CachedConnectionManager;
 import org.jboss.jca.core.api.management.ManagedEnlistmentTrace;
 import org.jboss.jca.core.connectionmanager.ConnectionManagerFactory;
+import org.jboss.jca.core.connectionmanager.TxConnectionManager;
 import org.jboss.jca.core.connectionmanager.pool.api.Pool;
-import org.jboss.jca.core.connectionmanager.tx.TxConnectionManagerImpl;
 import org.jboss.jca.core.spi.security.SubjectFactory;
 import org.jboss.jca.core.spi.transaction.TransactionIntegration;
 
@@ -20,13 +23,20 @@ import org.jboss.jca.core.spi.transaction.TransactionIntegration;
  * Created by bob on 1/31/18.
  */
 @ApplicationScoped
-public class ConnectionManagerProducer {
+public class ConnectionManagerRegistry {
 
-    @Produces
-    ConnectionManager connectionManager() {
-        return factory.createTransactional(
+    @PostConstruct
+    void init() {
+        this.poolRegistry.getPools().entrySet()
+                .forEach( e->{
+                    init(e.getKey(), e.getValue());
+                });
+    }
+
+    void init(String id, Pool pool) {
+        TxConnectionManager connectionManager = factory.createTransactional(
                 TransactionSupport.TransactionSupportLevel.LocalTransaction,
-                this.pool,
+                pool,
                 this.subjectFactory,
                 this.securityDomain,
                 this.useCcm,
@@ -45,27 +55,25 @@ public class ConnectionManagerProducer {
                 this.isSameRMOverride,
                 this.wrapXAResource,
                 this.padXid);
+
+        register(id, connectionManager);
+    }
+
+    public void register(String id, ConnectionManager connectionManager) {
+        this.connectionManagers.put( id, connectionManager);
+    }
+
+    public ConnectionManager get(String id) {
+        return this.connectionManagers.get(id);
     }
 
     @Inject
     ConnectionManagerFactory factory;
 
     @Inject
-    private Pool pool;
+    private PoolRegistry poolRegistry;
 
-    private SubjectFactory subjectFactory = new SubjectFactory() {
-        @Override
-        public Subject createSubject() {
-            System.err.println( "Create subject" );
-            return null;
-        }
-
-        @Override
-        public Subject createSubject(String sd) {
-            System.err.println( "Create subject: " + sd);
-            return null;
-        }
-    };
+    private SubjectFactory subjectFactory;
 
     private String securityDomain;
 
@@ -83,7 +91,7 @@ public class ConnectionManagerProducer {
 
     private ManagedEnlistmentTrace managedEnlistmentTrace;
 
-    private FlushStrategy flushStrategy = FlushStrategy.ALL_CONNECTIONS;
+    private FlushStrategy flushStrategy = FlushStrategy.FAILING_CONNECTION_ONLY;
 
     private Integer allocationRetry;
 
@@ -101,4 +109,6 @@ public class ConnectionManagerProducer {
     private Boolean wrapXAResource;
 
     private Boolean padXid;
+
+    private Map<String, ConnectionManager> connectionManagers = new HashMap<>();
 }
