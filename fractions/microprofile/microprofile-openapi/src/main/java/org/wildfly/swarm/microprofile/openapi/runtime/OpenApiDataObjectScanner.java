@@ -16,7 +16,6 @@
 package org.wildfly.swarm.microprofile.openapi.runtime;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
-import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.ClassType;
@@ -275,7 +274,6 @@ public class OpenApiDataObjectScanner {
             } else {
                 ClassInfo klazz = index.getClassByName(resolvedType.name());
                 LOG.debugv("Attempting to do TYPE_VARIABLE substitution: {0} -> {1}", fieldInfo, resolvedType);
-                // TODO Ensure this to handles simple types?
                 pushPathPair(klazz, schema);
             }
             return resolvedType;
@@ -326,15 +324,28 @@ public class OpenApiDataObjectScanner {
                     TypeUtil.TypeWithFormat terminalType = TypeUtil.getTypeFormat(argument);
                     arraySchema.type(terminalType.getSchemaType());
                     arraySchema.format(terminalType.getFormat().format());
-                    //processType() // TODO probably repeating myself here
                 } else {
                     ClassInfo klazz = index.getClassByName(argument.name());
                     pushPathPair(klazz, arraySchema);
                 }
             }
         } else if (isA(pType, MAP_TYPE)) {
-            // TODO if is a Java Map interface, treat as object/map.
-            schema.setType(SchemaType.OBJECT);
+            LOG.debugv("Found a map. Will treat as an object.");
+            schema.type(Schema.SchemaType.OBJECT);
+
+            if (pType.arguments().size() == 2) {
+                Type valueType = pType.arguments().get(1);
+                SchemaImpl propsSchema = new SchemaImpl();
+                if (isTerminalType(valueType)) {
+                    TypeUtil.TypeWithFormat tf = TypeUtil.getTypeFormat(valueType);
+                    propsSchema.setType(tf.getSchemaType());
+                    propsSchema.setFormat(tf.getFormat().format());
+                } else {
+                    ClassInfo klazz = index.getClassByName(valueType.name());
+                    pushPathPair(klazz, propsSchema);
+                }
+                schema.additionalProperties(propsSchema);
+            }
         } else {
             // This attempts to allow us to resolve the types issue.
             ClassInfo klazz = index.getClassByName(pType.name());
