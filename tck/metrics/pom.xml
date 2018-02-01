@@ -48,7 +48,7 @@
 
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>test-arquillian</artifactId>
+      <artifactId>testing-arquillian</artifactId>
       <scope>test</scope>
     </dependency>
 

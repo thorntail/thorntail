@@ -9,8 +9,8 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test</artifactId>
-  <name>Test</name>
+  <artifactId>testing</artifactId>
+  <name>Testing</name>
 
   <dependencies>
     <dependency>

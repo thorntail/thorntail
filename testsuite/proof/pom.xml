@@ -62,11 +62,6 @@
       <artifactId>security</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>test</artifactId>
-      <scope>test</scope>
-    </dependency>
 <!--
     <dependency>
       <groupId>mysql</groupId>

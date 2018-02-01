@@ -109,14 +109,14 @@
 
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
-        <artifactId>test</artifactId>
+        <artifactId>testing</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
-        <artifactId>test-arquillian</artifactId>
+        <artifactId>testing-arquillian</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
@@ -186,8 +186,8 @@
     <module>security-keycloak</module>
     <module>servlet</module>
 
-    <module>test</module>
-    <module>test-arquillian</module>
+    <module>testing</module>
+    <module>testing-arquillian</module>
 
     <module>tck</module>
     <module>testsuite</module>

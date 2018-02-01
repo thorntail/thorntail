@@ -20,7 +20,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>test</artifactId>
+      <artifactId>testing</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
