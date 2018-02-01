@@ -18,6 +18,7 @@ package org.wildfly.swarm.microprofile.openapi.runtime;
 
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,6 +83,8 @@ import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.ComponentsImpl;
 import org.wildfly.swarm.microprofile.openapi.models.ExternalDocumentationImpl;
@@ -121,6 +124,7 @@ import org.wildfly.swarm.microprofile.openapi.util.MergeUtil;
 import org.wildfly.swarm.microprofile.openapi.util.ModelUtil;
 import org.wildfly.swarm.microprofile.openapi.util.TypeUtil;
 import org.wildfly.swarm.microprofile.openapi.util.TypeUtil.TypeWithFormat;
+import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
  * Scans a deployment (using the archive and jandex annotation index) for JAX-RS and
@@ -157,28 +161,58 @@ public class OpenApiAnnotationScanner {
      * @param config
      * @param archive
      */
-    @SuppressWarnings("unchecked")
     private static IndexView archiveToIndex(OpenApiConfig config, Archive archive) {
         if (archive == null) {
             throw new RuntimeException("Archive was null!");
         }
 
         Indexer indexer = new Indexer();
+        indexArchive(config, indexer, archive);
+        return indexer.complete();
+    }
+
+    /**
+     * Indexes the given archive.
+     * @param config
+     * @param indexer
+     * @param archive
+     */
+    @SuppressWarnings("unchecked")
+    private static void indexArchive(OpenApiConfig config, Indexer indexer, Archive archive) {
         Map<ArchivePath, Node> c = archive.getContent();
         try {
             for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
                 ArchivePath archivePath = each.getKey();
                 if (archivePath.get().endsWith(OpenApiConstants.CLASS_SUFFIX) && acceptClassForScanning(config, archivePath.get())) {
-                    indexer.index(each.getValue().getAsset().openStream());
+                    try (InputStream contentStream = each.getValue().getAsset().openStream()) {
+                        System.out.println("Indexing asset: " + archivePath.get() + " from archive: " + archive.getName());
+                        indexer.index(contentStream);
+                    }
+                    continue;
+                }
+                if (archivePath.get().endsWith(OpenApiConstants.JAR_SUFFIX) && acceptJarForScanning(config, archivePath.get())) {
+                    try (InputStream contentStream = each.getValue().getAsset().openStream()) {
+                        JARArchive jarArchive = ShrinkWrap.create(JARArchive.class, archivePath.get())
+                                .as(ZipImporter.class).importFrom(contentStream).as(JARArchive.class);
+                        indexArchive(config, indexer, jarArchive);
+                    }
+                    continue;
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        // TODO extract any JAR dependencies within the archive and index those as well (option to disable?)
-
-        return indexer.complete();
+    /**
+     * Returns true if the given JAR archive (dependency) should be cracked open and indexed
+     * along with the rest of the deployment's classes.
+     * @param config
+     * @param jarName
+     */
+    private static boolean acceptJarForScanning(OpenApiConfig config, String jarName) {
+        // TODO disable this by default - must be enabled via a MPConfig property
+        return true;
     }
 
     /**

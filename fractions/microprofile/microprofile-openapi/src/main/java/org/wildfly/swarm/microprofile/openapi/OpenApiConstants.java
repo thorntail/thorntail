@@ -63,6 +63,7 @@ public final class OpenApiConstants {
     public static final String OPEN_API_VERSION = "3.0.1";
 
     public static final String CLASS_SUFFIX = ".class";
+    public static final String JAR_SUFFIX = ".jar";
     public static final String WEB_ARCHIVE_CLASS_PREFIX = "/WEB-INF/classes/";
 
     public static final String EXTENSION_PROPERTY_PREFIX = "x-";
