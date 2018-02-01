@@ -30,11 +30,11 @@
       <version>${version.mp-config}</version>
     </dependency>
 
-    <!-- Uncomment and add "-Dorg.jboss.logging.provider=slf4j -Dorg.slf4j.simpleLogger.log.org.jboss.weld=debug" to VM args for debug logging -->
-    <!--<dependency>-->
-    <!--<groupId>org.slf4j</groupId>-->
-    <!--<artifactId>slf4j-simple</artifactId>-->
-    <!--<version>1.7.2</version>-->
-    <!--</dependency>-->
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 </project>

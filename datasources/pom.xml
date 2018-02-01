@@ -39,31 +39,40 @@
     <dependency>
       <groupId>org.jboss.ironjacamar</groupId>
       <artifactId>ironjacamar-spec-api</artifactId>
-      <version>1.4.6.Final</version>
+      <version>${version.ironjacamar}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.ironjacamar</groupId>
       <artifactId>ironjacamar-core-api</artifactId>
-      <version>1.4.6.Final</version>
+      <version>${version.ironjacamar}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.threads</groupId>
+          <artifactId>jboss-threads</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.ironjacamar</groupId>
       <artifactId>ironjacamar-common-api</artifactId>
-      <version>1.4.6.Final</version>
+      <version>${version.ironjacamar}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.ironjacamar</groupId>
       <artifactId>ironjacamar-core-impl</artifactId>
-      <version>1.4.6.Final</version>
+      <version>${version.ironjacamar}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.threads</groupId>
+          <artifactId>jboss-threads</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.picketbox</groupId>
+          <artifactId>picketbox</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-<!--
-    <dependency>
-      <groupId>com.mchange</groupId>
-      <artifactId>c3p0</artifactId>
-      <version>${version.c3p0}</version>
-    </dependency>
--->
 
   </dependencies>
 

@@ -15,14 +15,14 @@
     <version.cdi>2.0</version.cdi>
     <version.weld>3.0.2.Final</version.weld>
 
+    <version.arjuna>5.7.1.Final</version.arjuna>
+    <version.hibernate>5.2.12.Final</version.hibernate>
+    <version.ironjacamar>1.4.6.Final</version.ironjacamar>
     <version.resteasy>3.1.4.Final</version.resteasy>
-
     <version.undertow>1.4.21.Final</version.undertow>
 
-    <version.hibernate>5.2.12.Final</version.hibernate>
     <version.h2>1.4.187</version.h2>
     <version.mysql>5.1.39</version.mysql>
-    <version.arjuna>5.7.1.Final</version.arjuna>
 
     <version.mp-config>1.2</version.mp-config>
 
@@ -152,11 +152,6 @@
     <dependency>
       <groupId>org.easytesting</groupId>
       <artifactId>fest-assert</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
 
