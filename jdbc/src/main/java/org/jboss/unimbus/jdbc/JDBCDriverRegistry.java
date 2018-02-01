@@ -45,6 +45,10 @@ public class JDBCDriverRegistry implements Iterable<DriverInfo> {
         return this.drivers.values().iterator();
     }
 
+    public int size() {
+        return this.drivers.size();
+    }
+
     private Map<String,DriverInfo> drivers = new HashMap<>();
 
     @Inject

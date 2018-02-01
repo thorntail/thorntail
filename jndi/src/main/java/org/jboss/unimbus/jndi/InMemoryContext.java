@@ -131,7 +131,7 @@ public class InMemoryContext implements Context {
 
     @Override
     public NameParser getNameParser(Name name) throws NamingException {
-        return new InMemoryNameParser();
+        return (arg)-> new CompositeName(arg);
     }
 
     @Override

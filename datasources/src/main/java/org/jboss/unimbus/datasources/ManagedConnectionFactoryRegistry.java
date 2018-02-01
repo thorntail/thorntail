@@ -23,27 +23,41 @@ public class ManagedConnectionFactoryRegistry {
     @PostConstruct
     void init() {
         for (DataSourceMetaData dataSourceMetaData : this.dataSourceRegistry) {
-            init( dataSourceMetaData );
+            init(dataSourceMetaData);
         }
     }
 
     void init(DataSourceMetaData ds) {
-        DriverInfo driver = this.JDBCDriverRegistry.get(ds.getDriver());
+        if (this.jdbcDriverRegistry.size() == 0) {
+            DataSourcesMessages.MESSAGES.noRegisteredJDBCdrivers();
+        }
+        DriverInfo driver = null;
+        if (ds.getDriver() == null) {
+            if (this.jdbcDriverRegistry.size() > 1) {
+                DataSourcesMessages.MESSAGES.noDriverSpecifiedManyDrivers(ds.getId());
+                return;
+            } else {
+                driver = this.jdbcDriverRegistry.iterator().next();
+                DataSourcesMessages.MESSAGES.implicitlyUsingDriver(ds.getId(), driver.getId());
+            }
+        } else {
+            driver = this.jdbcDriverRegistry.get(ds.getDriver());
+        }
         LocalManagedConnectionFactory factory = new LocalManagedConnectionFactory();
         factory.setDriverClass(driver.getDriverClassName());
-        factory.setResourceAdapter( new JDBCResourceAdapter() );
+        factory.setResourceAdapter(new JDBCResourceAdapter());
         factory.setConnectionURL(ds.getConnectionUrl());
         factory.setUserName(ds.getUsername());
         factory.setPassword(ds.getPassword());
-        register( ds.getId(), factory );
+        register(ds.getId(), factory);
     }
 
     public void register(String id, ManagedConnectionFactory factory) {
-        this.factories.put( id, factory );
+        this.factories.put(id, factory);
     }
 
     public Map<String, ManagedConnectionFactory> getFactories() {
-        return Collections.unmodifiableMap( this.factories );
+        return Collections.unmodifiableMap(this.factories);
     }
 
     public ManagedConnectionFactory get(String id) {
@@ -52,7 +66,7 @@ public class ManagedConnectionFactoryRegistry {
 
 
     @Inject
-    JDBCDriverRegistry JDBCDriverRegistry;
+    JDBCDriverRegistry jdbcDriverRegistry;
 
     @Inject
     DataSourceRegistry dataSourceRegistry;

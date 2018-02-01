@@ -97,7 +97,6 @@ public class MetricProducer {
                     metadata.addTags(tag);
                 }
             }
-            System.err.println( "META: " + metadata.getName() + " // " + metadata.getTagsAsString() );
         }
         return metadata;
     }

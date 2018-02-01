@@ -29,7 +29,6 @@ public class DataSourcesInitializer {
 
     void init(DataSourceMetaData ds) throws ResourceException, NamingException {
         ConnectionManager cm = this.connectionManagerRegistry.get(ds.getId());
-
         ManagedConnectionFactory factory = this.connectionFactoryRegistry.get(ds.getId());
         this.context.bind( ds.getJNDIName(), factory.createConnectionFactory(cm));
         DataSourcesMessages.MESSAGES.dataSourceBound(ds.getConnectionUrl(), ds.getJNDIName());

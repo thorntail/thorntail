@@ -26,4 +26,16 @@ public interface DataSourcesMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.WARN)
     @Message(id = 1 + OFFSET, value = "unknown configuration parameter %s with value %s")
     void unknownConfigParameter(String key, String value);
+
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 2 + OFFSET, value = "no registered JDBC drivers")
+    void noRegisteredJDBCdrivers();
+
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 3 + OFFSET, value = "datasource %s specified no JDBC driver, too many to choose from")
+    void noDriverSpecifiedManyDrivers(String datasource);
+
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 4 + OFFSET, value = "datasource %s specified no JDBC driver, using %s")
+    void implicitlyUsingDriver(String datasource, String driver);
 }

@@ -24,7 +24,8 @@ public class InitialContextProducer {
     @PostConstruct
     void init() {
         try {
-            NamingManager.setInitialContextFactoryBuilder(new InMemoryInitialContextFactoryBuilder());
+            InMemoryContext inMemory = new InMemoryContext();
+            NamingManager.setInitialContextFactoryBuilder(e1 -> e2 -> inMemory);
         } catch (IllegalStateException e) {
             // someone beat us to it.
         } catch (NamingException e) {
@@ -46,10 +47,6 @@ public class InitialContextProducer {
     }
 
     private InitialContext context;
-
-    @Inject
-    @Any
-    Instance<Binder<?>> binders;
 
     @Inject
     private BeanManager beanManager;

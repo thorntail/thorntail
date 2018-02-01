@@ -35,8 +35,6 @@ public class ClassLoaderUtil {
 
     public static ClassLoader of(Archive<?> archive) {
         List<Archive<?>> list = flatten(archive);
-        //ShrinkWrapClassLoader cl = new ShrinkWrapClassLoader(list.toArray( new Archive<?>[list.size()]));
-        //return cl;
         return of(list);
     }
 
