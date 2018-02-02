@@ -96,9 +96,7 @@ public class PackageMojo extends AbstractSwarmMojo {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-
-        deprecationWarnings();
+    public void executeSpecific() throws MojoExecutionException, MojoFailureException {
 
         if (this.skip) {
             getLog().info("Skipping packaging");

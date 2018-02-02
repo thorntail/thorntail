@@ -82,9 +82,8 @@ public class StartMojo extends AbstractSwarmMojo {
 
     @SuppressWarnings({"unchecked", "ThrowableResultOfMethodCallIgnored"})
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void executeSpecific() throws MojoExecutionException, MojoFailureException {
 
-        deprecationWarnings();
         initProperties(true);
         initEnvironment();
 
