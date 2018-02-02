@@ -10,6 +10,8 @@ v{version}
 
 {project_name} is the next generation of WildFly Swarm.
 
+include::design/lessons-learned.adoc[]
+
 # Concepts
 
 include::concepts/microservice.adoc[leveloffset=+1]

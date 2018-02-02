@@ -1,0 +1,20 @@
+[#lessons-learned]
+= Lessons Learned
+
+[quote]
+Don't cling to a mistake just because you spent a lot of time making it.
+
+.Mangling artifacts is dangerous
+
+When you mangle and repackage a user's artifacts and dependencies, it can many times go awry.
+
+.Classpaths are tricky
+
+If different codepaths are required for executing from Maven, an IDE, a unit-test, and during production, you will have a *bad time*.
+
+.Testability is important
+
+A slow test is a test that is never willingly executed. PRs take forever to validate. Users like to be able to test their own code quickly and iteratively.
+
+
+
