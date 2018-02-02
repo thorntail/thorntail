@@ -1,0 +1,5 @@
+[#component-config]
+= Config
+
+MicroProfile-config is supported directly as a part of the `:core` component. 
+

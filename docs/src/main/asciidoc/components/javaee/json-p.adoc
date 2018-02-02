@@ -1,0 +1,5 @@
+[#component-json-p]
+= JSON-P
+
+The `:json-p` component does blah.
+

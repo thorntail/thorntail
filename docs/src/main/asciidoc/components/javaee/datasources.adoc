@@ -1,0 +1,5 @@
+[#component-datasources]
+= DataSources
+
+The `:datasources` component does blah.
+

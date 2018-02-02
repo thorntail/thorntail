@@ -1,0 +1,42 @@
+:toc: left
+:toclevels: 3
+:sectnums:
+:sectanchors:
+:source-highlighter: coderay
+
+= {project_name} Documentation
+The {project_name} Team
+v{version}
+
+{project_name} is the next generation of WildFly Swarm.
+
+# Concepts
+
+include::concepts/microservice.adoc[leveloffset=+1]
+include::concepts/cdi-native.adoc[leveloffset=+1]
+include::concepts/microprofile-native.adoc[leveloffset=+1]
+include::concepts/flat-classpath.adoc[leveloffset=+1]
+
+# Components
+
+include::components/core.adoc[leveloffset=+1]
+
+## Java EE
+
+include::components/javaee/servlet.adoc[leveloffset=+2]
+include::components/javaee/jaxrs.adoc[leveloffset=+2]
+include::components/javaee/json-p.adoc[leveloffset=+2]
+include::components/javaee/jndi.adoc[leveloffset=+2]
+include::components/javaee/jdbc.adoc[leveloffset=+2]
+include::components/javaee/datasources.adoc[leveloffset=+2]
+include::components/javaee/jpa.adoc[leveloffset=+2]
+include::components/javaee/jta.adoc[leveloffset=+2]
+
+## MicroProfile
+
+include::components/microprofile/config.adoc[leveloffset=+2]
+include::components/microprofile/health.adoc[leveloffset=+2]
+include::components/microprofile/metrics.adoc[leveloffset=+2]
+
+
+

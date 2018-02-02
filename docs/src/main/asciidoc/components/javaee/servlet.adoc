@@ -1,0 +1,5 @@
+[#component-servlet]
+= Servlet
+
+The `:servlet` component does blah.
+

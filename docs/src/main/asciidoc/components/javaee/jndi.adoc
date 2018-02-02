@@ -1,0 +1,5 @@
+[#component-jndi]
+= JNDI
+
+The `:jndi` component does blah.
+

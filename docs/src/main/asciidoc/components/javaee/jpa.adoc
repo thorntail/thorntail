@@ -1,0 +1,5 @@
+[#component-jpa]
+= JPA
+
+The `:jpa` component does blah.
+

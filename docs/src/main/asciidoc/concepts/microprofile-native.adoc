@@ -1,0 +1,5 @@
+[#microprofile-native]
+= MicroProfile-native
+
+{project_name} is built from the from ground-up to be MicroProfile-native.
+

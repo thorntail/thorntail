@@ -1,0 +1,5 @@
+[#component-metrics]
+= Metrics
+
+The `:metrics` component does blah.
+

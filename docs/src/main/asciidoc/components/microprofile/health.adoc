@@ -1,0 +1,5 @@
+[#component-health]
+= Health
+
+The `:health` component does blah.
+

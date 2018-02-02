@@ -3,6 +3,7 @@
 - test keycloak integration using docker
 - Equivalent to "Hollow Jar", may require forking capsule plugin
 - Fuller testing of Java EE tech in testsuite
+- If it's :json-p, should it be :jaxrs? Or should it be :jsonp?
 
 . Low priority
 

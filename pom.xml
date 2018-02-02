@@ -208,6 +208,8 @@
 
     <module>tck</module>
     <module>testsuite</module>
+
+    <module>docs</module>
   </modules>
 
   <build>

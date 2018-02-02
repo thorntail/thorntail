@@ -1,0 +1,5 @@
+[#component-jdbc]
+= JDBC
+
+The `:jdbc` component does blah.
+

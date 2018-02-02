@@ -1,0 +1,5 @@
+[#component-jta]
+= JTA
+
+The `:jta` component does blah.
+

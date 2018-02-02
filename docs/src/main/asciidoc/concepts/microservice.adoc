@@ -1,0 +1,7 @@
+[#microservice]
+= Microservice
+
+A microservice is small application with a _bounded domain_.
+A microservice is intended to solve a semantically constrained problem related to a larger system.
+In a microservice-based architecture, an _application_ is made from a collection of many _microservices_.
+

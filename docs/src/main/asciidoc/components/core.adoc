@@ -1,0 +1,5 @@
+[#component-core]
+= Core
+
+The `:core` component does blah.
+
