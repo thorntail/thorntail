@@ -137,13 +137,37 @@ public class TypeUtil {
     public static boolean isA(IndexView index, Type testSubject, Type testObject) {
         // First, look in Jandex, as target might not be in our classloader
         ClassInfo jandexKlazz = index.getClassByName(testSubject.name());
+        return isA(index, jandexKlazz, testObject);
+    }
+
+    public static boolean isA(IndexView index, ClassInfo jandexKlazz, Type testObject) {
+        // First, look in Jandex, as target might not be in our classloader
+        //ClassInfo jandexKlazz = index.getClassByName(testSubject.name());
+
         if (jandexKlazz != null) {
-            return jandexKlazz.interfaceNames().contains(testObject.name()); //|| jandexKlazz.superClassType(); TODO do inheritance test
+            return jandexKlazz.interfaceNames().contains(testObject.name()) || hasSuper(index, jandexKlazz, testObject);
         } else {
-            Class<?> subjectKlazz= TypeUtil.getClass(testSubject);
+            Class<?> subjectKlazz= TypeUtil.getClass(jandexKlazz.name().toString());
             Class<?> objectKlazz = TypeUtil.getClass(testObject);
             return objectKlazz.isAssignableFrom(subjectKlazz);
         }
+    }
+
+    private static boolean hasSuper(IndexView index, ClassInfo testSubject, Type testObject) {
+        Type superKlazzType = testSubject.superClassType();
+        while (superKlazzType != null) {
+            if (superKlazzType.equals(testObject)) {
+                return true;
+            }
+            ClassInfo superKlazz = index.getClassByName(superKlazzType.name());
+            if (superKlazz == null) {
+                Class<?> subjectKlazz= TypeUtil.getClass(testSubject.name().toString());
+                Class<?> objectKlazz = TypeUtil.getClass(testObject);
+                return objectKlazz.isAssignableFrom(subjectKlazz);
+            }
+            superKlazzType = superKlazz.superClassType();
+        }
+        return false;
     }
 
     public static List<FieldInfo> getAllFields(IndexView index, ClassInfo leaf) {
