@@ -1,5 +1,110 @@
 [#component-servlet]
 = Servlet
 
-The `:servlet` component does blah.
+The Servlet component of {project_name} enables basic Java Web Servlet processing and serving.
+
+.Maven Coordinates
+
+To include the servlet component, add a dependency:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.jboss.unimbus</groupId>
+  <artifactId>servlet</artifactId>
+</dependency>
+----
+
+== Implicit Deployment
+
+An application archive will be scanned for all `Servlet` implementations and added to a default deployment. 
+The `@WebServlet` annotation should be used to configure the servlet as desired.
+
+== Explicit Deployments
+
+To have more control over the deployment, the application may use normal CDI facilities to produce instances of `DeploymentMetaData`.
+Each instance of `DeploymentMetaData` will be individually deployed to the underlying servlet container.
+
+== Management Deployments
+
+Various other components, such as _Metrics_ and _Health_ produce additional web endpoints. 
+Each of these are marked as _management_ deployments. 
+By default, these management deployments will be automatically deployed alongside the application deployment.
+The servlet component may be configured (see below) to separate application endpoints from management endpoints.
+
+== Configuration
+
+.Primary Endpoints
+
+If the management endpoints (see below) are not configured separately, then the primary configuration applies to all endpoints.
+
+web.primary.host::
+Sets the host or interface to bind the primary endpoint connection listener.
+
+web.primary.port::
+Sets the port to bind the primary endpoint connection listener.
+If this value is set to `0`, a random available port will be used.
+
+.Management Endpoints
+
+Two configuration properties control which host and port management endpoints are served from.
+By default, they match the primary host and port, and serve from the same connection.
+
+To change the management host or port, use the following configuration properties:
+
+web.management.host::
+Sets the host or interface to bind the management endpoint connection listener.
+
+web.management.port::
+Sets the port to bind the management endpoint connection listener.
+If this value is set to `0`, a random available port will be used.
+
+.Undertow
+
+The servlet componet includes a variety of configuration options related to the default Undertow-based implementation.
+
+undertow.io-threads::
+The number of I/O threads to use by the web server.
+By default it is calculated as the maximum of `2` or the number of available CPUs.
+
+undertow.worker-threads::
+The number of worker threads used by the web server.
+By default it is calculated as 8 times the number of I/O threads.
+
+undertow.high-water::
+The high water mark for a server's connections.
+Once this number of connections have been accepted, accepts will be suspended for that server.
+
+undertow.low-water::
+The low water mark for a server's connections.  Once the number of active connections have dropped below this
+number, accepts can be resumed for that server.
+
+undertow.tcp-nodelay::
+Configure a TCP socket to disable Nagle's algorithm.
+
+undertow.cork::
+Specify that output should be buffered.
+The exact behavior of the buffering is not specified; it may flush based on buffered size or time.
+
+== CDI Components
+
+To enable creation of well-integrated applications, the Servlet component provides access to several CDI components.
+
+`@Primary` `URL`::
+A `URI` with the qualifier of `@Primary` is available for injection.
+It specifies the URL of the primary endpoint.
+
+`@Primary` `InetSocketAddress`::
+An `InetSocketAddress` with the qualifier of `@Primary` is available for injection.
+It specifies the address and port of the primary endpoint.
+
+`@Management` `URL`::
+A `URI` with the qualifier of `@Primary` is available for injection.
+It specifies the URL of the management endpoint.
+This may be the same as the `URL` with the `@Primary` qualifier if the management endpoint has not been separately configured.
+
+`@Management` `InetSocketAddress`::
+An `InetSocketAddress` with the qualifier of `@Primary` is available for injection.
+It specifies the address and port of the management endpoint.
+This may be the same as the `InetSocketAddress` with the `@Primary` qualifier if the management endpoint has not been separately configured.
 
