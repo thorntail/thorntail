@@ -19,7 +19,6 @@ import javax.inject.Inject;
 
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.resource.ResourceHandler;
 import io.undertow.util.Methods;
@@ -28,6 +27,7 @@ import org.jboss.unimbus.servlet.Management;
 import org.jboss.unimbus.servlet.Primary;
 import org.jboss.unimbus.servlet.ServletMessages;
 import org.jboss.unimbus.servlet.undertow.config.UndertowConfigurer;
+import org.xnio.XnioWorker;
 
 /**
  * Created by bob on 1/15/18.
@@ -39,6 +39,7 @@ public class UndertowProducer {
     void init() {
         if (this.selector.isUnified()) {
             Undertow.Builder builder = Undertow.builder();
+            builder.setWorker(this.xnioWorker);
             builder.setHandler(wrapForStaticResources(this.primaryRoot));
             Undertow undertow = configure(builder, new AnnotationLiteral<Primary>() {
             });
@@ -47,12 +48,14 @@ public class UndertowProducer {
         } else {
             if (this.selector.isPrimaryEnabled()) {
                 Undertow.Builder builder = Undertow.builder();
+                builder.setWorker(this.xnioWorker);
                 builder.setHandler(wrapForStaticResources(this.primaryRoot));
                 this.primaryUndertow = configure(builder, new AnnotationLiteral<Primary>() {
                 });
             }
             if (this.selector.isManagementEnabled()) {
                 Undertow.Builder builder = Undertow.builder();
+                builder.setWorker(this.xnioWorker);
                 builder.setHandler(this.managementRoot);
                 this.managementUndertow = configure(builder, new AnnotationLiteral<Management>() {
                 });
@@ -168,6 +171,7 @@ public class UndertowProducer {
     void destroy() {
         this.primaryUndertow.stop();
         this.managementUndertow.stop();
+        this.xnioWorker.shutdownNow();
     }
 
     String url(Undertow.ListenerInfo info) {
@@ -227,4 +231,9 @@ public class UndertowProducer {
 
     @Inject
     private InjectedResourceSupplier resourceSupplier;
+
+    @Inject
+    @org.jboss.unimbus.servlet.undertow.Undertow
+    XnioWorker xnioWorker;
+
 }
