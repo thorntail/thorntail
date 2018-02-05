@@ -14,7 +14,7 @@ class Injection {
         this.injectionType = injectionType;
         this.name = name;
         this.defaultValue = defaultValue;
-        this.coercer = new InjectionCoercer(this.injectionType);
+        this.coercer = InjectionCoercer.of(this.injectionType);
     }
 
     String getName() {

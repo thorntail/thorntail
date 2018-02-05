@@ -6,8 +6,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -20,6 +22,19 @@ import org.jboss.unimbus.config.impl.ConfigImpl;
  * Created by bob on 2/2/18.
  */
 class InjectionCoercer {
+
+    private static Map<Type,InjectionCoercer> CACHE = new HashMap<>();
+
+    public static InjectionCoercer of(Type targetType) {
+        synchronized ( CACHE ) {
+            InjectionCoercer entry = CACHE.get(targetType);
+            if ( entry == null ) {
+                entry = new InjectionCoercer(targetType);
+                CACHE.put(targetType, entry);
+            }
+            return entry;
+        }
+    }
 
     InjectionCoercer(Type targetType) {
         this.targetType = targetType;

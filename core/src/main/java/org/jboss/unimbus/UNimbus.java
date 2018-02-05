@@ -17,6 +17,8 @@ package org.jboss.unimbus;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +30,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.unimbus.events.EventEmitter;
+import org.jboss.unimbus.logging.jdk.DefaultConsoleFormatter;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 
@@ -80,8 +83,13 @@ public class UNimbus {
 
 
     public UNimbus start() {
+
+        bootstrapLogging();
+
         CoreMessages.MESSAGES.starting();
         long startTick = System.currentTimeMillis();
+        long curTick = startTick;
+
         /*
         Logger rootLogger = Logger.getLogger("");
         for (Handler handler : rootLogger.getHandlers()) {
@@ -109,20 +117,36 @@ public class UNimbus {
         }
 
         this.container = weld.initialize();
+        curTick = markTiming("CDI initialize", curTick);
 
         EventEmitter emitter = this.container.select(EventEmitter.class).get();
         emitter.fireBootstrap();
+
+        curTick = markTiming("bootstrap", curTick);
         emitter.fireScan();
+        curTick = markTiming( "scan", curTick);
         emitter.fireInitialize();
+        curTick = markTiming( "initialize", curTick);
         emitter.fireDeploy();
+        curTick = markTiming( "deploy", curTick);
         emitter.fireBeforeStart();
+        curTick = markTiming( "before start", curTick);
         emitter.fireStart();
+        curTick = markTiming( "start", curTick);
         emitter.fireAfterStart();
+        curTick = markTiming( "after start", curTick);
 
         long endTick = System.currentTimeMillis();
         CoreMessages.MESSAGES.started(format(endTick - startTick));
 
         return this;
+    }
+
+
+    private long markTiming(String phase, long startTick) {
+        long curTick = System.currentTimeMillis();
+        CoreMessages.MESSAGES.timing(phase, format( curTick - startTick));
+        return curTick;
     }
 
     public void stop() {
@@ -141,6 +165,19 @@ public class UNimbus {
     public BeanManager getBeanManager() {
         return this.container.getBeanManager();
     }
+
+    private void bootstrapLogging() {
+        Logger logger = Logger.getLogger("");
+        logger.setLevel(Level.ALL);
+        for (Handler handler : logger.getHandlers()) {
+            handler.setLevel(Level.ALL);
+            if (handler instanceof ConsoleHandler) {
+                handler.setFormatter(new DefaultConsoleFormatter("%4$-6s: %1$tc [%3$s] %5$s%6$s%n"));
+            }
+        }
+        logger.setLevel(Level.INFO);
+    }
+
 
     private ClassLoader classLoader;
 

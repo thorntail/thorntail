@@ -186,7 +186,7 @@ public class MetricsRegistryImpl extends MetricRegistry {
         }
 
         Metadata previous = metadataMap.get(name);
-        
+
         if (previous == null) {
             Metric m;
             switch (type) {

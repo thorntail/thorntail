@@ -33,4 +33,8 @@ public interface CoreMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 3 + OFFSET, value = PROJECT_NAME + " stopped")
     void stopped();
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 4 + OFFSET, value = "phase [%s] completed in %s")
+    void timing(String phase, String time);
 }

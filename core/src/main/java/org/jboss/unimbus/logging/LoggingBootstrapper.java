@@ -17,7 +17,7 @@ import org.jboss.unimbus.events.LifecycleEvent;
  * Created by bob on 1/16/18.
  */
 @ApplicationScoped
-public class Bootstrapper {
+public class LoggingBootstrapper {
 
     private static final String PREFIX = "logging.level.";
 
