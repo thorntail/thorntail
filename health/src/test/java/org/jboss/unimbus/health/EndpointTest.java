@@ -14,6 +14,7 @@ import org.jboss.unimbus.servlet.Management;
 import org.jboss.unimbus.test.UNimbusTestRunner;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,6 +35,7 @@ public class EndpointTest {
     }
 
     @Test
+    @Ignore
     public void test() {
         Response response = when().get("/health").andReturn();
 

@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 
@@ -37,7 +38,14 @@ public class HealthServlet extends HttpServlet {
         OutputStream out = resp.getOutputStream();
         JsonWriterFactory factory = Json.createWriterFactory(JSON_CONFIG);
         JsonWriter writer = factory.createWriter(out);
-        writer.writeObject(jsonObject());
+
+        JsonObject payload = jsonObject();
+        String outcome = payload.getString("outcome");
+        if ( outcome.equals(HealthCheckResponse.State.DOWN.toString())) {
+            resp.setStatus(503);
+        }
+
+        writer.writeObject(payload);
         writer.close();
     }
 
@@ -88,13 +96,14 @@ public class HealthServlet extends HttpServlet {
                     data.add(entry.getKey(), (Boolean) value);
                 }
             }
+            builder.add("data", data.build());
         });
 
         return builder.build();
     }
 
     @Inject
-    @Any
+    @Health
     private Instance<HealthCheck> checks;
 }
 
