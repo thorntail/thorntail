@@ -29,7 +29,7 @@
     <version.mysql>5.1.39</version.mysql>
 
     <version.mp-health>1.0</version.mp-health>
-    <version.mp-config>1.2</version.mp-config>
+    <version.mp-config>1.2.1</version.mp-config>
     <version.mp-metrics>1.1</version.mp-metrics>
 
     <version.arquillian-core>1.2.1.Final</version.arquillian-core>
