@@ -10,7 +10,7 @@ import org.eclipse.microprofile.metrics.MetricType;
  */
 @ApplicationScoped
 @RegistryTarget(type = MetricRegistry.Type.BASE)
-public class CurrentLoadedClassCount extends ExtendedMetadata {
+public class CurrentLoadedClassCount extends MBeanMetadata {
 
     CurrentLoadedClassCount() {
         super("classloader.currentLoadedClass.count",

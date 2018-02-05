@@ -16,5 +16,8 @@ If different codepaths are required for executing from Maven, an IDE, a unit-tes
 
 A slow test is a test that is never willingly executed. PRs take forever to validate. Users like to be able to test their own code quickly and iteratively.
 
+.Easily extensible means ecosystem
+
+If it's entirely too difficult to extend the platform, the ecosystem will not grow. New integrations should be simple.
 
 

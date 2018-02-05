@@ -32,6 +32,7 @@ import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
+import org.jboss.unimbus.metrics.OriginTrackedMetadata;
 
 /**
  * @author hrupp
@@ -80,7 +81,7 @@ public class MetricProducer {
     }
 
     private Metadata getMetadata(InjectionPoint ip, MetricType type) {
-        Metadata metadata = new Metadata(metricName.of(ip), type);
+        Metadata metadata = new OriginTrackedMetadata(ip, metricName.of(ip), type);
         Metric metric = ip.getAnnotated().getAnnotation(Metric.class);
         if (metric != null) {
             if (!metric.unit().isEmpty()) {

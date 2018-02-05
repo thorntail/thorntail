@@ -26,21 +26,21 @@ import org.eclipse.microprofile.metrics.MetricType;
 /**
  * @author hrupp
  */
-public class ExtendedMetadata extends Metadata {
+public class MBeanMetadata extends Metadata {
 
     private String mbean;
 
     boolean multi;
 
-    public ExtendedMetadata() {
+    public MBeanMetadata() {
         super("-dummy-", MetricType.INVALID);
     }
 
-    public ExtendedMetadata(String name, MetricType type) {
+    public MBeanMetadata(String name, MetricType type) {
         super(name, type);
     }
 
-    public ExtendedMetadata(String name, String displayName, String description, MetricType typeRaw, String unit) {
+    public MBeanMetadata(String name, String displayName, String description, MetricType typeRaw, String unit) {
         super(name, displayName, description, typeRaw, unit);
     }
 

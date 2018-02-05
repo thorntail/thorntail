@@ -10,7 +10,7 @@ import org.eclipse.microprofile.metrics.MetricType;
  */
 @ApplicationScoped
 @RegistryTarget(type = MetricRegistry.Type.BASE)
-public class AvailableProcessors extends ExtendedMetadata {
+public class AvailableProcessors extends MBeanMetadata {
 
     AvailableProcessors() {
         super("cpu.availableProcessors",

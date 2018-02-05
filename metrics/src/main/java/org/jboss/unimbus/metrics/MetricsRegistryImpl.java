@@ -23,6 +23,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.enterprise.inject.spi.InjectionPoint;
+
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
@@ -117,8 +119,8 @@ public class MetricsRegistryImpl extends MetricRegistry {
             throw new IllegalArgumentException("Passed metric type does not match existing type");
         }
 
-        if ( existingMetadata != null && ( existingMetadata.isReusable() != metadata.isReusable() ) ) {
-            throw new IllegalArgumentException( "Reusable flag differs from previous usage");
+        if (existingMetadata != null && (existingMetadata.isReusable() != metadata.isReusable())) {
+            throw new IllegalArgumentException("Reusable flag differs from previous usage");
         }
 
         metricMap.put(name, metric);
@@ -130,21 +132,22 @@ public class MetricsRegistryImpl extends MetricRegistry {
     }
 
     protected Metadata duplicate(Metadata meta) {
-        return meta;
-    }
-    /*
-        Metadata copy = new Metadata( meta.getName(), meta.getTypeRaw() );
-        copy.setDescription( meta.getDescription() );
-        copy.setUnit( meta.getUnit() );
-        copy.setDisplayName( meta.getDisplayName() );
-        copy.setReusable( meta.isReusable() );
+        Metadata copy = null;
+        if (meta instanceof OriginTrackedMetadata) {
+            copy = new OriginTrackedMetadata(((OriginTrackedMetadata) meta).getOrigin(), meta.getName(), meta.getTypeRaw());
+        } else {
+            copy = new Metadata(meta.getName(), meta.getTypeRaw());
+        }
+        copy.setDescription(meta.getDescription());
+        copy.setUnit(meta.getUnit());
+        copy.setDisplayName(meta.getDisplayName());
+        copy.setReusable(meta.isReusable());
 
-        HashMap<String,String> tagsCopy = new HashMap<>();
-        tagsCopy.putAll( meta.getTags() );
-        copy.setTags( tagsCopy );
+        HashMap<String, String> tagsCopy = new HashMap<>();
+        tagsCopy.putAll(meta.getTags());
+        copy.setTags(tagsCopy);
         return copy;
     }
-    */
 
     @Override
     public Counter counter(String name) {
@@ -183,6 +186,7 @@ public class MetricsRegistryImpl extends MetricRegistry {
         }
 
         Metadata previous = metadataMap.get(name);
+        
         if (previous == null) {
             Metric m;
             switch (type) {
@@ -209,9 +213,34 @@ public class MetricsRegistryImpl extends MetricRegistry {
         } else if (!previous.getTypeRaw().equals(metadata.getTypeRaw())) {
             throw new IllegalArgumentException("Type of existing previously registered metric " + name + " does not " +
                                                        "match passed type");
+        } else if ( haveCompatibleOrigins(previous, metadata)) {
+            // stop caring, same thing.
+        } else if (previous.isReusable() && !metadata.isReusable()) {
+            throw new IllegalArgumentException("Previously registered metric " + name + " was flagged as reusable, while current request is not.");
+        } else if (!previous.isReusable()) {
+            throw new IllegalArgumentException("Previously registered metric " + name + " was not flagged as reusable");
         }
 
         return (T) metricMap.get(name);
+    }
+
+    private boolean haveCompatibleOrigins(Metadata left, Metadata right) {
+        if ( left instanceof OriginTrackedMetadata && right instanceof OriginTrackedMetadata ) {
+            OriginTrackedMetadata leftOrigin = (OriginTrackedMetadata) left;
+            OriginTrackedMetadata rightOrigin = (OriginTrackedMetadata) right;
+
+            if ( leftOrigin.getOrigin().equals(rightOrigin.getOrigin())) {
+                return true;
+            }
+
+            if ( leftOrigin.getOrigin() instanceof InjectionPoint || ((OriginTrackedMetadata) right).getOrigin() instanceof InjectionPoint ) {
+                return true;
+            }
+
+        }
+
+        return false;
+
     }
 
     @Override

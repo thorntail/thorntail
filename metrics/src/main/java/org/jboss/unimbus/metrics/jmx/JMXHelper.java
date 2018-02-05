@@ -62,10 +62,10 @@ public class JMXHelper {
         Map<String, Double> outcome = new HashMap<>();
 
         for (Metadata m : metadataMap.values()) {
-            if (!(m instanceof ExtendedMetadata)) {
+            if (!(m instanceof MBeanMetadata)) {
                 throw new IllegalStateException("Not extended Metadata " + m);
             }
-            ExtendedMetadata em = (ExtendedMetadata) m;
+            MBeanMetadata em = (MBeanMetadata) m;
             Double val = getValue(em.getMbean()).doubleValue();
             outcome.put(em.getName(), val);
         }
@@ -122,11 +122,11 @@ public class JMXHelper {
      *
      * @param entries List of entries
      */
-    void expandMultiValueEntries(List<ExtendedMetadata> entries) {
-        List<ExtendedMetadata> result = new ArrayList<>();
+    void expandMultiValueEntries(List<MBeanMetadata> entries) {
+        List<MBeanMetadata> result = new ArrayList<>();
         List<Metadata> toBeRemoved = new ArrayList<>(entries.size());
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        for (ExtendedMetadata entry : entries) {
+        for (MBeanMetadata entry : entries) {
             if (entry.isMulti()) {
                 String name = entry.getMbean().replace(PLACEHOLDER, "*");
                 String attName;
@@ -158,8 +158,8 @@ public class JMXHelper {
                         newName = newName.replace(PLACEHOLDER, keyValue);
                         String newDisplayName = entry.getDisplayName().replace(PLACEHOLDER, keyValue);
                         String newDescription = entry.getDescription().replace(PLACEHOLDER, keyValue);
-                        ExtendedMetadata newEntry = new ExtendedMetadata(newName, newDisplayName, newDescription,
-                                                                         entry.getTypeRaw(), entry.getUnit());
+                        MBeanMetadata newEntry = new MBeanMetadata(newName, newDisplayName, newDescription,
+                                                                   entry.getTypeRaw(), entry.getUnit());
                         String newObjectName = oName.getCanonicalName() + "/" + attName;
                         newEntry.setMbean(newObjectName);
                         result.add(newEntry);

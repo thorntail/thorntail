@@ -10,7 +10,7 @@ import org.eclipse.microprofile.metrics.MetricType;
  */
 @ApplicationScoped
 @RegistryTarget(type = MetricRegistry.Type.BASE)
-public class UsedHeap extends ExtendedMetadata {
+public class UsedHeap extends MBeanMetadata {
 
     UsedHeap() {
         super("memory.usedHeap",

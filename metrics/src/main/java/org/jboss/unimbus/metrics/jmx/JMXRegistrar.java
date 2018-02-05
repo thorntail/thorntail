@@ -43,14 +43,14 @@ public class JMXRegistrar {
 
     <T extends Metric> void init(@Observes LifecycleEvent.Initialize event) throws IOException, URISyntaxException {
 
-        List<ExtendedMetadata> configs = findMetadata();
+        List<MBeanMetadata> configs = findMetadata();
 
-        for (ExtendedMetadata config : configs) {
+        for (MBeanMetadata config : configs) {
             register(config);
         }
     }
 
-    void register(ExtendedMetadata config) {
+    void register(MBeanMetadata config) {
         Metric metric = null;
         switch (config.getTypeRaw()) {
             case COUNTER:
@@ -66,11 +66,11 @@ public class JMXRegistrar {
         }
     }
 
-    List<ExtendedMetadata> findMetadata() throws IOException, URISyntaxException {
+    List<MBeanMetadata> findMetadata() throws IOException, URISyntaxException {
         URL locationUrl = getClass().getProtectionDomain().getCodeSource().getLocation();
         Path locationFile = Paths.get(locationUrl.toURI());
 
-        List<ExtendedMetadata> configs = null;
+        List<MBeanMetadata> configs = null;
         if (Files.isDirectory(locationFile)) {
             configs = findConfigPropertiesFromDirectory(locationFile);
         } else {
@@ -83,8 +83,8 @@ public class JMXRegistrar {
         return configs;
     }
 
-    List<ExtendedMetadata> findConfigPropertiesFromDirectory(Path dir) throws IOException {
-        List<ExtendedMetadata> list = new ArrayList<>();
+    List<MBeanMetadata> findConfigPropertiesFromDirectory(Path dir) throws IOException {
+        List<MBeanMetadata> list = new ArrayList<>();
 
         FileVisitor<Path> visitor = new SimpleFileVisitor<Path>() {
             @Override
@@ -105,8 +105,8 @@ public class JMXRegistrar {
         return list;
     }
 
-    List<ExtendedMetadata> findConfigPropertiesFromJar(Path file) throws IOException {
-        List<ExtendedMetadata> list = new ArrayList<>();
+    List<MBeanMetadata> findConfigPropertiesFromJar(Path file) throws IOException {
+        List<MBeanMetadata> list = new ArrayList<>();
         try (JarFile jar = new JarFile(file.toFile())) {
             Enumeration<JarEntry> entries = jar.entries();
 
@@ -127,14 +127,14 @@ public class JMXRegistrar {
         return list;
     }
 
-    ExtendedMetadata metadataOf(String name, InputStream in) throws IOException {
+    MBeanMetadata metadataOf(String name, InputStream in) throws IOException {
         Properties props = new Properties();
         props.load(in);
         return metadataOf(name, props);
     }
 
-    ExtendedMetadata metadataOf(String name, Properties props) {
-        ExtendedMetadata meta = new ExtendedMetadata(name, metricTypeOf(props.getProperty("type")));
+    MBeanMetadata metadataOf(String name, Properties props) {
+        MBeanMetadata meta = new MBeanMetadata(name, metricTypeOf(props.getProperty("type")));
         meta.setMbean(props.getProperty("mbean"));
         meta.setDisplayName(props.getProperty("displayName"));
         meta.setDescription(props.getProperty("description"));
@@ -158,7 +158,7 @@ public class JMXRegistrar {
 
     @Inject
     @RegistryTarget(type = MetricRegistry.Type.BASE)
-    Instance<ExtendedMetadata> base;
+    Instance<MBeanMetadata> base;
 
     @Inject
     @RegistryType(type = MetricRegistry.Type.BASE)

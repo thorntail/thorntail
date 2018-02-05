@@ -10,7 +10,7 @@ import org.eclipse.microprofile.metrics.MetricType;
  */
 @ApplicationScoped
 @RegistryTarget(type = MetricRegistry.Type.BASE)
-public class DaemonThreadCount extends ExtendedMetadata {
+public class DaemonThreadCount extends MBeanMetadata {
 
     DaemonThreadCount() {
         super("thread.daemon.count", MetricType.COUNTER);
