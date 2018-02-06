@@ -17,6 +17,7 @@ package org.wildfly.swarm.microprofile.openapi.runtime;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.ArrayType;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.ClassType;
 import org.jboss.jandex.DotName;
@@ -281,24 +282,27 @@ public class OpenApiDataObjectScanner {
             return fieldInfo.type();
         } else if (fieldInfo.type().kind() == Type.Kind.ARRAY) {
             LOG.debugv("Processing an array {0}", fieldInfo);
+            ArrayType arrayType = fieldInfo.type().asArrayType();
             // TODO handle multi-dimensional arrays.
             schema.type(Schema.SchemaType.ARRAY);
             SchemaImpl arrSchema = new SchemaImpl();
 
-            TypeUtil.TypeWithFormat typeFormat = TypeUtil.getTypeFormat(fieldInfo.type());
+            TypeUtil.TypeWithFormat typeFormat = TypeUtil.getTypeFormat(arrayType.component());
             arrSchema.setType(typeFormat.getSchemaType());
             arrSchema.setFormat(typeFormat.getFormat().format());
 
-            if (!isTerminalType(fieldInfo.type())) {
+            if (!isTerminalType(arrayType.component())) {
                 ClassInfo klazz = getClassByName(fieldInfo.type());
                 pushPathPair(pathEntry, klazz, arrSchema);
             }
+            schema.items(arrSchema);
             return fieldInfo.type();
         } else if (fieldInfo.type().kind() == Type.Kind.TYPE_VARIABLE) {
             // Type variable (e.g. A in List<A>)
             Type resolvedType = pathEntry.resolvedTypes.pop();
             LOG.debugv("Resolved type {0} -> {1}", fieldInfo, resolvedType);
             if (isTerminalType(resolvedType)) {
+                LOG.tracev("Is a terminal type");
                 TypeUtil.TypeWithFormat replacement = TypeUtil.getTypeFormat(resolvedType);
                 schema.setType(replacement.getSchemaType());
                 schema.setFormat(replacement.getFormat().format());
