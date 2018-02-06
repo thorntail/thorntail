@@ -31,10 +31,12 @@ import java.util.Set;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.ext.ParamConverterProvider;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -111,7 +113,7 @@ class BuilderImpl implements RestClientBuilder {
         return (T) Proxy.newProxyInstance(
                 classLoader,
                 new Class[] {aClass},
-                new ProxyInvocationHandler(actualClient)
+                new ProxyInvocationHandler(actualClient, getLocalProviderInstances())
         );
 
     }
@@ -252,6 +254,8 @@ class BuilderImpl implements RestClientBuilder {
         if (o instanceof ResponseExceptionMapper) {
             ResponseExceptionMapper mapper = (ResponseExceptionMapper)o;
             register(mapper, mapper.getPriority());
+        } else if (o instanceof ParamConverterProvider) {
+            register(o, Priorities.USER);
         } else {
             this.builderDelegate.register(o);
         }
@@ -268,8 +272,19 @@ class BuilderImpl implements RestClientBuilder {
             contracts.put(ResponseExceptionMapper.class, i);
             registerLocalProviderInstance(mapper, contracts);
 
-            // other
-            this.builderDelegate.register(o, i);
+            // delegate
+            this.builderDelegate.register(mapper, i);
+
+        } else if (o instanceof ParamConverterProvider) {
+
+            // local
+            ParamConverterProvider converter = (ParamConverterProvider)o;
+            HashMap<Class<?>, Integer> contracts = new HashMap<>();
+            contracts.put(ParamConverterProvider.class, i);
+            registerLocalProviderInstance(converter, contracts);
+
+            // delegate
+            this.builderDelegate.register(converter, i);
 
         } else {
             this.builderDelegate.register(o, i);

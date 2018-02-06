@@ -185,18 +185,7 @@
 
                   <!-- [hb] Challenged, see  https://github.com/eclipse/microprofile-rest-client/pull/69 -->
                   <exclude>org.eclipse.microprofile.rest.client.tck.InvokeWithJsonPProviderTest</exclude>
-
-                  <!--
-                     [hb] Parameter conversion not possible outside resteasy
-                     and rest easy does not have support for this on the client side.
-
-                     The tests however cover much and have been moved into src/test
-                     and adapted to verify anything except the param conversion.
-                     -->
-                  <exclude>org.eclipse.microprofile.rest.client.tck.InvokeWithBuiltProvidersTest</exclude>
-                  <exclude>org.eclipse.microprofile.rest.client.tck.InvokeWithRegisteredProvidersTest</exclude>
-                  <exclude>org.eclipse.microprofile.rest.client.tck.cditests.CDIInvokeWithRegisteredProvidersTest</exclude>
-
+                  
                </excludes>
             </configuration>
          </plugin>
