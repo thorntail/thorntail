@@ -139,6 +139,14 @@
             <scope>test</scope>
          </dependency>
 
+         <dependency>
+            <groupId>org.eclipse.microprofile.rest.client</groupId>
+            <artifactId>microprofile-rest-client-tck</artifactId>
+            <version>${version.microprofile.restclient}</version>
+            <scope>test</scope>
+         </dependency>
+
+
       </dependencies>
    </dependencyManagement>
 

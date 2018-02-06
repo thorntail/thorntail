@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2010, Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>org.wildfly.swarm.testsuite</groupId>
+      <artifactId>wildlfy-swarm-microprofile-tck-parent</artifactId>
+      <version>2018.2.0-SNAPSHOT</version>
+      <relativePath>../</relativePath>
+   </parent>
+
+   <artifactId>wildlfy-swarm-microprofile-tck-restclient</artifactId>
+   <name>MicroProfile TCK: RestClient</name>
+
+   <dependencies>
+
+      <dependency>
+         <groupId>org.wildfly.swarm</groupId>
+         <artifactId>microprofile-restclient</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.wildfly.swarm</groupId>
+         <artifactId>jaxrs</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.wildfly.swarm</groupId>
+         <artifactId>microprofile-config</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- TCK Itself -->
+      <dependency>
+         <groupId>org.eclipse.microprofile.rest.client</groupId>
+         <artifactId>microprofile-rest-client-tck</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- some weird testng classpath issues with @BeforeTests scopes requires this explicit dependency -->
+      <dependency>
+         <groupId>org.wildfly.swarm</groupId>
+         <artifactId>microprofile-restclient-api</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+
+      <!-- TCK Support -->
+
+      <dependency>
+         <groupId>commons-logging</groupId>
+         <artifactId>commons-logging</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.testng</groupId>
+         <artifactId>testng</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.arquillian.testng</groupId>
+         <artifactId>arquillian-testng-container</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.wildfly.swarm</groupId>
+         <artifactId>arquillian</artifactId>
+         <scope>test</scope>
+         <exclusions>
+            <!-- https://issues.jboss.org/browse/SWARM-1699 -->
+            <exclusion>
+               <groupId>org.jboss.arquillian.junit</groupId>
+               <artifactId>arquillian-junit-container</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-jdk14</artifactId>
+         <version>1.7.25</version>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>com.github.tomakehurst</groupId>
+         <artifactId>wiremock</artifactId>
+         <version>2.10.1</version>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.json</groupId>
+         <artifactId>javax.json-api</artifactId>
+         <version>1.0</version>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- TODO should be implicit, i think it's mandated by the spec -->
+      <dependency>
+         <groupId>org.jboss.resteasy</groupId>
+         <artifactId>resteasy-json-p-provider</artifactId>
+         <scope>test</scope>
+         <version>${version.resteasy}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.glassfish</groupId>
+         <artifactId>javax.json</artifactId>
+         <version>1.0.4</version>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>com.github.tomakehurst</groupId>
+         <artifactId>wiremock</artifactId>
+         <version>2.7.0</version>
+         <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>org.ow2.asm</groupId>
+               <artifactId>asm</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+   </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>uk.co.deliverymind</groupId>
+            <artifactId>wiremock-maven-plugin</artifactId>
+            <version>2.7.0</version>
+            <executions>
+               <execution>
+                  <phase>generate-test-sources</phase>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+                  <configuration>
+                     <dir>target/classes</dir>
+                     <params>--port=8765 --verbose</params>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+
+
+               <forkCount>0</forkCount>
+
+               <dependenciesToScan>
+                  <dependency>org.eclipse.microprofile.rest.client:microprofile-rest-client-tck</dependency>
+               </dependenciesToScan>
+
+               <excludes>
+
+                  <!-- [hb] Challenged, see  https://github.com/eclipse/microprofile-rest-client/pull/69 -->
+                  <exclude>org.eclipse.microprofile.rest.client.tck.InvokeWithJsonPProviderTest</exclude>
+                  
+               </excludes>
+            </configuration>
+         </plugin>
+
+      </plugins>
+   </build>
+
+</project>
+
