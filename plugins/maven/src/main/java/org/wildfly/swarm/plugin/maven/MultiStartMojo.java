@@ -66,9 +66,8 @@ public class MultiStartMojo extends AbstractSwarmMojo {
     protected BuildPluginManager pluginManager;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void executeSpecific() throws MojoExecutionException, MojoFailureException {
 
-        deprecationWarnings();
         initProperties(true);
         initEnvironment();
 

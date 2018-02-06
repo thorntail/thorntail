@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -31,14 +30,14 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
  * @author Thomas Meyer
  */
 @Mojo(name = "stop")
-public class StopMojo extends AbstractMojo {
+public class StopMojo extends AbstractSwarmMojo {
 
     @Parameter(defaultValue = "${mojoExecution}")
     protected MojoExecution execution;
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void executeSpecific() throws MojoExecutionException, MojoFailureException {
         if (this.execution.getExecutionId().equals("default-cli")) {
             getLog().error("wildfly-swarm:stop is not usable from the CLI");
             return;
