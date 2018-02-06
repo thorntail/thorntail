@@ -94,10 +94,14 @@ public class TypeUtil {
 
     // TODO: consider additional checks for Number interface?
     public static TypeWithFormat getTypeFormat(Type classType) {
+        if (classType.kind() == Type.Kind.ARRAY) {
+            return arrayFormat();
+        } else {
         return Optional
                 .ofNullable(TYPE_MAP.get(getName(classType)))
                 // Otherwise it's some object without a well-known format mapping
                 .orElse(objectFormat());
+    }
     }
 
     public static TypeWithFormat arrayFormat() {
