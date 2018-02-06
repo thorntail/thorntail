@@ -42,6 +42,7 @@ public class OpenApiDataObjectScannerTest {
 
         index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Foo.class");
         index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Bar.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/BazEnum.class");
         index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/KustomPair.class");
         index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Booking2.class");
         index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/CreditCard2.class");
@@ -55,7 +56,7 @@ public class OpenApiDataObjectScannerTest {
                 (ClassType) ClassType.create(name, Type.Kind.CLASS));
 
         System.out.println("Calling top-level schema: " + Booking2.class.getName());
-        printToConsole(Booking2.class.getName(), foo.process());
+        printToConsole(Booking2.class.getSimpleName(), foo.process());
         // TODO add some expectations?
     }
 
