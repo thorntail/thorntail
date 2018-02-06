@@ -87,8 +87,15 @@ class ConfigBuilderImpl implements ConfigBuilder {
         if (this.addDefaultSources) {
             this.sources.add(new SystemPropertiesConfigSource());
             this.sources.add(new SystemEnvironmentConfigSource());
-            this.sources.add(new MetaInfPropertiesConfigSource(this.classLoader));
-            this.sources.add(new FrameworkDefaultsConfigSource(this.classLoader));
+            new MetaInfPropertiesConfigSourceProvider().getConfigSources(this.classLoader).forEach(e -> {
+                this.sources.add(e);
+            });
+            new FrameworkDefaultsPropertiesConfigSourceProvider().getConfigSources(this.classLoader).forEach(e -> {
+                this.sources.add(e);
+            });
+            new FrameworkDefaultsYamlConfigSourceProvider().getConfigSources(this.classLoader).forEach(e -> {
+                this.sources.add(e);
+            });
         }
 
         if (this.addDiscoveredSources) {
@@ -181,7 +188,7 @@ class ConfigBuilderImpl implements ConfigBuilder {
 
     private int priorityOf(Converter converter) {
         Priority anno = converter.getClass().getAnnotation(Priority.class);
-        if ( anno == null ) {
+        if (anno == null) {
             return 100;
         }
 

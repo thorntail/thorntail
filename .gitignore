@@ -5,3 +5,4 @@ target
 *.DS_Store
 *.swp
 log
+dependency-reduced-pom.xml

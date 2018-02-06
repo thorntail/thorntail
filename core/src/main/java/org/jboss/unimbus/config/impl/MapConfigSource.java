@@ -9,12 +9,21 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 public class MapConfigSource implements ConfigSource {
 
     public MapConfigSource(String name) {
-        this( name, new HashMap<>());
+        this(name, new HashMap<>(), 100);
+    }
+
+    public MapConfigSource(String name, int defaultOrdinal) {
+        this(name, new HashMap<>(), defaultOrdinal);
     }
 
     public MapConfigSource(String name, Map<String, String> props) {
+        this(name, props, 100);
+    }
+
+    public MapConfigSource(String name, Map<String, String> props, int defaultOrdinal) {
         this.name = name;
         this.props = props;
+        this.defaultOrdinal = defaultOrdinal;
     }
 
     @Override
@@ -37,6 +46,19 @@ public class MapConfigSource implements ConfigSource {
     }
 
     @Override
+    public int getOrdinal() {
+        String configOrdinal = getValue(CONFIG_ORDINAL);
+        if (configOrdinal != null) {
+            try {
+                return Integer.parseInt(configOrdinal);
+            } catch (NumberFormatException ignored) {
+
+            }
+        }
+        return this.defaultOrdinal;
+    }
+
+    @Override
     public boolean equals(Object that) {
         return (this == that);
     }
@@ -44,4 +66,6 @@ public class MapConfigSource implements ConfigSource {
     private final Map<String, String> props;
 
     private final String name;
+
+    private int defaultOrdinal;
 }

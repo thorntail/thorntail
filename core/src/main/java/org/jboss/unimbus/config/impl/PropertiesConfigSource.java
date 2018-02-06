@@ -1,14 +1,26 @@
 package org.jboss.unimbus.config.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 class PropertiesConfigSource extends MapConfigSource {
 
-    PropertiesConfigSource(String name, Properties props) {
+    static PropertiesConfigSource of(URL url, int defaultOrdinal) throws IOException {
+        try (InputStream in = url.openStream()) {
+            Properties props = new Properties();
+            props.load(in);
+            return new PropertiesConfigSource(url.toExternalForm(), props, defaultOrdinal);
+        }
+    }
+
+    PropertiesConfigSource(String name, Properties props, int defaultOrdinal) {
         super(name,
-              toMap(props));
+              toMap(props),
+              defaultOrdinal);
     }
 
     private static Map<String, String> toMap(Properties props) {
