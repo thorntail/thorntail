@@ -58,8 +58,8 @@ public class OpenApiDataObjectScanner {
     private static final DotName MAP_INTERFACE_NAME = DotName.createSimple(Map.class.getName());
     private static final Type MAP_TYPE = Type.create(MAP_INTERFACE_NAME, Type.Kind.CLASS);
     // Enum
-    private static final DotName ENUM_INTERFACE_NAME = DotName.createSimple(Enum.class.getName());
-    private static final Type ENUM_TYPE = Type.create(ENUM_INTERFACE_NAME, Type.Kind.CLASS);
+//    private static final DotName ENUM_INTERFACE_NAME = DotName.createSimple(Enum.class.getName());
+//    private static final Type ENUM_TYPE = Type.create(ENUM_INTERFACE_NAME, Type.Kind.CLASS);
 
     private final IndexView index;
     private final ClassType rootClassType;

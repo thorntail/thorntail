@@ -147,7 +147,8 @@ public class TypeUtil {
         if (jandexKlazz != null) {
             return jandexKlazz.interfaceNames().contains(testObject.name()) || hasSuper(index, jandexKlazz, testObject);
         } else {
-            Class<?> subjectKlazz= TypeUtil.getClass(jandexKlazz.name().toString());
+            // TODO @msavy - should fix this because jandexKlazz can only be null here (guaranteed NPE)
+            Class<?> subjectKlazz = TypeUtil.getClass(jandexKlazz.name().toString());
             Class<?> objectKlazz = TypeUtil.getClass(testObject);
             return objectKlazz.isAssignableFrom(subjectKlazz);
         }
@@ -161,7 +162,7 @@ public class TypeUtil {
             }
             ClassInfo superKlazz = index.getClassByName(superKlazzType.name());
             if (superKlazz == null) {
-                Class<?> subjectKlazz= TypeUtil.getClass(testSubject.name().toString());
+                Class<?> subjectKlazz = TypeUtil.getClass(testSubject.name().toString());
                 Class<?> objectKlazz = TypeUtil.getClass(testObject);
                 return objectKlazz.isAssignableFrom(subjectKlazz);
             }
@@ -175,8 +176,9 @@ public class TypeUtil {
         ClassInfo currentClass = leaf;
         while (currentClass.superClassType() != null) {
             currentClass = index.getClassByName(currentClass.superClassType().name());
-            if (currentClass == null)
+            if (currentClass == null) {
                 break;
+            }
             fields.addAll(currentClass.fields());
         }
         Collections.reverse(fields);
