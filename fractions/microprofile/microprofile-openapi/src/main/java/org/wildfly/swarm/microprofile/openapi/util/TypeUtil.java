@@ -97,11 +97,11 @@ public class TypeUtil {
         if (classType.kind() == Type.Kind.ARRAY) {
             return arrayFormat();
         } else {
-        return Optional
-                .ofNullable(TYPE_MAP.get(getName(classType)))
-                // Otherwise it's some object without a well-known format mapping
-                .orElse(objectFormat());
-    }
+            return Optional
+                    .ofNullable(TYPE_MAP.get(getName(classType)))
+                    // Otherwise it's some object without a well-known format mapping
+                    .orElse(objectFormat());
+        }
     }
 
     public static TypeWithFormat arrayFormat() {

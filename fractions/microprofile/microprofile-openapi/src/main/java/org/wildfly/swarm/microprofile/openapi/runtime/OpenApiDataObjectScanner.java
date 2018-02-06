@@ -33,6 +33,7 @@ import org.wildfly.swarm.microprofile.openapi.util.SchemaFactory;
 import org.wildfly.swarm.microprofile.openapi.util.TypeUtil;
 
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
@@ -128,10 +129,11 @@ public class OpenApiDataObjectScanner {
 
             // Handle fields
             for (FieldInfo field : allFields) {
-                LOG.tracev("Iterating field {0}", field);
-                processField(field, currentSchema, currentPathEntry);
+                if (!Modifier.isStatic(field.flags())) {
+                    LOG.tracev("Iterating field {0}", field);
+                    processField(field, currentSchema, currentPathEntry);
+                }
             }
-
             currentPathEntry = path.pop();
             // Handle methods
             // TODO put it here!
