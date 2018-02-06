@@ -185,7 +185,7 @@ public class OpenApiAnnotationScanner {
                 ArchivePath archivePath = each.getKey();
                 if (archivePath.get().endsWith(OpenApiConstants.CLASS_SUFFIX) && acceptClassForScanning(config, archivePath.get())) {
                     try (InputStream contentStream = each.getValue().getAsset().openStream()) {
-                        System.out.println("Indexing asset: " + archivePath.get() + " from archive: " + archive.getName());
+                        LOG.debugv("Indexing asset: {0} from archive: {1}", archivePath.get(), archive.getName());
                         indexer.index(contentStream);
                     }
                     continue;

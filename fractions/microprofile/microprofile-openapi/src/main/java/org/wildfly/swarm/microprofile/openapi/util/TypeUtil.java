@@ -1,7 +1,6 @@
 package org.wildfly.swarm.microprofile.openapi.util;
 
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
-import org.jboss.jandex.ArrayType;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
@@ -56,20 +55,20 @@ public class TypeUtil {
         TYPE_MAP.put(DotName.createSimple(char.class.getName()), CHAR_FORMAT);
 
         // Decimal
-        TYPE_MAP.put(DotName.createSimple(BigDecimal.class.getName()), BIGDECIMAL_FORMAT); // HMM! There is no equivalent format for BigDecimal
+        TYPE_MAP.put(DotName.createSimple(BigDecimal.class.getName()), BIGDECIMAL_FORMAT);
         TYPE_MAP.put(DotName.createSimple(Double.class.getName()), DOUBLE_FORMAT);
         TYPE_MAP.put(DotName.createSimple(double.class.getName()), DOUBLE_FORMAT);
         TYPE_MAP.put(DotName.createSimple(Float.class.getName()), FLOAT_FORMAT);
         TYPE_MAP.put(DotName.createSimple(float.class.getName()), FLOAT_FORMAT);
 
         // Integer
-        TYPE_MAP.put(DotName.createSimple(BigInteger.class.getName()), BIGINTEGER_FORMAT); // HMM! There is no equivalent format for BigInteger
+        TYPE_MAP.put(DotName.createSimple(BigInteger.class.getName()), BIGINTEGER_FORMAT);
         TYPE_MAP.put(DotName.createSimple(Integer.class.getName()), INTEGER_FORMAT);
         TYPE_MAP.put(DotName.createSimple(int.class.getName()), INTEGER_FORMAT);
         TYPE_MAP.put(DotName.createSimple(Long.class.getName()), LONG_FORMAT);
         TYPE_MAP.put(DotName.createSimple(long.class.getName()), LONG_FORMAT);
-        TYPE_MAP.put(DotName.createSimple(Short.class.getName()), SHORT_FORMAT); // No equivalent?
-        TYPE_MAP.put(DotName.createSimple(short.class.getName()), SHORT_FORMAT); // No equivalent?
+        TYPE_MAP.put(DotName.createSimple(Short.class.getName()), SHORT_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(short.class.getName()), SHORT_FORMAT);
 
         // Boolean
         TYPE_MAP.put(DotName.createSimple(Boolean.class.getName()), BOOLEAN_FORMAT);
@@ -96,22 +95,21 @@ public class TypeUtil {
     // TODO: consider additional checks for Number interface?
     public static TypeWithFormat getTypeFormat(Type classType) {
         return Optional
-                .ofNullable(TYPE_MAP.get(classType.name()))
+                .ofNullable(TYPE_MAP.get(getName(classType)))
                 // Otherwise it's some object without a well-known format mapping
-                .orElse(new TypeWithFormat(SchemaType.OBJECT, DataFormat.NONE));
+                .orElse(objectFormat());
+    }
+
+    public static TypeWithFormat arrayFormat() {
+        return ARRAY_FORMAT;
     }
 
     public static TypeWithFormat objectFormat() {
         return OBJECT_FORMAT;
     }
 
-    // WIP
-    public static TypeWithFormat getTypeFormat(ArrayType arrayType) {
-        return ARRAY_FORMAT;
-    }
-
     public static Class<?> getClass(Type type) {
-        return getClass(type.name().toString());
+        return getClass(getName(type).toString());
     }
 
     public static Class<?> getClass(String name) {
@@ -136,19 +134,11 @@ public class TypeUtil {
      */
     public static boolean isA(IndexView index, Type testSubject, Type testObject) {
         // First, look in Jandex, as target might not be in our classloader
-        ClassInfo jandexKlazz = index.getClassByName(testSubject.name());
-        return isA(index, jandexKlazz, testObject);
-    }
-
-    public static boolean isA(IndexView index, ClassInfo jandexKlazz, Type testObject) {
-        // First, look in Jandex, as target might not be in our classloader
-        //ClassInfo jandexKlazz = index.getClassByName(testSubject.name());
-
+        ClassInfo jandexKlazz = index.getClassByName(getName(testSubject));
         if (jandexKlazz != null) {
-            return jandexKlazz.interfaceNames().contains(testObject.name()) || hasSuper(index, jandexKlazz, testObject);
+            return jandexKlazz.interfaceNames().contains(getName(testObject)) || hasSuper(index, jandexKlazz, testObject);
         } else {
-            // TODO @msavy - should fix this because jandexKlazz can only be null here (guaranteed NPE)
-            Class<?> subjectKlazz = TypeUtil.getClass(jandexKlazz.name().toString());
+            Class<?> subjectKlazz = TypeUtil.getClass(testSubject);
             Class<?> objectKlazz = TypeUtil.getClass(testObject);
             return objectKlazz.isAssignableFrom(subjectKlazz);
         }
@@ -157,14 +147,18 @@ public class TypeUtil {
     private static boolean hasSuper(IndexView index, ClassInfo testSubject, Type testObject) {
         Type superKlazzType = testSubject.superClassType();
         while (superKlazzType != null) {
-            if (superKlazzType.equals(testObject)) {
+            if (getName(superKlazzType).equals(getName(testObject))) {
                 return true;
             }
-            ClassInfo superKlazz = index.getClassByName(superKlazzType.name());
+            ClassInfo superKlazz = index.getClassByName(getName(superKlazzType));
             if (superKlazz == null) {
-                Class<?> subjectKlazz = TypeUtil.getClass(testSubject.name().toString());
-                Class<?> objectKlazz = TypeUtil.getClass(testObject);
-                return objectKlazz.isAssignableFrom(subjectKlazz);
+                try {
+                    Class<?> subjectKlazz = TypeUtil.getClass(testSubject.name().toString());
+                    Class<?> objectKlazz = TypeUtil.getClass(testObject);
+                    return objectKlazz.isAssignableFrom(subjectKlazz);
+                } catch (RuntimeException e) {
+                    return false;
+                }
             }
             superKlazzType = superKlazz.superClassType();
         }
@@ -183,6 +177,13 @@ public class TypeUtil {
         }
         Collections.reverse(fields);
         return fields;
+    }
+
+    public static DotName getName(Type type) {
+        if (type.kind() == Type.Kind.ARRAY) {
+            return type.asArrayType().component().name();
+        }
+        return type.name();
     }
 
     public static final class TypeWithFormat {

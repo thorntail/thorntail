@@ -58,8 +58,11 @@ public class OpenApiDataObjectScanner {
     private static final DotName MAP_INTERFACE_NAME = DotName.createSimple(Map.class.getName());
     private static final Type MAP_TYPE = Type.create(MAP_INTERFACE_NAME, Type.Kind.CLASS);
     // Enum
-//    private static final DotName ENUM_INTERFACE_NAME = DotName.createSimple(Enum.class.getName());
-//    private static final Type ENUM_TYPE = Type.create(ENUM_INTERFACE_NAME, Type.Kind.CLASS);
+    private static final DotName ENUM_INTERFACE_NAME = DotName.createSimple(Enum.class.getName());
+    private static final Type ENUM_TYPE = Type.create(ENUM_INTERFACE_NAME, Type.Kind.CLASS);
+    // String type
+    private static final Type STRING_TYPE = Type.create(DotName.createSimple(String.class.getName()), Type.Kind.CLASS);
+
 
     private final IndexView index;
     private final ClassType rootClassType;
@@ -87,8 +90,8 @@ public class OpenApiDataObjectScanner {
     }
 
     public Schema process() {
+        LOG.debugv("Starting processing with root class: {0}", rootClassType.name());
 
-        System.out.println("Processing class: " + this.rootClassType.name());
         // If top level item is simple
         if (isTerminalType(rootClassType)) {
             SchemaImpl simpleSchema = new SchemaImpl();
@@ -124,6 +127,7 @@ public class OpenApiDataObjectScanner {
 
             // Handle fields
             for (FieldInfo field : allFields) {
+                LOG.tracev("Iterating field {0}", field);
                 processField(field, currentSchema, currentPathEntry);
             }
 
@@ -246,6 +250,10 @@ public class OpenApiDataObjectScanner {
         return SchemaFactory.readSchema(schema, annotation, overrides);
     }
 
+    private ClassInfo getClassByName(Type type) {
+        return index.getClassByName(TypeUtil.getName(type));
+    }
+
     private Type processType(FieldInfo fieldInfo, SchemaImpl schema, PathEntry pathEntry) {
 
         // If it's a terminal type.
@@ -253,14 +261,38 @@ public class OpenApiDataObjectScanner {
             return fieldInfo.type();
         }
 
+        if (isA(fieldInfo.type(), ENUM_TYPE)) {
+            LOG.debugv("Processing an enum {0}", fieldInfo);
+            ClassInfo enumKlazz = getClassByName(fieldInfo.type());
+
+            for (FieldInfo enumField : enumKlazz.fields()) {
+                // Ignore the hidden enum array as it's not accessible. Add fields that look like enums (of type enumKlazz)
+                if (!enumField.name().equals("$VALUES") && TypeUtil.getName(enumField.type()).equals(enumKlazz.name())) {
+                    // Enum's value fields.
+                    schema.addEnumeration(enumField.name());
+                }
+            }
+            return STRING_TYPE;
+        }
+
         if (fieldInfo.type().kind() == Type.Kind.PARAMETERIZED_TYPE) {
             // Parameterised type (e.g. Foo<A, B>)
             readParamType(pathEntry, schema, fieldInfo.type().asParameterizedType());
             return fieldInfo.type();
         } else if (fieldInfo.type().kind() == Type.Kind.ARRAY) {
-//            // TODO treat as list
-//            throw new UnsupportedOperationException("array support needs implementing not yet supported.");
+            LOG.debugv("Processing an array {0}", fieldInfo);
+            // TODO handle multi-dimensional arrays.
             schema.type(Schema.SchemaType.ARRAY);
+            SchemaImpl arrSchema = new SchemaImpl();
+
+            TypeUtil.TypeWithFormat typeFormat = TypeUtil.getTypeFormat(fieldInfo.type());
+            arrSchema.setType(typeFormat.getSchemaType());
+            arrSchema.setFormat(typeFormat.getFormat().format());
+
+            if (!isTerminalType(fieldInfo.type())) {
+                ClassInfo klazz = getClassByName(fieldInfo.type());
+                pushPathPair(pathEntry, klazz, arrSchema);
+            }
             return fieldInfo.type();
         } else if (fieldInfo.type().kind() == Type.Kind.TYPE_VARIABLE) {
             // Type variable (e.g. A in List<A>)
@@ -292,14 +324,15 @@ public class OpenApiDataObjectScanner {
 
         LOG.debugv("Processing unannotated field {0}", fieldInfo);
 
-        TypeUtil.TypeWithFormat typeFormat = inferFieldTypeFormat(fieldInfo);
+        Type processedType = processType(fieldInfo, schema, pathEntry);
+
+        TypeUtil.TypeWithFormat typeFormat = TypeUtil.getTypeFormat(processedType);
         schema.setType(typeFormat.getSchemaType());
 
         if (typeFormat.getFormat().hasFormat()) {
             schema.setFormat(typeFormat.getFormat().format());
         }
 
-        processType(fieldInfo, schema, pathEntry);
     }
 
     private boolean isA(Type testSubject, Type test) {
@@ -311,7 +344,7 @@ public class OpenApiDataObjectScanner {
 
         // If it's a collection, we should treat it as an array.
         if (isA(pType, COLLECTION_TYPE)) { // TODO maybe also Iterable?
-            LOG.debugv("Found a Java Collection. Will treat as an array.");
+            LOG.debugv("Processing Java Collection. Will treat as an array.");
             SchemaImpl arraySchema = new SchemaImpl();
             schema.type(Schema.SchemaType.ARRAY);
             schema.items(arraySchema);
@@ -329,7 +362,7 @@ public class OpenApiDataObjectScanner {
                 }
             }
         } else if (isA(pType, MAP_TYPE)) {
-            LOG.debugv("Found a map. Will treat as an object.");
+            LOG.debugv("Processing Map. Will treat as an object.");
             schema.type(Schema.SchemaType.OBJECT);
 
             if (pType.arguments().size() == 2) {
@@ -351,32 +384,6 @@ public class OpenApiDataObjectScanner {
             PathEntry pair = new PathEntry(pathEntry, klazz, schema, pType.arguments());
             path.push(pair);
         }
-    }
-
-    // This may be an array, a primitive, or a generic type definition.
-    private TypeUtil.TypeWithFormat inferFieldTypeFormat(@NotNull FieldInfo field) {
-        Type fieldType = field.type();
-        switch (fieldType.kind()) {
-            case CLASS:
-                return TypeUtil.getTypeFormat(fieldType.asClassType());
-            case PRIMITIVE:
-                return TypeUtil.getTypeFormat(fieldType.asPrimitiveType());
-            case ARRAY:
-                return TypeUtil.getTypeFormat(fieldType.asArrayType());
-            case VOID:
-                break;
-            case TYPE_VARIABLE:
-                return TypeUtil.objectFormat();
-            case UNRESOLVED_TYPE_VARIABLE: // TODO
-                break;
-            case WILDCARD_TYPE: // TODO
-                break;
-            case PARAMETERIZED_TYPE:
-                return TypeUtil.objectFormat();
-            default:
-                throw new IllegalStateException("Unhandled kind " + fieldType.kind());
-        }
-        throw new IllegalStateException("Unexpected kind for " + field + ": " + fieldType.kind());
     }
 
     private boolean shouldInferUnannotatedFields() {
