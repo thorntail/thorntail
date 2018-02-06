@@ -9,7 +9,7 @@
 
   <groupId>org.wildfly.swarm.howto</groupId>
   <artifactId>howto-autodetect-fractions</artifactId>
-  <version>2017.10.1</version>
+  <version>2017.10.2-SNAPSHOT</version>
 
   <name>WildFly Swarm HOWTO: Auto-detecting Fractions</name>
   <description>WildFly Swarm HOWTO: Auto-detecting Fractions</description>
