@@ -5,6 +5,7 @@
 :source-highlighter: coderay
 
 
+
 = WildFly Swarm Documentation
 The WildFly Swarm Team
 v{version}
@@ -30,6 +31,12 @@ include::howto/explicit-fractions/index.adoc[leveloffset=+2]
 include::howto/create-a-datasource/index.adoc[leveloffset=+2]
 include::howto/test-in-container/index.adoc[leveloffset=+2]
 
+### Logging
+
+include::howto/enabling-logging/index.adoc[leveloffset=+3]
+include::howto/logging-to-a-file/index.adoc[leveloffset=+3]
+
+
 ifndef::product[]
 
 ## Advanced
@@ -40,6 +47,7 @@ endif::product[]
 # Reference
 
 ## General
+:context: general
 
 include::reference/maven-plugin.adoc[leveloffset=+2]
 
