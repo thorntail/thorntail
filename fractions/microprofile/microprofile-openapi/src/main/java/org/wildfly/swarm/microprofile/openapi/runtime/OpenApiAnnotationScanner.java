@@ -161,7 +161,7 @@ public class OpenApiAnnotationScanner {
      * @param config
      * @param archive
      */
-    private static IndexView archiveToIndex(OpenApiConfig config, Archive archive) {
+    protected static IndexView archiveToIndex(OpenApiConfig config, Archive archive) {
         if (archive == null) {
             throw new RuntimeException("Archive was null!");
         }

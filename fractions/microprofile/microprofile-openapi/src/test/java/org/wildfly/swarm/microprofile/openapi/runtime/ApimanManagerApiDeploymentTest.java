@@ -19,6 +19,9 @@ package org.wildfly.swarm.microprofile.openapi.runtime;
 import java.io.File;
 
 import org.eclipse.microprofile.config.Config;
+import org.jboss.jandex.ClassInfo;
+import org.jboss.jandex.DotName;
+import org.jboss.jandex.IndexView;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -36,7 +39,7 @@ import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
  * @author eric.wittmann@gmail.com
  */
 @SuppressWarnings("rawtypes")
-@Ignore
+//@Ignore
 public class ApimanManagerApiDeploymentTest {
 //
 //    /**
@@ -58,11 +61,8 @@ public class ApimanManagerApiDeploymentTest {
         JSONAssert.assertEquals(expected, actual, true);
     }
 
-    /**
-     * Common test method.
-     * @throws Exception
-     */
     @Test
+    @Ignore
     public void testApimanWAR() throws Exception {
         File warFile = Maven.resolver().resolve("io.apiman:apiman-manager-api-war:war:1.3.1.Final").withoutTransitivity().asSingleFile();
 
@@ -85,6 +85,33 @@ public class ApimanManagerApiDeploymentTest {
         String expected = "{}";
 
         assertJsonEquals(expected, actual);
+    }
+
+    @Test
+    @Ignore
+    public void testApimanEnum() throws Exception {
+        File warFile = Maven.resolver().resolve("io.apiman:apiman-gateway-engine-core:jar:1.3.1.Final").withoutTransitivity().asSingleFile();
+        WildFlyConfigBuilder cfgBuilder = new WildFlyConfigBuilder();
+        cfgBuilder.addDefaultSources();
+        Config cfg = cfgBuilder.build();
+        Archive archive = ShrinkWrap.createFromZipFile(JAXRSArchive.class, warFile);
+        OpenApiConfig config = new OpenApiConfig() {
+            @Override
+            protected Config getConfig() {
+                return cfg;
+            }
+        };
+
+        IndexView index = OpenApiAnnotationScanner.archiveToIndex(config, archive);
+        ClassInfo classInfo = index.getClassByName(DotName.createSimple("io.apiman.gateway.engine.auth.RequiredAuthType"));
+        System.out.println("Kind: " + classInfo.kind());
+        System.out.println("Super: " + classInfo.superClassType());
+        System.out.println("Fields: ");
+        classInfo.fields().forEach( field -> {
+            System.out.println("\tName=" + field.name());
+            System.out.println("\tType=" + field.type());
+            System.out.println("--");
+        });
     }
 
 }
