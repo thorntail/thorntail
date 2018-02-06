@@ -37,4 +37,8 @@ public interface CoreMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 4 + OFFSET, value = "phase [%s] completed in %s")
     void timing(String phase, String time);
+
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 5 + OFFSET, value = "Unable to process YAML configuration %s. Add snakeyaml to your dependencies to enable")
+    void unableToProcessYaml(String url);
 }

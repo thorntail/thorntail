@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.jboss.unimbus.CoreMessages;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -16,38 +17,44 @@ import org.yaml.snakeyaml.Yaml;
 class YamlConfigSource extends MapConfigSource {
 
     static YamlConfigSource of(URL url, int defaultOrdinal) throws IOException {
+        try {
+            Class.forName("org.yaml.snakeyaml.Yaml");
+        } catch (ClassNotFoundException e) {
+            CoreMessages.MESSAGES.unableToProcessYaml(url.toExternalForm());
+            return null;
+        }
         Yaml yaml = new Yaml();
-        try ( InputStream in = url.openStream() ) {
+        try (InputStream in = url.openStream()) {
             return new YamlConfigSource(url.toExternalForm(), yaml.load(in), defaultOrdinal);
         }
     }
 
-    YamlConfigSource(String name, Map<String,?> tree, int defaultOrdinal) {
-        super( name, flatten(tree), defaultOrdinal);
+    YamlConfigSource(String name, Map<String, ?> tree, int defaultOrdinal) {
+        super(name, flatten(tree), defaultOrdinal);
     }
 
-    static Map<String,String> flatten(Map<String,?> tree) {
-        Map<String,String> map = new HashMap<>();
+    static Map<String, String> flatten(Map<String, ?> tree) {
+        Map<String, String> map = new HashMap<>();
         flatten(map, null, tree);
         return map;
     }
 
-    static void flatten(Map<String,String> map, String prefix, Map<String,?> tree) {
+    static void flatten(Map<String, String> map, String prefix, Map<String, ?> tree) {
         for (Map.Entry<String, ?> entry : tree.entrySet()) {
             String name = keyOf(prefix, entry.getKey());
             Object value = entry.getValue();
-            if ( value instanceof Map ) {
+            if (value instanceof Map) {
                 flatten(map, name, (Map<String, ?>) value);
-            } else if ( value instanceof Collection) {
-                map.put( name, escapeAndJoin((Collection<?>) value));
+            } else if (value instanceof Collection) {
+                map.put(name, escapeAndJoin((Collection<?>) value));
             } else {
-                map.put( name, value.toString() );
+                map.put(name, value.toString());
             }
         }
     }
 
     static String keyOf(String prefix, String chunk) {
-        if ( prefix == null ) {
+        if (prefix == null) {
             return chunk;
         }
 

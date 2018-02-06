@@ -1,0 +1,15 @@
+web:
+  management:
+    port: 8081
+
+security:
+  basic:
+    bob: pw
+
+datasource:
+  ExampleDS:
+    username: sa
+    password: sa
+    connection-url: 'jdbc:h2:mem:'
+    driver: h2
+

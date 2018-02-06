@@ -34,6 +34,8 @@
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
       <version>${version.snakeyaml}</version>
+      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -44,30 +46,4 @@
 
   </dependencies>
 
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <relocations>
-                <relocation>
-                  <pattern>org.yaml.snakeyaml</pattern>
-                  <shadedPattern>org.jboss.unimbus.core.yaml</shadedPattern>
-                </relocation>
-              </relocations>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

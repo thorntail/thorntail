@@ -87,15 +87,16 @@ class ConfigBuilderImpl implements ConfigBuilder {
         if (this.addDefaultSources) {
             this.sources.add(new SystemPropertiesConfigSource());
             this.sources.add(new SystemEnvironmentConfigSource());
-            new MetaInfPropertiesConfigSourceProvider().getConfigSources(this.classLoader).forEach(e -> {
-                this.sources.add(e);
-            });
-            new FrameworkDefaultsPropertiesConfigSourceProvider().getConfigSources(this.classLoader).forEach(e -> {
-                this.sources.add(e);
-            });
-            new FrameworkDefaultsYamlConfigSourceProvider().getConfigSources(this.classLoader).forEach(e -> {
-                this.sources.add(e);
-            });
+
+            this.sources.addAll(new ApplicationPropertiesConfigSourceProvider().getConfigSources(this.classLoader));
+            this.sources.addAll(new ApplicationYamlConfigSourceProvider().getConfigSources(this.classLoader));
+
+            this.sources.addAll(Profiles.getConfigSources(this.classLoader));
+
+            this.sources.addAll(new MicroProfileConfigPropertiesConfigSourceProvider().getConfigSources(this.classLoader));
+
+            this.sources.addAll(new FrameworkDefaultsPropertiesConfigSourceProvider().getConfigSources(this.classLoader));
+            this.sources.addAll(new FrameworkDefaultsYamlConfigSourceProvider().getConfigSources(this.classLoader));
         }
 
         if (this.addDiscoveredSources) {
