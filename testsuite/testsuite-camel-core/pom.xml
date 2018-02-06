@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.wildfly.swarm.testsuite</groupId>
     <artifactId>testsuite-parent</artifactId>
-    <version>2017.10.2</version>
+    <version>2017.10.3-SNAPSHOT</version>
   </parent>
 
   <name>Test Suite: Camel Core</name>
