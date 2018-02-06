@@ -16,7 +16,7 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>wildfly-swarm-enforcer-pattern-size</artifactId>
-  <version>2017.10.2-SNAPSHOT</version>
+  <version>2017.10.2</version>
 
   <name>Maven enforcer pattern size rule</name>
   <description>Maven enforcer pattern size rule</description>
@@ -33,6 +33,6 @@
   </dependencies>
 
   <scm>
-    <tag>2017.10.1</tag>
+    <tag>2017.10.2</tag>
   </scm>
 </project>

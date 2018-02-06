@@ -11,12 +11,12 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>build-resources</artifactId>
-  <version>2017.10.2-SNAPSHOT</version>
+  <version>2017.10.2</version>
 
   <name>WildFly Swarm Build Resources</name>
   <description>Resources that are necessary for building WildFly Swarm</description>
 
   <scm>
-    <tag>2017.10.1</tag>
+    <tag>2017.10.2</tag>
   </scm>
 </project>
