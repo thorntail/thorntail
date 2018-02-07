@@ -18,7 +18,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.apps.airlines.model.CreditCard;
 import org.eclipse.microprofile.openapi.apps.airlines.model.Flight;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Customised version of {@link org.eclipse.microprofile.openapi.apps.airlines.model.Booking} for testing purposes.
@@ -52,35 +54,38 @@ public class Booking2 {
     @Schema(required = true)
     private long inferMeImImportant = 24;
 
-// TODO
-
-// Handle arrays
-//    @Schema(required = true)
-//    private CreditCard[] creditCardArray = new CreditCard[2];
+    // Handle arrays
+    @Schema(required = true)
+    private Bar[] fooArray = new Bar[2];
 
     // Handle generic type List (collection)
     @Schema(required = true)
-    private List<CreditCard2> stringList;
+    private List<CreditCard2> ccList;
 
     // Custom generic types
     @Schema(required = true)
     private KustomPair<String, Integer> somePair;
 
-//    // Nesting generic types.
-//    KustomPair<KustomPair<String, String>, Integer> blah;
-//    Void foo;
+//    // Nesting generic types with same type.
+//    KustomPair<KustomPair<String, String>, Integer> nesting;
 
-// Handle ?
-//    @Schema(required = true)
-//    private List<? extends CreditCard> creditCardListWildcard;
+    // Complex nesting of generics including unbounded wildcard
+    Fuzz<KustomPair<Fuzz<String, ?>, Integer>, Double> complexNesting;
 
-// Bare collection
+    // Handle Void
+    //    Void foo;
+
+    // Handle ? with extends bound
+    @Schema(required = true)
+    private List<? extends CreditCard> creditCardListWildcard;
+
+    // Bare collection
 //    @Schema(required = true)
 //    private List unsafeList;
 
-// Map
-//    @Schema(required = true)
-//    private Map<String, CreditCard> creditCardMap = new LinkedHashMap<>();
+    // Map
+    @Schema(required = true)
+    private Map<String, CreditCard> creditCardMap = new LinkedHashMap<>();
 
     @Schema(type = SchemaType.STRING, format="password")
     private String password = "hunter1";

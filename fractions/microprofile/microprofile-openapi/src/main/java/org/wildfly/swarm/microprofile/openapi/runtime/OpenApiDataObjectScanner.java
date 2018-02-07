@@ -25,6 +25,7 @@ import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.ParameterizedType;
 import org.jboss.jandex.Type;
+import org.jboss.jandex.TypeVariable;
 import org.jboss.jandex.WildcardType;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile.openapi.api.models.media.SchemaImpl;
@@ -35,11 +36,10 @@ import org.wildfly.swarm.microprofile.openapi.runtime.util.TypeUtil;
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -261,7 +261,6 @@ public class OpenApiDataObjectScanner {
     }
 
     private Type processType(FieldInfo fieldInfo, Schema schema, PathEntry pathEntry) {
-
         // If it's a terminal type.
         if (isTerminalType(fieldInfo.type())) {
             return fieldInfo.type();
@@ -289,15 +288,20 @@ public class OpenApiDataObjectScanner {
         if (fieldInfo.type().kind() == Type.Kind.ARRAY) {
             LOG.debugv("Processing an array {0}", fieldInfo);
             ArrayType arrayType = fieldInfo.type().asArrayType();
+
             // TODO handle multi-dimensional arrays.
+
+            // Array-type schema
             SchemaImpl arrSchema = new SchemaImpl();
             schema.type(Schema.SchemaType.ARRAY);
             schema.items(arrSchema);
 
+            // Only use component (excludes the special name formatting for arrays).
             TypeUtil.TypeWithFormat typeFormat = TypeUtil.getTypeFormat(arrayType.component());
             arrSchema.setType(typeFormat.getSchemaType());
             arrSchema.setFormat(typeFormat.getFormat().format());
 
+            // If it's not a terminal type, then push for later inspection.
             if (!isTerminalType(arrayType.component())) {
                 ClassInfo klazz = getClassByName(fieldInfo.type());
                 pushPathPair(pathEntry, klazz, arrSchema);
@@ -306,21 +310,36 @@ public class OpenApiDataObjectScanner {
         }
 
         if (fieldInfo.type().kind() == Type.Kind.TYPE_VARIABLE) {
-            // Type variable (e.g. A in List<A>)
-            Type resolvedType = pathEntry.resolvedTypes.pop();
+            // Type variable (e.g. A in Foo<A>)
+            Type resolvedType = pathEntry.resolvedTypes.get(fieldInfo.type().asTypeVariable());
+
             if (resolvedType.kind() == Type.Kind.WILDCARD_TYPE) {
                 resolvedType = resolveWildcard(resolvedType.asWildcardType());
             }
             LOG.debugv("Resolved type {0} -> {1}", fieldInfo, resolvedType);
-            ClassInfo klazz = getClassByName(resolvedType);
-            if (isTerminalType(resolvedType) || klazz == null) {
-                LOG.tracev("Is a terminal type");
+            if (isTerminalType(resolvedType) || getClassByName(resolvedType) == null) {
+                LOG.tracev("Is a terminal type {0}", resolvedType);
                 TypeUtil.TypeWithFormat replacement = TypeUtil.getTypeFormat(resolvedType);
                 schema.setType(replacement.getSchemaType());
                 schema.setFormat(replacement.getFormat().format());
             } else {
                 LOG.debugv("Attempting to do TYPE_VARIABLE substitution: {0} -> {1}", fieldInfo, resolvedType);
-                pushPathPair(pathEntry, klazz, schema);
+
+                // Look up the resolved type.
+                ClassInfo klazz = getClassByName(resolvedType);
+
+                // Resolving a type can result in another parameterised type,
+                if (resolvedType.kind() == Type.Kind.PARAMETERIZED_TYPE
+                        && resolvedType.asParameterizedType().arguments().size() > 0) {
+                    // The results must be made available to the node beneath this one.
+                    // For example: Foo<Bar<String, Double>, Integer>
+                    Map<TypeVariable, Type> resolutionMap = buildParamTypeResolutionMap(klazz, resolvedType.asParameterizedType());
+                    PathEntry pair = new PathEntry(pathEntry, klazz, schema, resolutionMap);
+                    path.push(pair);
+                } else {
+                    PathEntry entry = PathEntry.leafNode(pathEntry, klazz, schema);
+                    path.push(entry);
+                }
             }
             return resolvedType;
         } else {
@@ -328,6 +347,24 @@ public class OpenApiDataObjectScanner {
             pushFieldToPath(pathEntry, fieldInfo, schema);
             return fieldInfo.type();
         }
+    }
+
+    private Map<TypeVariable, Type> buildParamTypeResolutionMap(ClassInfo klazz, ParameterizedType parameterizedType) {
+        List<Type> arguments = parameterizedType.arguments();
+        List<TypeVariable> typeVariables = klazz.typeParameters();
+
+        if (arguments.size() != typeVariables.size()) {
+            LOG.errorv("Unanticipated mismatch between type arguments and type variables \n" +
+                    "Args: {0}\n Vars:{1}", arguments, typeVariables);
+        }
+
+        Map<TypeVariable, Type> resolutionMap = new LinkedHashMap<>();
+        for (int i = 0; i < arguments.size(); i++) {
+            Type arg = arguments.get(i);
+            TypeVariable typeVar = typeVariables.get(i);
+            resolutionMap.put(typeVar, arg);
+        }
+        return resolutionMap;
     }
 
     private Type resolveWildcard(WildcardType wildcardType) {
@@ -355,7 +392,6 @@ public class OpenApiDataObjectScanner {
         if (typeFormat.getFormat().hasFormat()) {
             schema.setFormat(typeFormat.getFormat().format());
         }
-
     }
 
     private boolean isA(Type testSubject, Type test) {
@@ -403,9 +439,12 @@ public class OpenApiDataObjectScanner {
             }
             return OBJECT_TYPE;
         } else {
-            // This attempts to allow us to resolve the types issue.
+            // This attempts to allow us to resolve the types generically.
             ClassInfo klazz = index.getClassByName(pType.name());
-            PathEntry pair = new PathEntry(pathEntry, klazz, schema, pType.arguments());
+            // Build mapping of class's type variables (e.g. A, B) to resolved variables
+            // Resolved variables could be any type (e.g. String, another param type, etc)
+            Map<TypeVariable, Type> resolutionMap = buildParamTypeResolutionMap(klazz, pType);
+            PathEntry pair = new PathEntry(pathEntry, klazz, schema, resolutionMap);
             path.push(pair);
             return pType;
         }
@@ -422,27 +461,25 @@ public class OpenApiDataObjectScanner {
         private final PathEntry parent;
         private final ClassInfo clazz;
         private final Schema schema;
-        // Generic args to class pushed on stack so we can resolve the fields?
-        private final Deque<Type> resolvedTypes = new ArrayDeque<>();
+        private final Map<TypeVariable, Type> resolvedTypes;
 
-        PathEntry(PathEntry parent, ClassInfo clazz, Schema schema) {
+        PathEntry(PathEntry parent,
+                  @NotNull ClassInfo clazz,
+                  @NotNull Schema schema) {
             this.parent = parent;
             this.clazz = clazz;
             this.schema = schema;
+            this.resolvedTypes = Collections.emptyMap();
         }
 
-        PathEntry(PathEntry parent, ClassInfo clazz, Schema schema, Type... types) {
+        PathEntry(PathEntry parent,
+                  @NotNull ClassInfo clazz,
+                  @NotNull Schema schema,
+                  @NotNull Map<TypeVariable, Type> types) {
             this.parent = parent;
             this.clazz = clazz;
             this.schema = schema;
-            this.resolvedTypes.addAll(Arrays.asList(types));
-        }
-
-        PathEntry(PathEntry parent, ClassInfo clazz, Schema schema, List<Type> types) {
-            this.parent = parent;
-            this.clazz = clazz;
-            this.schema = schema;
-            this.resolvedTypes.addAll(types);
+            this.resolvedTypes = types;
         }
 
         ClassInfo getClazz() {
@@ -451,10 +488,6 @@ public class OpenApiDataObjectScanner {
 
         Schema getSchema() {
             return schema;
-        }
-
-        Deque<Type> getResolvedTypes() {
-            return resolvedTypes;
         }
 
         @Override
