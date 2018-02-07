@@ -1,9 +1,10 @@
-package org.jboss.unimbus.config.impl;
+package org.jboss.unimbus.config.impl.sources;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.unimbus.config.impl.sources.YamlConfigSource;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;

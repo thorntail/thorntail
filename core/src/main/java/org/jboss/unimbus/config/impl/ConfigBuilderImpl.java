@@ -31,6 +31,9 @@ import org.jboss.unimbus.config.impl.converters.fallback.EnumValueOfConverter;
 import org.jboss.unimbus.config.impl.converters.fallback.StaticParseConverter;
 import org.jboss.unimbus.config.impl.converters.fallback.StaticValueOfConverter;
 import org.jboss.unimbus.config.impl.converters.fallback.StringConstructorConverter;
+import org.jboss.unimbus.config.impl.sources.ConfigSources;
+import org.jboss.unimbus.config.impl.sources.spec.SystemEnvironmentConfigSource;
+import org.jboss.unimbus.config.impl.sources.spec.SystemPropertiesConfigSource;
 
 class ConfigBuilderImpl implements ConfigBuilder {
 
@@ -85,18 +88,13 @@ class ConfigBuilderImpl implements ConfigBuilder {
     @Override
     public Config build() {
         if (this.addDefaultSources) {
-            this.sources.add(new SystemPropertiesConfigSource());
-            this.sources.add(new SystemEnvironmentConfigSource());
+            this.sources.add(ConfigSources.systemProperties());
+            this.sources.add(ConfigSources.systemEnvironment());
 
-            this.sources.addAll(new ApplicationPropertiesConfigSourceProvider().getConfigSources(this.classLoader));
-            this.sources.addAll(new ApplicationYamlConfigSourceProvider().getConfigSources(this.classLoader));
-
-            this.sources.addAll(Profiles.getConfigSources(this.classLoader));
-
-            this.sources.addAll(new MicroProfileConfigPropertiesConfigSourceProvider().getConfigSources(this.classLoader));
-
-            this.sources.addAll(new FrameworkDefaultsPropertiesConfigSourceProvider().getConfigSources(this.classLoader));
-            this.sources.addAll(new FrameworkDefaultsYamlConfigSourceProvider().getConfigSources(this.classLoader));
+            this.sources.addAll(ConfigSources.frameworkDefaults(this.classLoader));
+            this.sources.addAll(ConfigSources.microprofileConfig(this.classLoader));
+            this.sources.addAll(ConfigSources.application(this.classLoader));
+            this.sources.addAll(ConfigSources.applicationProfiles(this.classLoader));
         }
 
         if (this.addDiscoveredSources) {

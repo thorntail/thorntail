@@ -1,4 +1,4 @@
-package org.jboss.unimbus.config.impl;
+package org.jboss.unimbus.config.impl.sources;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,9 +14,9 @@ import org.yaml.snakeyaml.Yaml;
 /**
  * Created by bob on 2/5/18.
  */
-class YamlConfigSource extends MapConfigSource {
+public class YamlConfigSource extends MapConfigSource {
 
-    static YamlConfigSource of(URL url, int defaultOrdinal) throws IOException {
+    public static YamlConfigSource of(URL url, int defaultOrdinal) throws IOException {
         try {
             Class.forName("org.yaml.snakeyaml.Yaml");
         } catch (ClassNotFoundException e) {

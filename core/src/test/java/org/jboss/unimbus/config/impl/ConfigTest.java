@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.config.Config;
+import org.jboss.unimbus.config.impl.sources.MapConfigSource;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;

@@ -1,5 +1,6 @@
 [#component-config]
 = Config
 
-MicroProfile-config is supported directly as a part of the `:core` component. 
+Configuration is a in-built component of the _core_ component, and requires no additional Maven dependency.
+
 

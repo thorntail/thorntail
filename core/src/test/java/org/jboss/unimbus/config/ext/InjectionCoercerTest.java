@@ -8,11 +8,9 @@ import java.util.Set;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Provider;
 
-import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
-import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.jboss.unimbus.config.impl.ConfigImpl;
-import org.jboss.unimbus.config.impl.MapConfigSource;
+import org.jboss.unimbus.config.impl.sources.MapConfigSource;
 import org.junit.Before;
 import org.junit.Test;
 

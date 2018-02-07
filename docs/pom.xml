@@ -24,6 +24,8 @@
           <attributes>
             <docinfo>shared</docinfo>
             <project_name>uNimbus</project_name>
+            <project_key>unimbus</project_key>
+            <PROJECT_ENV>UNIMBUS</PROJECT_ENV>
             <version>${project.version}</version>
           </attributes>
           <doctype>book</doctype>

@@ -1,4 +1,4 @@
-package org.jboss.unimbus.config.impl;
+package org.jboss.unimbus.config.impl.sources;
 
 import java.util.Collections;
 import java.util.HashMap;

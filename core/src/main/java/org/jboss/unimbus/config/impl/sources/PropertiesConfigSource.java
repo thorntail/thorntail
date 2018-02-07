@@ -1,4 +1,4 @@
-package org.jboss.unimbus.config.impl;
+package org.jboss.unimbus.config.impl.sources;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-class PropertiesConfigSource extends MapConfigSource {
+public class PropertiesConfigSource extends MapConfigSource {
 
-    static PropertiesConfigSource of(URL url, int defaultOrdinal) throws IOException {
+    public static PropertiesConfigSource of(URL url, int defaultOrdinal) throws IOException {
         try (InputStream in = url.openStream()) {
             Properties props = new Properties();
             props.load(in);

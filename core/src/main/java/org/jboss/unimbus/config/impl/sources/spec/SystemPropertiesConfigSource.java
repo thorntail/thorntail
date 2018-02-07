@@ -1,10 +1,11 @@
-package org.jboss.unimbus.config.impl;
+package org.jboss.unimbus.config.impl.sources.spec;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.jboss.unimbus.config.impl.sources.ConfigSources;
 
 public class SystemPropertiesConfigSource implements ConfigSource {
 
@@ -16,6 +17,11 @@ public class SystemPropertiesConfigSource implements ConfigSource {
     @Override
     public String getValue(String propertyName) {
         return System.getProperty(propertyName);
+    }
+
+    @Override
+    public int getOrdinal() {
+        return ConfigSources.SYSTEM_PROPERTIES_ORDINAL;
     }
 
     @Override

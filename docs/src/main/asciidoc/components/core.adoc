@@ -1,5 +1,104 @@
 [#component-core]
 = Core
 
-The `:core` component does blah.
+.Maven Coordinates
+
+The core of {project_name} is usually brought in transitively through other dependencies.
+It's Maven coordinates are:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.jboss.unimbus</groupId>
+  <artifactId>core</artifactId>
+</dependency>
+----
+
+== Configuration
+
+Configuration of applications built on {project_name} is performed using MicroProfile-config mechanisms.
+The default `microprofile-config.properties` file located within the `META-INF/` directory of the application can be used to set or override default configuration values.
+The same file may be used to provide application-specific configuration which does not directly affect the {project_name} behavior.
+
+Additionally, other files, both within `META-INF/` and on the filesystem may contribute to the final configuration, with various degrees of priority.
+The priority may be controlled on a file-by-file basis using the MicroProfile-config `config_ordinal` property within each file. 
+Files with larger priorities will override values set in files with lower priorities.
+
+.Profiles
+Configuration files may be conditionally activated using _profiles_. 
+Profiles are activated by setting the Java system property of `{project_key}.profiles` or the system environment variable of `{PROJECT_ENV}_PROFILES` to a comma-separated list of names.
+
+.Search Paths & Explicit Configuration Files
+To externalize configuration, the Java system property of `{project_key}.config.location` or the system environment variable of `{PROJECT_ENV}_CONFIG_LOCATION` may be set to a system-dependent delimited set of paths. 
+Each path is considered in turn, withi increasing priority. 
+If a path is a directory, it will be searched for appropriate configuration files matching any activated profiles.
+If a path is a regular file, it will be loaded, regardless of name or activated profiles.
+
+.YAML
+If the application includes a dependency on `snakeyaml`, then YAML-based configuration files will also be located and loaded.
+
+.Environment Variables
+All configuration items may be set through environment variables.
+As the format used for many configuration keys may include characters not allowed as environment variable names, a mechanical translation is performed.
+A requested configuration key is converted to uppercase, and each dot is replaced with an underscore.
+For example, a configuration key of `web.primary.port` may be configured through an environment variable named `WEB_PRIMARY_PORT`.
+
+.Framework Defaults
+Each framework component may include default values for any required configuration item. 
+These defaults have a priority of `-1000` to allow easy overriding of them.
+
+.Configuration Sources
+[cols="3,1,3"]
+|===
+|Path|Priority|Notes
+
+|`META-INF/framework-defaults.propertes`
+|-1000
+|Located via classloader and provided by framework components.
+
+|`META-INF/microprofile.propertes`
+|100
+|Located via classloader.
+
+|`META-INF/application.properties`
+|200
+|Located via classloader.
+
+|`META-INF/application.yaml`
+|200
+|Located via classloader, if SnakeYAML is available
+
+|`META-INF/application-_profile_.properties`
+|250+
+|Located via classloader, in order specified, with increasing priority.
+
+|`META-INF/application-_profile_.yaml`
+|250+
+|Located via classloader, in order specified, with increasing priority.
+
+|`application-_profile_.properties`
+|250+
+|Located via filesystem from specified search paths, in order, with increasing priority.
+
+|`application-_profile_.yaml`
+|250+
+|Located via filesystem from specified search paths, in order, with increasing priority.
+
+|`_path_`
+|275
+|Located via filesystem, through explicit property or environment variable.
+
+|_environment variables_
+|300
+|Converted from all available system environment variables.
+
+|_system properties_
+|400
+|All available system properties.
+
+|===
+
+
+
+
 

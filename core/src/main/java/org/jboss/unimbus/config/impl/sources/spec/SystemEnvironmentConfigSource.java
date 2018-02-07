@@ -1,9 +1,17 @@
-package org.jboss.unimbus.config.impl;
+package org.jboss.unimbus.config.impl.sources.spec;
 
-class SystemEnvironmentConfigSource extends MapConfigSource {
+import org.jboss.unimbus.config.impl.sources.ConfigSources;
+import org.jboss.unimbus.config.impl.sources.MapConfigSource;
 
-    SystemEnvironmentConfigSource() {
+public class SystemEnvironmentConfigSource extends MapConfigSource {
+
+    public SystemEnvironmentConfigSource() {
         super("system environment", System.getenv());
+    }
+
+    @Override
+    public int getOrdinal() {
+        return ConfigSources.ENVIRONMENT_VARIABLES_ORDINAL;
     }
 
     @Override

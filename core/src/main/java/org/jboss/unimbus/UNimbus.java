@@ -47,7 +47,6 @@ public class UNimbus {
 
     public static final String BASE_LOGGER_CATEGORY = "org.jboss.unimbus";
 
-
     public static String loggerCategory(String name) {
         return BASE_LOGGER_CATEGORY + "." + name;
     }
