@@ -4,6 +4,29 @@
 - Equivalent to "Hollow Jar", may require forking capsule plugin
 - Fuller testing of Java EE tech in testsuite
 - If it's :json-p, should it be :jaxrs? Or should it be :jsonp?
+- Some type of BOM to bring the bits together. Maybe just 3 types: Stable, New/Experimental, Deprecated
+- Pieces to implement:
+  - MP REST Client
+  - MP JWT
+  - MP Fault Tolerance
+  - MP Open Tracing
+  - MP Open API
+  - Bean Validation
+  - Hibernate Validator
+  - EJB
+  - JAX-RS Validation (may not be anything for this in the new world)
+  - JMX ??
+  - JSF (on the fence on this one)
+  - Web Profile (this would require JSF, but maybe we can bundle into it so it's not used separately)
+  - Topology (could still be useful even on OpenShift, have had some ideas about what else it could do)
+  - Batch (JBeret) ??
+  - MDBs
+  - JMS Client (Bob working on now)
+  - Web Services ??
+  - Hibernate Search
+  - Infinispan
+  - Websocket (might be covered by undertow, but worth a test if nothing else)
+  - Kafka clients
 
 . Low priority
 
