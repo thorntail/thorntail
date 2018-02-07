@@ -25,6 +25,7 @@ import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.ParameterizedType;
 import org.jboss.jandex.Type;
+import org.jboss.jandex.WildcardType;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
 import org.wildfly.swarm.microprofile.openapi.models.media.SchemaImpl;
@@ -86,8 +87,8 @@ public class OpenApiDataObjectScanner {
 
     private boolean isTerminalType(Type classType) {
         TypeUtil.TypeWithFormat tf = TypeUtil.getTypeFormat(classType);
-        return tf.getSchemaType() != Schema.SchemaType.OBJECT &&
-                tf.getSchemaType() != Schema.SchemaType.ARRAY;
+        return (tf.getSchemaType() != Schema.SchemaType.OBJECT &&
+                tf.getSchemaType() != Schema.SchemaType.ARRAY);
     }
 
     public static Schema process(IndexView index, ClassType classType) {
@@ -308,14 +309,17 @@ public class OpenApiDataObjectScanner {
         if (fieldInfo.type().kind() == Type.Kind.TYPE_VARIABLE) {
             // Type variable (e.g. A in List<A>)
             Type resolvedType = pathEntry.resolvedTypes.pop();
+            if (resolvedType.kind() == Type.Kind.WILDCARD_TYPE) {
+                resolvedType = resolveWildcard(resolvedType.asWildcardType());
+            }
             LOG.debugv("Resolved type {0} -> {1}", fieldInfo, resolvedType);
-            if (isTerminalType(resolvedType)) {
+            ClassInfo klazz = getClassByName(resolvedType);
+            if (isTerminalType(resolvedType) || klazz == null) {
                 LOG.tracev("Is a terminal type");
                 TypeUtil.TypeWithFormat replacement = TypeUtil.getTypeFormat(resolvedType);
                 schema.setType(replacement.getSchemaType());
                 schema.setFormat(replacement.getFormat().format());
             } else {
-                ClassInfo klazz = index.getClassByName(resolvedType.name());
                 LOG.debugv("Attempting to do TYPE_VARIABLE substitution: {0} -> {1}", fieldInfo, resolvedType);
                 pushPathPair(pathEntry, klazz, schema);
             }
@@ -324,6 +328,14 @@ public class OpenApiDataObjectScanner {
             // Simple case: bare class or primitive type.
             pushFieldToPath(pathEntry, fieldInfo, schema);
             return fieldInfo.type();
+        }
+    }
+
+    private Type resolveWildcard(WildcardType wildcardType) {
+        if (wildcardType.extendsBound() != null) {
+            return wildcardType.extendsBound();
+        } else {
+            return OBJECT_TYPE;
         }
     }
 

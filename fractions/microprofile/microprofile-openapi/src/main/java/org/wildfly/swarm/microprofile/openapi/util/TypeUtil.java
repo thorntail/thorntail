@@ -42,6 +42,7 @@ public class TypeUtil {
     private static final TypeWithFormat STRING_FORMAT = new TypeWithFormat(SchemaType.STRING, DataFormat.NONE);
     private static final TypeWithFormat BYTE_FORMAT = new TypeWithFormat(SchemaType.STRING, DataFormat.BYTE);
     private static final TypeWithFormat CHAR_FORMAT = new TypeWithFormat(SchemaType.STRING, DataFormat.BYTE);
+    private static final TypeWithFormat NUMBER_FORMAT = new TypeWithFormat(SchemaType.NUMBER, DataFormat.NONE); // We can't immediately tell if it's int, float, etc.
     private static final TypeWithFormat BIGDECIMAL_FORMAT = new TypeWithFormat(SchemaType.NUMBER, DataFormat.NONE);
     private static final TypeWithFormat DOUBLE_FORMAT = new TypeWithFormat(SchemaType.NUMBER, DataFormat.DOUBLE);
     private static final TypeWithFormat FLOAT_FORMAT = new TypeWithFormat(SchemaType.NUMBER, DataFormat.FLOAT);
@@ -68,6 +69,9 @@ public class TypeUtil {
         TYPE_MAP.put(DotName.createSimple(byte.class.getName()), BYTE_FORMAT);
         TYPE_MAP.put(DotName.createSimple(Character.class.getName()), CHAR_FORMAT);
         TYPE_MAP.put(DotName.createSimple(char.class.getName()), CHAR_FORMAT);
+
+        // Number
+        TYPE_MAP.put(DotName.createSimple(Number.class.getName()), NUMBER_FORMAT);
 
         // Decimal
         TYPE_MAP.put(DotName.createSimple(BigDecimal.class.getName()), BIGDECIMAL_FORMAT);
