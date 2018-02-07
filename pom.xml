@@ -1389,6 +1389,7 @@
         <module>testsuite/microprofile-tcks/metrics</module>
         <module>testsuite/microprofile-tcks/fault-tolerance</module>
         <module>testsuite/microprofile-tcks/restclient</module>
+        <module>testsuite/microprofile-tcks/openapi</module>
       </modules>
     </profile>
 
