@@ -15,24 +15,27 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jboss.modules.maven.ArtifactCoordinates;
+
 import org.jboss.modules.maven.MavenResolver;
-import org.wildfly.swarm.bootstrap.util.TempFileManager;
 
 /**
  * @author Bob McWhirter
  */
-public class UberJarMavenResolver implements MavenResolver {
+public class UberJarMavenResolver implements MavenResolver, Closeable {
 
     private static final String HYPHEN = "-";
 
@@ -41,8 +44,9 @@ public class UberJarMavenResolver implements MavenResolver {
     private Map<ArtifactCoordinates, File> resolutionCache = new ConcurrentHashMap<>();
 
     public static File copyTempJar(String artifactId, InputStream in, String packaging) throws IOException {
-        File tmp = TempFileManager.INSTANCE.newTempFile(artifactId, DOT + packaging);
+        File tmp = Files.createTempFile(artifactId, DOT + packaging).toFile();
         Files.copy(in, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        in.close();
         return tmp;
     }
 
@@ -71,6 +75,16 @@ public class UberJarMavenResolver implements MavenResolver {
         return resolved;
     }
 
+    @Override
+    public void close() throws IOException {
+        resolutionCache.forEach((a, f) -> {
+                try {
+                    Files.delete(f.toPath());
+                } catch (IOException e) {
+                }
+        });
+    }
+
     static String relativeArtifactPath(char separator, String groupId, String artifactId, String version) {
         StringBuilder builder = new StringBuilder(groupId.replace('.', separator));
         builder.append(separator).append(artifactId).append(separator);
@@ -87,4 +101,5 @@ public class UberJarMavenResolver implements MavenResolver {
     }
 
     private static final Pattern snapshotPattern = Pattern.compile("-\\d{8}\\.\\d{6}-\\d+$");
+
 }

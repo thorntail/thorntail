@@ -16,6 +16,7 @@
 package org.wildfly.swarm.bootstrap.modules;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -32,6 +33,10 @@ public class MavenResolvers {
 
     public static synchronized MavenResolver get() {
         return INSTANCE;
+    }
+
+    public static synchronized void close() throws IOException {
+        INSTANCE.close();
     }
 
     private static final MultiMavenResolver INSTANCE = new MultiMavenResolver();

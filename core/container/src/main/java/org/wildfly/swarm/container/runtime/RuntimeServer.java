@@ -47,7 +47,9 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.ValueService;
 import org.jboss.msc.value.ImmediateValue;
 import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 import org.wildfly.swarm.bootstrap.performance.Performance;
+import org.wildfly.swarm.bootstrap.util.JarFileManager;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
@@ -283,6 +285,8 @@ public class RuntimeServer implements Server {
         this.client = null;
         this.deployer.get().removeAllContent();
         this.deployer = null;
+        JarFileManager.INSTANCE.close();
+        MavenResolvers.close();
     }
 
     private void awaitContainerTermination() {
