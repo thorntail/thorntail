@@ -42,6 +42,7 @@ public class OpenApiDataObjectScannerTest {
 
         index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Foo.class");
         index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Bar.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Fuzz.class");
         index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/BazEnum.class");
         index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/KustomPair.class");
         index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Booking2.class");
