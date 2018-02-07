@@ -4,8 +4,9 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassType;
+import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Type;
-import org.wildfly.swarm.microprofile.openapi.models.media.SchemaImpl;
+import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiDataObjectScanner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,7 +24,8 @@ public class SchemaFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static SchemaImpl readSchema(SchemaImpl schema,
+    public static Schema readSchema(IndexView index,
+                                    Schema schema,
                                     AnnotationInstance annotation,
                                     Map<String, Object> overrides) {
         if (annotation == null) {
@@ -37,10 +39,10 @@ public class SchemaFactory {
         }
 
         //schema.setDescription(JandexUtil.stringValue(annotation, ModelConstants.OpenApiConstants.PROP_DESCRIPTION));  IMPLEMENTATION
-        schema.setNot((Schema) overrides.getOrDefault(PROP_NOT, readClassSchema(annotation.value(PROP_NOT))));
-        schema.setOneOf((List<Schema>) overrides.getOrDefault(PROP_ONE_OF, readClassSchemas(annotation.value(PROP_ONE_OF))));
-        schema.setAnyOf((List<Schema>) overrides.getOrDefault(PROP_ANY_OF, readClassSchemas(annotation.value(PROP_ANY_OF))));
-        schema.setAllOf((List<Schema>) overrides.getOrDefault(PROP_ALL_OF, readClassSchemas(annotation.value(PROP_ALL_OF))));
+        schema.setNot((Schema) overrides.getOrDefault(PROP_NOT, readClassSchema(index, annotation.value(PROP_NOT))));
+        schema.setOneOf((List<Schema>) overrides.getOrDefault(PROP_ONE_OF, readClassSchemas(index, annotation.value(PROP_ONE_OF))));
+        schema.setAnyOf((List<Schema>) overrides.getOrDefault(PROP_ANY_OF, readClassSchemas(index, annotation.value(PROP_ANY_OF))));
+        schema.setAllOf((List<Schema>) overrides.getOrDefault(PROP_ALL_OF, readClassSchemas(index, annotation.value(PROP_ALL_OF))));
         schema.setTitle((String) overrides.getOrDefault(PROP_TITLE, JandexUtil.stringValue(annotation, PROP_TITLE)));
         schema.setMultipleOf((BigDecimal) overrides.getOrDefault(PROP_MULTIPLE_OF, JandexUtil.bigDecimalValue(annotation, PROP_MULTIPLE_OF)));
         schema.setMaximum((BigDecimal) overrides.getOrDefault(PROP_MAXIMUM, JandexUtil.bigDecimalValue(annotation, PROP_MAXIMUM)));
@@ -70,8 +72,8 @@ public class SchemaFactory {
         schema.setMinItems((Integer) overrides.getOrDefault(PROP_MIN_ITEMS, JandexUtil.intValue(annotation, PROP_MIN_ITEMS)));
         schema.setUniqueItems((Boolean) overrides.getOrDefault(PROP_UNIQUE_ITEMS, JandexUtil.booleanValue(annotation, PROP_UNIQUE_ITEMS)));
 
-        SchemaImpl implSchema = readClassSchema(annotation.value(PROP_IMPLEMENTATION));
-        if (schema.getType() == Schema.SchemaType.ARRAY) {
+        Schema implSchema = readClassSchema(index, annotation.value(PROP_IMPLEMENTATION));
+        if (schema.getType() == Schema.SchemaType.ARRAY && implSchema != null) {
             // If the @Schema annotation indicates an array type, then use the Schema
             // generated from the implementation Class as the "items" for the array.
             schema.setItems(implSchema);
@@ -86,35 +88,31 @@ public class SchemaFactory {
 
     /**
      * Introspect into the given Class to generate a Schema model.
-     * @param value
      */
-    private static SchemaImpl readClassSchema(AnnotationValue value) {
+    private static Schema readClassSchema(IndexView index, AnnotationValue value) {
         if (value == null) {
             return null;
         }
         ClassType ctype = (ClassType) value.asClass();
-        SchemaImpl schema = introspectClassToSchema(ctype);
-        return schema;
+        return introspectClassToSchema(index, ctype);
     }
 
     /**
      * Introspects the given class type to generate a Schema model.
-     * @param ctype
      */
-    private static SchemaImpl introspectClassToSchema(ClassType ctype) {
-        // TODO Auto-generated method stub
-        return null;
+    private static Schema introspectClassToSchema(IndexView index, ClassType ctype) {
+        return OpenApiDataObjectScanner.process(index, ctype);
     }
 
-    private static List<SchemaImpl> readClassSchemas(AnnotationValue value) {
+    private static List<Schema> readClassSchemas(IndexView index, AnnotationValue value) {
         if (value == null) {
             return null;
         }
         Type[] classArray = value.asClassArray();
-        List<SchemaImpl> schemas = new ArrayList<>(classArray.length);
+        List<Schema> schemas = new ArrayList<>(classArray.length);
         for (Type type : classArray) {
             ClassType ctype = (ClassType) type;
-            SchemaImpl schema = introspectClassToSchema(ctype);
+            Schema schema = introspectClassToSchema(index, ctype);
             schemas.add(schema);
         }
         return schemas;
