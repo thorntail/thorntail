@@ -53,6 +53,8 @@ import java.util.Map;
 public class OpenApiDataObjectScanner {
 
     private static final Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.openapi");
+    // Object
+    private static final Type OBJECT_TYPE = Type.create(DotName.createSimple(java.lang.Object.class.getName()), Type.Kind.CLASS);
     // Collection (list-type things)
     private static final DotName COLLECTION_INTERFACE_NAME = DotName.createSimple(Collection.class.getName());
     private static final Type COLLECTION_TYPE = Type.create(COLLECTION_INTERFACE_NAME, Type.Kind.CLASS);
@@ -64,7 +66,8 @@ public class OpenApiDataObjectScanner {
     private static final Type ENUM_TYPE = Type.create(ENUM_INTERFACE_NAME, Type.Kind.CLASS);
     // String type
     private static final Type STRING_TYPE = Type.create(DotName.createSimple(String.class.getName()), Type.Kind.CLASS);
-
+    // Array type
+    private static final Type ARRAY_TYPE_OBJECT = ArrayType.create(DotName.createSimple("[Ljava.lang.Object;"), Type.Kind.ARRAY);
 
     private final IndexView index;
     private final ClassType rootClassType;
@@ -119,7 +122,7 @@ public class OpenApiDataObjectScanner {
 
         while (!path.isEmpty()) {
             ClassInfo currentClass = currentPathEntry.clazz;
-            SchemaImpl currentSchema = currentPathEntry.schema;
+            Schema currentSchema = currentPathEntry.schema;
 
             // First, handle class annotations.
             currentSchema = readKlass(currentClass, currentSchema);
@@ -140,18 +143,18 @@ public class OpenApiDataObjectScanner {
         }
     }
 
-    private SchemaImpl readKlass(ClassInfo currentClass,
-                             SchemaImpl currentSchema) {
+    private Schema readKlass(ClassInfo currentClass,
+                             Schema currentSchema) {
         AnnotationInstance annotation = getSchemaAnnotation(currentClass);
         if (annotation != null) {
             // Because of implementation= field, *may* return a new schema rather than modify.
-            return SchemaFactory.readSchema(currentSchema, annotation, Collections.emptyMap());
+            return SchemaFactory.readSchema(index, currentSchema, annotation, Collections.emptyMap());
         }
         return currentSchema;
     }
 
-    private SchemaImpl processField(FieldInfo field, SchemaImpl parentSchema, PathEntry currentPathEntry) {
-        SchemaImpl fieldSchema = new SchemaImpl();
+    private Schema processField(FieldInfo field, Schema parentSchema, PathEntry currentPathEntry) {
+        Schema fieldSchema = new SchemaImpl();
         // Is simple property
         parentSchema.addProperty(field.name(), fieldSchema);
 
@@ -196,7 +199,7 @@ public class OpenApiDataObjectScanner {
 
     private void pushFieldToPath(PathEntry parentPathEntry,
                                  FieldInfo fieldInfo,
-                                 SchemaImpl schema) {
+                                 Schema schema) {
             ClassType klazzType = fieldInfo.type().asClassType();
             ClassInfo klazzInfo = index.getClassByName(klazzType.name());
             pushPathPair(parentPathEntry, klazzInfo, schema);
@@ -204,7 +207,7 @@ public class OpenApiDataObjectScanner {
 
     private void pushPathPair(@NotNull PathEntry parentPathEntry,
                               @NotNull ClassInfo klazzInfo,
-                              @NotNull SchemaImpl schema) {
+                              @NotNull Schema schema) {
         PathEntry entry = PathEntry.leafNode(parentPathEntry, klazzInfo, schema);
         if (parentPathEntry.hasParent(entry)) {
             // Cycle detected, don't push path. TODO could be interesting to use reference?
@@ -217,10 +220,10 @@ public class OpenApiDataObjectScanner {
         }
     }
 
-    private SchemaImpl readSchemaAnnotatedField(AnnotationInstance annotation,
+    private Schema readSchemaAnnotatedField(AnnotationInstance annotation,
                                             FieldInfo fieldInfo,
-                                            SchemaImpl parent,
-                                            SchemaImpl schema,
+                                            Schema parent,
+                                            Schema schema,
                                             PathEntry pathEntry) {
         if (annotation == null) {
             return parent;
@@ -250,14 +253,14 @@ public class OpenApiDataObjectScanner {
         Map<String, Object> overrides = new HashMap<>();
         overrides.put(OpenApiConstants.PROP_TYPE, typeFormat.getSchemaType());
         overrides.put(OpenApiConstants.PROP_FORMAT, typeFormat.getFormat().format());
-        return SchemaFactory.readSchema(schema, annotation, overrides);
+        return SchemaFactory.readSchema(index, schema, annotation, overrides);
     }
 
     private ClassInfo getClassByName(Type type) {
         return index.getClassByName(TypeUtil.getName(type));
     }
 
-    private Type processType(FieldInfo fieldInfo, SchemaImpl schema, PathEntry pathEntry) {
+    private Type processType(FieldInfo fieldInfo, Schema schema, PathEntry pathEntry) {
 
         // If it's a terminal type.
         if (isTerminalType(fieldInfo.type())) {
@@ -280,14 +283,16 @@ public class OpenApiDataObjectScanner {
 
         if (fieldInfo.type().kind() == Type.Kind.PARAMETERIZED_TYPE) {
             // Parameterised type (e.g. Foo<A, B>)
-            readParamType(pathEntry, schema, fieldInfo.type().asParameterizedType());
-            return fieldInfo.type();
-        } else if (fieldInfo.type().kind() == Type.Kind.ARRAY) {
+            return readParamType(pathEntry, schema, fieldInfo.type().asParameterizedType());
+        }
+
+        if (fieldInfo.type().kind() == Type.Kind.ARRAY) {
             LOG.debugv("Processing an array {0}", fieldInfo);
             ArrayType arrayType = fieldInfo.type().asArrayType();
             // TODO handle multi-dimensional arrays.
-            schema.type(Schema.SchemaType.ARRAY);
             SchemaImpl arrSchema = new SchemaImpl();
+            schema.type(Schema.SchemaType.ARRAY);
+            schema.items(arrSchema);
 
             TypeUtil.TypeWithFormat typeFormat = TypeUtil.getTypeFormat(arrayType.component());
             arrSchema.setType(typeFormat.getSchemaType());
@@ -297,9 +302,10 @@ public class OpenApiDataObjectScanner {
                 ClassInfo klazz = getClassByName(fieldInfo.type());
                 pushPathPair(pathEntry, klazz, arrSchema);
             }
-            schema.items(arrSchema);
-            return fieldInfo.type();
-        } else if (fieldInfo.type().kind() == Type.Kind.TYPE_VARIABLE) {
+            return arrayType;
+        }
+
+        if (fieldInfo.type().kind() == Type.Kind.TYPE_VARIABLE) {
             // Type variable (e.g. A in List<A>)
             Type resolvedType = pathEntry.resolvedTypes.pop();
             LOG.debugv("Resolved type {0} -> {1}", fieldInfo, resolvedType);
@@ -322,7 +328,7 @@ public class OpenApiDataObjectScanner {
     }
 
     private void readUnannotatedField(FieldInfo fieldInfo,
-                                      SchemaImpl schema,
+                                      Schema schema,
                                       PathEntry pathEntry) {
         if (!shouldInferUnannotatedFields()) {
             return;
@@ -345,7 +351,7 @@ public class OpenApiDataObjectScanner {
         return TypeUtil.isA(index, testSubject, test);
     }
 
-    private void readParamType(PathEntry pathEntry, SchemaImpl schema, ParameterizedType pType) {
+    private Type readParamType(PathEntry pathEntry, Schema schema, ParameterizedType pType) {
         LOG.debugv("Processing parameterized type {0}", pType);
 
         // If it's a collection, we should treat it as an array.
@@ -357,7 +363,6 @@ public class OpenApiDataObjectScanner {
 
             // E.g. In Foo<A, B> this will be: A, B
             for (Type argument : pType.arguments()) {
-                // FIXME this won't work for non-Jandex types -- if we do this we'll need to jump into pure reflection.
                 if (isTerminalType(argument)) {
                     TypeUtil.TypeWithFormat terminalType = TypeUtil.getTypeFormat(argument);
                     arraySchema.type(terminalType.getSchemaType());
@@ -367,6 +372,7 @@ public class OpenApiDataObjectScanner {
                     pushPathPair(pathEntry, klazz, arraySchema);
                 }
             }
+            return ARRAY_TYPE_OBJECT; // Representing collection as JSON array
         } else if (isA(pType, MAP_TYPE)) {
             LOG.debugv("Processing Map. Will treat as an object.");
             schema.type(Schema.SchemaType.OBJECT);
@@ -384,11 +390,13 @@ public class OpenApiDataObjectScanner {
                 }
                 schema.additionalProperties(propsSchema);
             }
+            return OBJECT_TYPE;
         } else {
             // This attempts to allow us to resolve the types issue.
             ClassInfo klazz = index.getClassByName(pType.name());
             PathEntry pair = new PathEntry(pathEntry, klazz, schema, pType.arguments());
             path.push(pair);
+            return pType;
         }
     }
 
@@ -402,24 +410,24 @@ public class OpenApiDataObjectScanner {
     private static final class PathEntry {
         private final PathEntry parent;
         private final ClassInfo clazz;
-        private final SchemaImpl schema;
+        private final Schema schema;
         // Generic args to class pushed on stack so we can resolve the fields?
         private final Deque<Type> resolvedTypes = new ArrayDeque<>();
 
-        PathEntry(PathEntry parent, ClassInfo clazz, SchemaImpl schema) {
+        PathEntry(PathEntry parent, ClassInfo clazz, Schema schema) {
             this.parent = parent;
             this.clazz = clazz;
             this.schema = schema;
         }
 
-        PathEntry(PathEntry parent, ClassInfo clazz, SchemaImpl schema, Type... types) {
+        PathEntry(PathEntry parent, ClassInfo clazz, Schema schema, Type... types) {
             this.parent = parent;
             this.clazz = clazz;
             this.schema = schema;
             this.resolvedTypes.addAll(Arrays.asList(types));
         }
 
-        PathEntry(PathEntry parent, ClassInfo clazz, SchemaImpl schema, List<Type> types) {
+        PathEntry(PathEntry parent, ClassInfo clazz, Schema schema, List<Type> types) {
             this.parent = parent;
             this.clazz = clazz;
             this.schema = schema;
@@ -430,7 +438,7 @@ public class OpenApiDataObjectScanner {
             return clazz;
         }
 
-        SchemaImpl getSchema() {
+        Schema getSchema() {
             return schema;
         }
 
@@ -483,11 +491,11 @@ public class OpenApiDataObjectScanner {
             return false;
         }
 
-        static PathEntry rootNode(ClassInfo classInfo, SchemaImpl rootSchema) {
+        static PathEntry rootNode(ClassInfo classInfo, Schema rootSchema) {
             return new PathEntry(null, classInfo, rootSchema);
         }
 
-        static PathEntry leafNode(PathEntry parentNode, ClassInfo classInfo, SchemaImpl rootSchema) {
+        static PathEntry leafNode(PathEntry parentNode, ClassInfo classInfo, Schema rootSchema) {
             return new PathEntry(parentNode, classInfo, rootSchema);
         }
     }
