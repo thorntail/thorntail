@@ -10,8 +10,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>jaxrs</artifactId>
-  <name>Testsuite: Plain JAX-RS</name>
+  <artifactId>jpa</artifactId>
+  <name>Testsuite: JPA</name>
 
   <build>
     <plugins>
@@ -25,7 +25,7 @@
               <goal>build</goal>
             </goals>
             <configuration>
-              <appClass>org.jboss.unimbus.testsuite.jaxrs.MyJaxrsApplication</appClass>
+              <appClass>org.jboss.unimbus.testsuite.jpa.MyJpaApplication</appClass>
               <type>fat</type>
             </configuration>
           </execution>
@@ -37,7 +37,17 @@
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>jaxrs</artifactId>
+      <artifactId>jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
+      <artifactId>servlet</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${version.h2}</version>
     </dependency>
   </dependencies>
 </project>

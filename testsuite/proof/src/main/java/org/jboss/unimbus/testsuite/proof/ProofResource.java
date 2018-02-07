@@ -29,7 +29,6 @@ public class ProofResource {
     @Primary
     URL url;
 
-    @Inject
     @PersistenceContext
     EntityManager entityManager;
 
