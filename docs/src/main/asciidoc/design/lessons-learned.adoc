@@ -8,6 +8,10 @@ Don't cling to a mistake just because you spent a lot of time making it.
 
 When you mangle and repackage a user's artifacts and dependencies, it can many times go awry.
 
+.Don't replace Maven
+
+Let Maven (or Gradle) handle the entirety of pulling dependencies. We cannot predict the topology of someone's repository managers, proxies and network.
+
 .Classpaths are tricky
 
 If different codepaths are required for executing from Maven, an IDE, a unit-test, and during production, you will have a *bad time*.

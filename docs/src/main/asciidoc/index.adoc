@@ -33,6 +33,7 @@ include::components/javaee/jdbc.adoc[leveloffset=+2]
 include::components/javaee/datasources.adoc[leveloffset=+2]
 include::components/javaee/jpa.adoc[leveloffset=+2]
 include::components/javaee/jta.adoc[leveloffset=+2]
+include::components/javaee/jms.adoc[leveloffset=+2]
 
 ## MicroProfile
 

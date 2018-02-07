@@ -21,6 +21,8 @@
     <version.ironjacamar>1.4.6.Final</version.ironjacamar>
     <version.resteasy>3.1.4.Final</version.resteasy>
     <version.undertow>1.4.21.Final</version.undertow>
+    <version.activemq>2.4.0</version.activemq>
+    <version.jms-spec>1.0.2.Final</version.jms-spec>
 
     <version.javax-transaction>1.0.1.Final</version.javax-transaction>
     <version.javax-json>1.1.2</version.javax-json>
@@ -76,6 +78,11 @@
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
         <artifactId>jndi</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>jms</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -196,6 +203,7 @@
     <module>jaxrs</module>
     <module>jdbc</module>
     <module>jndi</module>
+    <module>jms</module>
     <module>jpa</module>
     <module>jta</module>
     <module>json-p</module>
@@ -234,6 +242,24 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-test-source</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/it/java</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.jboss.jandex</groupId>

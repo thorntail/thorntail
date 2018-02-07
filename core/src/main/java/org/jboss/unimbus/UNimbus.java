@@ -124,17 +124,17 @@ public class UNimbus {
 
         curTick = markTiming("bootstrap", curTick);
         emitter.fireScan();
-        curTick = markTiming( "scan", curTick);
+        curTick = markTiming("scan", curTick);
         emitter.fireInitialize();
-        curTick = markTiming( "initialize", curTick);
+        curTick = markTiming("initialize", curTick);
         emitter.fireDeploy();
-        curTick = markTiming( "deploy", curTick);
+        curTick = markTiming("deploy", curTick);
         emitter.fireBeforeStart();
-        curTick = markTiming( "before start", curTick);
+        curTick = markTiming("before start", curTick);
         emitter.fireStart();
-        curTick = markTiming( "start", curTick);
+        curTick = markTiming("start", curTick);
         emitter.fireAfterStart();
-        curTick = markTiming( "after start", curTick);
+        curTick = markTiming("after start", curTick);
 
         long endTick = System.currentTimeMillis();
         CoreMessages.MESSAGES.started(format(endTick - startTick));
@@ -145,7 +145,7 @@ public class UNimbus {
 
     private long markTiming(String phase, long startTick) {
         long curTick = System.currentTimeMillis();
-        CoreMessages.MESSAGES.timing(phase, format( curTick - startTick));
+        CoreMessages.MESSAGES.timing(phase, format(curTick - startTick));
         return curTick;
     }
 
