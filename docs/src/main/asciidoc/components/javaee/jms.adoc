@@ -32,3 +32,7 @@ The remote connection host, if not using `artemis.url`. Defaults to `localhost`.
 `artemis.port`::
 The remote connection port, if not using `artemis.url`. Defaults to `61616`.
 
+== CDI Components
+
+`JMSContext`::
+Injectable JMS context which may be used to create queues & topics, consumers & producers.
