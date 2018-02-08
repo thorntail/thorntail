@@ -1,0 +1,82 @@
+
+[#logging-to-a-file_{context}]
+= Logging to a file
+
+In addition to the console logging, you can save the logs of your application in a file.
+Typically, deployments use rotating logs to save disk space.
+
+In WildFly Swarm, logging is configured using system properties.
+Even though it is possible to use the `-Dproperty=value` syntax when launching your application, it is strongly recommended to configure file logging using the YAML profile files.
+
+.Prerequisites
+
+* A Maven-based application with the logging fraction enabled. For more information, see xref:enabling-logging_{context}[].
+* A writable directory on your file system.
+
+.Procedure
+
+. Open a YAML profile file of your choice.
+If you do not know which one to use, open `project-defaults.yml` in the root directory of the WAR archive with your application.
+In the YAML file, add the following section:
++
+[source,yaml]
+----
+swarm:
+  logging:
+----
+. Configure a formatter (optional). Under `logging`, add a new formatter with a pattern of your choice.
+In this example, it is called `LOG_FORMATTER`:
++
+[source,yaml]
+----
+pattern-formatters:
+  LOG_FORMATTER:
+    pattern: "%p [%c] %s%e%n"
+----
+
+. Configure a file handler to use with the loggers.
+This example shows the configuration of a periodic rotating file handler.
+Under `logging`, add a `periodic-rotating-file-handlers` section with a new handler.
++
+--
+[source,yaml]
+----
+periodic-rotating-file-handlers:
+  FILE:
+    file:
+      path: target/MY_APP.log
+    suffix: .yyyy-MM-dd
+    named-formatter: LOG_FORMATTER
+    level: INFO
+----
+
+Here, a new handler named `FILE` is created, logging events of the `INFO` level and higher.
+The file stores logs in the `target` directory, and each log file is named `MY_APP.log` with the suffix `.yyyy-MM-dd`.
+WildFly Swarm automatically parses the log rotation period from the suffix, so ensure you use a format compatible with the `java.text.SimpleDateFormat` class.
+--
+
+. Configure the root logger.
++
+--
+The root logger is by default configured to use the `CONSOLE` handler only.
+Under `logging`, add a `root-logger` section with the handlers you wish to use:
+
+[source,yaml]
+----
+root-logger:
+  handlers:
+  - CONSOLE
+  - FILE
+----
+
+Here, the `FILE` handler from the previous step is used, along with the default console handler.
+--
+
+Below, you can see the complete logging configuration section:
+
+.The logging section in a YAML configuration profile
+[source,yaml]
+----
+include::src/main/resources/profile.yaml[]
+----
+
