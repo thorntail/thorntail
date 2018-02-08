@@ -16,7 +16,7 @@ Even though it is possible to use the `-Dproperty=value` syntax when launching y
 .Procedure
 
 . Open a YAML profile file of your choice.
-If you do not know which one to use, open `project-defaults.yml` in the root directory of the WAR archive with your application.
+If you do not know which one to use, open `project-defaults.yml` in the `src/main/resources` directory in your application sources.
 In the YAML file, add the following section:
 +
 [source,yaml]
@@ -44,14 +44,14 @@ Under `logging`, add a `periodic-rotating-file-handlers` section with a new hand
 periodic-rotating-file-handlers:
   FILE:
     file:
-      path: target/MY_APP.log
+      path: target/MY_APP_NAME.log
     suffix: .yyyy-MM-dd
     named-formatter: LOG_FORMATTER
     level: INFO
 ----
 
 Here, a new handler named `FILE` is created, logging events of the `INFO` level and higher.
-The file stores logs in the `target` directory, and each log file is named `MY_APP.log` with the suffix `.yyyy-MM-dd`.
+The file stores logs in the `target` directory, and each log file is named `MY_APP_NAME.log` with the suffix `.yyyy-MM-dd`.
 WildFly Swarm automatically parses the log rotation period from the suffix, so ensure you use a format compatible with the `java.text.SimpleDateFormat` class.
 --
 
