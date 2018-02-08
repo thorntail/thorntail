@@ -11,16 +11,18 @@
  * under the License.
  */
 
-package org.wildfly.swarm.microprofile.openapi.runtime;
+package org.wildfly.swarm.microprofile.openapi.runtime.entity;
 
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.apps.airlines.model.CreditCard;
 import org.eclipse.microprofile.openapi.apps.airlines.model.Flight;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimerTask;
 
 /**
  * Customised version of {@link org.eclipse.microprofile.openapi.apps.airlines.model.Booking} for testing purposes.
@@ -29,6 +31,33 @@ import java.util.Map;
         example = "This is a example in Booking2 of class example",
         deprecated = true)
 public class Booking2 {
+
+    BuzzLinkedList rootNode;
+
+    Enum[] bareEnum;
+
+    int[] array;
+
+    // TODO
+    //int[][] array2d;
+
+    List<? super Flight> barSuper;
+
+    List<? extends Bar> barExtends;
+
+    KustomPair<? extends String, ? super String> customTypeExtendsSuper;
+
+    Collection foo;
+
+    TimerTask[] rawArray = new TimerTask[2];
+
+    Long[] longArray = {1L, 2L};
+
+    Map<? extends Foo, ? super Foo> blahMap;
+
+    Map<Integer, StringBuffer> awkwardMap;
+
+    Map<Integer, BazEnum> awkwardMap2;
 
     @Schema(required = true)
     private Flight departtureFlight;
@@ -46,7 +75,7 @@ public class Booking2 {
     private String seatPreference;
 
     @Schema(writeOnly = true)
-    public Integer foo = 5;
+    public Integer writeOnlyInteger = 5;
 
     @Schema(required = false)
     public int primitiveFoo;
@@ -60,28 +89,28 @@ public class Booking2 {
 
     // Handle generic type List (collection)
     @Schema(required = true)
-    private List<CreditCard2> ccList;
+    private List<CreditCard> ccList;
 
     // Custom generic types
     @Schema(required = true)
     private KustomPair<String, Integer> somePair;
 
-//    // Nesting generic types with same type.
-//    KustomPair<KustomPair<String, String>, Integer> nesting;
+    // Nesting generic types with same type.
+    KustomPair<KustomPair<String, String>, Integer> nesting;
 
     // Complex nesting of generics including unbounded wildcard
     Fuzz<KustomPair<Fuzz<String, ?>, Integer>, Double> complexNesting;
 
     // Handle Void
-    //    Void foo;
+    Void voidField = (Void) null;
 
     // Handle ? with extends bound
     @Schema(required = true)
-    private List<? extends CreditCard> creditCardListWildcard;
+    private Fuzz<String, Foo> fuzzListWildcard;
 
     // Bare collection
-//    @Schema(required = true)
-//    private List unsafeList;
+    @Schema(required = true)
+    private List unsafeList;
 
     // Map
     @Schema(required = true)

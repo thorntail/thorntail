@@ -1,4 +1,4 @@
-package org.wildfly.swarm.microprofile.openapi.runtime;
+package org.wildfly.swarm.microprofile.openapi.runtime.entity;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
