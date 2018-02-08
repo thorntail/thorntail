@@ -22,6 +22,7 @@ import org.jboss.jandex.FieldInfo;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.PrimitiveType;
 import org.jboss.jandex.Type;
+import org.jboss.jandex.WildcardType;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -39,6 +40,8 @@ import java.util.Optional;
  */
 public class TypeUtil {
 
+    private static final DotName DOTNAME_OBJECT = DotName.createSimple(Object.class.getName());
+    private static final Type OBJECT_TYPE = Type.create(DOTNAME_OBJECT, Type.Kind.CLASS);
     private static final TypeWithFormat STRING_FORMAT = new TypeWithFormat(SchemaType.STRING, DataFormat.NONE);
     private static final TypeWithFormat BYTE_FORMAT = new TypeWithFormat(SchemaType.STRING, DataFormat.BYTE);
     private static final TypeWithFormat CHAR_FORMAT = new TypeWithFormat(SchemaType.STRING, DataFormat.BYTE);
@@ -63,6 +66,9 @@ public class TypeUtil {
     static {
         // String
         TYPE_MAP.put(DotName.createSimple(String.class.getName()), STRING_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(StringBuffer.class.getName()), STRING_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(StringBuilder.class.getName()), STRING_FORMAT);
+        TYPE_MAP.put(DotName.createSimple(CharSequence.class.getName()), STRING_FORMAT);
 
         // B64 String
         TYPE_MAP.put(DotName.createSimple(Byte.class.getName()), BYTE_FORMAT);
@@ -117,7 +123,7 @@ public class TypeUtil {
             return arrayFormat();
         } else {
             return Optional
-                    .ofNullable(TYPE_MAP.get(getName(classType)))
+                    .ofNullable(TYPE_MAP.get(getName(classType))) // TODO we could fall back onto tests for interfaces such as CharSequence.
                     // Otherwise it's some object without a well-known format mapping
                     .orElse(objectFormat());
         }
@@ -206,7 +212,20 @@ public class TypeUtil {
         if (type.kind() == Type.Kind.ARRAY) {
             return type.asArrayType().component().name();
         }
+        if (type.kind() == Type.Kind.WILDCARD_TYPE) {
+            return getBound(type.asWildcardType()).name();
+        }
         return type.name();
+    }
+
+    public static Type getBound(WildcardType wct) {
+        if (wct.superBound() != null) {
+            return wct.superBound();
+        } else if (wct.extendsBound() != null) {
+            return wct.extendsBound();
+        } else {
+            return OBJECT_TYPE;
+        }
     }
 
     public static final class TypeWithFormat {

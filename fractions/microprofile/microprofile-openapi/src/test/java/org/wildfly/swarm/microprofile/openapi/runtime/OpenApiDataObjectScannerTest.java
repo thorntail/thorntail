@@ -21,9 +21,11 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
 import org.jboss.jandex.Type;
+import org.jboss.logging.Logger;
 import org.junit.Test;
 import org.wildfly.swarm.microprofile.openapi.api.models.ComponentsImpl;
 import org.wildfly.swarm.microprofile.openapi.api.models.OpenAPIImpl;
+import org.wildfly.swarm.microprofile.openapi.runtime.entity.Booking2;
 import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer;
 
 import java.io.IOException;
@@ -36,17 +38,22 @@ import java.util.Map;
  */
 public class OpenApiDataObjectScannerTest {
 
+    private static final Logger LOG = Logger.getLogger(OpenApiDataObjectScannerTest.class);
+
+    /**
+     * Basic test to ensure scanner doesn't choke on various declaration types and patterns.
+     */
     @Test
     public void test() throws IOException {
         Indexer indexer = new Indexer();
 
-        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Foo.class");
-        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Bar.class");
-        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Fuzz.class");
-        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/BazEnum.class");
-        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/KustomPair.class");
-        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/Booking2.class");
-        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/CreditCard2.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/entity/Foo.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/entity/Bar.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/entity/BuzzLinkedList.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/entity/Fuzz.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/entity/BazEnum.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/entity/KustomPair.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/entity/Booking2.class");
         index(indexer, "org/eclipse/microprofile/openapi/apps/airlines/model/CreditCard.class");
         index(indexer, "org/eclipse/microprofile/openapi/apps/airlines/model/Flight.class");
         index(indexer, "org/eclipse/microprofile/openapi/apps/airlines/model/Airline.class");
@@ -56,9 +63,8 @@ public class OpenApiDataObjectScannerTest {
         OpenApiDataObjectScanner foo = new OpenApiDataObjectScanner(index,
                 (ClassType) ClassType.create(name, Type.Kind.CLASS));
 
-        System.out.println("Calling top-level schema: " + Booking2.class.getName());
+        LOG.debugv("Calling top-level schema: {0}", Booking2.class.getName());
         printToConsole(Booking2.class.getSimpleName(), foo.process());
-        // TODO add some expectations?
     }
 
     private void index(Indexer indexer, String resName) throws IOException {
@@ -75,11 +81,7 @@ public class OpenApiDataObjectScannerTest {
         comp.setSchemas(map);
         oai.setComponents(comp);
 
-//        Schema arrayThing = new SchemaImpl();
-//        arrayThing.setType(Schema.SchemaType.ARRAY);
-//        arrayThing.items(new SchemaImpl());
-//        schema.addProperty("arrayThingie", arrayThing);
-        System.out.println(OpenApiSerializer.serialize(oai, OpenApiSerializer.Format.JSON));
+        LOG.debug(OpenApiSerializer.serialize(oai, OpenApiSerializer.Format.JSON));
     }
 
 }
