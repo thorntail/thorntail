@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Provider;
 
@@ -52,7 +53,17 @@ class InjectionCoercer {
                     Object array = Array.newInstance(componentType,1);
                     this.requestType = array.getClass();
                 } else if ( Optional.class == rawType ) {
-                    this.requestType = (Class<?>) ((ParameterizedType) this.targetType).getActualTypeArguments()[0];
+                    Type innerType = ((ParameterizedType) this.targetType).getActualTypeArguments()[0];
+                    if ( innerType instanceof ParameterizedType ) {
+                        Type innerRawType = ((ParameterizedType) innerType).getRawType();
+                        if (Collection.class.isAssignableFrom((Class<?>) innerRawType) ) {
+                            Class<?> componentType = (Class<?>) ((ParameterizedType) innerType).getActualTypeArguments()[0];
+                            Object array = Array.newInstance(componentType,1);
+                            this.requestType = array.getClass();
+                        }
+                    } else {
+                        this.requestType = (Class<?>) ((ParameterizedType) this.targetType).getActualTypeArguments()[0];
+                    }
                     this.optional = true;
                 } else if (Provider.class == rawType ) {
                     this.requestType = (Class<?>) ((ParameterizedType) this.targetType).getActualTypeArguments()[0];

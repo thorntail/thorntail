@@ -1,0 +1,52 @@
+[#component-jca]
+= JCA
+
+The JCA component provides for using _resource adapters_.
+
+.Maven Coordinates
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.jboss.unimbus</groupId>
+  <artifactId>jca</artifactId>
+</dependency>
+----
+
+.Implicit Deployment
+
+If the configuration property of `jca.resource-adapters` is set to a string or array of strings, each name is attempted to be loaded and deployed as a resource adapter.
+For each name, a path is constructed, using the format of `META-INF/_name_-ra.xml`. 
+The classpath is searched for a resource under that path, and if found, deployed as a resource adapter.
+For instance, if `jca.resource-adapters` is set to `artemis,xadisk`, then both `META-INF/artemis-ra.xml` and `META-INF/xadisk-ra.xml` are considered as deployable resource adapters.
+All classes related to the resource adapter should be in the normal classpath, usually as a `.jar` artifact, _not_ a `.rar` artifact.
+
+.Explicit Deployment
+
+In the event your application requires location of an `ra.xml` using different rules than the implicit deployment supports, your components may inject both the `ResourceAdapterFactory` and `ResourceAdapterDeployments`.
+
+The factory may be used to parse an arbitrary resource from the classpath as an `ra.xml` type of file. 
+Once parsed, the result should be added to the `ResourceAdapterDeployments` collection.
+
+.Configuration
+
+jca.resource-adapters::
+An array of strings of resource-adapter XML deployment descriptors to locate and deploy.
+
+== `@MessageDriven` Components
+
+While the `@MessageDriven` annotation is actually part of the EJB3 specification, since it relates to resource adapters, it is supported through the JCA component.
+
+Any normal POJO marked as `@MessageDriven` and implementing the appropriate interface (such as `javax.jms.MessageListener` for JMS resource adapters) will be deployed as a message-driven component.
+
+These components exist within the normal CDI container, and will be injected as appropriate.
+These components are generally short-lived and managed by the appropriate resource-adapter, and therefore may _not_ be injected directly into other CDI components.
+
+== CDI Components
+
+`ResourceAdapterDeploymentFactory`::
+A factory capable of locating an XML file within the classpath and parsing it into a `ResourceAdapterDeployment`.
+
+`ResourceAdapterDeployments`::
+A collection which accepts `ResourceAdapterDeployment` instances for deployment.
+

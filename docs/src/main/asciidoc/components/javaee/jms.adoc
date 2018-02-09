@@ -32,6 +32,11 @@ The remote connection host, if not using `artemis.url`. Defaults to `localhost`.
 `artemis.port`::
 The remote connection port, if not using `artemis.url`. Defaults to `61616`.
 
+== Resource Adapter
+
+If the Artemis resource adapter artifact is found as a dependency of the project, it will automatically be deployed.
+The resource adapter will be configured using the same connection and authentication information as the normal Artemis JMS client.
+
 == CDI Components
 
 `JMSContext`::

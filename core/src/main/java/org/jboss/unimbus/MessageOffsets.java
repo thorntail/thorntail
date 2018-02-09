@@ -18,4 +18,5 @@ public interface MessageOffsets {
     int METRICS_OFFSET = 10000;
     int SECURITY_OFFSET = 11000;
     int KEYCLOAK_OFFSET = 12000;
+    int JCA_OFFSET = 13000;
 }

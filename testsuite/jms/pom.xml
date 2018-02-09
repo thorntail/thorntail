@@ -107,5 +107,15 @@
       <groupId>org.jboss.unimbus</groupId>
       <artifactId>jms</artifactId>
     </dependency>
+    <dependency>
+      <groupId>net.java.xadisk</groupId>
+      <artifactId>xadisk</artifactId>
+      <version>1.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>artemis-ra</artifactId>
+      <version>${version.activemq}</version>
+    </dependency>
   </dependencies>
 </project>

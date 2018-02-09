@@ -1,4 +1,4 @@
-package org.jboss.unimbus.testsuite.jms;
+package org.jboss.unimbus.testsuite.jms.basic;
 
 import java.util.HashSet;
 import java.util.Set;

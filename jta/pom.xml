@@ -18,12 +18,14 @@
       <artifactId>core</artifactId>
     </dependency>
 
+<!--
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-shaded</artifactId>
       <version>${version.weld}</version> 
       <scope>provided</scope>
     </dependency>
+-->
 
     <dependency>
       <groupId>org.jboss.narayana.jta</groupId>
