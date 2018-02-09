@@ -21,22 +21,20 @@ import java.io.InputStream;
 
 import javax.inject.Inject;
 
-import org.eclipse.microprofile.openapi.OASFilter;
-import org.eclipse.microprofile.openapi.OASModelReader;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
-import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiParser;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
-import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
-import org.wildfly.swarm.microprofile.openapi.models.PathsImpl;
-import org.wildfly.swarm.microprofile.openapi.models.info.InfoImpl;
-import org.wildfly.swarm.microprofile.openapi.util.FilterUtil;
-import org.wildfly.swarm.microprofile.openapi.util.MergeUtil;
-import org.wildfly.swarm.microprofile.openapi.util.ServersUtil;
+import org.jboss.shrinkwrap.api.classloader.ShrinkWrapClassLoader;
+import org.wildfly.swarm.microprofile.openapi.api.OpenApiConfig;
+import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
+import org.wildfly.swarm.microprofile.openapi.api.models.OpenAPIImpl;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiParser;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Format;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
+import org.wildfly.swarm.undertow.WARArchive;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -45,17 +43,33 @@ import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 @DeploymentScoped
 public class OpenApiDeploymentProcessor implements DeploymentProcessor {
 
+    private static final Logger LOGGER = Logger.getLogger(OpenApiDeploymentProcessor.class);
+
+    private static final String LISTENER_CLASS = "org.wildfly.swarm.microprofile.openapi.deployment.OpenApiServletContextListener";
+
     private final OpenApiConfig config;
+
     private final Archive archive;
 
     /**
-     * Constructor.
+     * Constructor for testing purposes.
+     *
      * @param config
      * @param archive
      */
-    @Inject
     public OpenApiDeploymentProcessor(OpenApiConfig config, Archive archive) {
         this.config = config;
+        this.archive = archive;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param archive
+     */
+    @Inject
+    public OpenApiDeploymentProcessor(Archive archive) {
+        this.config = initConfigFromArchive(archive);
         this.archive = archive;
     }
 
@@ -66,61 +80,18 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
      */
     @Override
     public void process() throws Exception {
-        // Phase 1:  Call OASModelReader
-        OpenAPIImpl model = modelFromReader();
-
-        // Phase 2:  Fetch any static OpenAPI file packaged in the app
-        model = MergeUtil.merge(model, modelFromStaticFile());
-
-        // Phase 3:  Process annotations
-        model = MergeUtil.merge(model, modelFromAnnotations());
-
-        // Phase 4:  Filter model via OASFilter
-        model = filterModel(model);
-
-        // Phase 5:  Default empty document if model == null
-        if (model == null) {
-            model = new OpenAPIImpl();
-            model.setOpenapi(OpenApiConstants.OPEN_API_VERSION);
-        }
-
-        // Phase 6:  Provide missing required elements
-        if (model.getPaths() == null) {
-            model.setPaths(new PathsImpl());
-        }
-        if (model.getInfo() == null) {
-            model.setInfo(new InfoImpl());
-        }
-        if (model.getInfo().getTitle() == null) {
-            model.getInfo().setTitle((archive.getName() == null ? "Generated" : archive.getName()) + " API");
-        }
-        if (model.getInfo().getVersion() == null) {
-            model.getInfo().setVersion("1.0");
-        }
-
-        // Phase 7:  Use Config values to add Servers (global, pathItem, operation)
-        ServersUtil.configureServers(config, model);
-
-        OpenApiDocumentHolder.document = model;
-    }
-
-    /**
-     * Instantiate the configured {@link OASModelReader} and invoke it.  If no reader is configured,
-     * then return null.  If a class is configured but there is an error either instantiating or
-     * invokig it, a {@link RuntimeException} is thrown.
-     */
-    private OpenAPIImpl modelFromReader() {
-        String readerClassName = config.modelReader();
-        if (readerClassName == null) {
-            return null;
-        }
         try {
-            Class c = Class.forName(readerClassName);
-            OASModelReader reader = (OASModelReader) c.newInstance();
-            return (OpenAPIImpl) reader.buildModel();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            // First register OpenApiServletContextListener which triggers the final init
+            WARArchive warArchive = archive.as(WARArchive.class);
+            warArchive.findWebXmlAsset().addListener(LISTENER_CLASS);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to register OpenAPI listerner", e);
         }
+        // Set models from annotations and static file
+        OpenApiDocument openApiDocument = OpenApiDocument.INSTANCE;
+        openApiDocument.config(config);
+        openApiDocument.modelFromStaticFile(modelFromStaticFile());
+        openApiDocument.modelFromAnnotations(modelFromAnnotations());
     }
 
     /**
@@ -177,29 +148,16 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
         return scanner.scan();
     }
 
-    /**
-     * Filter the final model by instantiating a {@link OASFilter} configured by the app.  If no
-     * filter has been configured, this will simply return the model unchanged.
-     * @param model
-     */
-    private OpenAPIImpl filterModel(OpenAPIImpl model) {
-        if (model == null) {
-            return null;
-        }
-
-        String filterClassName = config.filter();
-        if (filterClassName == null) {
-            return model;
-        }
-
-        System.out.println("Filtering OpenAPI model.");
-
+    private static OpenApiConfig initConfigFromArchive(Archive<?> archive) {
+        ShrinkWrapClassLoader cl = new ShrinkWrapClassLoader(archive);
         try {
-            Class c = Class.forName(filterClassName);
-            OASFilter filter = (OASFilter) c.newInstance();
-            return (OpenAPIImpl) FilterUtil.applyFilter(filter, model);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            return new OpenApiConfig(ConfigProvider.getConfig(cl));
+        } finally {
+            try {
+                cl.close();
+            } catch (IOException e) {
+                LOGGER.warnv("Could not close ShrinkWrapClassLoader for {0}", archive.getName());
+            }
         }
     }
 
