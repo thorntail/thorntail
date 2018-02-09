@@ -19,10 +19,10 @@ package org.wildfly.swarm.microprofile.openapi.runtime;
 import java.io.IOException;
 import java.util.Deque;
 
-import javax.enterprise.context.RequestScoped;
-
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
+import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Format;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -34,19 +34,19 @@ import io.undertow.util.Methods;
 /**
  * @author Marc Savy {@literal marc@rhymewithgravy.com}
  */
-@RequestScoped
 public class OpenApiHttpHandler implements HttpHandler {
 
     private static final String OAI = "/openapi";
     private static final String ALLOWED_METHODS = "GET, HEAD, OPTIONS";
     private static final String QUERY_PARAM_FORMAT = "format";
-    private static final String oaiJson;
-    private static final String oaiYaml;
+    private static final String OAI_JSON;
+    private static final String OAI_YAML;
 
     static {
         try {
-            oaiJson = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
-            oaiYaml = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.YAML);
+            OpenAPI model = OpenApiDocument.INSTANCE.get();
+            OAI_JSON = OpenApiSerializer.serialize(model, Format.JSON);
+            OAI_YAML = OpenApiSerializer.serialize(model, Format.YAML);
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
@@ -107,7 +107,7 @@ public class OpenApiHttpHandler implements HttpHandler {
     }
 
     private String getCachedOaiString(Format format) {
-        return format == Format.YAML ? oaiYaml : oaiJson;
+        return format == Format.YAML ? OAI_YAML : OAI_JSON;
     }
 
     private static void addCorsResponseHeaders(HttpServerExchange exchange) {

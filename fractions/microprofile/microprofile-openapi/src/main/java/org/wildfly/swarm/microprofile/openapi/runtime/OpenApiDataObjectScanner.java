@@ -27,11 +27,10 @@ import org.jboss.jandex.ParameterizedType;
 import org.jboss.jandex.Type;
 import org.jboss.jandex.WildcardType;
 import org.jboss.logging.Logger;
-import org.wildfly.swarm.microprofile.openapi.OpenApiConstants;
-import org.wildfly.swarm.microprofile.openapi.models.media.SchemaImpl;
-import org.wildfly.swarm.microprofile.openapi.util.JandexUtil;
-import org.wildfly.swarm.microprofile.openapi.util.SchemaFactory;
-import org.wildfly.swarm.microprofile.openapi.util.TypeUtil;
+import org.wildfly.swarm.microprofile.openapi.api.models.media.SchemaImpl;
+import org.wildfly.swarm.microprofile.openapi.runtime.util.JandexUtil;
+import org.wildfly.swarm.microprofile.openapi.runtime.util.SchemaFactory;
+import org.wildfly.swarm.microprofile.openapi.runtime.util.TypeUtil;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Modifier;

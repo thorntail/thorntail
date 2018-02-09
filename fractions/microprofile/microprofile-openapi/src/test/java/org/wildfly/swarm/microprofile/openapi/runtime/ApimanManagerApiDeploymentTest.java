@@ -31,8 +31,11 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.wildfly.microprofile.config.WildFlyConfigBuilder;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
+import org.wildfly.swarm.microprofile.openapi.api.OpenApiConfig;
+import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
+import org.wildfly.swarm.microprofile.openapi.deployment.OpenApiServletContextListener;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Format;
 
 /**
  * Runs the {@link OpenApiDeploymentProcessor} against the Apiman Manager API war.
@@ -70,17 +73,14 @@ public class ApimanManagerApiDeploymentTest {
         cfgBuilder.addDefaultSources();
         Config cfg = cfgBuilder.build();
         Archive archive = ShrinkWrap.createFromZipFile(JAXRSArchive.class, warFile);
-        OpenApiConfig config = new OpenApiConfig() {
-            @Override
-            protected Config getConfig() {
-                return cfg;
-            }
-        };
+        OpenApiConfig config = new OpenApiConfig(cfg);
 
+        OpenApiDocument.INSTANCE.reset();
         OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(config, archive);
         processor.process();
+        new OpenApiServletContextListener().contextInitialized(null);
 
-        String actual = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
+        String actual = OpenApiSerializer.serialize(OpenApiDocument.INSTANCE.get(), Format.JSON);
 //        String expected = loadResource(getClass().getResource(expectedResource));
         String expected = "{}";
 
@@ -95,12 +95,7 @@ public class ApimanManagerApiDeploymentTest {
         cfgBuilder.addDefaultSources();
         Config cfg = cfgBuilder.build();
         Archive archive = ShrinkWrap.createFromZipFile(JAXRSArchive.class, warFile);
-        OpenApiConfig config = new OpenApiConfig() {
-            @Override
-            protected Config getConfig() {
-                return cfg;
-            }
-        };
+        OpenApiConfig config = new OpenApiConfig(cfg);
 
         IndexView index = OpenApiAnnotationScanner.archiveToIndex(config, archive);
         ClassInfo classInfo = index.getClassByName(DotName.createSimple("io.apiman.gateway.engine.auth.RequiredAuthType"));

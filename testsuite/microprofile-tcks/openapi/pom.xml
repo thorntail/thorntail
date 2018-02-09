@@ -66,7 +66,21 @@
                <groupId>org.jboss.arquillian.junit</groupId>
                <artifactId>arquillian-junit-container</artifactId>
             </exclusion>
+            <!-- The following enrichers are not needed by tck -->
+            <exclusion>
+              <groupId>org.jboss.arquillian.testenricher</groupId>
+              <artifactId>arquillian-testenricher-cdi</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.jboss.arquillian.testenricher</groupId>
+              <artifactId>arquillian-testenricher-ejb</artifactId>
+            </exclusion>
          </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>commons-logging</groupId>
+         <artifactId>commons-logging</artifactId>
       </dependency>
 
    </dependencies>
@@ -86,12 +100,10 @@
                <dependenciesToScan>
                   <dependency>org.eclipse.microprofile.openapi:microprofile-openapi-tck</dependency>
                </dependenciesToScan>
-               <systemProperties>
-                  <property>
-                     <name>java.util.logging.config.file</name>
-                     <value>${project.build.testOutputDirectory}/logging.properties</value>
-                  </property>
-               </systemProperties>
+               <systemPropertyVariables>
+                  <java.util.logging.config.file>${project.build.testOutputDirectory}/logging.properties</java.util.logging.config.file>
+                  <test.url>http://localhost:8080</test.url>
+               </systemPropertyVariables>
             </configuration>
          </plugin>
       </plugins>

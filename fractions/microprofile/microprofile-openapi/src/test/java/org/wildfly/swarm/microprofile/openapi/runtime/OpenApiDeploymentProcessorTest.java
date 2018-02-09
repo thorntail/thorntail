@@ -37,13 +37,16 @@ import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
-import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
-import org.wildfly.swarm.microprofile.openapi.models.info.ContactImpl;
-import org.wildfly.swarm.microprofile.openapi.models.info.InfoImpl;
+import org.wildfly.swarm.microprofile.openapi.api.OpenApiConfig;
+import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
+import org.wildfly.swarm.microprofile.openapi.api.models.OpenAPIImpl;
+import org.wildfly.swarm.microprofile.openapi.api.models.info.ContactImpl;
+import org.wildfly.swarm.microprofile.openapi.api.models.info.InfoImpl;
+import org.wildfly.swarm.microprofile.openapi.deployment.OpenApiServletContextListener;
 import org.wildfly.swarm.microprofile.openapi.runtime.app.HelloResource;
 import org.wildfly.swarm.microprofile.openapi.runtime.app.TestApplication;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Format;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -86,17 +89,14 @@ public class OpenApiDeploymentProcessorTest {
         System.setProperty(OASConfig.FILTER, filterClass != null ? filterClass.getName() : "");
 
         TestConfig cfg = new TestConfig();
-        OpenApiConfig config = new OpenApiConfig() {
-            @Override
-            protected Config getConfig() {
-                return cfg;
-            }
-        };
+        OpenApiConfig config = new OpenApiConfig(cfg);
         Archive archive = archive(staticResource);
+        OpenApiDocument.INSTANCE.reset();
         OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(config, archive);
         processor.process();
+        new OpenApiServletContextListener(cfg).contextInitialized(null);
 
-        String actual = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
+        String actual = OpenApiSerializer.serialize(OpenApiDocument.INSTANCE.get(), Format.JSON);
         String expected = loadResource(getClass().getResource(expectedResource));
 
         assertJsonEquals(expected, actual);

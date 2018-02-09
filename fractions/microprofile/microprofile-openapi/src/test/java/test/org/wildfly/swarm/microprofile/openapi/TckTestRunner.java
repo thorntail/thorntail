@@ -42,11 +42,12 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.wildfly.microprofile.config.PropertiesConfigSourceProvider;
 import org.wildfly.microprofile.config.WildFlyConfigBuilder;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
-import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiConfig;
+import org.wildfly.swarm.microprofile.openapi.api.OpenApiConfig;
+import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
+import org.wildfly.swarm.microprofile.openapi.deployment.OpenApiServletContextListener;
 import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiDeploymentProcessor;
-import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiDocumentHolder;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Format;
 
 /**
  * A Junit 4 test runner used to quickly run the OpenAPI tck tests directly against the
@@ -62,7 +63,7 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
     private Class<?> testClass;
     private Class<? extends Arquillian> tckTestClass;
 
-    public static Map<Class, OpenAPI> openApiDocs = new HashMap<>();
+    public static Map<Class, OpenAPI> OPEN_API_DOCS = new HashMap<>();
 
     /**
      * Constructor.
@@ -88,19 +89,17 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
         }
 
         Config mpConfig = cfgBuilder.build();
-        OpenApiConfig config = new OpenApiConfig() {
-            @Override
-            protected Config getConfig() {
-                return mpConfig;
-            }
-        };
+        OpenApiConfig config = new OpenApiConfig(mpConfig);
+        OpenApiDocument.INSTANCE.reset();
         OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(config, archive);
+
         try {
             processor.process();
+            new OpenApiServletContextListener(mpConfig).contextInitialized(null);
 
-            Assert.assertNotNull("Generated OAI document must not be null.", OpenApiDocumentHolder.document);
+            Assert.assertNotNull("Generated OAI document must not be null.", OpenApiDocument.INSTANCE.get());
 
-            openApiDocs.put(testClass, OpenApiDocumentHolder.document);
+            OPEN_API_DOCS.put(testClass, OpenApiDocument.INSTANCE.get());
 
             // Output the /openapi content to a file for debugging purposes
             File parent = new File("target", "TckTestRunner");
@@ -108,7 +107,7 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
                 parent.mkdir();
             }
             File file = new File(parent, testClass.getName() + ".json");
-            String content = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
+            String content = OpenApiSerializer.serialize(OpenApiDocument.INSTANCE.get(), Format.JSON);
             try (FileWriter writer = new FileWriter(file)) {
                 IOUtils.write(content, writer);
             }
@@ -200,7 +199,7 @@ public class TckTestRunner extends ParentRunner<ProxiedTckTest> {
      */
     @Override
     protected void runChild(final ProxiedTckTest child, final RunNotifier notifier) {
-        OpenApiDocumentHolder.document = TckTestRunner.openApiDocs.get(child.getTest().getClass());
+        OpenApiDocument.INSTANCE.set(TckTestRunner.OPEN_API_DOCS.get(child.getTest().getClass()));
 
         Description description = describeChild(child);
         if (isIgnored(child)) {

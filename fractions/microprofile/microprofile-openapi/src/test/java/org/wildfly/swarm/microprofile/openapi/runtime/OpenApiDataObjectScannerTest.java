@@ -22,9 +22,9 @@ import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
 import org.jboss.jandex.Type;
 import org.junit.Test;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer;
-import org.wildfly.swarm.microprofile.openapi.models.ComponentsImpl;
-import org.wildfly.swarm.microprofile.openapi.models.OpenAPIImpl;
+import org.wildfly.swarm.microprofile.openapi.api.models.ComponentsImpl;
+import org.wildfly.swarm.microprofile.openapi.api.models.OpenAPIImpl;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer;
 
 import java.io.IOException;
 import java.io.InputStream;
