@@ -12,7 +12,7 @@ If you want to enable logging explicitly, add the Logging fraction to the POM fi
 .Procedure
 
 . Find the `<dependencies>` section in the `pom.xml` file of your application.
-Add to it the following coordinates:
+Verify it contains the following coordinates. If it does not, add them.
 +
 [source,xml]
 ----

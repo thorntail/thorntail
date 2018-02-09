@@ -24,15 +24,23 @@ In the YAML file, add the following section:
 swarm:
   logging:
 ----
-. Configure a formatter (optional). Under `logging`, add a new formatter with a pattern of your choice.
-In this example, it is called `LOG_FORMATTER`:
+. Configure a formatter (optional).
+The following formatters are configured by default:
 +
+--
+PATTERN:: Useful for logging into a file.
+COLOR_PATTERN:: Color output. Useful for logging to the console.
+
+To configure a custom formatter, add a new formatter with a pattern of your choice in the `logging` section.
+In this example, it is called `LOG_FORMATTER`:
+
 [source,yaml]
 ----
 pattern-formatters:
   LOG_FORMATTER:
     pattern: "%p [%c] %s%e%n"
 ----
+--
 
 . Configure a file handler to use with the loggers.
 This example shows the configuration of a periodic rotating file handler.
@@ -51,7 +59,7 @@ periodic-rotating-file-handlers:
 ----
 
 Here, a new handler named `FILE` is created, logging events of the `INFO` level and higher.
-The file stores logs in the `target` directory, and each log file is named `MY_APP_NAME.log` with the suffix `.yyyy-MM-dd`.
+It logs in the `target` directory, and each log file is named `MY_APP_NAME.log` with the suffix `.yyyy-MM-dd`.
 WildFly Swarm automatically parses the log rotation period from the suffix, so ensure you use a format compatible with the `java.text.SimpleDateFormat` class.
 --
 
