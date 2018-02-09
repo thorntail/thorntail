@@ -24,12 +24,12 @@ public class EndpointFactory implements MessageEndpointFactory {
 
     @Override
     public MessageEndpoint createEndpoint(XAResource xaResource) throws UnavailableException {
-        return create();
+        return create(xaResource);
     }
 
     @Override
     public MessageEndpoint createEndpoint(XAResource xaResource, long timeout) throws UnavailableException {
-        return create();
+        return create(xaResource);
     }
 
     @Override
@@ -44,24 +44,23 @@ public class EndpointFactory implements MessageEndpointFactory {
 
     @Override
     public Class<?> getEndpointClass() {
-        return null;
+        return this.listenerInterface;
     }
 
-    MessageEndpoint create() {
+    MessageEndpoint create(XAResource xaResource) {
         Unmanaged<?> unmanaged = new Unmanaged<>(this.instanceType);
         Unmanaged.UnmanagedInstance<?> unmanagedInstance = unmanaged.newInstance();
 
-        Object instance = unmanagedInstance.produce().postConstruct().inject().get();
-        InvocationHandler handler = new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if ( method.getDeclaringClass() == MessageEndpoint.class) {
-                    //System.err.println( "container integration" );
-                } else {
-                    return method.invoke(instance, args);
+        unmanagedInstance.produce().postConstruct().inject().get();
+        InvocationHandler handler = (proxy, method, args) -> {
+            if (method.getDeclaringClass() == MessageEndpoint.class) {
+                if (method.getName().equals("release")) {
+                    unmanagedInstance.preDestroy().dispose();
                 }
-                return null;
+            } else {
+                return method.invoke(unmanagedInstance.get(), args);
             }
+            return null;
         };
         MessageEndpoint endpoint = (MessageEndpoint) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                                                                             new Class[]{MessageEndpoint.class, this.listenerInterface},
@@ -71,5 +70,6 @@ public class EndpointFactory implements MessageEndpointFactory {
     }
 
     private final Class<?> listenerInterface;
+
     private final Class<?> instanceType;
 }

@@ -4,6 +4,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.resource.spi.XATerminator;
+import javax.transaction.TransactionSynchronizationRegistry;
 
 import org.jboss.jca.core.api.bootstrap.CloneableBootstrapContext;
 import org.jboss.jca.core.api.workmanager.WorkManager;
@@ -22,6 +24,8 @@ public class BootstrapContextProducer {
         context.setId( "default" );
         context.setName( "default" );
         context.setWorkManager( this.workManager);
+        context.setTransactionSynchronizationRegistry(this.tsr);
+        context.setXATerminator(this.xaTerminator);
         return context;
     }
 
@@ -31,4 +35,10 @@ public class BootstrapContextProducer {
 
     @Inject
     WorkManager workManager;
+
+    @Inject
+    TransactionSynchronizationRegistry tsr;
+
+    @Inject
+    XATerminator xaTerminator;
 }

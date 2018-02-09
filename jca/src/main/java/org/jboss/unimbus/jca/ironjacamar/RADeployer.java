@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
 import javax.resource.spi.ResourceAdapter;
 import javax.transaction.TransactionManager;
 
@@ -26,6 +30,7 @@ import org.jboss.jca.common.metadata.resourceadapter.ActivationImpl;
 import org.jboss.jca.core.api.connectionmanager.ccm.CachedConnectionManager;
 import org.jboss.jca.core.spi.mdr.AlreadyExistsException;
 import org.jboss.jca.core.spi.mdr.MetadataRepository;
+import org.jboss.jca.core.spi.rar.NotFoundException;
 import org.jboss.jca.core.spi.rar.ResourceAdapterRepository;
 import org.jboss.jca.core.spi.security.SubjectFactory;
 import org.jboss.jca.core.spi.transaction.TransactionIntegration;
@@ -39,7 +44,13 @@ import org.jboss.unimbus.UNimbus;
 /**
  * Created by bob on 2/8/18.
  */
+@ApplicationScoped
 public class RADeployer extends AbstractResourceAdapterDeployer {
+
+    @PostConstruct
+    void init() {
+        setConfiguration(this.config);
+    }
 
     public CommonDeployment deploy(ResourceAdapterDeployment resourceAdapterDeployment) throws Throwable {
         URL url = resourceAdapterDeployment.getRoot().toURI().toURL();
@@ -47,7 +58,8 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
         File root = resourceAdapterDeployment.getRoot();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Connector connector = resourceAdapterDeployment.getConnector();
-        Activation activation = activation();
+
+        Activation activation = resourceAdapterDeployment.getActivation();
 
         CommonDeployment deployment = createObjectsAndInjectValue(
                 url,
@@ -61,37 +73,14 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
         return deployment;
     }
 
-    public void setResourceAdapaterRepository(ResourceAdapterRepository resourceAdapaterRepository) {
-        this.resourceAdapaterRepository = resourceAdapaterRepository;
+    /*
+    @Override
+    protected boolean requireExplicitJndiBindings() {
+        return false;
     }
+    */
 
-    public void setMetadataRepository(MetadataRepository metadataRepository) {
-        this.metadataRepository = metadataRepository;
-    }
 
-    private Activation activation() {
-        String id = "mything";
-        String archive = "artemis.rar";
-        TransactionSupportEnum transactionSupport = TransactionSupportEnum.NoTransaction;
-
-        List<ConnectionDefinition> connectionDefinitions = new ArrayList<>();
-        List<AdminObject> adminObjects = new ArrayList<>();
-        Map<String, String> configProperties = new HashMap<>();
-        List<String> beanValidationGroups = new ArrayList<>();
-        String bootstrapContext = "default";
-        WorkManager workmanager = null;
-        ActivationImpl activation = new ActivationImpl(id,
-                                                       archive,
-                                                       transactionSupport,
-                                                       connectionDefinitions,
-                                                       adminObjects,
-                                                       configProperties,
-                                                       beanValidationGroups,
-                                                       bootstrapContext,
-                                                       workmanager);
-
-        return activation;
-    }
 
     public RADeployer() {
         super(true);
@@ -104,7 +93,7 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
 
     @Override
     protected CachedConnectionManager getCachedConnectionManager() {
-        return null;
+        return this.cachedConnectionManager;
     }
 
     @Override
@@ -114,7 +103,7 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
 
     @Override
     protected void registerResourceAdapterToMDR(URL url, File root, Connector cmd, Activation activation) throws AlreadyExistsException {
-        this.metadataRepository.registerResourceAdapter( url.getFile(), root, cmd, activation );
+        this.metadataRepository.registerResourceAdapter(url.getFile(), root, cmd, activation);
 
     }
 
@@ -125,17 +114,21 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
 
     @Override
     protected void setRecoveryForResourceAdapterInResourceAdapterRepository(String key, boolean isXA) {
-
+        try {
+            this.resourceAdapaterRepository.setRecoveryForResourceAdapter(key, isXA);
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     protected TransactionManager getTransactionManager() {
-        return null;
+        return this.transactionIntegration.getTransactionManager();
     }
 
     @Override
     protected TransactionIntegration getTransactionIntegration() {
-        return null;
+        return this.transactionIntegration;
     }
 
     @Override
@@ -150,22 +143,27 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
 
     @Override
     protected String[] bindConnectionFactory(URL url, String deploymentName, Object cf, String jndiName) throws Throwable {
-        return new String[0];
+        this.jndi.bind(jndiName, cf);
+        return new String[] {
+                jndiName
+        };
     }
 
     @Override
     protected String[] bindAdminObject(URL url, String deploymentName, Object ao) throws Throwable {
+        //System.err.println("bao: " + url + ", " + deploymentName + ", " + ao);
         return new String[0];
     }
 
     @Override
     protected String[] bindAdminObject(URL url, String deploymentName, Object ao, String jndiName) throws Throwable {
+        //System.err.println("bao: " + url + ", " + deploymentName + ", " + ao + ", " + jndiName);
         return new String[0];
     }
 
     @Override
     protected boolean checkConfigurationIsValid() {
-        return false;
+        return true;
     }
 
     @Override
@@ -203,6 +201,21 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
         return Logger.getMessageLogger(DeployersLogger.class, UNimbus.loggerCategory("jca"));
     }
 
+    @Inject
+    private TransactionIntegration transactionIntegration;
+
+    @Inject
     private ResourceAdapterRepository resourceAdapaterRepository;
+
+    @Inject
     private MetadataRepository metadataRepository;
+
+    @Inject
+    private DeployerConfiguration config;
+
+    @Inject
+    private CachedConnectionManager cachedConnectionManager;
+
+    @Inject
+    private InitialContext jndi;
 }

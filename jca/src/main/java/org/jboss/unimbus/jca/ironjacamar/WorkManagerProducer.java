@@ -5,6 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.resource.spi.XATerminator;
 
 import org.jboss.jca.core.api.workmanager.WorkManager;
 import org.jboss.jca.core.spi.security.SecurityIntegration;

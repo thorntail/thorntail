@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.jca.core.api.bootstrap.CloneableBootstrapContext;
 import org.jboss.jca.deployers.common.Configuration;
 
@@ -77,12 +78,20 @@ public class DeployerConfiguration implements Configuration {
         return this.bootstrapContexts;
     }
 
+    @Inject
+    @ConfigProperty(name = "jca.bean-validation.enabled")
     private boolean beanValidation;
 
+    @Inject
+    @ConfigProperty(name = "jca.archive-validation.enabled")
     private boolean archiveValidation;
 
+    @Inject
+    @ConfigProperty(name = "jca.archive-validation.fail-on-warn")
     private boolean archiveValidationFailOnWarn;
 
+    @Inject
+    @ConfigProperty(name = "jca.archive-validation.fail-on-error")
     private boolean archiveValidationFailOnError;
 
     @Inject
