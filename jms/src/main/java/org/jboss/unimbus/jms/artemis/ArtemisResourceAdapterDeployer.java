@@ -1,7 +1,6 @@
 package org.jboss.unimbus.jms.artemis;
 
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -9,15 +8,15 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.jca.common.api.metadata.spec.ConfigProperty;
-import org.jboss.jca.common.api.metadata.spec.LocalizedXsdString;
 import org.jboss.jca.common.api.metadata.spec.ResourceAdapter;
-import org.jboss.jca.common.api.metadata.spec.XsdString;
-import org.jboss.jca.common.metadata.spec.ConfigPropertyImpl;
 import org.jboss.unimbus.condition.RequiredClassPresent;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.jca.ResourceAdapterDeploymentFactory;
 import org.jboss.unimbus.jca.ResourceAdapterDeployments;
+import org.jboss.unimbus.jca.Util;
 import org.jboss.unimbus.jca.ironjacamar.ResourceAdapterDeployment;
+
+import static org.jboss.unimbus.jca.Util.duplicateProperty;
 
 /**
  * Created by bob on 2/9/18.
@@ -27,7 +26,7 @@ import org.jboss.unimbus.jca.ironjacamar.ResourceAdapterDeployment;
 public class ArtemisResourceAdapterDeployer {
 
     void init(@Observes LifecycleEvent.Scan event) throws Exception {
-        ResourceAdapterDeployment deployment = factory.create("META-INF/artemis-ra.xml");
+        ResourceAdapterDeployment deployment = this.factory.create("artemis", "META-INF/artemis-ra.xml");
         //System.err.println( "==========> " + deployment );
         if (deployment == null) {
             return;
@@ -83,21 +82,7 @@ public class ArtemisResourceAdapterDeployer {
     }
 
     void setProperty(List<ConfigProperty> properties, ConfigProperty original, String newValue) {
-        ConfigPropertyImpl replacement = new ConfigPropertyImpl(
-                original.getDescriptions(),
-                original.getConfigPropertyName(),
-                original.getConfigPropertyType(),
-                new XsdString(newValue, original.getConfigPropertyName().getId()),
-                original.getConfigPropertyIgnore(),
-                original.getConfigPropertySupportsDynamicUpdates(),
-                original.getConfigPropertyConfidential(),
-                original.getId(),
-                original.isMandatory(),
-                original.getAttachedClassName(),
-                original.getConfigPropertyIgnoreId(),
-                original.getConfigPropertySupportsDynamicUpdatesId(),
-                original.getConfigPropertyConfidentialId());
-
+        ConfigProperty replacement = duplicateProperty(original, newValue);
         properties.remove(original);
         properties.add(replacement);
     }

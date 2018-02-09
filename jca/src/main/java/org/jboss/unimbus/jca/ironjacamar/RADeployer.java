@@ -6,10 +6,7 @@ import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -18,15 +15,11 @@ import javax.naming.InitialContext;
 import javax.resource.spi.ResourceAdapter;
 import javax.transaction.TransactionManager;
 
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.jca.common.api.metadata.common.SecurityMetadata;
-import org.jboss.jca.common.api.metadata.common.TransactionSupportEnum;
 import org.jboss.jca.common.api.metadata.resourceadapter.Activation;
-import org.jboss.jca.common.api.metadata.resourceadapter.AdminObject;
-import org.jboss.jca.common.api.metadata.resourceadapter.ConnectionDefinition;
-import org.jboss.jca.common.api.metadata.resourceadapter.WorkManager;
 import org.jboss.jca.common.api.metadata.spec.ConfigProperty;
 import org.jboss.jca.common.api.metadata.spec.Connector;
-import org.jboss.jca.common.metadata.resourceadapter.ActivationImpl;
 import org.jboss.jca.core.api.connectionmanager.ccm.CachedConnectionManager;
 import org.jboss.jca.core.spi.mdr.AlreadyExistsException;
 import org.jboss.jca.core.spi.mdr.MetadataRepository;
@@ -40,6 +33,8 @@ import org.jboss.jca.deployers.common.CommonDeployment;
 import org.jboss.jca.deployers.common.DeployException;
 import org.jboss.logging.Logger;
 import org.jboss.unimbus.UNimbus;
+import org.jboss.unimbus.config.impl.ConfigImpl;
+import org.jboss.unimbus.jca.JCAMessages;
 
 /**
  * Created by bob on 2/8/18.
@@ -73,14 +68,10 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
         return deployment;
     }
 
-    /*
     @Override
     protected boolean requireExplicitJndiBindings() {
         return false;
     }
-    */
-
-
 
     public RADeployer() {
         super(true);
@@ -138,12 +129,17 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
 
     @Override
     protected String[] bindConnectionFactory(URL url, String deploymentName, Object cf) throws Throwable {
-        return new String[0];
+        String name = "java:jboss/" + deploymentName + "/connection-factory";
+        this.jndi.bind( name, cf);
+        return new String[] {
+                name
+        };
     }
 
     @Override
     protected String[] bindConnectionFactory(URL url, String deploymentName, Object cf, String jndiName) throws Throwable {
         this.jndi.bind(jndiName, cf);
+        JCAMessages.MESSAGES.bound( deploymentName, jndiName);
         return new String[] {
                 jndiName
         };
@@ -151,13 +147,11 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
 
     @Override
     protected String[] bindAdminObject(URL url, String deploymentName, Object ao) throws Throwable {
-        //System.err.println("bao: " + url + ", " + deploymentName + ", " + ao);
         return new String[0];
     }
 
     @Override
     protected String[] bindAdminObject(URL url, String deploymentName, Object ao, String jndiName) throws Throwable {
-        //System.err.println("bao: " + url + ", " + deploymentName + ", " + ao + ", " + jndiName);
         return new String[0];
     }
 
@@ -183,9 +177,11 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
                 String name = property.getConfigPropertyName().getValue();
                 String value = property.getConfigPropertyValue().getValue();
 
+
                 for (PropertyDescriptor each : beanInfo.getPropertyDescriptors()) {
                     if (each.getName().equalsIgnoreCase(name)) {
-                        each.getWriteMethod().invoke(instance, value);
+                        Object coerced = coerce(value, each.getWriteMethod().getParameterTypes()[0]);
+                        each.getWriteMethod().invoke(instance, coerced);
                     }
                 }
             }
@@ -193,7 +189,10 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
         } catch (Exception e) {
             throw new DeployException(e.getMessage(), e);
         }
+    }
 
+    private Object coerce(String value, Class<?> targetType) {
+        return ((ConfigImpl)ConfigProviderResolver.instance().getConfig()).convert(value, targetType).get();
     }
 
     @Override

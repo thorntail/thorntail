@@ -32,4 +32,9 @@ public interface JCAMessages extends BasicLogger {
     @Message(id = 2 + OFFSET, value = "deployed message-driven: %s")
     void deployedMessageDriven(String cls);
 
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 3 + OFFSET, value = "bound %s: %s")
+    void bound(String objectName, String jndiName);
+
+
 }

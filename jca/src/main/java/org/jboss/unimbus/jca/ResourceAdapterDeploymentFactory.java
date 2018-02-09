@@ -22,6 +22,10 @@ public class ResourceAdapterDeploymentFactory {
     private static final String RAR_SUFFIX = ".rar";
 
     public ResourceAdapterDeployment create(String raXmlPath) throws Exception {
+        return create( idOf(raXmlPath), raXmlPath);
+    }
+
+    public ResourceAdapterDeployment create(String id, String raXmlPath) throws Exception {
 
         URL url = Thread.currentThread().getContextClassLoader().getResource(raXmlPath);
         if (url == null) {
@@ -30,14 +34,8 @@ public class ResourceAdapterDeploymentFactory {
         try (InputStream in = url.openStream()) {
             Connector connector = this.parser.parse(in);
 
-            String id = idOf(url);
-
-            return new ResourceAdapterDeployment(idOf(url), new File(id + RAR_SUFFIX), connector);
+            return new ResourceAdapterDeployment(id, new File(id + RAR_SUFFIX), connector);
         }
-    }
-
-    String idOf(URL url) {
-        return idOf(url.getPath());
     }
 
     String idOf(String path) {
