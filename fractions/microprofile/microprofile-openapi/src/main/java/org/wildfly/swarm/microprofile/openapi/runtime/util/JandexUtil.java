@@ -462,4 +462,31 @@ public class JandexUtil {
         public Parameter.In in;
     }
 
+    /**
+     * Returns true if the given @Schema annotation is a simple class schema.  This means that
+     * the annotation only has one field defined, and that field is "implementation".
+     * @param annotation
+     */
+    public static boolean isSimpleClassSchema(AnnotationInstance annotation) {
+        List<AnnotationValue> values = annotation.values();
+        return values.size() == 1 && values.get(0).name().equals(OpenApiConstants.PROP_IMPLEMENTATION);
+    }
+
+    /**
+     * Returns true if the given @Schema annotation is a simple array schema.  This is defined
+     * as a schema with only a "type" field and "implementation" field defined *and* the type must
+     * be array.
+     * @param annotation
+     */
+    public static boolean isSimpleArraySchema(AnnotationInstance annotation) {
+        List<AnnotationValue> values = annotation.values();
+        if (values.size() != 2) {
+            return false;
+        }
+        org.eclipse.microprofile.openapi.models.media.Schema.SchemaType type =
+                JandexUtil.enumValue(annotation, OpenApiConstants.PROP_TYPE, org.eclipse.microprofile.openapi.models.media.Schema.SchemaType.class);
+        String implementation = JandexUtil.stringValue(annotation, OpenApiConstants.PROP_IMPLEMENTATION);
+        return (type == org.eclipse.microprofile.openapi.models.media.Schema.SchemaType.ARRAY && implementation != null);
+    }
+
 }
