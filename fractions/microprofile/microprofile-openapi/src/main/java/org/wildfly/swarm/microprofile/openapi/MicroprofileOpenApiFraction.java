@@ -16,10 +16,12 @@
 package org.wildfly.swarm.microprofile.openapi;
 
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
  * @author Eric Wittmann
  */
+@DeploymentModule(name = "org.wildfly.swarm.microprofile.openapi", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
 public class MicroprofileOpenApiFraction implements Fraction<MicroprofileOpenApiFraction> {
 
     /**

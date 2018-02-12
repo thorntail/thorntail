@@ -27,9 +27,9 @@ import org.jboss.arquillian.testng.Arquillian;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
-import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiDocumentHolder;
+import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Format;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -70,7 +70,7 @@ public abstract class BaseTckTest {
         public void handle(HttpExchange t) throws IOException {
             String response = null;
             try {
-                response = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
+                response = OpenApiSerializer.serialize(OpenApiDocument.INSTANCE.get(), Format.JSON);
             } catch (Throwable e) {
                 e.printStackTrace();
                 t.getResponseHeaders().add("Content-Type", APPLICATION_JSON);

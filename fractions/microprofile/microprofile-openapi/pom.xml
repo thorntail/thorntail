@@ -24,9 +24,7 @@
   <properties>
     <swarm.fraction.stability>experimental</swarm.fraction.stability>
     <swarm.fraction.tags>MicroProfile,OpenAPI,JaxRs,Web</swarm.fraction.tags>
-    <!-- The MicroProfile OpenAPI Spec version -->
-    <mp.openapi.version>1.1-SNAPSHOT</mp.openapi.version>
-    
+
     <!-- Dependencies -->
     <version.com.fasterxml.jackson.dataformat>2.9.2</version.com.fasterxml.jackson.dataformat>
   </properties>
@@ -49,16 +47,17 @@
             <version>${version.surefire.plugin}</version>
           </dependency>
         </dependencies>
-      </plugin>    
+      </plugin>
     </plugins>
   </build>
 
   <dependencies>
-    <!-- Project Dependencies -->
+    <!-- Fraction Dependencies -->
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jaxrs</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>microprofile-config</artifactId>
@@ -68,9 +67,8 @@
     <dependency>
       <groupId>org.eclipse.microprofile.openapi</groupId>
       <artifactId>microprofile-openapi-api</artifactId>
-      <version>${mp.openapi.version}</version>
     </dependency>
-    
+
     <!-- Third Party Libs -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -97,11 +95,6 @@
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
     </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.2</version>
-    </dependency>
 
     <!-- Provided APIs -->
     <dependency>
@@ -118,16 +111,6 @@
       <groupId>javax</groupId>
       <artifactId>javaee-api</artifactId>
       <version>7.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-undertow</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jandex</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -167,7 +150,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
+
     <!-- Test Only -->
     <dependency>
       <groupId>org.skyscreamer</groupId>
@@ -178,7 +161,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.openapi</groupId>
       <artifactId>microprofile-openapi-tck</artifactId>
-      <version>${mp.openapi.version}</version>
+      <version>${version.microprofile-openapi}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -187,7 +170,13 @@
       <scope>test</scope>
       <type>pom</type>
     </dependency>
-    
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.2</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 </project>
 

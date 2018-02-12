@@ -16,34 +16,37 @@
 
 package org.wildfly.swarm.microprofile.openapi.runtime;
 
+import java.io.IOException;
+import java.util.Deque;
+
+import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer;
+import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Format;
+
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderMap;
 import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
 import io.undertow.util.Methods;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer;
-import org.wildfly.swarm.microprofile.openapi.io.OpenApiSerializer.Format;
-
-import javax.enterprise.context.RequestScoped;
-import java.io.IOException;
 
 /**
  * @author Marc Savy {@literal marc@rhymewithgravy.com}
  */
-@RequestScoped
 public class OpenApiHttpHandler implements HttpHandler {
 
     private static final String OAI = "/openapi";
     private static final String ALLOWED_METHODS = "GET, HEAD, OPTIONS";
     private static final String QUERY_PARAM_FORMAT = "format";
-    private static final String oaiJson;
-    private static final String oaiYaml;
+    private static final String OAI_JSON;
+    private static final String OAI_YAML;
 
     static {
         try {
-            oaiJson = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.JSON);
-            oaiYaml = OpenApiSerializer.serialize(OpenApiDocumentHolder.document, Format.YAML);
+            OpenAPI model = OpenApiDocument.INSTANCE.get();
+            OAI_JSON = OpenApiSerializer.serialize(model, Format.JSON);
+            OAI_YAML = OpenApiSerializer.serialize(model, Format.YAML);
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
@@ -81,13 +84,17 @@ public class OpenApiHttpHandler implements HttpHandler {
 
     private void sendOai(HttpServerExchange exchange) throws IOException {
         String accept = exchange.getRequestHeaders().getFirst(Headers.ACCEPT);
-        String formatParam = exchange.getQueryParameters().get(QUERY_PARAM_FORMAT).getFirst();
+        Deque<String> formatQueryParams = exchange.getQueryParameters().get(QUERY_PARAM_FORMAT);
+        String formatParam = null;
+        if (formatQueryParams != null) {
+            formatParam = formatQueryParams.getFirst();
+        }
 
         // Default content type is YAML
         Format format = Format.YAML;
 
         // Check Accept, then query parameter "format" for JSON; else use YAML.
-        if (accept != null && accept.contains(Format.JSON.getMimeType()) ||
+        if (accept != null && formatParam != null && accept.contains(Format.JSON.getMimeType()) ||
                 Format.JSON.getMimeType().equalsIgnoreCase(formatParam)) {
             format = Format.JSON;
         }
@@ -100,7 +107,7 @@ public class OpenApiHttpHandler implements HttpHandler {
     }
 
     private String getCachedOaiString(Format format) {
-        return format == Format.YAML ? oaiYaml : oaiJson;
+        return format == Format.YAML ? OAI_YAML : OAI_JSON;
     }
 
     private static void addCorsResponseHeaders(HttpServerExchange exchange) {

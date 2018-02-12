@@ -15,9 +15,6 @@
   -->
 <module xmlns="urn:jboss:module:1.3" name="org.eclipse.microprofile.openapi">
    <resources>
-      <artifact name="org.eclipse.microprofile.openapi:microprofile-openapi-api:${mp.openapi.version}"/>
+      <artifact name="org.eclipse.microprofile.openapi:microprofile-openapi-api:${version.microprofile-openapi}"/>
    </resources>
-   <dependencies>
-      <module name="javax.enterprise.api" />
-   </dependencies>
 </module>
