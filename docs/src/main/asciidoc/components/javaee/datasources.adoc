@@ -1,5 +1,27 @@
 [#component-datasources]
 = DataSources
 
-The `:datasources` component does blah.
+The DataSources component provides access to managed JDBC datasources.
 
+.Configuration
+
+DataSources may be configured by providing a set of configuration properties for each datasource.
+Each configuration property has the prefix of `datasource._MyDS_`.
+
+
+`datasource._MyDS_.username`::
+The username for connecting to the datasource.
+
+`datasource._MyDS_.password`::
+The password for connecting to the datasource.
+
+`datasource._MyDS_.connection-url`::
+The JDBC connection URL for the datasource.
+
+`datasource._MyDS_.driver`::
+The simple identifier of the JDBC driver for the datasource.
+
+.Related Information
+
+* xref:component-jdbc[]
+* xref:component-jca[]

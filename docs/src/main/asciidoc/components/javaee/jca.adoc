@@ -33,7 +33,7 @@ Once parsed, the result should be added to the `ResourceAdapterDeployments` coll
 jca.resource-adapters::
 An array of strings of resource-adapter XML deployment descriptors to locate and deploy.
 
-== `@MessageDriven` Components
+.`@MessageDriven` Components
 
 While the `@MessageDriven` annotation is actually part of the EJB3 specification, since it relates to resource adapters, it is supported through the JCA component.
 
@@ -42,7 +42,7 @@ Any normal POJO marked as `@MessageDriven` and implementing the appropriate inte
 These components exist within the normal CDI container, and will be injected as appropriate.
 These components are generally short-lived and managed by the appropriate resource-adapter, and therefore may _not_ be injected directly into other CDI components.
 
-== CDI Components
+.CDI Components
 
 `ResourceAdapterDeploymentFactory`::
 A factory capable of locating an XML file within the classpath and parsing it into a `ResourceAdapterDeployment`.
@@ -50,3 +50,7 @@ A factory capable of locating an XML file within the classpath and parsing it in
 `ResourceAdapterDeployments`::
 A collection which accepts `ResourceAdapterDeployment` instances for deployment.
 
+.Related Information
+
+* xref:component-datasources[]
+* xref:component-jms[]

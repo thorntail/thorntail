@@ -15,12 +15,23 @@ See `jms-artemis`.
 </dependency>
 ----
 
-== CDI Components
+.CDI Components
 
 `JMSContext`::
 Injectable JMS context which may be used to create queues & topics, consumers & producers.
 
-== JNDI bindings
+.JNDI bindings
 
 `java:comp/DefaultJMSConnectionFactory`::
 The default JMS connection factory.
+
+.Integrating a JMS Client
+
+See xref:component-jca[] for deploying a resource adapter for the JMS client.
+
+The integration should also ensure it `@Produces` a `ConnectionFactory` which the JMS component will use to produce `JMSContext` instances.
+
+.Related Information
+
+xref:component-jms-artemis[]
+

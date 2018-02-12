@@ -1,5 +1,20 @@
 [#component-jdbc]
 = JDBC
 
-The `:jdbc` component does blah.
+The JDBC component helps with auto-detecting and registering JDBC drivers.
+
+.Detected Drivers
+|===
+|Driver|Identifier
+
+|H2|`h2`
+|MySQL|`mysql`
+
+|===
+
+The identifier of each detected driver may be used when configuring a DataSource.
+
+.Related Information
+
+* xref:component-datasources[]
 

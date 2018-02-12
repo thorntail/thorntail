@@ -1,5 +1,10 @@
 [#component-jndi]
 = JNDI
 
-The `:jndi` component does blah.
+The JNDI component provides support for the Java Naming and Directory Interface.
+
+.CDI Components
+
+`InitialContext`::
+The JNDI initial context may be injected.
 
