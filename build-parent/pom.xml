@@ -102,7 +102,7 @@
     <version.microprofile-fault-tolerance>1.0</version.microprofile-fault-tolerance>
     <version.microprofile-jwt-auth>1.0</version.microprofile-jwt-auth>
     <version.microprofile-metrics>1.0.1</version.microprofile-metrics>
-    <version.microprofile-openapi>1.1-SNAPSHOT</version.microprofile-openapi>
+    <version.microprofile-openapi>1.0.1</version.microprofile-openapi>
     <!-- MP Config implementation -->
     <version.wildfly-microprofile-config>1.1.5</version.wildfly-microprofile-config>
 

@@ -62,6 +62,9 @@ public final class OpenApiConstants {
 
     public static final String OPEN_API_VERSION = "3.0.1";
 
+    public static final String SCAN_DEPENDENCIES_DISABLE = "mp.openapi.extensions.scan-dependencies.disable";
+    public static final String SCAN_DEPENDENCIES_JARS = "mp.openapi.extensions.scan-dependencies.jars";
+
     public static final String CLASS_SUFFIX = ".class";
     public static final String JAR_SUFFIX = ".jar";
     public static final String WEB_ARCHIVE_CLASS_PREFIX = "/WEB-INF/classes/";

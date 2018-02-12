@@ -34,6 +34,7 @@ public class Booking2 {
 
     BuzzLinkedList rootNode;
 
+    @SuppressWarnings("rawtypes")
     Enum[] bareEnum;
 
     int[] array;
@@ -47,6 +48,7 @@ public class Booking2 {
 
     KustomPair<? extends String, ? super String> customTypeExtendsSuper;
 
+    @SuppressWarnings("rawtypes")
     Collection foo;
 
     TimerTask[] rawArray = new TimerTask[2];
@@ -102,13 +104,14 @@ public class Booking2 {
     Fuzz<KustomPair<Fuzz<String, ?>, Integer>, Double> complexNesting;
 
     // Handle Void
-    Void voidField = (Void) null;
+    Void voidField = null;
 
     // Handle ? with extends bound
     @Schema(required = true)
     private Fuzz<String, Foo> fuzzListWildcard;
 
     // Bare collection
+    @SuppressWarnings("rawtypes")
     @Schema(required = true)
     private List unsafeList;
 
