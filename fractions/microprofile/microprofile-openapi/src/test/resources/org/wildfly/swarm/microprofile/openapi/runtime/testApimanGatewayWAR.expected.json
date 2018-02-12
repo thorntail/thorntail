@@ -1,0 +1,264 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Generated API",
+    "version" : "1.0"
+  },
+  "paths" : {
+    "/apis" : {
+      "put" : {
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "properties" : {
+                  "version" : {
+                    "type" : "string"
+                  },
+                  "publicAPI" : {
+                    "type" : "boolean"
+                  },
+                  "parsePayload" : {
+                    "type" : "boolean"
+                  },
+                  "organizationId" : {
+                    "type" : "string"
+                  },
+                  "maxPayloadBufferSize" : {
+                    "format" : "int64",
+                    "type" : "integer"
+                  },
+                  "endpointType" : {
+                    "type" : "string"
+                  },
+                  "endpointProperties" : {
+                    "type" : "object",
+                    "additionalProperties" : {
+                      "type" : "string"
+                    }
+                  },
+                  "endpointContentType" : {
+                    "type" : "string"
+                  },
+                  "endpoint" : {
+                    "type" : "string"
+                  },
+                  "apiPolicies" : {
+                    "type" : "array",
+                    "items" : {
+                      "properties" : {
+                        "policyJsonConfig" : {
+                          "type" : "string"
+                        },
+                        "policyImpl" : {
+                          "type" : "string"
+                        }
+                      }
+                    }
+                  },
+                  "apiId" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : { }
+        }
+      }
+    },
+    "/apis/{organizationId}/{apiId}/{version}" : {
+      "delete" : {
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "apiId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "version",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : { }
+        }
+      }
+    },
+    "/apis/{organizationId}/{apiId}/{version}/endpoint" : {
+      "get" : {
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "apiId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "version",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "endpoint" : {
+                      "type" : "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/clients" : {
+      "put" : {
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "properties" : {
+                  "version" : {
+                    "type" : "string"
+                  },
+                  "organizationId" : {
+                    "type" : "string"
+                  },
+                  "contracts" : {
+                    "type" : "array",
+                    "items" : {
+                      "properties" : {
+                        "policies" : {
+                          "type" : "array",
+                          "items" : {
+                            "properties" : {
+                              "policyJsonConfig" : {
+                                "type" : "string"
+                              },
+                              "policyImpl" : {
+                                "type" : "string"
+                              }
+                            }
+                          }
+                        },
+                        "plan" : {
+                          "type" : "string"
+                        },
+                        "apiVersion" : {
+                          "type" : "string"
+                        },
+                        "apiOrgId" : {
+                          "type" : "string"
+                        },
+                        "apiId" : {
+                          "type" : "string"
+                        }
+                      }
+                    }
+                  },
+                  "clientId" : {
+                    "type" : "string"
+                  },
+                  "apiKey" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : { }
+        }
+      }
+    },
+    "/clients/{organizationId}/{clientId}/{version}" : {
+      "delete" : {
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "version",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : { }
+        }
+      }
+    },
+    "/system/status" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "properties" : {
+                    "version" : {
+                      "type" : "string"
+                    },
+                    "up" : {
+                      "type" : "boolean"
+                    },
+                    "name" : {
+                      "type" : "string"
+                    },
+                    "id" : {
+                      "type" : "string"
+                    },
+                    "description" : {
+                      "type" : "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
