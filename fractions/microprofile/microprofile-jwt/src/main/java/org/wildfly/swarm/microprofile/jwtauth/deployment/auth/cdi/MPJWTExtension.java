@@ -100,6 +100,7 @@ public class MPJWTExtension implements Extension {
                         providerOptionalTypes.add(Optional.class);
                     }
                     pba.setBeanAttributes(new ClaimProviderBeanAttributes(delegate, providerOptionalTypes, providerQualifiers));
+                // This is
                 } else if (name != null && name.startsWith("RawClaimTypeProducer#")) {
                     if (rawTypes.size() == 0) {
                         rawTypes.add(Object.class);
@@ -117,30 +118,46 @@ public class MPJWTExtension implements Extension {
     void doProcessProducers(@Observes ProcessProducer pp) {
     }
 
-    void processClaimValueInjections(@Observes ProcessInjectionPoint pip) {
+    /**
+     * Handle the non-{@linkplain Provider}, {@linkplain org.eclipse.microprofile.jwt.ClaimValue}, and
+     * {@linkplain javax.json.JsonValue} claim injection types.
+     * @see RawClaimTypeProducer
+     *
+     * @param pip - the injection point event information
+     */
+    void processClaimInjections(@Observes ProcessInjectionPoint pip) {
         log.debugf("pipRaw: %s", pip.getInjectionPoint());
         InjectionPoint ip = pip.getInjectionPoint();
-        if (ip.getAnnotated().isAnnotationPresent(Claim.class) && ip.getType() instanceof Class) {
-            Class rawClass = (Class) ip.getType();
-            if (Modifier.isFinal(rawClass.getModifiers())) {
-                Claim claim = ip.getAnnotated().getAnnotation(Claim.class);
+        if (ip.getAnnotated().isAnnotationPresent(Claim.class)) {
+            Claim claim = ip.getAnnotated().getAnnotation(Claim.class);
+            if (ip.getType() instanceof Class) {
+                Class rawClass = (Class) ip.getType();
+                // Primative types
+                if (Modifier.isFinal(rawClass.getModifiers())) {
+                    rawTypes.add(ip.getType());
+                    rawTypeQualifiers.add(claim);
+                    log.debugf("+++ Added Claim raw type: %s", ip.getType());
+                    Class declaringClass = ip.getMember().getDeclaringClass();
+                    Annotation[] appScoped = declaringClass.getAnnotationsByType(ApplicationScoped.class);
+                    Annotation[] sessionScoped = declaringClass.getAnnotationsByType(SessionScoped.class);
+                    if ((appScoped != null && appScoped.length > 0) || (sessionScoped != null && sessionScoped.length > 0)) {
+                        String err = String.format("A raw type cannot be injected into application/session scope: IP=%s", ip);
+                        pip.addDefinitionError(new DeploymentException(err));
+                    }
+                }
+            // This handles collections of primative types
+            } else if (isRawParameterizedType(ip.getType())) {
+                log.debugf("+++ Added Claim ParameterizedType: %s", ip.getType());
                 rawTypes.add(ip.getType());
                 rawTypeQualifiers.add(claim);
-                log.debugf("+++ Added Claim raw type: %s", ip.getType());
-                Class declaringClass = ip.getMember().getDeclaringClass();
-                Annotation[] appScoped = declaringClass.getAnnotationsByType(ApplicationScoped.class);
-                Annotation[] sessionScoped = declaringClass.getAnnotationsByType(SessionScoped.class);
-                if ((appScoped != null && appScoped.length > 0) || (sessionScoped != null && sessionScoped.length > 0)) {
-                    String err = String.format("A raw type cannot be injected into application/session scope: IP=%s", ip);
-                    pip.addDefinitionError(new DeploymentException(err));
-                }
-
             }
+        } else {
+            log.debugf("Skipping pip: %s, type: %s/%s", ip, ip.getType(), ip.getType().getClass());
         }
     }
 
     /**
-     * Collect the types of all Provider injection points annotated with {@linkplain Claim}.
+     * Collect the types of all {@linkplain Provider} injection points annotated with {@linkplain Claim}.
      *
      * @param pip - the injection point event information
      */
@@ -150,15 +167,16 @@ public class MPJWTExtension implements Extension {
         if (ip.getAnnotated().isAnnotationPresent(Claim.class)) {
             Claim claim = ip.getAnnotated().getAnnotation(Claim.class);
             if (claim.value().length() == 0 && claim.standard() == Claims.UNKNOWN) {
-                throw new DeploymentException("@Claim at: " + ip + " has no name or valid standard enum setting");
+                pip.addDefinitionError(new DeploymentException("@Claim at: " + ip + " has no name or valid standard enum setting"));
             }
             boolean usesEnum = claim.standard() != Claims.UNKNOWN;
             final String claimName = usesEnum ? claim.standard().name() : claim.value();
             log.debugf("Checking Provider Claim(%s), ip: %s", claimName, ip);
             ClaimIP claimIP = claims.get(claimName);
             Type matchType = ip.getType();
+            // The T from the Provider<T> injection site
             Type actualType = ((ParameterizedType) matchType).getActualTypeArguments()[0];
-            // Don't add Optional as this is handled specially
+            // Don't add Optional or JsonValue as this is handled specially
             if (!optionalOrJsonValue(actualType)) {
                 rawTypes.add(actualType);
             } else if (!actualType.getTypeName().startsWith("javax.json.Json")) {
@@ -209,6 +227,17 @@ public class MPJWTExtension implements Extension {
         boolean isOptionOrJson = type.getTypeName().startsWith(Optional.class.getTypeName())
                 | type.getTypeName().startsWith("javax.json.Json");
         return isOptionOrJson;
+    }
+
+    private boolean isRawParameterizedType(Type type) {
+        boolean isRawParameterizedType = false;
+        if (type instanceof ParameterizedType) {
+            ParameterizedType ptype = ParameterizedType.class.cast(type);
+            Type rawType = ptype.getRawType();
+            String rawTypeName = rawType.getTypeName();
+            isRawParameterizedType = !rawTypeName.startsWith("org.eclipse.microprofile.jwt");
+        }
+        return isRawParameterizedType;
     }
 
     /**

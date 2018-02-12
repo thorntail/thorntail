@@ -30,6 +30,9 @@ import org.eclipse.microprofile.jwt.ClaimValue;
 import org.eclipse.microprofile.jwt.Claims;
 import org.jboss.logging.Logger;
 
+/**
+ *
+ */
 public class RawClaimTypeProducer {
     private static Logger log = Logger.getLogger(RawClaimTypeProducer.class);
     @Produces

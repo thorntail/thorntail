@@ -100,7 +100,7 @@ public class MPJWTProducer {
     }
 
     /**
-     * Object the indicated claim value as a JsonValue
+     * Return the indicated claim value as a JsonValue
      *
      * @param name - name of the claim
      * @return a JsonValue wrapper

@@ -31,6 +31,7 @@ import org.eclipse.microprofile.jwt.ClaimValue;
 import org.eclipse.microprofile.jwt.Claims;
 
 /**
+ * A producer for the ClaimValue<T> wrapper injection sites.
  * @param <T> the raw claim type
  */
 public class ClaimValueProducer<T> {
