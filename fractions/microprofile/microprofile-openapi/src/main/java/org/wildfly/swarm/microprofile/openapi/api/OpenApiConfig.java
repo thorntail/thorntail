@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.openapi.OASConfig;
+import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiConstants;
 
 /**
  * Accessor to OpenAPI configuration options.
@@ -41,6 +42,8 @@ public class OpenApiConfig {
     private Set<String> scanExcludePackages;
     private Set<String> scanExcludeClasses;
     private Set<String> servers;
+    private Boolean scanDependenciesDisable;
+    private Set<String> scanDependenciesJars;
 
     public OpenApiConfig(Config config) {
         this.config = config;
@@ -124,6 +127,22 @@ public class OpenApiConfig {
         String servers = getConfig().getOptionalValue(OASConfig.SERVERS_OPERATION_PREFIX + operationId, String.class).orElse(null);
         return asCsvSet(servers);
     }
+
+    public boolean scanDependenciesDisable() {
+        if (scanDependenciesDisable == null) {
+            scanDependenciesDisable = getConfig().getOptionalValue(OpenApiConstants.SCAN_DEPENDENCIES_DISABLE, Boolean.class).orElse(false);
+        }
+        return scanDependenciesDisable;
+    }
+
+    public Set<String> scanDependenciesJars() {
+        if (scanDependenciesJars == null) {
+            String classes = getConfig().getOptionalValue(OpenApiConstants.SCAN_DEPENDENCIES_JARS, String.class).orElse(null);
+            scanDependenciesJars = asCsvSet(classes);
+        }
+        return scanDependenciesJars;
+    }
+
 
     private static Set<String> asCsvSet(String items) {
         Set<String> rval = new HashSet<>();

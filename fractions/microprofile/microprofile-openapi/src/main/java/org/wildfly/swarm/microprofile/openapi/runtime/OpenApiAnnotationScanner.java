@@ -17,6 +17,7 @@
 package org.wildfly.swarm.microprofile.openapi.runtime;
 
 import java.beans.PropertyDescriptor;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -211,8 +212,15 @@ public class OpenApiAnnotationScanner {
      * @param jarName
      */
     private static boolean acceptJarForScanning(OpenApiConfig config, String jarName) {
-        // TODO disable this by default - must be enabled via a MPConfig property
-        return true;
+        if (config.scanDependenciesDisable()) {
+            return false;
+        }
+        Set<String> scanDependenciesJars = config.scanDependenciesJars();
+        String nameOnly = new File(jarName).getName();
+        if (scanDependenciesJars.isEmpty() || scanDependenciesJars.contains(nameOnly)) {
+            return true;
+        }
+        return false;
     }
 
     /**
