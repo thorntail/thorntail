@@ -11,55 +11,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "properties" : {
-                  "version" : {
-                    "type" : "string"
-                  },
-                  "publicAPI" : {
-                    "type" : "boolean"
-                  },
-                  "parsePayload" : {
-                    "type" : "boolean"
-                  },
-                  "organizationId" : {
-                    "type" : "string"
-                  },
-                  "maxPayloadBufferSize" : {
-                    "format" : "int64",
-                    "type" : "integer"
-                  },
-                  "endpointType" : {
-                    "type" : "string"
-                  },
-                  "endpointProperties" : {
-                    "type" : "object",
-                    "additionalProperties" : {
-                      "type" : "string"
-                    }
-                  },
-                  "endpointContentType" : {
-                    "type" : "string"
-                  },
-                  "endpoint" : {
-                    "type" : "string"
-                  },
-                  "apiPolicies" : {
-                    "type" : "array",
-                    "items" : {
-                      "properties" : {
-                        "policyJsonConfig" : {
-                          "type" : "string"
-                        },
-                        "policyImpl" : {
-                          "type" : "string"
-                        }
-                      }
-                    }
-                  },
-                  "apiId" : {
-                    "type" : "string"
-                  }
-                }
+                "$ref" : "#/components/schemas/Api"
               }
             }
           }
@@ -127,11 +79,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "properties" : {
-                    "endpoint" : {
-                      "type" : "string"
-                    }
-                  }
+                  "$ref" : "#/components/schemas/ApiEndpoint"
                 }
               }
             }
@@ -145,52 +93,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "properties" : {
-                  "version" : {
-                    "type" : "string"
-                  },
-                  "organizationId" : {
-                    "type" : "string"
-                  },
-                  "contracts" : {
-                    "type" : "array",
-                    "items" : {
-                      "properties" : {
-                        "policies" : {
-                          "type" : "array",
-                          "items" : {
-                            "properties" : {
-                              "policyJsonConfig" : {
-                                "type" : "string"
-                              },
-                              "policyImpl" : {
-                                "type" : "string"
-                              }
-                            }
-                          }
-                        },
-                        "plan" : {
-                          "type" : "string"
-                        },
-                        "apiVersion" : {
-                          "type" : "string"
-                        },
-                        "apiOrgId" : {
-                          "type" : "string"
-                        },
-                        "apiId" : {
-                          "type" : "string"
-                        }
-                      }
-                    }
-                  },
-                  "clientId" : {
-                    "type" : "string"
-                  },
-                  "apiKey" : {
-                    "type" : "string"
-                  }
-                }
+                "$ref" : "#/components/schemas/Client"
               }
             }
           }
@@ -236,26 +139,139 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "properties" : {
-                    "version" : {
-                      "type" : "string"
-                    },
-                    "up" : {
-                      "type" : "boolean"
-                    },
-                    "name" : {
-                      "type" : "string"
-                    },
-                    "id" : {
-                      "type" : "string"
-                    },
-                    "description" : {
-                      "type" : "string"
-                    }
-                  }
+                  "$ref" : "#/components/schemas/SystemStatus"
                 }
               }
             }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ApiEndpoint" : {
+        "properties" : {
+          "endpoint" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Api" : {
+        "properties" : {
+          "version" : {
+            "type" : "string"
+          },
+          "publicAPI" : {
+            "type" : "boolean"
+          },
+          "parsePayload" : {
+            "type" : "boolean"
+          },
+          "organizationId" : {
+            "type" : "string"
+          },
+          "maxPayloadBufferSize" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "endpointType" : {
+            "type" : "string"
+          },
+          "endpointProperties" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "endpointContentType" : {
+            "type" : "string"
+          },
+          "endpoint" : {
+            "type" : "string"
+          },
+          "apiPolicies" : {
+            "type" : "array",
+            "items" : {
+              "properties" : {
+                "policyJsonConfig" : {
+                  "type" : "string"
+                },
+                "policyImpl" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "apiId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Client" : {
+        "properties" : {
+          "version" : {
+            "type" : "string"
+          },
+          "organizationId" : {
+            "type" : "string"
+          },
+          "contracts" : {
+            "type" : "array",
+            "items" : {
+              "properties" : {
+                "policies" : {
+                  "type" : "array",
+                  "items" : {
+                    "properties" : {
+                      "policyJsonConfig" : {
+                        "type" : "string"
+                      },
+                      "policyImpl" : {
+                        "type" : "string"
+                      }
+                    }
+                  }
+                },
+                "plan" : {
+                  "type" : "string"
+                },
+                "apiVersion" : {
+                  "type" : "string"
+                },
+                "apiOrgId" : {
+                  "type" : "string"
+                },
+                "apiId" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "clientId" : {
+            "type" : "string"
+          },
+          "apiKey" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SystemStatus" : {
+        "properties" : {
+          "version" : {
+            "type" : "string"
+          },
+          "up" : {
+            "type" : "boolean"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
           }
         }
       }

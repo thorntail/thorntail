@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -143,10 +144,14 @@ public class OpenApiAnnotationScanner {
 
     private final IndexView index;
 
+    private OpenAPIImpl oai;
+
     private String currentAppPath = "";
     private String currentResourcePath = "";
     private String[] currentConsumes;
     private String[] currentProduces;
+
+    private SchemaRegistry schemaRegistry = new SchemaRegistry();
 
     /**
      * Constructor.
@@ -281,7 +286,7 @@ public class OpenApiAnnotationScanner {
         LOG.debug("Scanning deployment for OpenAPI and JAX-RS Annotations.");
 
         // Initialize a new OAI document.  Even if nothing is found, this will be returned.
-        OpenAPIImpl oai = new OpenAPIImpl();
+        oai = new OpenAPIImpl();
         oai.setOpenapi(OpenApiConstants.OPEN_API_VERSION);
 
         // Get all jax-rs applications and convert them to OAI models (and merge them into a single one)
@@ -486,7 +491,7 @@ public class OpenApiAnnotationScanner {
     private void processJaxRsMethod(OpenAPIImpl openApi, ClassInfo resource, MethodInfo method,
             AnnotationInstance methodAnno, HttpMethod methodType, Set<String> resourceTags) {
 
-        System.out.println("Processing jax-rs method: " + method);
+        LOG.debugf("Processing jax-rs method: {0}", method.toString());
 
         // Figure out the path for the operation.  This is a combination of the App, Resource, and Method @Path annotations
         String path;
@@ -707,7 +712,7 @@ public class OpenApiAnnotationScanner {
         }
         // If there are no responses from annotations, try to create a response from the method return value.
         if (operation.getResponses() == null || operation.getResponses().isEmpty()) {
-            createResponseFromMethod(method, operation);
+            createResponseFromJaxRsMethod(method, operation);
         }
 
         // Process @SecurityRequirement annotations
@@ -804,7 +809,7 @@ public class OpenApiAnnotationScanner {
      * @param method
      * @param operation
      */
-    private void createResponseFromMethod(MethodInfo method, Operation operation) {
+    private void createResponseFromJaxRsMethod(MethodInfo method, Operation operation) {
         Type returnType = method.returnType();
 
         Schema schema;
@@ -812,60 +817,41 @@ public class OpenApiAnnotationScanner {
         APIResponse response;
         ContentImpl content;
 
-        switch (returnType.kind()) {
-            case ARRAY:
-                break;
-            case CLASS:
-                ClassType ctype = returnType.asClassType();
-                schema = introspectClassToSchema(ctype);
-                responses = ModelUtil.responses(operation);
-                response = new APIResponseImpl();
-                content = new ContentImpl();
-                String[] produces = this.currentProduces;
-                if (produces == null || produces.length == 0) {
-                    produces = OpenApiConstants.DEFAULT_PRODUCES;
-                }
-                for (String producesType : produces) {
-                    MediaType mt = new MediaTypeImpl();
-                    mt.setSchema(schema);
-                    content.addMediaType(producesType, mt);
-                }
-                response.setContent(content);
-                responses.addApiResponse("200", response);
-                break;
-            case PARAMETERIZED_TYPE:
-                break;
-            case PRIMITIVE:
-                break;
-            case TYPE_VARIABLE:
-                break;
-            case UNRESOLVED_TYPE_VARIABLE:
-                break;
-            case VOID:
-                String code = "204";
-                if (method.hasAnnotation(OpenApiConstants.DOTNAME_POST)) {
-                    code = "201";
-                }
-                responses = ModelUtil.responses(operation);
-                response = new APIResponseImpl();
-                responses.addApiResponse(code, response);
-                break;
-            case WILDCARD_TYPE:
-                break;
-            default:
-                break;
+        if (returnType.kind() == Type.Kind.VOID) {
+            String code = "204";
+            if (method.hasAnnotation(OpenApiConstants.DOTNAME_POST)) {
+                code = "201";
+            }
+            responses = ModelUtil.responses(operation);
+            response = new APIResponseImpl();
+            responses.addApiResponse(code, response);
+        } else {
+            schema = typeToSchema(returnType);
+            responses = ModelUtil.responses(operation);
+            response = new APIResponseImpl();
+            content = new ContentImpl();
+            String[] produces = this.currentProduces;
+            if (produces == null || produces.length == 0) {
+                produces = OpenApiConstants.DEFAULT_PRODUCES;
+            }
+            for (String producesType : produces) {
+                MediaType mt = new MediaTypeImpl();
+                mt.setSchema(schema);
+                content.addMediaType(producesType, mt);
+            }
+            response.setContent(content);
+            responses.addApiResponse("200", response);
         }
     }
 
     /**
      * Converts a jandex type to a {@link Schema} model.
      * @param paramType
-     * @return
      */
     private Schema typeToSchema(Type paramType) {
         Schema schema = null;
         if (paramType.kind() == Type.Kind.CLASS) {
-            schema = introspectClassToSchema(paramType.asClassType());
+            schema = introspectClassToSchema(paramType.asClassType(), true);
         } else if (paramType.kind() == Type.Kind.PRIMITIVE) {
             TypeWithFormat typeFormat = TypeUtil.getTypeFormat(paramType.asPrimitiveType());
             schema = new SchemaImpl();
@@ -1781,7 +1767,7 @@ public class OpenApiAnnotationScanner {
 
         Schema schema = new SchemaImpl();
 
-        schema.setNot(readClassSchema(annotation.value(OpenApiConstants.PROP_NOT)));
+        schema.setNot(readClassSchema(annotation.value(OpenApiConstants.PROP_NOT), true));
         schema.setOneOf(readClassSchemas(annotation.value(OpenApiConstants.PROP_ONE_OF)));
         schema.setAnyOf(readClassSchemas(annotation.value(OpenApiConstants.PROP_ANY_OF)));
         schema.setAllOf(readClassSchemas(annotation.value(OpenApiConstants.PROP_ALL_OF)));
@@ -1814,12 +1800,16 @@ public class OpenApiAnnotationScanner {
         schema.setMinItems(JandexUtil.intValue(annotation, OpenApiConstants.PROP_MIN_ITEMS));
         schema.setUniqueItems(JandexUtil.booleanValue(annotation, OpenApiConstants.PROP_UNIQUE_ITEMS));
 
-        Schema implSchema = readClassSchema(annotation.value(OpenApiConstants.PROP_IMPLEMENTATION));
-        if (schema.getType() == SchemaType.ARRAY) {
+        if (JandexUtil.isSimpleClassSchema(annotation)) {
+            Schema implSchema = readClassSchema(annotation.value(OpenApiConstants.PROP_IMPLEMENTATION), true);
+            schema = MergeUtil.mergeObjects(implSchema, schema);
+        } else if (JandexUtil.isSimpleArraySchema(annotation)) {
+            Schema implSchema = readClassSchema(annotation.value(OpenApiConstants.PROP_IMPLEMENTATION), true);
             // If the @Schema annotation indicates an array type, then use the Schema
             // generated from the implementation Class as the "items" for the array.
             schema.setItems(implSchema);
         } else {
+            Schema implSchema = readClassSchema(annotation.value(OpenApiConstants.PROP_IMPLEMENTATION), false);
             // If there is an impl class - merge the @Schema properties *onto* the schema
             // generated from the Class so that the annotation properties override the class
             // properties (as required by the MP+OAI spec).
@@ -1842,7 +1832,7 @@ public class OpenApiAnnotationScanner {
         List<Schema> schemas = new ArrayList<>(classArray.length);
         for (Type type : classArray) {
             ClassType ctype = (ClassType) type;
-            Schema schema = introspectClassToSchema(ctype);
+            Schema schema = introspectClassToSchema(ctype, true);
             schemas.add(schema);
         }
         return schemas;
@@ -1852,24 +1842,42 @@ public class OpenApiAnnotationScanner {
      * Introspect into the given Class to generate a Schema model.
      * @param value
      */
-    private Schema readClassSchema(AnnotationValue value) {
+    private Schema readClassSchema(AnnotationValue value, boolean schemaReferenceSupported) {
         if (value == null) {
             return null;
         }
         ClassType ctype = (ClassType) value.asClass();
-        Schema schema = introspectClassToSchema(ctype);
+        Schema schema = introspectClassToSchema(ctype, schemaReferenceSupported);
         return schema;
     }
 
     /**
-     * Introspects the given class type to generate a Schema model.
+     * Introspects the given class type to generate a Schema model.  The boolean indicates
+     * whether this class type should be turned into a reference.
      * @param ctype
+     * @param schemaReferenceSupported
      */
-    private Schema introspectClassToSchema(ClassType ctype) {
+    private Schema introspectClassToSchema(ClassType ctype, boolean schemaReferenceSupported) {
         if (ctype.name().equals(OpenApiConstants.DOTNAME_RESPONSE)) {
             return null;
         }
-        return OpenApiDataObjectScanner.process(index, ctype);
+        if (schemaReferenceSupported && this.schemaRegistry.has(ctype)) {
+            GeneratedSchemaInfo schemaInfo = this.schemaRegistry.lookup(ctype);
+            Schema rval = new SchemaImpl();
+            rval.setRef(schemaInfo.$ref);
+            return rval;
+        } else {
+            Schema schema = OpenApiDataObjectScanner.process(index, ctype);
+            if (schemaReferenceSupported && schema != null && this.index.getClassByName(ctype.name()) != null) {
+                GeneratedSchemaInfo schemaInfo = this.schemaRegistry.register(ctype, schema);
+                ModelUtil.components(oai).addSchema(schemaInfo.name, schema);
+                Schema rval = new SchemaImpl();
+                rval.setRef(schemaInfo.$ref);
+                return rval;
+            } else {
+                return schema;
+            }
+        }
     }
 
     /**
@@ -2017,6 +2025,51 @@ public class OpenApiAnnotationScanner {
      */
     private static enum ContentDirection {
         Input, Output, Parameter
+    }
+
+    /**
+     * Information about a single generated schema.
+     * @author eric.wittmann@gmail.com
+     */
+    protected static class GeneratedSchemaInfo {
+        public String name;
+        public Schema schema;
+        public String $ref;
+    }
+
+    /**
+     * A simple registry used to track schemas that have been generated and inserted
+     * into the #/components section of the
+     * @author eric.wittmann@gmail.com
+     */
+    protected static class SchemaRegistry {
+        private Map<DotName, GeneratedSchemaInfo> registry = new HashMap<>();
+        private Set<String> names = new HashSet<>();
+
+        public GeneratedSchemaInfo register(ClassType instanceClass, Schema schema) {
+            String name = instanceClass.name().local();
+            int idx = 1;
+            while (this.names.contains(name)) {
+                name = instanceClass.name().local() + idx++;
+            }
+            GeneratedSchemaInfo info = new GeneratedSchemaInfo();
+            info.schema = schema;
+            info.name = name;
+            info.$ref = "#/components/schemas/" + name;
+
+            registry.put(instanceClass.name(), info);
+            names.add(name);
+
+            return info;
+        }
+
+        public GeneratedSchemaInfo lookup(ClassType instanceClass) {
+            return registry.get(instanceClass.name());
+        }
+
+        public boolean has(ClassType instanceClass) {
+            return registry.containsKey(instanceClass.name());
+        }
     }
 
 }

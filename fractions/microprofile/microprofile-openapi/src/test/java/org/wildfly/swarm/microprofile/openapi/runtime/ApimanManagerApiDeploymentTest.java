@@ -105,7 +105,7 @@ public class ApimanManagerApiDeploymentTest {
         String actual = OpenApiSerializer.serialize(OpenApiDocument.INSTANCE.get(), Format.JSON);
         String expected = loadResource(getClass().getResource("testApimanGatewayWAR.expected.json"));
 
-//        System.out.println(actual);
+        System.out.println(actual);
         assertJsonEquals(expected, actual);
     }
 
