@@ -34,6 +34,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -235,8 +236,10 @@ public final class OpenApiConstants {
     public static final DotName DOTNAME_HEAD = DotName.createSimple(HEAD.class.getName());
     public static final DotName DOTNAME_OPTIONS = DotName.createSimple(OPTIONS.class.getName());
 
-    public static final String[] DEFAULT_CONSUMES = new String[] {MIME_ANY};
-    public static final String[] DEFAULT_PRODUCES = new String[] {MIME_ANY};
+    public static final DotName DOTNAME_RESPONSE = DotName.createSimple(Response.class.getName());
+
+    public static final String[] DEFAULT_CONSUMES = new String[] { MIME_ANY };
+    public static final String[] DEFAULT_PRODUCES = new String[] { MIME_ANY };
 
     public static final String REF_PREFIX_API_RESPONSE = "#/components/responses/";
     public static final String REF_PREFIX_CALLBACK = "#/components/callbacks/";

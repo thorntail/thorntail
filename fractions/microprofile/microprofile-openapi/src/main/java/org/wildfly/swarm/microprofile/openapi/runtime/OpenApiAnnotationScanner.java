@@ -293,7 +293,6 @@ public class OpenApiAnnotationScanner {
         // TODO find all OpenAPIDefinition annotations at the package level
 
         // Now find all jax-rs endpoints
-        // TODO what about when the annotations are found on interfaces instead of classes?
         Collection<ClassInfo> resourceClasses = JandexUtil.getJaxRsResourceClasses(this.index);
         for (ClassInfo resourceClass : resourceClasses) {
             processJaxRsResourceClass(oai, resourceClass);
@@ -346,11 +345,6 @@ public class OpenApiAnnotationScanner {
             processDefinition(oai, openApiDefAnno);
         }
 
-        // TODO are we allowed to have global declarations of the following things?  the annotations indicate that they can be present on Types
-//        Collection<AnnotationInstance> schemaAnnos = new ArrayList<>();
-//        Collection<AnnotationInstance> securitySchemeAnnos = new ArrayList<>();
-//        Collection<AnnotationInstance> callbackAnnos = new ArrayList<>();
-
         // Process @SecurityScheme annotations
         ////////////////////////////////////////
         List<AnnotationInstance> securitySchemeAnnotations = JandexUtil.getRepeatableAnnotation(applicationClass,
@@ -391,7 +385,7 @@ public class OpenApiAnnotationScanner {
         AnnotationInstance pathAnno = JandexUtil.getClassAnnotation(resourceClass, OpenApiConstants.DOTNAME_PATH);
         this.currentResourcePath = pathAnno.value().asString();
 
-        // TODO handle the use-case where the resource class extends a base class, and the base class has jax-rs relevant methods and annotations (and what if the base class is in another jar?)
+        // TODO handle the use-case where the resource class extends a base class, and the base class has jax-rs relevant methods and annotations
 
         // Process @SecurityScheme annotations
         ////////////////////////////////////////
@@ -536,7 +530,7 @@ public class OpenApiAnnotationScanner {
             if (annotationValue != null) {
                 currentProduces = annotationValue.asStringArray();
             } else {
-                currentProduces = OpenApiConstants.DEFAULT_CONSUMES;
+                currentProduces = OpenApiConstants.DEFAULT_PRODUCES;
             }
         }
 
@@ -711,7 +705,10 @@ public class OpenApiAnnotationScanner {
             APIResponses responses = ModelUtil.responses(operation);
             responses.addApiResponse(responseCode, response);
         }
-        // TODO handle method responses when no annotation is provided
+        // If there are no responses from annotations, try to create a response from the method return value.
+        if (operation.getResponses() == null || operation.getResponses().isEmpty()) {
+            createResponseFromMethod(method, operation);
+        }
 
         // Process @SecurityRequirement annotations
         ///////////////////////////////////////////
@@ -785,6 +782,75 @@ public class OpenApiAnnotationScanner {
                 break;
             case TRACE:
                 pathItem.setTRACE(operation);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Called when a jax-rs method's APIResponse annotations have all been processed but
+     * no response was actually created for the operation.  This method will create a response
+     * from the method information and add it to the given operation.  It will try to do this
+     * by examining the method's return value and the type of operation (GET, PUT, POST, DELETE).
+     *
+     * If there is a return value of some kind (a non-void return type) then the response code
+     * is assumed to be 200.
+     *
+     * If there not a return value (void return type) then either a 201 or 204 is returned,
+     * depending on the type of request.
+     *
+     * TODO generate responses for each checked exception?
+     * @param method
+     * @param operation
+     */
+    private void createResponseFromMethod(MethodInfo method, Operation operation) {
+        Type returnType = method.returnType();
+
+        Schema schema;
+        APIResponses responses;
+        APIResponse response;
+        ContentImpl content;
+
+        switch (returnType.kind()) {
+            case ARRAY:
+                break;
+            case CLASS:
+                ClassType ctype = returnType.asClassType();
+                schema = introspectClassToSchema(ctype);
+                responses = ModelUtil.responses(operation);
+                response = new APIResponseImpl();
+                content = new ContentImpl();
+                String[] produces = this.currentProduces;
+                if (produces == null || produces.length == 0) {
+                    produces = OpenApiConstants.DEFAULT_PRODUCES;
+                }
+                for (String producesType : produces) {
+                    MediaType mt = new MediaTypeImpl();
+                    mt.setSchema(schema);
+                    content.addMediaType(producesType, mt);
+                }
+                response.setContent(content);
+                responses.addApiResponse("200", response);
+                break;
+            case PARAMETERIZED_TYPE:
+                break;
+            case PRIMITIVE:
+                break;
+            case TYPE_VARIABLE:
+                break;
+            case UNRESOLVED_TYPE_VARIABLE:
+                break;
+            case VOID:
+                String code = "204";
+                if (method.hasAnnotation(OpenApiConstants.DOTNAME_POST)) {
+                    code = "201";
+                }
+                responses = ModelUtil.responses(operation);
+                response = new APIResponseImpl();
+                responses.addApiResponse(code, response);
+                break;
+            case WILDCARD_TYPE:
                 break;
             default:
                 break;
@@ -1800,6 +1866,9 @@ public class OpenApiAnnotationScanner {
      * @param ctype
      */
     private Schema introspectClassToSchema(ClassType ctype) {
+        if (ctype.name().equals(OpenApiConstants.DOTNAME_RESPONSE)) {
+            return null;
+        }
         return OpenApiDataObjectScanner.process(index, ctype);
     }
 

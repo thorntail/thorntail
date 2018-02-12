@@ -17,16 +17,15 @@
 package org.wildfly.swarm.microprofile.openapi.runtime;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.microprofile.config.Config;
-import org.jboss.jandex.ClassInfo;
-import org.jboss.jandex.DotName;
-import org.jboss.jandex.IndexView;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.json.JSONException;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.wildfly.microprofile.config.WildFlyConfigBuilder;
@@ -44,15 +43,15 @@ import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Forma
 @SuppressWarnings("rawtypes")
 //@Ignore
 public class ApimanManagerApiDeploymentTest {
-//
-//    /**
-//     * Loads a resource as a string (reads the content at the URL).
-//     * @param testResource
-//     * @throws IOException
-//     */
-//    private static String loadResource(URL testResource) throws IOException {
-//        return IOUtils.toString(testResource, "UTF-8");
-//    }
+
+    /**
+     * Loads a resource as a string (reads the content at the URL).
+     * @param testResource
+     * @throws IOException
+     */
+    private static String loadResource(URL testResource) throws IOException {
+        return IOUtils.toString(testResource, "UTF-8");
+    }
 
     /**
      * Compares two JSON strings.
@@ -65,8 +64,8 @@ public class ApimanManagerApiDeploymentTest {
     }
 
     @Test
-    @Ignore
-    public void testApimanWAR() throws Exception {
+//    @Ignore
+    public void testApimanManagerWAR() throws Exception {
         File warFile = Maven.resolver().resolve("io.apiman:apiman-manager-api-war:war:1.3.1.Final").withoutTransitivity().asSingleFile();
 
         WildFlyConfigBuilder cfgBuilder = new WildFlyConfigBuilder();
@@ -81,33 +80,33 @@ public class ApimanManagerApiDeploymentTest {
         new OpenApiServletContextListener().contextInitialized(null);
 
         String actual = OpenApiSerializer.serialize(OpenApiDocument.INSTANCE.get(), Format.JSON);
-//        String expected = loadResource(getClass().getResource(expectedResource));
-        String expected = "{}";
+        String expected = loadResource(getClass().getResource("testApimanManagerWAR.expected.json"));
 
-        System.out.println(actual);
+//        System.out.println(actual);
         assertJsonEquals(expected, actual);
     }
 
     @Test
-    @Ignore
-    public void testApimanEnum() throws Exception {
-        File warFile = Maven.resolver().resolve("io.apiman:apiman-gateway-engine-core:jar:1.3.1.Final").withoutTransitivity().asSingleFile();
+//    @Ignore
+    public void testApimanGatewayWAR() throws Exception {
+        File warFile = Maven.resolver().resolve("io.apiman:apiman-gateway-platforms-war-wildfly8-api:war:1.3.1.Final").withoutTransitivity().asSingleFile();
+
         WildFlyConfigBuilder cfgBuilder = new WildFlyConfigBuilder();
         cfgBuilder.addDefaultSources();
         Config cfg = cfgBuilder.build();
         Archive archive = ShrinkWrap.createFromZipFile(JAXRSArchive.class, warFile);
         OpenApiConfig config = new OpenApiConfig(cfg);
 
-        IndexView index = OpenApiAnnotationScanner.archiveToIndex(config, archive);
-        ClassInfo classInfo = index.getClassByName(DotName.createSimple("io.apiman.gateway.engine.auth.RequiredAuthType"));
-        System.out.println("Kind: " + classInfo.kind());
-        System.out.println("Super: " + classInfo.superClassType());
-        System.out.println("Fields: ");
-        classInfo.fields().forEach( field -> {
-            System.out.println("\tName=" + field.name());
-            System.out.println("\tType=" + field.type());
-            System.out.println("--");
-        });
+        OpenApiDocument.INSTANCE.reset();
+        OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(config, archive);
+        processor.process();
+        new OpenApiServletContextListener().contextInitialized(null);
+
+        String actual = OpenApiSerializer.serialize(OpenApiDocument.INSTANCE.get(), Format.JSON);
+        String expected = loadResource(getClass().getResource("testApimanGatewayWAR.expected.json"));
+
+//        System.out.println(actual);
+        assertJsonEquals(expected, actual);
     }
 
 }
