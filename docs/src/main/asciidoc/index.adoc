@@ -35,6 +35,7 @@ include::components/javaee/jpa.adoc[leveloffset=+2]
 include::components/javaee/jta.adoc[leveloffset=+2]
 include::components/javaee/jca.adoc[leveloffset=+2]
 include::components/javaee/jms.adoc[leveloffset=+2]
+include::components/javaee/jms-artemis.adoc[leveloffset=+2]
 
 ## MicroProfile
 

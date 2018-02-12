@@ -32,52 +32,6 @@
       <version>${version.jms-spec}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>artemis-jms-client</artifactId>
-      <version>${version.activemq}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.geronimo.specs</groupId>
-          <artifactId>geronimo-jms_2.0_spec</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jgroups</groupId>
-          <artifactId>jgroups</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>artemis-cdi-client</artifactId>
-      <version>${version.activemq}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.activemq</groupId>
-          <artifactId>artemis-jdbc-store</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.geronimo.specs</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jgroups</groupId>
-          <artifactId>jgroups</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty-all</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>artemis-ra</artifactId>
-      <version>${version.activemq}</version>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
-
   </dependencies>
 
 </project>

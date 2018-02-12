@@ -130,8 +130,8 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
     @Override
     protected String[] bindConnectionFactory(URL url, String deploymentName, Object cf) throws Throwable {
         String name = "java:jboss/" + deploymentName + "/connection-factory";
-        this.jndi.bind( name, cf);
-        return new String[] {
+        this.jndi.bind(name, cf);
+        return new String[]{
                 name
         };
     }
@@ -139,8 +139,8 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
     @Override
     protected String[] bindConnectionFactory(URL url, String deploymentName, Object cf, String jndiName) throws Throwable {
         this.jndi.bind(jndiName, cf);
-        JCAMessages.MESSAGES.bound( deploymentName, jndiName);
-        return new String[] {
+        JCAMessages.MESSAGES.bound(deploymentName, jndiName);
+        return new String[]{
                 jndiName
         };
     }
@@ -185,6 +185,7 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
                     }
                 }
             }
+
             return instance;
         } catch (Exception e) {
             throw new DeployException(e.getMessage(), e);
@@ -192,7 +193,7 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
     }
 
     private Object coerce(String value, Class<?> targetType) {
-        return ((ConfigImpl)ConfigProviderResolver.instance().getConfig()).convert(value, targetType).get();
+        return ((ConfigImpl) ConfigProviderResolver.instance().getConfig()).convert(value, targetType).get();
     }
 
     @Override

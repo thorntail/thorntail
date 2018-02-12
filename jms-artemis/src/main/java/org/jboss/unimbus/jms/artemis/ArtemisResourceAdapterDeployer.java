@@ -3,17 +3,19 @@ package org.jboss.unimbus.jms.artemis;
 import java.net.URL;
 import java.util.List;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.transaction.TransactionManager;
 
+import org.apache.activemq.artemis.service.extensions.ServiceUtils;
 import org.jboss.jca.common.api.metadata.spec.ConfigProperty;
 import org.jboss.jca.common.api.metadata.spec.ResourceAdapter;
 import org.jboss.unimbus.condition.RequiredClassPresent;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.jca.ResourceAdapterDeploymentFactory;
 import org.jboss.unimbus.jca.ResourceAdapterDeployments;
-import org.jboss.unimbus.jca.Util;
 import org.jboss.unimbus.jca.ironjacamar.ResourceAdapterDeployment;
 
 import static org.jboss.unimbus.jca.Util.duplicateProperty;
@@ -26,6 +28,7 @@ import static org.jboss.unimbus.jca.Util.duplicateProperty;
 public class ArtemisResourceAdapterDeployer {
 
     void init(@Observes LifecycleEvent.Scan event) throws Exception {
+        ServiceUtils.setTransactionManager(this.tm);
         ResourceAdapterDeployment deployment = this.factory.create("artemis", "META-INF/artemis-ra.xml");
         //System.err.println( "==========> " + deployment );
         if (deployment == null) {
@@ -74,6 +77,11 @@ public class ArtemisResourceAdapterDeployer {
 
     }
 
+    @PreDestroy
+    void cleanup() {
+        ServiceUtils.setTransactionManager(null);
+    }
+
     ConfigProperty find(List<ConfigProperty> properties, String name) {
         return properties.stream()
                 .filter(e -> e.getConfigPropertyName().getValue().equalsIgnoreCase(name))
@@ -95,6 +103,9 @@ public class ArtemisResourceAdapterDeployer {
 
     @Inject
     ArtemisClientConfiguration config;
+
+    @Inject
+    TransactionManager tm;
 
 
 }

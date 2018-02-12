@@ -1,0 +1,33 @@
+[#component-jms-artemis]
+= JMS-Artemis
+
+The JMS-Artemis component provides for easily connecting to an external ActiveMQ Artemis message broker.
+
+.Maven Coordinates
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.jboss.unimbus</groupId>
+  <artifactId>jms-artemis</artifactId>
+</dependency>
+----
+
+.Configuration
+
+By default, ActiveMQ-Artemis client is provided, and respects the following configuration options:
+
+`artemis.username`::
+The username for the remote connection>
+
+`artemis.password`::
+The password for the remote connection.
+
+`artemis.url`::
+The remote connection URL, which must be set unless less `artemis.host` and `artemis.port` are used.
+
+`artemis.host`::
+The remote connection host, if not using `artemis.url`. Defaults to `localhost`.
+
+`artemis.port`::
+The remote connection port, if not using `artemis.url`. Defaults to `61616`.

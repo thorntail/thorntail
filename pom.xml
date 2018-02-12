@@ -102,6 +102,11 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
+        <artifactId>jms-artemis</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
         <artifactId>jpa</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
@@ -220,6 +225,7 @@
     <module>jdbc</module>
     <module>jndi</module>
     <module>jms</module>
+    <module>jms-artemis</module>
     <module>jpa</module>
     <module>jta</module>
     <module>json-p</module>

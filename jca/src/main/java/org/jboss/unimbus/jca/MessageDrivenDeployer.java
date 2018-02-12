@@ -3,9 +3,11 @@ package org.jboss.unimbus.jca;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.PreDestroy;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.enterprise.context.ApplicationScoped;
@@ -33,20 +35,20 @@ public class MessageDrivenDeployer {
 
     void deploy(@Observes LifecycleEvent.Deploy event) throws Exception {
         for (Class<?> each : ext.getEntries()) {
-            deploy( each );
+            deploy(each);
         }
     }
 
     void deploy(Class<?> driven) throws Exception {
         String raId = findResourceAdapterId(driven);
-        if ( raId == null ) {
-            throw new RuntimeException("no RA" );
+        if (raId == null) {
+            throw new RuntimeException("no RA");
         }
 
         List<MessageListener> listeners = this.raRepo.getMessageListeners(raId);
 
-        if ( listeners.isEmpty() ) {
-            throw new RuntimeException( "no message listeners" );
+        if (listeners.isEmpty()) {
+            throw new RuntimeException("no message listeners");
         }
 
         MessageListener listener = listeners.iterator().next();
@@ -57,8 +59,18 @@ public class MessageDrivenDeployer {
 
         ResourceAdapter ra = this.raRepo.getResourceAdapter(raId);
 
-        ra.endpointActivation(factory(driven, listener.getType()), activationSpec);
+        Entry entry = new Entry(ra, factory(driven, listener.getType()), activationSpec);
+
+        ra.endpointActivation(entry.factory, entry.spec);
+        this.entries.add(entry);
         JCAMessages.MESSAGES.deployedMessageDriven(driven.getName());
+    }
+
+    @PreDestroy
+    void undeploy() {
+        for (Entry entry : this.entries) {
+            entry.ra.endpointDeactivation( entry.factory, entry.spec );
+        }
     }
 
     MessageEndpointFactory factory(Class<?> driven, Class<?> listenerInterface) {
@@ -87,17 +99,17 @@ public class MessageDrivenDeployer {
     }
 
     private Object coerce(String value, Class<?> propertyType) {
-        return ((ConfigImpl)ConfigProviderResolver.instance().getConfig()).convert(value,propertyType).get();
+        return ((ConfigImpl) ConfigProviderResolver.instance().getConfig()).convert(value, propertyType).get();
     }
 
     String findResourceAdapterId(Class<?> driven) throws NotFoundException {
-        if ( driven == null ) {
+        if (driven == null) {
             return null;
         }
         Class<?>[] interfaces = driven.getInterfaces();
-        for ( int i = 0 ; i < interfaces.length ; ++i ) {
+        for (int i = 0; i < interfaces.length; ++i) {
             Set<String> adapterIds = this.raRepo.getResourceAdapters(interfaces[i]);
-            if ( ! adapterIds.isEmpty() ) {
+            if (!adapterIds.isEmpty()) {
                 return adapterIds.iterator().next();
             }
         }
@@ -109,4 +121,20 @@ public class MessageDrivenDeployer {
 
     @Inject
     MessageDrivenExtension ext;
+
+    private List<Entry> entries = new ArrayList<>();
+
+    static class Entry {
+        Entry(ResourceAdapter ra, MessageEndpointFactory factory, ActivationSpec spec) {
+            this.ra = ra;
+            this.factory = factory;
+            this.spec = spec;
+        }
+
+        ResourceAdapter ra;
+
+        MessageEndpointFactory factory;
+
+        ActivationSpec spec;
+    }
 }
