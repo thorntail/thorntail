@@ -1,0 +1,70 @@
+[#testing-junit]
+= Testing with JUnit
+
+{project_name} provides a JUnit `TestRunner` implementation which allows your JUnit tests to execute within the context of your full application.
+To use the `TestRunner`, you must include the `testing` artifact with `<scope>test</scope>`.
+
+.Maven Coordinates
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.jboss.unimbus</groupId>
+  <artifactId>testing</artifactId>
+  <scope>test</scope>
+</dependency>
+----
+
+.Use the `UNimbusRunner`
+
+Write your JUnit test as usual, but include a class-level annotation of `@RunWith(UNimbusRunner.class)`
+
+[source,java]
+----
+@RunWith(UNimbusRunner.class)
+public class MyTest {
+  // tests go here 
+}
+----
+
+.Participate in CDI
+
+Your test class will be instantiated and injected for each test method. 
+You may use `@Inject` to inject any component available to your application.
+The entirety of your application will be booted and available.
+
+[source,java]
+----
+@RunWith(UNimbusRunner.class)
+public class MyTest {
+
+  public void testSomething() throws Exception {
+    assertThat(myLunch.getCheese()).isEqualTo("cheddar");
+  }
+
+  @Inject
+  private Lunch myLunch;
+}
+----
+
+.Use `@EphemeralPorts`
+
+If the annotation `@EphemeralPorts` is applied at the class level, and your application uses a servlet container, then arbitrary emphemeral ports will be selected and used.
+This may be useful when running tests on a CI machine or if you wish to parallelize your tests.
+
+In order to know what port are actually selected and in-use, you may `@Inject` either a `@Primary` or `@Management` `URL` or `InetSocketAddress` component.
+These instances are made available throw the xref:component-servlet[Servlet] component.
+
+.fest-assert
+
+The `testing` artifact transitively brings in https://github.com/alexruiz/fest-assert-2.x[fest-assert] for making fluent assertions in your tests.
+
+.RestAssured
+
+The `testing` artifact transitively brings in http://rest-assured.io/[RestAssured] to enable easily testing of HTTP endpoints. 
+Additionally, it preconfigures the `RestAssured.baseURI` to the URL for the primary web endpoint, if available.
+The preconfiguration of the `baseURI` is especially useful when you use `@EphemeralPorts`.
+
+.Related Information
+
+xref:testing-arquillian[]

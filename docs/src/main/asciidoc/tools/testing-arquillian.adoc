@@ -1,0 +1,74 @@
+[#testing-arquillian]
+= Testing with Arquillian
+
+Arquillian is a framework which assists with both blackbox and _in-container_ testing of your components.
+The MicroProfile TCKs use the Arquillian framework in order to verify compliance with the specifications.
+
+.Maven Coordinates
+
+To use the Arquillian integration, include the `testing-arquillian` artifact in your project with a `<scope>test</scope>` block.
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.jboss.unimbus</groupId>
+  <artifactId>testing-arquillian</artifactId>
+  <scope>test</scope>
+</dependency>
+----
+
+.Arquilian Deployable Container
+
+{project_name} provides an Arquillian-compatible _deployable container_ which allows a developer to deploy only the components they wish to test.
+Additionally, the tests themselves may either be blackbox (`@RunAsClient`) or _in-container_ where they can directly interact with the components under test.
+
+.Writing an _in-container_ Test
+
+Using JUnit, write a test as you normally would, but include a class-level annotation of `@RunWith(Arquillian.class)`.
+
+Additionally, to specify the components you wish to be tested, you must provide a method marked `@Deployment` which produces a ShrinkWrap archive to be consider as the application.
+
+[source,java]
+----
+@RunWith(Arquillian.class)
+public class MyTest {
+
+  @Deployment
+  public static JavaArchive() {
+    JavaArchive archive = ShrinkWrap.create(JavaArchive.class);
+    // set up archive
+    return archive;
+  }
+
+}
+----
+
+For in-container tests, the test class itself (`MyTest` in this case) is considered an injectable CDI bean. 
+Any components your application creates, or which are normally available from {project_name} may be injected.
+
+[source,java]
+----
+@RunWith(Arquillian.class)
+public class MyTest {
+
+  @Deployment
+  public static JavaArchive() {
+    JavaArchive archive = ShrinkWrap.create(JavaArchive.class);
+    // set up archive
+    return archive;
+  }
+
+  public void testSomething() throws Exception {
+    assertThat(myLunch.getCheese()).isEqualTo("cheddar");
+  }
+
+
+  @Inject
+  private Lunch myLunch;
+
+}
+----
+
+.Related Information
+
+xref:testing-junit[]

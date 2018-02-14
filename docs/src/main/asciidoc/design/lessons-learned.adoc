@@ -12,9 +12,17 @@ When you mangle and repackage a user's artifacts and dependencies, it can many t
 
 Let Maven (or Gradle) handle the entirety of pulling dependencies. We cannot predict the topology of someone's repository managers, proxies and network.
 
+.Don't get complicated with uberjars
+
+The more complex our uberjar layout is, the harder it is to support Gradle or other non-Maven build systems.
+
 .Classpaths are tricky
 
 If different codepaths are required for executing from Maven, an IDE, a unit-test, and during production, you will have a *bad time*.
+
+.Don't insist on uberjars
+
+For Linux containers, people want layers that cleanly separate application code from runtime support code.
 
 .Testability is important
 

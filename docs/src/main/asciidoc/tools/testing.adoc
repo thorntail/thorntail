@@ -1,0 +1,5 @@
+[#testing]
+= Testing
+
+include::testing-junit.adoc[leveloffset=+1]
+include::testing-arquillian.adoc[leveloffset=+1]
