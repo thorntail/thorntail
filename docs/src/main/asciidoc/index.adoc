@@ -22,6 +22,7 @@ include::concepts/flat-classpath.adoc[leveloffset=+1]
 # Tools
 
 include::tools/maven-plugin.adoc[leveloffset=+1]
+include::tools/testing.adoc[leveloffset=+1]
 
 # Components
 
