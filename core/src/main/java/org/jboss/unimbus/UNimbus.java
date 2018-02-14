@@ -59,6 +59,10 @@ public class UNimbus {
         new UNimbus(configClass).start();
     }
 
+    public static void main(String...args) {
+        run();
+    }
+
     public UNimbus() {
     }
 
@@ -179,7 +183,7 @@ public class UNimbus {
     }
 
 
-    private ClassLoader classLoader;
+    private ClassLoader classLoader = UNimbus.class.getClassLoader();
 
     private Class<?> configClass;
 

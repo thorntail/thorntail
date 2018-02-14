@@ -4,32 +4,35 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus</groupId>
-    <artifactId>unimbus-parent</artifactId>
+    <groupId>org.jboss.unimbus.testsuite</groupId>
+    <artifactId>testsuite</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <groupId>org.jboss.unimbus.testsuite</groupId>
-  <artifactId>testsuite</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-
-  <name>Testsuite Parent</name>
-
-  <packaging>pom</packaging>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>testing</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <artifactId>vertx</artifactId>
+  <name>Testsuite: Vert.x</name>
 
   <build>
     <plugins>
       <plugin>
+        <groupId>com.github.chrisdchristo</groupId>
+        <artifactId>capsule-maven-plugin</artifactId>
+        <version>1.5.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+            </goals>
+            <configuration>
+              <appClass>org.jboss.unimbus.testsuite.jms.Main</appClass>
+              <type>fat</type>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${version.maven-failsafe-plugin}</version>
         <executions>
           <execution>
             <id>integration-test</id>
@@ -39,7 +42,6 @@
             </goals>
             <configuration>
               <testSourceDirectory>src/it/java</testSourceDirectory>
-              <skip>${skipTests}</skip>
             </configuration>
           </execution>
           <execution>
@@ -51,12 +53,35 @@
           </execution>
         </executions>
       </plugin>
+<!--
       <plugin>
         <groupId>io.fabric8</groupId>
         <artifactId>docker-maven-plugin</artifactId>
-        <version>${version.docker-maven-plugin}</version>
         <configuration>
-          <skip>${skipTests}</skip>
+          <images>
+            <image>
+              <name>vromero/activemq-artemis</name>
+              <alias>artemis</alias>
+              <run>
+                <env>
+                  <ARTEMIS_USERNAME>guest</ARTEMIS_USERNAME>
+                  <ARTEMIS_PASSWORD>guest</ARTEMIS_PASSWORD>
+                </env>
+                <ports>
+                  <port>61616:61616</port>
+                </ports>
+                <wait>
+                  <tcp>
+                    <mode>mapped</mode>
+                    <ports>
+                      <port>61616</port>
+                    </ports>
+                  </tcp>
+                  <time>10000</time>
+                </wait>
+              </run>
+            </image>
+          </images>
         </configuration>
         <executions>
           <execution>
@@ -75,20 +100,14 @@
           </execution>
         </executions>
       </plugin>
+-->
     </plugins>
   </build>
 
-  <modules>
-    <module>servlet</module>
-    <module>servlet-static</module>
-    <module>jaxrs</module>
-    <module>jaxrs-jsonp</module>
-    <module>jms</module>
-
-    <module>jpa</module>
-    <module>vertx</module>
-
-    <module>keycloak</module>
-    <module>proof</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
+      <artifactId>vertx</artifactId>
+    </dependency>
+  </dependencies>
 </project>

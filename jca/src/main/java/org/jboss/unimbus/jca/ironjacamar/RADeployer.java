@@ -131,6 +131,7 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
     protected String[] bindConnectionFactory(URL url, String deploymentName, Object cf) throws Throwable {
         String name = "java:jboss/" + deploymentName + "/connection-factory";
         this.jndi.bind(name, cf);
+        JCAMessages.MESSAGES.bound(deploymentName, name);
         return new String[]{
                 name
         };
