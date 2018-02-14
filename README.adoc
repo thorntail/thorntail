@@ -20,6 +20,6 @@ You may skip all tests (and its Docker usage) using `-DskipTests`
 
     mvn clean && mvn install
 
-. Enjoy the documentation
+.Enjoy the documentation
 
     open docs/target/generated-docs/index.html
