@@ -342,7 +342,7 @@
         <version>${version.openshift.client}</version>
       </dependency>
 
-      <!-- MicroProfile -->
+      <!-- MicroProfile 1.2 -->
       <dependency>
         <groupId>org.eclipse.microprofile.config</groupId>
         <artifactId>microprofile-config-api</artifactId>
@@ -384,25 +384,6 @@
         <artifactId>microprofile-jwt-auth-api</artifactId>
         <version>${version.microprofile-jwt-auth}</version>
       </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.microprofile.rest.client</groupId>
-        <artifactId>microprofile-rest-client-api</artifactId>
-        <version>${version.microprofile.restclient}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-jaxrs</artifactId>
-        <version>${version.resteasy}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-client</artifactId>
-        <version>${version.resteasy}</version>
-      </dependency>
-
 
       <!-- The following are not used, they are here to make PME align proper versions-->
       <dependency>
@@ -632,6 +613,26 @@
           </dependency>
           <!-- NoSQL end -->
 
+          <!-- Microprofile 1.3 -->
+          <dependency>
+            <groupId>org.eclipse.microprofile.rest.client</groupId>
+            <artifactId>microprofile-rest-client-api</artifactId>
+            <version>${version.microprofile.restclient}</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <version>${version.resteasy}</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>${version.resteasy}</version>
+          </dependency>
+
+          <!-- Swagger -->
           <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-jaxrs</artifactId>
