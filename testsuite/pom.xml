@@ -90,5 +90,7 @@
 
     <module>keycloak</module>
     <module>proof</module>
+
+    <module>docker</module>
   </modules>
 </project>
