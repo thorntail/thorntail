@@ -16,20 +16,8 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>com.github.chrisdchristo</groupId>
-        <artifactId>capsule-maven-plugin</artifactId>
-        <version>1.5.1</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build</goal>
-            </goals>
-            <configuration>
-              <appClass>org.jboss.unimbus.testsuite.security.keycloak.MyJaxrsApplication</appClass>
-              <type>fat</type>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>unimbus-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

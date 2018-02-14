@@ -267,6 +267,21 @@
             <showDeprecation>true</showDeprecation>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.jboss.unimbus</groupId>
+          <artifactId>unimbus-maven-plugin</artifactId>
+          <version>1.0.0-SNAPSHOT</version>
+          <configuration>
+            <format>jar</format>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>package</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
 
