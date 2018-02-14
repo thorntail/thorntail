@@ -1,0 +1,144 @@
+[#maven-plugin]
+= Maven Plugin
+
+The `{project_key}-maven-plugin` exists to make packaging your application easier.
+
+.Basic Configuration
+
+As with any Maven plugin, configuration occurs within your project's `pom.xml`
+
+The plugin has one available goal: `package`.
+The behavior of this goal is controlled by the plugin configuration, described below.
+
+
+[source,xml]
+----
+<plugin>
+  <groupId>org.jboss.unimbus</groupId>
+  <artifactId>unimbus-maven-plugin</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <configuration>
+    <!-- configuration -->
+  </configuration>
+  <executions>
+    <execution>
+      <goals>
+        <goal>package</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+----
+
+== Modes
+
+The plugin can operate in two modes: _fat_ and _thin_, with _fat_ being the default.
+The mode is selected by a `<mode>...</mode>` block within the plugin configuration, or by the `{project_key}.mode` property.
+
+.fat
+Produces an executable build that includes all dependencies and your application artifact.
+
+.thin
+Produces an executable build that includes all dependencies but _not_ your application artifact.
+
+[source,xml]
+----
+<configuration>
+  <mode>thin</mode>
+</configuration>
+----
+
+== Formats
+
+The plugin can produce three different types of executable distributions: _jar_, _dir_, and _zip_, with _jar_ being the default.
+The format is selected by a `<format>...</format>` block within the plugin configuration, or by the `{project_key}.format` property.
+
+.jar
+Produces a fat jar (or _überjar_) containing the cotnents defined by the _mode_ above.
+The jar may be executed using normal `java -jar` commands.
+
+.dir
+Produces a directory containing the contents defined by the `mode` above, along with scripts to easily execute it. 
+The _dir_ layout may be best suited for container-related pipelines, where all runtime support aspects are added to a base layer, and the topmost layer contains only the vanillia application artifact.
+To achieve this method, `mode` should be configured to be `thin`.
+
+.zip
+Produces the same content as the _dir_ format, but as a `.zip` file.
+
+[source,xml]
+----
+<configuration>
+  <format>dir</format>
+</configuration>
+----
+
+== `main()`
+
+The plugin will attempt to discover an existing non-ambiguous `main(...)` within your application.
+If it finds none, a default `main(...)` will be configured.
+If it finds a single application-provided `main(...)`, it will be used.
+If it finds multiple application-provided `main(...)` methods, an error will result.
+To resolve an ambiguous `main(...)` error, a `mainClass` may be configured using a `<mainClass>...</mainClass>` block within the plugin configuration, or by the `{project_key}.mainClass` property.
+
+[source,xml]
+----
+<configuration>
+  <mainClass>com.mycorp.myapp.Main</mainClass>
+</configuration>
+----
+
+== Other configuration
+
+.Naming
+
+The artifact produced will include the Maven classifier of `-bin`.
+This classifier may be changed using the `<classifier>...</classifier>` configuration element, or `{project_key}.classifier` property.
+
+The artifact will be named the same as the primary project artifact (according to `${project.finalName}`), unless a plugin configuration of `<finalName>...</finalName>` or a property of `{project_key}.finalName` is provided.
+
+.Attaching
+
+If the format is `jar` or `zip`, it will be attached to the Maven project, causing it to be built or deployed to the repository. 
+If the format is `dir`, it can not be attached.
+
+To disable attaching of a `jar` or `zip` build, a configuration block of `<attach>...</attach>` or property of `{project_key}.attach` may be set to `false`.
+
+== Distribution Structure
+
+.Directory and Zip
+
+When `dir` or `zip` formats are selected, the layout of the resulting tree is relatively simple:
+
+`bin/`::
+Directory containing platform-specific scripts to execute the application.
+
+`bin/run.sh`::
+A Unix-compatible shell script for launching the application.
+If the distribution was built as a `thin` distribution, the application archive must be provided in one of two ways:
+* As an argument to the `run.sh` command.
+* By placing it within the `app/` directory.
+
+`app/`::
+A directory to contain the application archive.
+If the distribution was built as a `thin` distribution, this directory will be empty.
+When using containers, the top-most layer may be responsible for placing the application archive in this location, or may mount the archive into this directory when run.
+
+`lib/`::
+Contains all dependencies for the application.
+Care is taken to ensure last-modified timestamps of the contents of this directly do not change needlessly.
+
+.Jar
+
+When the `jar` format is selected, the contents of the jar are also relatively simple:
+
+`*.jar`::
+All `.jar` archives are placed within the root of the resulting `-bin.jar`.
+
+`bin/Run.class`::
+A bootstrapping class is provided which can set up the classpath given the contents at the root of the jar.
+The bootstrap class will extract all of the `.jar` artifacts from the root to a cache directory at `$HOME/.{project_key}-cache`.
+The extracted jars will have a SHA-1 hash added to their names in order to disambiguate any identically named jars from this or other applications, as the cache is shared.
+
+`META-INF/MANIFEST.MF`::
+The Jar manifest is configured to run the `bin.Run` main bootstrapping class when `java -jar` is used.
+
