@@ -1,4 +1,4 @@
-[#guide-container-layers]
+[#guide-container-fabric8]
 = How to build Linux Containers using Fabric8 Maven Plugin
 
 The Fabric8 `docker-maven-plugin` is a Maven plugin which makes it easy to create, push and run Linux container images.
@@ -62,6 +62,7 @@ Normal `docker` commands may now be used to execute the image with any additiona
 .Related Information
 
 * https://dmp.fabric8.io/[Fabric8 docker-maven-plugin documentation]
+* https://github.com/fabric8io-images/java/blob/master/images/jboss/openjdk8/jdk/README.md[java-jboss-openjdk8-jdk image documentation]
 * https://github.com/fabric8io-images/run-java-sh/tree/master/fish-pepper/run-java-sh[run-java.sh configuration documentation]
 
 

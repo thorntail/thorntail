@@ -54,5 +54,5 @@ include::components/other/vertx.adoc[leveloffset=+2]
 
 # Guides
 
-include::guides/container-layers.adoc[leveloffset=+2]
-include::guides/container-fabric8.adoc[leveloffset=+2]
+include::guides/container-layers.adoc[leveloffset=+1]
+include::guides/container-fabric8.adoc[leveloffset=+1]
