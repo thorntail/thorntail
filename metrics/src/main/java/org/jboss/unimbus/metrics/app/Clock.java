@@ -32,7 +32,7 @@
 package org.jboss.unimbus.metrics.app;
 
 /**
- * An abstraction for how time passes. It is passed to {@link Timer} to track timing.
+ * An abstraction for how time passes. It is passed to {@link org.eclipse.microprofile.metrics.Timer} to track timing.
  */
 public abstract class Clock {
     /**

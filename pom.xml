@@ -43,6 +43,7 @@
 
     <version.maven-compiler-plugin>3.7.0</version.maven-compiler-plugin>
     <version.maven-failsafe-plugin>2.20.1</version.maven-failsafe-plugin>
+    <version.maven-javadoc-plugin>3.0.0</version.maven-javadoc-plugin>
     <version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
     <version.docker-maven-plugin>0.24.0</version.docker-maven-plugin>
 
@@ -289,6 +290,24 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${version.maven-javadoc-plugin}</version>
+        <inherited>false</inherited>
+        <configuration>
+          <failOnError>false</failOnError>
+          <excludePackageNames>*.impl.*</excludePackageNames>
+          <doclint>none</doclint>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>aggregate</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
