@@ -174,7 +174,10 @@
   </dependencyManagement>
 
   <modules>
+    <module>guava</module>
     <module>hystrix</module>
+    <module>archaius</module>
+    <module>rxjava</module>
   </modules>
 
   <profiles>
@@ -186,12 +189,9 @@
         </property>
       </activation>
       <modules>
-        <module>archaius</module>
-        <module>guava</module>
         <module>ribbon</module>
         <module>ribbon-secured</module>
         <module>ribbon-secured-client</module>
-        <module>rxjava</module>
         <module>rxnetty</module>
         <module>servo</module>
       </modules>
