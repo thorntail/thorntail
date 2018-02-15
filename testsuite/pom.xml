@@ -92,5 +92,6 @@
     <module>proof</module>
 
     <module>docker-thin-layers</module>
+    <module>docker-fabric8</module>
   </modules>
 </project>
