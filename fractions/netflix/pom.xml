@@ -174,15 +174,29 @@
   </dependencyManagement>
 
   <modules>
-    <module>archaius</module>
-    <module>guava</module>
     <module>hystrix</module>
-    <module>ribbon</module>
-    <module>ribbon-secured</module>
-    <module>ribbon-secured-client</module>
-    <module>rxjava</module>
-    <module>rxnetty</module>
-    <module>servo</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>unsupported</id>
+      <activation>
+        <property>
+          <name>!swarm.product.build</name>
+        </property>
+      </activation>
+      <modules>
+        <module>archaius</module>
+        <module>guava</module>
+        <module>ribbon</module>
+        <module>ribbon-secured</module>
+        <module>ribbon-secured-client</module>
+        <module>rxjava</module>
+        <module>rxnetty</module>
+        <module>servo</module>
+      </modules>
+
+    </profile>
+  </profiles>
 
 </project>
