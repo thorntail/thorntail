@@ -1,0 +1,68 @@
+[#guide-container-layers]
+= How to build Linux Containers using Fabric8 Maven Plugin
+
+The Fabric8 `docker-maven-plugin` is a Maven plugin which makes it easy to create, push and run Linux container images.
+
+.Plugin Configuration
+
+Regardless of the `mode` and `format` used with the `{project_key}-maven-plugin`, the `docker-maven-plugin` can build a suitable image for your application.
+As with other Maven plugins, it is configured within a typical `<plugin>` block within your `pom.xml`.
+A single `<image>` block will be necessary.
+
+[source,xml]
+----
+<plugin>
+  <groupId>io.fabric8</groupId>
+  <artifactId>docker-maven-plugin</artifactId>
+  <configuration>
+    <images>
+      <image>
+        <name>myapp/app-fabric8</name>
+        <build>
+          <from>fabric8/java-jboss-openjdk8-jdk</from>
+          <assembly>
+            <descriptorRef>artifact-with-dependencies</descriptorRef>
+          </assembly>
+          <env>
+            <JAVA_APP_DIR>/maven</JAVA_APP_DIR>
+            <JAVA_MAIN_CLASS>org.jboss.unimbus.UNimbus</JAVA_MAIN_CLASS>
+          </env>
+        </build>
+      </image>
+    </images>
+  </configuration>
+</plugin>
+----
+
+In the above example, we use `fabrci8/java-jboss-openjdk8-jdk` as the base image. 
+This image includes OpenJDK on CentOS. 
+Additionally, it provides a `run-java.sh` script which intelligently and configurably can execute your application.
+
+The image uses the `descriptorRef` of the build-in `artifact-with-dependencies` descriptor. 
+This causes both your project artifact and all transitive dependencies to be copied into the `/maven` directory of the resulting image.
+
+The `run-java.sh` script is the default command of this image, and is configured using environment variables.
+
+The `JAVA_APP_DIR` environment variable simply points to the `/maven` directory within the image, to define where the application's `.jar` files were installed.
+
+The `JAVA_MAIN_CLASS` environment variable should be defined either to your own `main(...)` class, or the default `org.jboss.unimbus.UNimbus` class.
+
+.Building the Image
+
+Using normal Maven build command will produce and push the image to your container repository:
+
+    mvn package docker:build
+
+.Running the image
+
+Normal `docker` commands may now be used to execute the image with any additional arguments or configuration.
+
+    docker run myapp/app-fabric8
+
+.Related Information
+
+* https://dmp.fabric8.io/[Fabric8 docker-maven-plugin documentation]
+* https://github.com/fabric8io-images/run-java-sh/tree/master/fish-pepper/run-java-sh[run-java.sh configuration documentation]
+
+
+
