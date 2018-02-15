@@ -5,15 +5,15 @@ import org.jboss.logging.Logger;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.unimbus.logging.impl.LoggingUtil;
 import org.jboss.unimbus.logging.impl.MessageOffsets;
-import org.jboss.unimbus.UNimbus;
 
 /**
  * Created by bob on 1/19/18.
  */
-@MessageLogger(projectCode = UNimbus.PROJECT_CODE, length = 6)
+@MessageLogger(projectCode = LoggingUtil.CODE, length = 6)
 public interface SecurityMessages extends BasicLogger {
-    SecurityMessages MESSAGES = Logger.getMessageLogger(SecurityMessages.class, UNimbus.loggerCategory("security"));
+    SecurityMessages MESSAGES = Logger.getMessageLogger(SecurityMessages.class, LoggingUtil.loggerCategory("security"));
 
     int OFFSET = MessageOffsets.SECURITY_OFFSET;
 

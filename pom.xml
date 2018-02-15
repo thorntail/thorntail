@@ -255,6 +255,12 @@
   </modules>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -302,6 +308,8 @@
           <doclint>none</doclint>
           <outputDirectory>target/apidocs</outputDirectory>
           <reportOutputDirectory>target/apidocs</reportOutputDirectory>
+          <windowtitle>uNimbus Public API - ${project.version}</windowtitle>
+          <doctitle>uNimbus Public API - ${project.version}</doctitle>
         </configuration>
         <executions>
           <execution>

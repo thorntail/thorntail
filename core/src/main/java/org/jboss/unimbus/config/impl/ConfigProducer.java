@@ -1,4 +1,4 @@
-package org.jboss.unimbus.config;
+package org.jboss.unimbus.config.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;

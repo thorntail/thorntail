@@ -5,15 +5,15 @@ import org.jboss.logging.Logger;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.unimbus.logging.impl.LoggingUtil;
 import org.jboss.unimbus.logging.impl.MessageOffsets;
-import org.jboss.unimbus.UNimbus;
 
 /**
  * @author Ken Finnigan
  */
-@MessageLogger(projectCode = UNimbus.PROJECT_CODE)
+@MessageLogger(projectCode = LoggingUtil.CODE)
 public interface JaxrsMessages extends BasicLogger {
-    JaxrsMessages MESSAGES = Logger.getMessageLogger(JaxrsMessages.class, UNimbus.loggerCategory("jaxrs"));
+    JaxrsMessages MESSAGES = Logger.getMessageLogger(JaxrsMessages.class, LoggingUtil.loggerCategory("jaxrs"));
 
     int OFFSET = MessageOffsets.JAXRS_OFFSET;
 

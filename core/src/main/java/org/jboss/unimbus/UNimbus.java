@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -30,52 +31,83 @@ import javax.enterprise.inject.spi.BeanManager;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.unimbus.events.impl.EventEmitter;
+import org.jboss.unimbus.ext.UNimbusProvidingExtension;
 import org.jboss.unimbus.logging.impl.jdk.DefaultConsoleFormatter;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 
+import static org.jboss.unimbus.Info.VERSION;
+import static org.jboss.unimbus.impl.CoreMessages.MESSAGES;
+
 /**
+ * Root entry-point into the uNimbus system.
+ *
+ * <p>This class may be used staticly via {@link #run()}, as an executable jar's entry-point via {@link #main(String...)} or as an object.</p>
+ *
  * @author Ken Finnigan
+ * @author Bob McWhirter
  */
 public class UNimbus {
 
-    public static final String PROJECT_CODE = "UNIMBUS-";
-
-    public static final String PROJECT_NAME = "uNimbus";
-
-    public static final String PROJECT_KEY = "unimbus";
-
-    public static final String BASE_LOGGER_CATEGORY = "org.jboss.unimbus";
-
-    public static String loggerCategory(String name) {
-        return BASE_LOGGER_CATEGORY + "." + name;
-    }
-
+    /**
+     * Create an instance without arguments and start it.
+     */
     public static void run() {
         UNimbus.run(null);
     }
 
+    /**
+     * Create an instance with the given configuration class and start it.
+     *
+     * @param configClass The configuration class.
+     */
     public static void run(Class<?> configClass) {
         new UNimbus(configClass).start();
     }
 
-    public static void main(String...args) {
+    /**
+     * Default executable entrypoint, which simply calls {@link #run()}.
+     *
+     * @param args Command-line arguments.
+     */
+    public static void main(String... args) {
         run();
     }
 
+    /**
+     * Construct a container without configuration.
+     */
     public UNimbus() {
     }
 
+    /**
+     * Construct a container with the provided configuration.
+     */
     public UNimbus(Class<?> configClass) {
         this.configClass = configClass;
     }
 
+    /**
+     * Construct a container with the provided classloader.
+     *
+     * @param classLoader The classloader.
+     */
     public UNimbus(ClassLoader classLoader) {
         this.classLoader = classLoader;
 
     }
 
-    public <T> T get(Class<? extends T> cls, Annotation... qualifiers) {
+    /**
+     * Retrieve a component by class and optional qualifier(s).
+     *
+     * @param cls        The type of the component to retrieve.
+     * @param qualifiers Optional qualifiers to select the class.
+     * @param <T>        The type of component to retrieve.
+     * @return The component retrieved.
+     * @throws AmbiguousResolutionException   if the ambiguous dependency resolution rules fail
+     * @throws UnsatisfiedResolutionException if no beans are resolved
+     */
+    public <T> T get(Class<? extends T> cls, Annotation... qualifiers) throws AmbiguousResolutionException {
         Set<Bean<?>> beans = this.container.getBeanManager().getBeans(cls, qualifiers);
         if (beans.isEmpty()) {
             throw new UnsatisfiedResolutionException();
@@ -86,11 +118,24 @@ public class UNimbus {
     }
 
 
+    /**
+     * Start the container.
+     *
+     * <p>Will instantiate, inject and initialize all relevant CDI components.</p>
+     *
+     * <p>Additionally, {@link org.jboss.unimbus.events.LifecycleEvent}s will be fired throughout the phases.</p>
+     *
+     * <p>When this method returns successfully, the container will be full operational.</p>
+     *
+     * @return This container.
+     */
     public UNimbus start() {
 
         bootstrapLogging();
 
-        CoreMessages.MESSAGES.starting();
+        MESSAGES.versionInfo(VERSION);
+
+        MESSAGES.starting();
         long startTick = System.currentTimeMillis();
         long curTick = startTick;
 
@@ -141,7 +186,7 @@ public class UNimbus {
         curTick = markTiming("after start", curTick);
 
         long endTick = System.currentTimeMillis();
-        CoreMessages.MESSAGES.started(format(endTick - startTick));
+        MESSAGES.started(format(endTick - startTick));
 
         return this;
     }
@@ -149,15 +194,18 @@ public class UNimbus {
 
     private long markTiming(String phase, long startTick) {
         long curTick = System.currentTimeMillis();
-        CoreMessages.MESSAGES.timing(phase, format(curTick - startTick));
+        MESSAGES.timing(phase, format(curTick - startTick));
         return curTick;
     }
 
+    /**
+     * Stop the container.
+     */
     public void stop() {
-        CoreMessages.MESSAGES.stopping();
+        MESSAGES.stopping();
         ConfigProviderResolver.instance().releaseConfig(ConfigProvider.getConfig());
         this.container.shutdown();
-        CoreMessages.MESSAGES.stopped();
+        MESSAGES.stopped();
     }
 
     private static String format(long ms) {
@@ -166,6 +214,11 @@ public class UNimbus {
         return seconds + "." + milli + "s";
     }
 
+    /**
+     * Retrieve the underlying CDI {@link javax.enterprise.inject.spi.BeanManager}
+     *
+     * @return The underlying bean manager.
+     */
     public BeanManager getBeanManager() {
         return this.container.getBeanManager();
     }

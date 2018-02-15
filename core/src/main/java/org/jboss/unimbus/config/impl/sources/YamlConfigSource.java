@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.jboss.unimbus.CoreMessages;
+import org.jboss.unimbus.impl.CoreMessages;
 import org.yaml.snakeyaml.Yaml;
 
 /**

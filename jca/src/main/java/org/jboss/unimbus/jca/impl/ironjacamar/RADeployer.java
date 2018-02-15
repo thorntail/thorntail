@@ -32,10 +32,10 @@ import org.jboss.jca.deployers.common.AbstractResourceAdapterDeployer;
 import org.jboss.jca.deployers.common.CommonDeployment;
 import org.jboss.jca.deployers.common.DeployException;
 import org.jboss.logging.Logger;
-import org.jboss.unimbus.UNimbus;
 import org.jboss.unimbus.config.impl.ConfigImpl;
 import org.jboss.unimbus.jca.impl.JCAMessages;
 import org.jboss.unimbus.jca.ResourceAdapterDeployment;
+import org.jboss.unimbus.logging.impl.LoggingUtil;
 
 /**
  * Created by bob on 2/8/18.
@@ -200,7 +200,7 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
 
     @Override
     protected DeployersLogger getLogger() {
-        return Logger.getMessageLogger(DeployersLogger.class, UNimbus.loggerCategory("jca"));
+        return Logger.getMessageLogger(DeployersLogger.class, LoggingUtil.loggerCategory("jca"));
     }
 
     @Inject

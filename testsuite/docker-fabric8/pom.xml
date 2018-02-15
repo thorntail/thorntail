@@ -46,7 +46,7 @@
                   <file>target/container.log</file>
                 </log>
                 <wait>
-                  <log>UNIMBUS-000001</log>
+                  <log>UNIMBUS-000999</log>
                 </wait>
               </run>
             </image>

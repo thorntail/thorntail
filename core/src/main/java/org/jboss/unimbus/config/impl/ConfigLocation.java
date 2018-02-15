@@ -8,16 +8,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.jboss.unimbus.UNimbus.PROJECT_KEY;
+import static org.jboss.unimbus.Info.KEY;
 
 /**
  * Created by bob on 2/6/18.
  */
 public class ConfigLocation {
 
-    public static final String CONFIG_LOCATION_PROPERTY_NAME = PROJECT_KEY + ".config.location";
+    public static final String CONFIG_LOCATION_PROPERTY_NAME = KEY + ".config.location";
 
-    public static final String CONFIG_LOCATION_ENVIRONMENT_VARIABLE_NAME = PROJECT_KEY.toUpperCase() + "_CONFIG_LOCATION";
+    public static final String CONFIG_LOCATION_ENVIRONMENT_VARIABLE_NAME = KEY.toUpperCase() + "_CONFIG_LOCATION";
 
     public static List<Path> getConfigLocations() {
         String value = System.getProperty(CONFIG_LOCATION_PROPERTY_NAME);

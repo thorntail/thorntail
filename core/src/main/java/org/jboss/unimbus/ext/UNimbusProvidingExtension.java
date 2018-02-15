@@ -1,4 +1,4 @@
-package org.jboss.unimbus;
+package org.jboss.unimbus.ext;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -6,6 +6,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+
+import org.jboss.unimbus.UNimbus;
 
 /**
  * Created by bob on 1/19/18.
