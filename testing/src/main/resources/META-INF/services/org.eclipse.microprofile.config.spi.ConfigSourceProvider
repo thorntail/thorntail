@@ -1,1 +1,1 @@
-org.jboss.unimbus.test.EphemeralPortsConfigSourceProvider
+org.jboss.unimbus.test.impl.EphemeralPortsConfigSourceProvider

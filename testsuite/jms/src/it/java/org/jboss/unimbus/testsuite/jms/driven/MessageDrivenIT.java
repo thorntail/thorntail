@@ -1,10 +1,8 @@
 package org.jboss.unimbus.testsuite.jms.driven;
 
-import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
 
-import org.jboss.unimbus.jms.MessageDriven;
 import org.jboss.unimbus.test.EphemeralPorts;
 import org.jboss.unimbus.test.UNimbusTestRunner;
 import org.junit.Test;

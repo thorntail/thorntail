@@ -298,8 +298,10 @@
         <inherited>false</inherited>
         <configuration>
           <failOnError>false</failOnError>
-          <excludePackageNames>*.impl.*</excludePackageNames>
+          <excludePackageNames>*.impl,*.impl.*,*.ext,*.ext.*,*.testsuite.*,*.logging.jdk.*</excludePackageNames>
           <doclint>none</doclint>
+          <outputDirectory>target/apidocs</outputDirectory>
+          <reportOutputDirectory>target/apidocs</reportOutputDirectory>
         </configuration>
         <executions>
           <execution>

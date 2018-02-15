@@ -32,7 +32,7 @@ import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
-import org.jboss.unimbus.metrics.OriginTrackedMetadata;
+import org.jboss.unimbus.metrics.impl.OriginTrackedMetadata;
 
 /**
  * @author hrupp

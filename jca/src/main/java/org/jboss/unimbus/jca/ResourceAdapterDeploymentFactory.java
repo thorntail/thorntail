@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import org.jboss.jca.common.api.metadata.spec.Connector;
 import org.jboss.jca.common.metadata.spec.RaParser;
-import org.jboss.unimbus.jca.ironjacamar.ResourceAdapterDeployment;
 
 /**
  * Created by bob on 2/9/18.

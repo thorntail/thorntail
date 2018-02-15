@@ -1,7 +1,7 @@
 package org.jboss.unimbus.test;
 
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.unimbus.UNimbus;
+import org.jboss.unimbus.test.impl.EphemeralPortsConfigSource;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;

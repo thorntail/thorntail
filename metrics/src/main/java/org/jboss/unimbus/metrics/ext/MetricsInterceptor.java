@@ -35,7 +35,7 @@ import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
-import org.jboss.unimbus.metrics.OriginTrackedMetadata;
+import org.jboss.unimbus.metrics.impl.OriginTrackedMetadata;
 
 @SuppressWarnings("unused")
 @Interceptor

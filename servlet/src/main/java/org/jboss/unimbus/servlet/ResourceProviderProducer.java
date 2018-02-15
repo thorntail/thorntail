@@ -3,6 +3,8 @@ package org.jboss.unimbus.servlet;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
+import org.jboss.unimbus.servlet.impl.ClasspathResourceProvider;
+
 /**
  * Created by bob on 1/22/18.
  */

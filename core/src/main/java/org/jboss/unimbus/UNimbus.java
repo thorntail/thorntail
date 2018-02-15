@@ -29,8 +29,8 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
-import org.jboss.unimbus.events.EventEmitter;
-import org.jboss.unimbus.logging.jdk.DefaultConsoleFormatter;
+import org.jboss.unimbus.events.impl.EventEmitter;
+import org.jboss.unimbus.logging.impl.jdk.DefaultConsoleFormatter;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 

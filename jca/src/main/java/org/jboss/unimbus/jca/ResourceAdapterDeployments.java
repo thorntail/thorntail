@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.unimbus.jca.ironjacamar.ResourceAdapterDeployment;
+import org.jboss.unimbus.jca.impl.JCAMessages;
 
 /**
  * Created by bob on 2/9/18.

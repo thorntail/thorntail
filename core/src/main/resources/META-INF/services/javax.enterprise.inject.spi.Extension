@@ -1,2 +1,2 @@
-org.jboss.unimbus.condition.ConditionExtension
+org.jboss.unimbus.condition.ext.ConditionExtension
 org.jboss.unimbus.config.ext.ConfigExtension
