@@ -32,9 +32,6 @@ public class DockerAppIT {
 
         Optional<String> found = log.stream()
                 .filter(e -> e.contains(fragment))
-                .map(e -> {
-                    return e;
-                })
                 .findFirst();
 
         if (!found.isPresent()) {

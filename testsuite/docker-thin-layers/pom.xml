@@ -49,9 +49,6 @@
                 <assembly>
                   <name>unimbus/app</name>
                   <descriptorRef>artifact</descriptorRef>
-<!--
-                  <descriptor>app.xml</descriptor>
--->
                 </assembly>
               </build>
               <run>
