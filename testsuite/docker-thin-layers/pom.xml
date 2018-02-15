@@ -36,6 +36,7 @@
                   <name>unimbus</name>
                   <descriptor>base.xml</descriptor>
                 </assembly>
+                <cmd>/unimbus/bin/run.sh</cmd>
               </build>
               <run>
                 <skip>true</skip>
@@ -46,10 +47,12 @@
               <build>
                 <from>myapp/base</from>
                 <assembly>
-                  <name>unimbus</name>
+                  <name>unimbus/app</name>
+                  <descriptorRef>artifact</descriptorRef>
+<!--
                   <descriptor>app.xml</descriptor>
+-->
                 </assembly>
-                <cmd>/unimbus/bin/run.sh</cmd>
               </build>
               <run>
                 <log>

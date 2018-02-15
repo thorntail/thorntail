@@ -29,18 +29,10 @@ public class DockerAppIT {
 
     protected void assertLogContains(String fragment) {
         List<String> log = getLog();
-        for (String s : log) {
-            System.err.println("log: " + s);
-        }
 
         Optional<String> found = log.stream()
-                .map(e -> {
-                    System.err.println("before: " + e);
-                    return e;
-                })
                 .filter(e -> e.contains(fragment))
                 .map(e -> {
-                    System.err.println("after: " + e);
                     return e;
                 })
                 .findFirst();
