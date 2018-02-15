@@ -91,6 +91,6 @@
     <module>keycloak</module>
     <module>proof</module>
 
-    <module>docker</module>
+    <module>docker-thin-layers</module>
   </modules>
 </project>

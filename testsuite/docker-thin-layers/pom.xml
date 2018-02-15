@@ -37,6 +37,9 @@
                   <descriptor>base.xml</descriptor>
                 </assembly>
               </build>
+              <run>
+                <skip>true</skip>
+              </run>
             </image>
             <image>
               <name>myapp/app</name>
@@ -48,9 +51,26 @@
                 </assembly>
                 <cmd>/unimbus/bin/run.sh</cmd>
               </build>
+              <run>
+                <log>
+                  <enabled>true</enabled>
+                  <file>target/container.log</file>
+                </log>
+                <wait>
+                  <log>UNIMBUS-000001</log>
+                </wait>
+              </run>
             </image>
           </images>
         </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
