@@ -1,6 +1,4 @@
 <assembly>
-  <baseDirectory>.</baseDirectory>
-  <includeBaseDirectory>true</includeBaseDirectory>
   <fileSets>
     <fileSet>
       <directory>target/${project.artifactId}-${project.version}-bin</directory>

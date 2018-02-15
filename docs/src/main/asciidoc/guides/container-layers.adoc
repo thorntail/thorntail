@@ -1,4 +1,157 @@
 [#guide-container-layers]
 = How to build Linux Containers as Layers
 
-Blah.
+Your application can be packaged as a multi-layered Linux Container using the Fabric8 `docker-maven-plugin`.
+
+.Configure the Base Distribution
+
+Depending on your build process, you may wish to create the base layer (with all of your dependencies) in one Maven project, and create the top-most layer with your application artifact in another one.
+
+The base layer will include the {project_name} dependencies, along with your application's dependencies using normal `<dependency>` blocks.
+
+Configure the `{project_key}-maven-plugin` to create a `dir` format `thin` mode distribution:
+
+[source,xml]
+----
+<plugin>
+  <groupId>org.jboss.unimbus</groupId>
+  <artifactId>unimbus-maven-plugin</artifactId>
+  <configuration>
+    <format>dir</format>
+    <mode>thin</mode>
+  </configuration>
+</plugin>
+----
+
+.Configure the Base Container Image
+
+Next, configure the `fabric8-maven-plugin` to package the base distribution:
+
+[source,xml]
+----
+<plugin>
+  <groupId>io.fabric8</groupId>
+  <artifactId>docker-maven-plugin</artifactId>
+  <configuration>
+    <images>
+      <image>
+        <name>myapp/base</name>
+        <build>
+          <from>myapp/base-jdk8</from>
+          <assembly>
+            <name>{project_key}</name>
+            <descriptor>base.xml</descriptor>
+          </assembly>
+          <cmd>/{project_key}/bin/run.sh</cmd>
+        </build>
+        <run>
+          <skip>true</skip>
+        </run>
+      </image>
+    </images>
+  </configuration>
+</plugin>
+----
+
+This image builds upon a base JDK8 image theoretically named `myapp/base-jdk8` within the `<from>` line.
+The only requirement of this image is the ability to execute a JDK8-compatible JVM.
+
+This configuration will ensure that within the image, the `/${project_key}` directory will contain your application's run-time components.
+
+Additionally, the `<cmd>` configuration ensures the distribution's `run.sh` will be used to launch the application.
+
+We configure `<skip>` under `<run>` to `true` since this image is not directly executable, since it lacks application logic.
+
+.Set up the assembly
+
+This image gets its content from an _assembly descriptor_, in this case named `base.xml`.
+You will need to create this file under `src/main/docker`. 
+It will copy the contents from `target/_myapp-1.0.0_-bin/` into `/{project_key}` within the container.
+Ultimately, it will populate the `/{project_key}/bin` and `/{project_key}/lib` contents.
+
+.`base.xml` Assembly Descriptor
+[source,xml]
+----
+<assembly>
+  <fileSets>
+    <fileSet>
+      <directory>target/${project.artifactId}-${project.version}-bin</directory>
+      <outputDirectory>.</outputDirectory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>
+----
+
+.Build the base
+
+From within this project directory, build the base image using Maven
+
+    mvn package docker:build
+
+.Set up Application Dependencies
+
+Assuming the previous `pom.xml` had a `groupId` of `com.mycorp.myapp` and an `artifactId` of `app-base`, we add it as the only compile `<dependency>` of your application layer.
+
+[source,xml]
+----
+<dependencies>
+  <dependency>
+    <groupId>com.mycorp.myapp</groupId>
+    <artifactId>app-base</artifactId>
+  </dependency>
+</dependencies>
+----
+
+.Configure the Distribution (optional)
+
+You may configure the `{project_key}-maven-plugin` in any fashion (or not at all) within this project. 
+
+.Configure the Application Container Image
+
+Once again, use the Fabric8 `docker-maven-plugin` to create another image, this time based upon the previously-created image:
+
+
+[source,xml]
+----
+<plugin>
+  <groupId>io.fabric8</groupId>
+  <artifactId>docker-maven-plugin</artifactId>
+  <configuration>
+    <images>
+      <image>
+        <name>myapp/app</name>
+        <build>
+          <from>myapp/base</from>
+          <assembly>
+            <name>unimbus/app</name>
+            <descriptorRef>artifact</descriptorRef>
+          </assembly>
+        </build>
+        <run>
+          <wait>
+            <log>{PROJECT_ENV}-000001</log>
+          </wait>
+        </run>
+      </image>
+    </images>
+  </configuration>
+</plugin>
+----
+
+The will create an push an image named `myapp/base`.
+It uses the built-in `<descriptorRef>` of `artifact` to install the application artifact under `{project_key}/app`.
+
+Additionally, it configures a `<wait>` element looking for the boot completion message, which may help if you use this image in integration tests.
+
+.Build the Application Container Image
+
+Build using Maven:
+
+    mvn package docker:build
+
+.Related Information
+
+* xref:container-fabric8[]

@@ -10,7 +10,9 @@ v{version}
 
 {project_name} is the next generation of WildFly Swarm.
 
-include::design/lessons-learned.adoc[]
+# Introduction
+
+include::design/lessons-learned.adoc[leveloffset=+1]
 
 # Concepts
 
@@ -22,7 +24,8 @@ include::concepts/flat-classpath.adoc[leveloffset=+1]
 # Tools
 
 include::tools/maven-plugin.adoc[leveloffset=+1]
-include::tools/testing.adoc[leveloffset=+1]
+include::tools/testing-junit.adoc[leveloffset=+1]
+include::tools/testing-arquillian.adoc[leveloffset=+1]
 
 # Components
 
