@@ -6,8 +6,8 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import io.undertow.server.handlers.PathHandler;
-import org.jboss.unimbus.servlet.Management;
-import org.jboss.unimbus.servlet.Primary;
+import org.jboss.unimbus.servlet.annotation.Management;
+import org.jboss.unimbus.servlet.annotation.Primary;
 
 /**
  * Created by bob on 1/15/18.

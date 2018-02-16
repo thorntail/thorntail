@@ -1,7 +1,10 @@
 package org.jboss.unimbus.security;
 
 /**
- * Created by bob on 1/18/18.
+ * Marker for a security implementation.
+ *
+ * @author Ken Finnigan
+ * @author Bob McWhirter
  */
 public interface Security {
 }

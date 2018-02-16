@@ -1,8 +1,9 @@
-package org.jboss.unimbus.servlet;
+package org.jboss.unimbus.servlet.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
+import org.jboss.unimbus.servlet.ResourceProvider;
 import org.jboss.unimbus.servlet.impl.ClasspathResourceProvider;
 
 /**

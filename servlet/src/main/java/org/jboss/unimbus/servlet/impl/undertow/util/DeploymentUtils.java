@@ -23,12 +23,14 @@ import io.undertow.servlet.api.ServletSecurityInfo;
 import io.undertow.servlet.api.TransportGuaranteeType;
 import io.undertow.servlet.api.WebResourceCollection;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
+import org.jboss.unimbus.servlet.EmptyRoleSemantic;
 import org.jboss.unimbus.servlet.FilterMetaData;
 import org.jboss.unimbus.servlet.HttpConstraintMetaData;
 import org.jboss.unimbus.servlet.HttpMethodConstraintMetaData;
 import org.jboss.unimbus.servlet.SecurityConstraintMetaData;
 import org.jboss.unimbus.servlet.ServletMetaData;
 import org.jboss.unimbus.servlet.ServletSecurityMetaData;
+import org.jboss.unimbus.servlet.TransportGuarantee;
 import org.jboss.unimbus.servlet.WebResourceCollectionMetaData;
 import org.jboss.weld.environment.servlet.Listener;
 
@@ -145,7 +147,7 @@ public class DeploymentUtils {
         return info;
     }
 
-    private static SecurityInfo.EmptyRoleSemantic convert(ServletSecurityMetaData.EmptyRoleSemantic emptyRoleSemantic) {
+    private static SecurityInfo.EmptyRoleSemantic convert(EmptyRoleSemantic emptyRoleSemantic) {
         switch (emptyRoleSemantic) {
             case PERMIT:
                 return SecurityInfo.EmptyRoleSemantic.PERMIT;
@@ -155,7 +157,7 @@ public class DeploymentUtils {
         return SecurityInfo.EmptyRoleSemantic.PERMIT;
     }
 
-    private static TransportGuaranteeType convert(ServletSecurityMetaData.TransportGuarantee transportGuarantee) {
+    private static TransportGuaranteeType convert(TransportGuarantee transportGuarantee) {
         switch (transportGuarantee) {
             case NONE:
                 return TransportGuaranteeType.NONE;

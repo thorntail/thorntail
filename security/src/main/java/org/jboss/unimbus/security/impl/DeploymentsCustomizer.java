@@ -5,16 +5,14 @@ import java.util.Optional;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.unimbus.condition.RequiredClassPresent;
+import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
 import org.jboss.unimbus.events.LifecycleEvent;
-import org.jboss.unimbus.security.Security;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.Deployments;
+import org.jboss.unimbus.servlet.EmptyRoleSemantic;
 import org.jboss.unimbus.servlet.HttpConstraintMetaData;
 import org.jboss.unimbus.servlet.SecurityConstraintMetaData;
 import org.jboss.unimbus.servlet.ServletMetaData;
@@ -47,7 +45,7 @@ public class DeploymentsCustomizer {
                 each.setSecurity(
                         new ServletSecurityMetaData()
                                 .setHttpConstraint(new HttpConstraintMetaData()
-                                                           .setEmptyRoleSemantic(ServletSecurityMetaData.EmptyRoleSemantic.PERMIT)
+                                                           .setEmptyRoleSemantic(EmptyRoleSemantic.PERMIT)
                                 )
                 );
             }
@@ -72,11 +70,5 @@ public class DeploymentsCustomizer {
     @Inject
     @ConfigProperty(name = "web.management.role")
     Optional<String> managementRole;
-
-
-    @Inject
-    @Any
-    Instance<Security> securities;
-
 
 }

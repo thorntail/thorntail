@@ -1,4 +1,4 @@
-package org.jboss.unimbus.servlet;
+package org.jboss.unimbus.servlet.impl;
 
 import java.net.URL;
 
@@ -6,6 +6,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
+import org.jboss.unimbus.servlet.ResourceProvider;
 
 /**
  * Created by bob on 1/22/18.

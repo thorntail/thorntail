@@ -6,25 +6,48 @@ import java.util.Set;
 import javax.servlet.annotation.HttpMethodConstraint;
 
 /**
- * Created by bob on 1/18/18.
+ * HTTP method constraint descriptor.
+ *
+ * @author Ken Finnigan
+ * @author Bob McWhirter
  */
 public class HttpMethodConstraintMetaData {
 
-    public HttpMethodConstraintMetaData(String method) {
-        this.method = method;
-        this.emptyRoleSemantic = ServletSecurityMetaData.EmptyRoleSemantic.PERMIT;
-        this.transportGuarantee = ServletSecurityMetaData.TransportGuarantee.NONE;
+    /**
+     * Construct.
+     *
+     * <p>This instance is invalid until {@link #setMethod(String)} is used to provide the HTTP method.</p>
+     */
+    public HttpMethodConstraintMetaData() {
+        this.emptyRoleSemantic = EmptyRoleSemantic.PERMIT;
+        this.transportGuarantee = TransportGuarantee.NONE;
     }
 
+    /**
+     * Construct.
+     *
+     * @param method The HTTP method.
+     */
+    public HttpMethodConstraintMetaData(String method) {
+        this.method = method;
+        this.emptyRoleSemantic = EmptyRoleSemantic.PERMIT;
+        this.transportGuarantee = TransportGuarantee.NONE;
+    }
+
+    /**
+     * Construct.
+     *
+     * @param anno The underlying {@link HttpMethodConstraint} to use for initial configuration.
+     */
     public HttpMethodConstraintMetaData(HttpMethodConstraint anno) {
         this.method = anno.value();
 
         switch (anno.emptyRoleSemantic()) {
             case PERMIT:
-                this.emptyRoleSemantic = ServletSecurityMetaData.EmptyRoleSemantic.PERMIT;
+                this.emptyRoleSemantic = EmptyRoleSemantic.PERMIT;
                 break;
             case DENY:
-                this.emptyRoleSemantic = ServletSecurityMetaData.EmptyRoleSemantic.DENY;
+                this.emptyRoleSemantic = EmptyRoleSemantic.DENY;
                 break;
         }
 
@@ -34,53 +57,99 @@ public class HttpMethodConstraintMetaData {
 
         switch (anno.transportGuarantee()) {
             case NONE:
-                this.transportGuarantee = ServletSecurityMetaData.TransportGuarantee.NONE;
+                this.transportGuarantee = TransportGuarantee.NONE;
                 break;
             case CONFIDENTIAL:
-                this.transportGuarantee = ServletSecurityMetaData.TransportGuarantee.CONFIDENTIAL;
+                this.transportGuarantee = TransportGuarantee.CONFIDENTIAL;
                 break;
         }
     }
 
+    /**
+     * Set the HTTP method.
+     *
+     * @param method The HTTP method.
+     * @return This meta-data object.
+     */
     public HttpMethodConstraintMetaData setMethod(String method) {
         this.method = method;
         return this;
     }
 
+    /**
+     * Retrieve the HTTP method.
+     *
+     * @return The HTTP method.
+     */
     public String getMethod() {
         return this.method;
     }
 
-    public HttpMethodConstraintMetaData setEmptyRoleSemantic(ServletSecurityMetaData.EmptyRoleSemantic emptyRoleSemantic) {
+    /**
+     * Set the empty-role semantic.
+     *
+     * @param emptyRoleSemantic The empty-role semantic.
+     * @return This meta-data object.
+     */
+    public HttpMethodConstraintMetaData setEmptyRoleSemantic(EmptyRoleSemantic emptyRoleSemantic) {
         this.emptyRoleSemantic = emptyRoleSemantic;
         return this;
     }
 
-    public ServletSecurityMetaData.EmptyRoleSemantic getEmptyRoleSemantic() {
+    /**
+     * Retrieve the empty-role semantic.
+     *
+     * @return The empty-role semantic.
+     */
+    public EmptyRoleSemantic getEmptyRoleSemantic() {
         return this.emptyRoleSemantic;
     }
 
+    /**
+     * Add an allowed role.
+     *
+     * @param role The role.
+     * @return This meta-data object.
+     * @see #setEmptyRoleSemantic(EmptyRoleSemantic)
+     */
     public HttpMethodConstraintMetaData addRoleAllowed(String role) {
         this.rolesAllowed.add(role);
         return this;
     }
 
+    /**
+     * Retrieve the allowed roles.
+     *
+     * @return The allowed roles.
+     * @see #getEmptyRoleSemantic()
+     */
     public Set<String> getRolesAllowed() {
         return this.rolesAllowed;
     }
 
-    public HttpMethodConstraintMetaData setTransportGuarantee(ServletSecurityMetaData.TransportGuarantee transportGuarantee) {
+    /**
+     * Set the transport guarantee.
+     *
+     * @param transportGuarantee The transport guarantee.
+     * @return This meta-data object.
+     */
+    public HttpMethodConstraintMetaData setTransportGuarantee(TransportGuarantee transportGuarantee) {
         this.transportGuarantee = transportGuarantee;
         return this;
     }
 
-    public ServletSecurityMetaData.TransportGuarantee getTransportGuarantee() {
+    /**
+     * Retrieve the transport guarantee.
+     *
+     * @return The transport guarantee.
+     */
+    public TransportGuarantee getTransportGuarantee() {
         return this.transportGuarantee;
     }
 
-    private ServletSecurityMetaData.TransportGuarantee transportGuarantee;
+    private TransportGuarantee transportGuarantee;
 
-    private ServletSecurityMetaData.EmptyRoleSemantic emptyRoleSemantic;
+    private EmptyRoleSemantic emptyRoleSemantic;
 
     private String method;
 

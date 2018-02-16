@@ -2,6 +2,7 @@ package org.jboss.unimbus.example.testsuite.proof;
 
 import javax.inject.Inject;
 
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.jboss.unimbus.security.basic.BasicSecurity;
 import org.jboss.unimbus.test.EphemeralPorts;

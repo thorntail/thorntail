@@ -1,14 +1,20 @@
-package org.jboss.unimbus.servlet;
+package org.jboss.unimbus.condition.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.inject.Qualifier;
-
-@Qualifier
+/**
+ * Holder for repeatable annotation {@link RequiredClassPresent}
+ *
+ * @author Ken Finnigan
+ * @author Bob McWhirter
+ *
+ * @see RequiredClassPresent
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-public @interface Primary {
+public @interface MultipleRequiredClassPresent {
+    RequiredClassPresent[] value();
 }

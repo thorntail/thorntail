@@ -11,6 +11,10 @@ import java.util.Properties;
  */
 public class Info {
 
+    private Info() {
+        // prevent construction
+    }
+
     /**
      * Human-readable project name.
      */

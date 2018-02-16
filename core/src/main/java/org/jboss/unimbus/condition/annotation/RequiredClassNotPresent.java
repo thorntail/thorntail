@@ -1,4 +1,4 @@
-package org.jboss.unimbus.condition;
+package org.jboss.unimbus.condition.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;

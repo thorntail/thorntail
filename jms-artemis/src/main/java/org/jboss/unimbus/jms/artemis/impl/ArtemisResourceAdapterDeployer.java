@@ -12,7 +12,7 @@ import javax.transaction.TransactionManager;
 import org.apache.activemq.artemis.service.extensions.ServiceUtils;
 import org.jboss.jca.common.api.metadata.spec.ConfigProperty;
 import org.jboss.jca.common.api.metadata.spec.ResourceAdapter;
-import org.jboss.unimbus.condition.RequiredClassPresent;
+import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.jca.ResourceAdapterDeploymentFactory;
 import org.jboss.unimbus.jca.ResourceAdapterDeployments;

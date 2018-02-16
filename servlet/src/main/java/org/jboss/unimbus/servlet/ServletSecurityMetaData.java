@@ -7,24 +7,25 @@ import javax.servlet.annotation.HttpMethodConstraint;
 import javax.servlet.annotation.ServletSecurity;
 
 /**
- * Created by bob on 1/18/18.
+ * Servlet security descriptor.
+ *
+ * @author Ken Finnigan
+ * @author Bob McWhirter
  */
 public class ServletSecurityMetaData {
-    // TODO move these up in the hierarchy.
-    public enum EmptyRoleSemantic {
-        PERMIT,
-        DENY,
-    }
 
-    public enum TransportGuarantee {
-        NONE,
-        CONFIDENTIAL,
-    }
-
+    /**
+     * Construct.
+     */
     public ServletSecurityMetaData() {
         this.httpConstraint = new HttpConstraintMetaData();
     }
 
+    /**
+     * Construct.
+     *
+     * @param anno The underlying {@link ServletSecurity} annotation to use for configuration.
+     */
     public ServletSecurityMetaData(ServletSecurity anno) {
         this.httpConstraint = new HttpConstraintMetaData(anno.value());
 
@@ -33,20 +34,40 @@ public class ServletSecurityMetaData {
         }
     }
 
+    /**
+     * Set the HTTP constraint.
+     *
+     * @param httpConstraint The HTTP constraint descriptor.
+     * @return This meta-data object.
+     */
     public ServletSecurityMetaData setHttpConstraint(HttpConstraintMetaData httpConstraint) {
         this.httpConstraint = httpConstraint;
         return this;
     }
 
+    /**
+     * Retrieve the HTTP constraint.
+     *
+     * @return The HTTP constraint descriptor.
+     */
     public HttpConstraintMetaData getHttpConstraint() {
         return this.httpConstraint;
     }
 
+    /** Add an HTTP method constraint.
+     *
+     * @param constraint The HTTP method constraint descriptor.
+     * @return This meta-data object.
+     */
     public ServletSecurityMetaData addHttpMethodConstraint(HttpMethodConstraintMetaData constraint) {
         this.httpMethodConstraints.add(constraint);
         return this;
     }
 
+    /** Retrieve the HTTP method constriants.
+     *
+     * @return The HTTP method constraints.
+     */
     public List<HttpMethodConstraintMetaData> getHttpMethodConstraints() {
         return this.httpMethodConstraints;
     }

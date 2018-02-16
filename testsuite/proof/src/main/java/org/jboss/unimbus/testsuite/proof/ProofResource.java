@@ -10,7 +10,7 @@ import javax.ws.rs.Path;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.metrics.annotation.Counted;
-import org.jboss.unimbus.servlet.Primary;
+import org.jboss.unimbus.servlet.annotation.Primary;
 
 /**
  * Created by bob on 1/15/18.

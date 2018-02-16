@@ -23,3 +23,8 @@ You may skip all tests (and its Docker usage) using `-DskipTests`
 .Enjoy the documentation
 
     open docs/target/generated-docs/index.html
+
+.Enjoy some sparse JavaDoc
+
+    mvn javadoc:aggregate
+    open target/apidocs/index.html

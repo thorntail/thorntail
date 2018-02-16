@@ -3,7 +3,7 @@ package org.jboss.unimbus.jdbc.impl;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
-import org.jboss.unimbus.condition.RequiredClassPresent;
+import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
 import org.jboss.unimbus.jdbc.DriverMetaData;
 
 @ApplicationScoped

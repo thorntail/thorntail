@@ -10,7 +10,7 @@ import javax.json.JsonReader;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.jboss.unimbus.servlet.Management;
+import org.jboss.unimbus.servlet.annotation.Management;
 import org.jboss.unimbus.test.UNimbusTestRunner;
 import org.junit.After;
 import org.junit.Before;

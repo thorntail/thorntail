@@ -6,34 +6,79 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by bob on 1/24/18.
+ * Security constraint descriptor.
+ *
+ * @author Ken Finnigan
+ * @author Bob McWhirter
  */
 public class SecurityConstraintMetaData {
 
+    /**
+     * Construct.
+     */
+    public SecurityConstraintMetaData() {
+        this.emptyRoleSemantic = EmptyRoleSemantic.PERMIT;
+    }
+
+    /**
+     * Add a web resource collection.
+     *
+     * @param collection The web resource collection.
+     * @return This meta-data object.
+     */
     public SecurityConstraintMetaData addWebResourceCollection(WebResourceCollectionMetaData collection) {
         this.webResourceCollections.add(collection);
         return this;
     }
 
+    /**
+     * Retrieve the web resource collections.
+     *
+     * @return The web resource collections.
+     */
     public List<WebResourceCollectionMetaData> getWebResourceCollections() {
         return this.webResourceCollections;
     }
 
+    /**
+     * Add an allowed role.
+     *
+     * @param role The role.
+     * @return This meta-data object.
+     * @see #setEmptyRoleSemantic(EmptyRoleSemantic)
+     */
     public SecurityConstraintMetaData addRoleAllowed(String role) {
         this.rolesAllowed.add(role);
         return this;
     }
 
+    /**
+     * Retrieve the allowed roles.
+     *
+     * @return The allowed roles.
+     * @see #getEmptyRoleSemantic()
+     */
     public Set<String> getRolesAllowed() {
         return this.rolesAllowed;
     }
 
-    public SecurityConstraintMetaData setEmptyRoleSemantic(ServletSecurityMetaData.EmptyRoleSemantic emptyRoleSemantic) {
+    /**
+     * Set the empty-role semantic.
+     *
+     * @param emptyRoleSemantic The empty-role semantic.
+     * @return This meta-data object.
+     */
+    public SecurityConstraintMetaData setEmptyRoleSemantic(EmptyRoleSemantic emptyRoleSemantic) {
         this.emptyRoleSemantic = emptyRoleSemantic;
         return this;
     }
 
-    public ServletSecurityMetaData.EmptyRoleSemantic getEmptyRoleSemantic() {
+    /**
+     * Retrieve the empty-role semantic.
+     *
+     * @return The empty-role semantic.
+     */
+    public EmptyRoleSemantic getEmptyRoleSemantic() {
         return emptyRoleSemantic;
     }
 
@@ -41,5 +86,5 @@ public class SecurityConstraintMetaData {
 
     private Set<String> rolesAllowed = new HashSet<>();
 
-    private ServletSecurityMetaData.EmptyRoleSemantic emptyRoleSemantic = ServletSecurityMetaData.EmptyRoleSemantic.PERMIT;
+    private EmptyRoleSemantic emptyRoleSemantic = EmptyRoleSemantic.PERMIT;
 }

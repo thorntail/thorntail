@@ -6,11 +6,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by bob on 1/23/18.
+ * Annotation to cause ephemeral ports to be used for web endpoints.
+ *
+ * @author Ken Finnigan
+ * @author Bob McWhirter
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface EphemeralPorts {
+
+    /**
+     * Flag that determines if the primary web endpoint should use an ephemeral port.
+     */
     boolean primary() default true;
+
+    /**
+     * Flag that determines if the management web endpoint should use an ephemeral port.
+     */
     boolean management() default true;
 }

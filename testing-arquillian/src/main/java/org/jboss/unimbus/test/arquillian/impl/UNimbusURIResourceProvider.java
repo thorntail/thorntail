@@ -32,7 +32,7 @@ public class UNimbusURIResourceProvider implements ResourceProvider {
         for (Bean<?> bean : beans) {
             Set<Annotation> annos = bean.getQualifiers();
             for (Annotation anno : annos) {
-                if (anno.annotationType().getName().equals("org.jboss.unimbus.servlet.Primary")) {
+                if (anno.annotationType().getName().equals("org.jboss.unimbus.servlet.annotation.Primary")) {
                     CreationalContext<InetSocketAddress> context = bm.createCreationalContext((Bean<InetSocketAddress>) bean);
                     InetSocketAddress instance = ((Bean<InetSocketAddress>) bean).create(context);
                     try {

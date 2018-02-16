@@ -8,10 +8,10 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
 
-import org.jboss.unimbus.condition.MultipleRequiredClassNotPresent;
-import org.jboss.unimbus.condition.MultipleRequiredClassPresent;
-import org.jboss.unimbus.condition.RequiredClassNotPresent;
-import org.jboss.unimbus.condition.RequiredClassPresent;
+import org.jboss.unimbus.condition.annotation.MultipleRequiredClassNotPresent;
+import org.jboss.unimbus.condition.annotation.MultipleRequiredClassPresent;
+import org.jboss.unimbus.condition.annotation.RequiredClassNotPresent;
+import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
 
 public class ConditionExtension implements Extension {
 

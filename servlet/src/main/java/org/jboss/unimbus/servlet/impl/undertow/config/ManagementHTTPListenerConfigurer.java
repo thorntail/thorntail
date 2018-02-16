@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import io.undertow.Undertow;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.unimbus.servlet.Management;
+import org.jboss.unimbus.servlet.annotation.Management;
 
 /**
  * Created by bob on 1/17/18.

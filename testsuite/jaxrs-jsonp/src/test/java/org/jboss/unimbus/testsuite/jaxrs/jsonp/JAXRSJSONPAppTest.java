@@ -8,8 +8,9 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 import io.restassured.response.Response;
-import org.jboss.unimbus.servlet.Primary;
+import org.jboss.unimbus.servlet.annotation.Primary;
 import org.jboss.unimbus.test.UNimbusTestRunner;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static io.restassured.RestAssured.when;
@@ -18,7 +19,7 @@ import static org.fest.assertions.Assertions.assertThat;
 @RunWith(UNimbusTestRunner.class)
 public class JAXRSJSONPAppTest {
 
-    @org.junit.Test
+    @Test
     public void test() {
         Response response = when().get("/").andReturn();
         JsonReader reader = Json.createReader(response.asInputStream());

@@ -11,7 +11,7 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.resource.Resource;
 import io.undertow.server.handlers.resource.ResourceSupplier;
 import io.undertow.server.handlers.resource.URLResource;
-import org.jboss.unimbus.servlet.ResourceProviders;
+import org.jboss.unimbus.servlet.impl.ResourceProviders;
 
 /**
  * Created by bob on 1/22/18.

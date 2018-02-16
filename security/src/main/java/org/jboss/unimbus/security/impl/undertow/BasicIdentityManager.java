@@ -7,7 +7,7 @@ import io.undertow.security.idm.Account;
 import io.undertow.security.idm.Credential;
 import io.undertow.security.idm.IdentityManager;
 import io.undertow.security.idm.PasswordCredential;
-import org.jboss.unimbus.condition.RequiredClassPresent;
+import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
 import org.jboss.unimbus.security.basic.BasicSecurity;
 import org.jboss.unimbus.security.basic.User;
 
