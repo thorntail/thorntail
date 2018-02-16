@@ -6,11 +6,11 @@ To use the `TestRunner`, you must include the `testing` artifact with `<scope>te
 
 .Maven Coordinates
 
-[source,xml]
+[source,xml,subs="verbatim,attributes"]
 ----
 <dependency>
-  <groupId>org.jboss.unimbus</groupId>
-  <artifactId>testing</artifactId>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-testing</artifactId>
   <scope>test</scope>
 </dependency>
 ----

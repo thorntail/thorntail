@@ -6,11 +6,11 @@
 The core of {project_name} is usually brought in transitively through other dependencies.
 It's Maven coordinates are:
 
-[source,xml]
+[source,xml,subs="verbatim,attributes"]
 ----
 <dependency>
-  <groupId>org.jboss.unimbus</groupId>
-  <artifactId>core</artifactId>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-core</artifactId>
 </dependency>
 ----
 

@@ -5,11 +5,11 @@ The JMS-Artemis component provides for easily connecting to an external ActiveMQ
 
 .Maven Coordinates
 
-[source,xml]
+[source,xml,subs="verbatim,attributes"]
 ----
 <dependency>
-  <groupId>org.jboss.unimbus</groupId>
-  <artifactId>jms-artemis</artifactId>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-jms-artemis</artifactId>
 </dependency>
 ----
 

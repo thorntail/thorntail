@@ -3,6 +3,16 @@
 
 The DataSources component provides access to managed JDBC datasources.
 
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-datasources</artifactId>
+</dependency>
+----
+
 .Configuration
 
 DataSources may be configured by providing a set of configuration properties for each datasource.

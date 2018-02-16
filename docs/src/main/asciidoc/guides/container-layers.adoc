@@ -11,11 +11,11 @@ The base layer will include the {project_name} dependencies, along with your app
 
 Configure the `{project_key}-maven-plugin` to create a `dir` format `thin` mode distribution:
 
-[source,xml]
+[source,xml,subs="verbatim,attributes"]
 ----
 <plugin>
-  <groupId>org.jboss.unimbus</groupId>
-  <artifactId>unimbus-maven-plugin</artifactId>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-maven-plugin</artifactId>
   <configuration>
     <format>dir</format>
     <mode>thin</mode>

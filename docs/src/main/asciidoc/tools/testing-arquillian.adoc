@@ -8,11 +8,11 @@ The MicroProfile TCKs use the Arquillian framework in order to verify compliance
 
 To use the Arquillian integration, include the `testing-arquillian` artifact in your project with a `<scope>test</scope>` block.
 
-[source,xml]
+[source,xml,subs="verbatim,attributes"]
 ----
 <dependency>
-  <groupId>org.jboss.unimbus</groupId>
-  <artifactId>testing-arquillian</artifactId>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-testing-arquillian</artifactId>
   <scope>test</scope>
 </dependency>
 ----

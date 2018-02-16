@@ -7,11 +7,11 @@ See `jms-artemis`.
 
 .Maven Coordinates
 
-[source,xml]
+[source,xml,subs="verbatim,attributes"]
 ----
 <dependency>
-  <groupId>org.jboss.unimbus</groupId>
-  <artifactId>jms</artifactId>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-jms</artifactId>
 </dependency>
 ----
 

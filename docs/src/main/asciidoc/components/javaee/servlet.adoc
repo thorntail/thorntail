@@ -7,11 +7,11 @@ The Servlet component of {project_name} enables basic Java Web Servlet processin
 
 To include the servlet component, add a dependency:
 
-[source,xml]
+[source,xml,subs="verbatim,attributes"]
 ----
 <dependency>
-  <groupId>org.jboss.unimbus</groupId>
-  <artifactId>servlet</artifactId>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-servlet</artifactId>
 </dependency>
 ----
 

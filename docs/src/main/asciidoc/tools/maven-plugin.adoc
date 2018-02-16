@@ -10,12 +10,11 @@ As with any Maven plugin, configuration occurs within your project's `pom.xml`
 The plugin has one available goal: `package`.
 The behavior of this goal is controlled by the plugin configuration, described below.
 
-
-[source,xml]
+[source,xml,subs="verbatim,attributes"]
 ----
 <plugin>
-  <groupId>org.jboss.unimbus</groupId>
-  <artifactId>unimbus-maven-plugin</artifactId>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-maven-plugin</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <configuration>
     <!-- configuration -->

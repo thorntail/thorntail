@@ -3,6 +3,16 @@
 
 The Vert.x component provides access to the Vert.x event-bus and message-driven consumers.
 
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-vertx</artifactId>
+</dependency>
+----
+
 .Configuration
 
 `vertx.cluster-host`::

@@ -3,6 +3,16 @@
 
 The JDBC component helps with auto-detecting and registering JDBC drivers.
 
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-jdbc</artifactId>
+</dependency>
+----
+
 .Detected Drivers
 |===
 |Driver|Identifier

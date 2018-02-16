@@ -5,11 +5,11 @@ The JCA component provides for using _resource adapters_.
 
 .Maven Coordinates
 
-[source,xml]
+[source,xml,subs="verbatim,attributes"]
 ----
 <dependency>
-  <groupId>org.jboss.unimbus</groupId>
-  <artifactId>jca</artifactId>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-jca</artifactId>
 </dependency>
 ----
 

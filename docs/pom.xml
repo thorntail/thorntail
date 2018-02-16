@@ -22,6 +22,7 @@
         <configuration>
           <attributes>
             <docinfo>shared</docinfo>
+            <groupId>${project.groupId}</groupId>
             <project_name>uNimbus</project_name>
             <project_key>unimbus</project_key>
             <PROJECT_ENV>UNIMBUS</PROJECT_ENV>

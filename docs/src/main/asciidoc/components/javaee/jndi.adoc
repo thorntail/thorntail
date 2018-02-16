@@ -3,6 +3,16 @@
 
 The JNDI component provides support for the Java Naming and Directory Interface.
 
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-jndi</artifactId>
+</dependency>
+----
+
 .CDI Components
 
 `InitialContext`::
