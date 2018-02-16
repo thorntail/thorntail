@@ -9,76 +9,35 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>datasources</artifactId>
+  <artifactId>unimbus-datasources</artifactId>
   <name>Datasources</name>
 
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>core</artifactId>
+      <artifactId>unimbus-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>jca</artifactId>
+      <artifactId>unimbus-jca</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>jndi</artifactId>
+      <artifactId>unimbus-jndi</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>jdbc</artifactId>
+      <artifactId>unimbus-jdbc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>jta</artifactId>
+      <artifactId>unimbus-jta</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.ironjacamar</groupId>
       <artifactId>ironjacamar-jdbc</artifactId>
-      <version>1.4.6.Final</version>
     </dependency>
-
-<!--
-    <dependency>
-      <groupId>org.jboss.ironjacamar</groupId>
-      <artifactId>ironjacamar-spec-api</artifactId>
-      <version>${version.ironjacamar}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.ironjacamar</groupId>
-      <artifactId>ironjacamar-core-api</artifactId>
-      <version>${version.ironjacamar}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.threads</groupId>
-          <artifactId>jboss-threads</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.ironjacamar</groupId>
-      <artifactId>ironjacamar-common-api</artifactId>
-      <version>${version.ironjacamar}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.ironjacamar</groupId>
-      <artifactId>ironjacamar-core-impl</artifactId>
-      <version>${version.ironjacamar}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.threads</groupId>
-          <artifactId>jboss-threads</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.picketbox</groupId>
-          <artifactId>picketbox</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
--->
 
   </dependencies>
 

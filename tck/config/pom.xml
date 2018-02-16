@@ -5,12 +5,12 @@
 
   <parent>
     <groupId>org.jboss.unimbus.tck</groupId>
-    <artifactId>tck</artifactId>
+    <artifactId>unimbus-tck-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>config</artifactId>
+  <artifactId>unimbus-tck-config</artifactId>
   <name>TCK: MicroProfile Config</name>
   
   <build>
@@ -32,7 +32,11 @@
 
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>testing-arquillian</artifactId>
+      <artifactId>unimbus-testing-arquillian</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
     </dependency>
 
     <dependency>
@@ -43,16 +47,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.config</groupId>
       <artifactId>microprofile-config-tck</artifactId>
-      <version>${version.mp-config}</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>6.9.9</version>
-<!--
-      <scope>test</scope>
--->
     </dependency>
 
   </dependencies>

@@ -5,12 +5,12 @@
 
   <parent>
     <groupId>org.jboss.unimbus.testsuite</groupId>
-    <artifactId>testsuite</artifactId>
+    <artifactId>unimbus-testsuite-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>keycloak</artifactId>
+  <artifactId>unimbus-testsuite-keycloak</artifactId>
   <name>Testsuite: Keycloak</name>
 
   <build>
@@ -25,15 +25,15 @@
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>security-keycloak</artifactId>
+      <artifactId>unimbus-security-keycloak</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>jaxrs</artifactId>
+      <artifactId>unimbus-jaxrs</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>health</artifactId>
+      <artifactId>unimbus-health</artifactId>
     </dependency>
   </dependencies>
 </project>

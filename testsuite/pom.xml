@@ -10,7 +10,7 @@
   </parent>
 
   <groupId>org.jboss.unimbus.testsuite</groupId>
-  <artifactId>testsuite</artifactId>
+  <artifactId>unimbus-testsuite-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
   <name>Testsuite Parent</name>
@@ -20,7 +20,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>testing</artifactId>
+      <artifactId>unimbus-testing</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

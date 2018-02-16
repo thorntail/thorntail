@@ -9,39 +9,33 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>security-keycloak</artifactId>
+  <artifactId>unimbus-security-keycloak</artifactId>
   <name>Security - Keycloak</name>
-
-  <properties>
-    <version.keycloak>3.4.3.Final</version.keycloak>
-  </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>core</artifactId>
+      <artifactId>unimbus-core</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>security</artifactId>
+      <artifactId>unimbus-security</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-undertow-adapter</artifactId>
-      <version>${version.keycloak}</version>
     </dependency>
 
     <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-authz-client</artifactId>
-      <version>${version.keycloak}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>servlet</artifactId>
+      <artifactId>unimbus-servlet</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
@@ -49,19 +43,8 @@
     <dependency>
       <groupId>io.undertow</groupId>
       <artifactId>undertow-servlet</artifactId>
-      <version>${version.undertow}</version>
       <scope>provided</scope>
       <optional>true</optional>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.annotation</groupId>
-          <artifactId>javax.annotation-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.annotation</groupId>
-          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
   </dependencies>

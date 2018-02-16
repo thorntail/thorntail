@@ -5,12 +5,12 @@
 
   <parent>
     <groupId>org.jboss.unimbus.testsuite</groupId>
-    <artifactId>testsuite</artifactId>
+    <artifactId>unimbus-testsuite-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>vertx</artifactId>
+  <artifactId>unimbus-testsuite-vertx</artifactId>
   <name>Testsuite: Vert.x</name>
 
   <build>
@@ -41,61 +41,13 @@
           </execution>
         </executions>
       </plugin>
-<!--
-      <plugin>
-        <groupId>io.fabric8</groupId>
-        <artifactId>docker-maven-plugin</artifactId>
-        <configuration>
-          <images>
-            <image>
-              <name>vromero/activemq-artemis</name>
-              <alias>artemis</alias>
-              <run>
-                <env>
-                  <ARTEMIS_USERNAME>guest</ARTEMIS_USERNAME>
-                  <ARTEMIS_PASSWORD>guest</ARTEMIS_PASSWORD>
-                </env>
-                <ports>
-                  <port>61616:61616</port>
-                </ports>
-                <wait>
-                  <tcp>
-                    <mode>mapped</mode>
-                    <ports>
-                      <port>61616</port>
-                    </ports>
-                  </tcp>
-                  <time>10000</time>
-                </wait>
-              </run>
-            </image>
-          </images>
-        </configuration>
-        <executions>
-          <execution>
-            <id>start</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>start</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>stop</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
--->
     </plugins>
   </build>
 
   <dependencies>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>vertx</artifactId>
+      <artifactId>unimbus-vertx</artifactId>
     </dependency>
   </dependencies>
 </project>

@@ -9,7 +9,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>docs</artifactId>
+  <artifactId>unimbus-docs</artifactId>
   <name>Documentation</name>
   <packaging>pom</packaging>
 
