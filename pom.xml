@@ -25,6 +25,7 @@
     <version.activemq>2.4.0</version.activemq>
     <version.jms-spec>1.0.2.Final</version.jms-spec>
     <version.ejb-spec>1.0.1.Final</version.ejb-spec>
+    <version.jandex>2.0.3.Final</version.jandex>
 
     <version.jboss-transaction-spi>7.6.0.Final</version.jboss-transaction-spi>
     <version.vertx>3.5.1</version.vertx>
@@ -49,9 +50,12 @@
 
     <version.maven-compiler-plugin>3.7.0</version.maven-compiler-plugin>
     <version.maven-failsafe-plugin>2.20.1</version.maven-failsafe-plugin>
+    <version.maven-surefire-plugin>2.19.1</version.maven-surefire-plugin>
     <version.maven-javadoc-plugin>3.0.0</version.maven-javadoc-plugin>
     <version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
     <version.docker-maven-plugin>0.24.0</version.docker-maven-plugin>
+    <version.asciidoctor-maven-plugin>1.5.6</version.asciidoctor-maven-plugin>
+    <version.jandex-maven-plugin>1.0.5</version.jandex-maven-plugin>
 
     <version.jboss-logging-annotations>2.1.0.Final</version.jboss-logging-annotations>
 
@@ -104,7 +108,7 @@
       <dependency>
         <groupId>org.jboss</groupId>
         <artifactId>jandex</artifactId>
-        <version>2.0.3.Final</version>
+        <version>${version.jandex}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.arquillian.junit</groupId>
@@ -481,6 +485,11 @@
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${version.maven-javadoc-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${version.maven-compiler-plugin}</version>
           <configuration>
@@ -489,6 +498,31 @@
             <showWarnings>true</showWarnings>
             <showDeprecation>true</showDeprecation>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.jboss.jandex</groupId>
+          <artifactId>jandex-maven-plugin</artifactId>
+          <version>${version.jandex-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.maven-surefire-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.maven-failsafe-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${version.build-helper-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.asciidoctor</groupId>
+          <artifactId>asciidoctor-maven-plugin</artifactId>
+          <version>${version.asciidoctor-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.jboss.unimbus</groupId>
@@ -516,7 +550,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${version.maven-javadoc-plugin}</version>
         <inherited>false</inherited>
         <configuration>
           <failOnError>false</failOnError>
@@ -538,7 +571,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>${version.build-helper-maven-plugin}</version>
         <executions>
           <execution>
             <id>add-test-source</id>
@@ -557,7 +589,6 @@
       <plugin>
         <groupId>org.jboss.jandex</groupId>
         <artifactId>jandex-maven-plugin</artifactId>
-        <version>1.0.5</version>
         <executions>
           <execution>
             <id>make-index</id>
