@@ -2,7 +2,6 @@
 
 - test keycloak integration using docker
 - Fuller testing of Java EE tech in testsuite
-- If it's :json-p, should it be :jaxrs? Or should it be :jsonp?
 - Some type of BOM to bring the bits together. Maybe just 3 types: Stable, New/Experimental, Deprecated
 - Pieces to implement:
   - MP REST Client
