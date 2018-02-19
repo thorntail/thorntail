@@ -1,7 +1,6 @@
 . High priority
 
 - test keycloak integration using docker
-- Fuller testing of Java EE tech in testsuite
 - Some type of BOM to bring the bits together. Maybe just 3 types: Stable, New/Experimental, Deprecated
 - Pieces to implement:
   - MP REST Client
@@ -23,9 +22,12 @@
   - Infinispan
   - Websocket (might be covered by undertow, but worth a test if nothing else)
   - Kafka clients
-  - 'hollow' distributions for web/microprofile
-  -- To support that, handle attach=true in the plugin.
+- 'hollow' distributions for web/microprofile
+-- To support that, handle attach=true in the plugin.
+- Ability to take OpenAPI spec doc and "link" to endpoint code. Similar to how vert.x does it
+-- https://github.com/vert-x3/vertx-web/blob/master/vertx-web-api-contract/src/main/java/io/vertx/ext/web/api/contract/openapi3/OpenAPI3RouterFactory.java
+-- https://github.com/rhoar-shootout/rhoar-vertx/blob/master/adjective/src/main/java/com/redhat/labs/adjective/MainVerticle.java#L131
 
 . Low priority
 
-
+- Fuller testing of Java EE tech in testsuite
