@@ -23,6 +23,8 @@
   - Infinispan
   - Websocket (might be covered by undertow, but worth a test if nothing else)
   - Kafka clients
+  - 'hollow' distributions for web/microprofile
+  -- To support that, handle attach=true in the plugin.
 
 . Low priority
 
