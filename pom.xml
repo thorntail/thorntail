@@ -960,7 +960,7 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>jose</artifactId>
-        <version>2018.2.0-SNAPSHOT</version>
+        <version>2018.3.0-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
