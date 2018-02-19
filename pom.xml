@@ -1033,6 +1033,9 @@
     <module>fractions/topology-webapp</module>
 
     <module>fractions/cdi-extensions/cdi-config</module>
+
+    <module>standalone-servers</module>
+    <module>standalone-servers/web</module>
   </modules>
 
   <profiles>
@@ -1133,7 +1136,6 @@
 
         <module>fractions/cdi-extensions/cdi-jaxrsapi</module>
 
-        <module>standalone-servers</module>
         <module>standalone-servers/keycloak</module>
         <module>standalone-servers/management-console</module>
         <module>standalone-servers/microprofile</module>
