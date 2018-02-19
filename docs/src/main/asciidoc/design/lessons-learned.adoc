@@ -32,6 +32,10 @@ A slow test is a test that is never willingly executed. PRs take forever to vali
 
 If it's entirely too difficult to extend the platform, the ecosystem will not grow. New integrations should be simple.
 
+.Related: Core things should not be any more first-class than community contributions
+
+For instance, auto-detection in WildFly Swarm only worked with core fractions; user-provided wouldn't auto-detect.
+
 .Ensure the public-vs-private API guarantees are clear.
 
 Intertwingly code (and javadocs) make finding the delineation between public API and private implementations difficult.
