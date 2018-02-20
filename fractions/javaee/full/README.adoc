@@ -1,0 +1,24 @@
+= Full
+
+Provides a collection of fractions equivalent to the _Full Profile_:
+
+* Bean Validation
+* Batch
+* CDI
+* EJB
+* EJB-Remote
+* JCA
+* JMX
+* JAX-RS
+** JSON-P
+** JAXB
+** Multipart
+** Validator
+* JPA
+* JSF
+* Mail
+* Messaging
+* Resource Adapters
+* Transactions
+* Undertow (Servlets)
+* WebServices
