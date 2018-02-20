@@ -8,6 +8,7 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.unimbus.UNimbus;
+import org.jboss.unimbus.classloading.ServiceRegistry;
 
 /**
  * Created by bob on 1/19/18.
@@ -25,6 +26,13 @@ public class UNimbusProvidingExtension implements Extension {
                 .addQualifier(Default.Literal.INSTANCE)
                 .addQualifier(Any.Literal.INSTANCE)
                 .produceWith((obj) -> system);
+
+        event.addBean()
+                .addType(ServiceRegistry.class)
+                .scope(ApplicationScoped.class)
+                .addQualifier(Default.Literal.INSTANCE)
+                .addQualifier(Any.Literal.INSTANCE)
+                .produceWith((obj) -> system.getServiceRegistry());
     }
 
     private final UNimbus system;

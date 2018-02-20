@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.servlet.ServletContextListener;
+
 import org.jboss.unimbus.servlet.annotation.Management;
 
 /**
@@ -227,6 +229,14 @@ public class DeploymentMetaData {
         return this.securityConstraints;
     }
 
+    public void addServletContextListener(ServletContextListener listener) {
+        this.servletContextListeners.add( listener );
+    }
+
+    public List<ServletContextListener> getServletContextListeners() {
+        return this.servletContextListeners;
+    }
+
     private String name;
 
     private boolean management;
@@ -246,4 +256,6 @@ public class DeploymentMetaData {
     private List<FilterMetaData> filters = new ArrayList<>();
 
     private List<SecurityConstraintMetaData> securityConstraints = new ArrayList<>();
+
+    private List<ServletContextListener> servletContextListeners = new ArrayList<>();
 }

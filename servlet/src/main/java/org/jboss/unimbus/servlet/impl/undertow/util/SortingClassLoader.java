@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-import sun.reflect.CallerSensitive;
-
 /**
  * Created by bob on 1/24/18.
  */
@@ -70,7 +68,6 @@ public class SortingClassLoader extends ClassLoader {
         return ClassLoader.getSystemResourceAsStream(name);
     }
 
-    @CallerSensitive
     public static ClassLoader getSystemClassLoader() {
         return ClassLoader.getSystemClassLoader();
     }

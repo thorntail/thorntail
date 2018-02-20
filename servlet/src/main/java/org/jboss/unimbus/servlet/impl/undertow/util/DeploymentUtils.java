@@ -1,5 +1,6 @@
 package org.jboss.unimbus.servlet.impl.undertow.util;
 
+import java.util.EventListener;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletContextListener;
 
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
@@ -22,6 +24,8 @@ import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.api.ServletSecurityInfo;
 import io.undertow.servlet.api.TransportGuaranteeType;
 import io.undertow.servlet.api.WebResourceCollection;
+import io.undertow.servlet.core.ContextClassLoaderSetupAction;
+import io.undertow.servlet.util.ImmediateInstanceFactory;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.EmptyRoleSemantic;
 import org.jboss.unimbus.servlet.FilterMetaData;
@@ -43,7 +47,7 @@ public class DeploymentUtils {
 
     }
 
-    public static DeploymentInfo convert(DeploymentMetaData meta) {
+    public static DeploymentInfo convert(ClassLoader appCl, DeploymentMetaData meta) {
         DeploymentInfo info = new DeploymentInfo();
         info.addListener(new ListenerInfo(
                 Listener.class
@@ -51,14 +55,18 @@ public class DeploymentUtils {
 
         info.setDeploymentName(meta.getName());
         info.setContextPath(meta.getContextPath());
-        info.setClassLoader(new SortingClassLoader(DeploymentUtils.class.getClassLoader()));
-
+        info.setClassLoader(new SortingClassLoader(appCl));
+        info.addThreadSetupAction(new ContextClassLoaderSetupAction(appCl));
 
         meta.getSecurityConstraints().forEach(e -> {
             info.addSecurityConstraint(convert(e));
         });
 
         info.addServlets(convert(meta.getServlets()));
+
+        for (ServletContextListener each : meta.getServletContextListeners()) {
+            info.addListener(new ListenerInfo(each.getClass(), new ImmediateInstanceFactory<EventListener>(each)));
+        }
 
         meta.getInitParams().entrySet().forEach(e -> info.addInitParameter(e.getKey(), e.getValue()));
         meta.getServletContextAttributes().entrySet().forEach(e -> info.addServletContextAttribute(e.getKey(), e.getValue()));

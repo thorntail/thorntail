@@ -10,8 +10,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>unimbus-testsuite-docker</artifactId>
-  <name>Testsuite: Docker</name>
+  <artifactId>unimbus-testsuite-docker-thin-layers</artifactId>
+  <name>Testsuite: Docker - Thin - Layers</name>
 
   <build>
     <plugins>

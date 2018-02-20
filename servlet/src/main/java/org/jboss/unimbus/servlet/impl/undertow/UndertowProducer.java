@@ -22,6 +22,7 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.resource.ResourceHandler;
 import io.undertow.util.Methods;
+import org.jboss.unimbus.UNimbus;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.annotation.Management;
 import org.jboss.unimbus.servlet.annotation.Primary;
@@ -67,7 +68,7 @@ public class UndertowProducer {
         ResourceHandler resourceHandler = new ResourceHandler(this.resourceSupplier, next);
 
         return exchange -> {
-            if ( ! exchange.getRequestMethod().equals(Methods.OPTIONS)) {
+            if (exchange.getRequestMethod().equals(Methods.GET) || exchange.getRequestMethod().equals(Methods.HEAD)) {
                 resourceHandler.handleRequest(exchange);
             } else {
                 next.handleRequest(exchange);
@@ -235,5 +236,8 @@ public class UndertowProducer {
     @Inject
     @org.jboss.unimbus.servlet.impl.undertow.Undertow
     XnioWorker xnioWorker;
+
+    @Inject
+    UNimbus system;
 
 }

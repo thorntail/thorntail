@@ -15,6 +15,7 @@ import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
+import org.jboss.unimbus.UNimbus;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.Deployments;
@@ -41,7 +42,7 @@ public class Deployer {
                 continue;
             }
 
-            DeploymentInfo info = DeploymentUtils.convert(each);
+            DeploymentInfo info = DeploymentUtils.convert(this.system.getApplicationClassLoader(), each);
             info.addServletContextAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME, this.beanManager);
             DeploymentManager manager = this.container.addDeployment(info);
             this.managers.add(manager);
@@ -124,4 +125,7 @@ public class Deployer {
 
     @Inject
     Instance<MetricsIntegration> metricsIntegration;
+
+    @Inject
+    UNimbus system;
 }

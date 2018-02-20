@@ -5,6 +5,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.servlet.ServletContextListener;
 
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.ServletMetaData;
@@ -23,10 +24,12 @@ public class DefaultDeploymentProducer {
         DeploymentMetaData deployment = new DeploymentMetaData("default");
         deployment.setContextPath("/");
         deployment.addServlets(servlets);
+
         return deployment;
     }
 
     @Inject
     @Any
     Instance<ServletMetaData> servlets;
+
 }

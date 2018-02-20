@@ -30,6 +30,8 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.jboss.unimbus.classloading.ServiceRegistry;
+import org.jboss.unimbus.classloading.ServiceRegistryClassLoader;
 import org.jboss.unimbus.events.impl.EventEmitter;
 import org.jboss.unimbus.ext.UNimbusProvidingExtension;
 import org.jboss.unimbus.logging.impl.jdk.DefaultConsoleFormatter;
@@ -85,6 +87,10 @@ public class UNimbus {
      */
     public UNimbus(Class<?> configClass) {
         this.configClass = configClass;
+        if (this.configClass != null) {
+            this.classLoader = this.configClass.getClassLoader();
+            this.serviceRegistryClassLoader.setDelegate(this.classLoader);
+        }
     }
 
     /**
@@ -94,7 +100,7 @@ public class UNimbus {
      */
     public UNimbus(ClassLoader classLoader) {
         this.classLoader = classLoader;
-
+        this.serviceRegistryClassLoader.setDelegate(classLoader);
     }
 
     /**
@@ -160,10 +166,8 @@ public class UNimbus {
             weld.addPackages(true, this.configClass);
         }
 
-        if (this.classLoader != null) {
-            weld.setClassLoader(this.classLoader);
-            Thread.currentThread().setContextClassLoader(this.classLoader);
-        }
+        weld.setClassLoader(this.serviceRegistryClassLoader);
+        Thread.currentThread().setContextClassLoader(this.classLoader);
 
         this.container = weld.initialize();
         curTick = markTiming("CDI initialize", curTick);
@@ -235,8 +239,21 @@ public class UNimbus {
         logger.setLevel(Level.INFO);
     }
 
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
+    }
+
+    public ServiceRegistry getServiceRegistry() {
+        return this.serviceRegistryClassLoader;
+    }
+
+    public ClassLoader getApplicationClassLoader() {
+        return this.serviceRegistryClassLoader;
+    }
 
     private ClassLoader classLoader = UNimbus.class.getClassLoader();
+
+    private ServiceRegistryClassLoader serviceRegistryClassLoader = new ServiceRegistryClassLoader(UNimbus.class.getClassLoader());
 
     private Class<?> configClass;
 

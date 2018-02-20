@@ -21,5 +21,6 @@
     <module>config</module>
     <module>health</module>
     <module>metrics</module>
+    <module>opentracing</module>
   </modules>
 </project>

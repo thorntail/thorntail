@@ -14,7 +14,7 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
 import org.jboss.unimbus.events.LifecycleEvent;
-import org.jboss.unimbus.jaxrs.impl.JaxrsMessages;
+import org.jboss.unimbus.jaxrs.JaxrsMessages;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.Deployments;
 import org.jboss.unimbus.servlet.ServletMetaData;
@@ -35,10 +35,26 @@ public class RestEasyDeploymentCreator {
         }
     }
 
+    ApplicationPath findApplicationPathAnnotation(Application application) {
+        Class<?> cur = application.getClass();
+        while ( cur != null ){
+            ApplicationPath appPath = cur.getAnnotation(ApplicationPath.class);
+            if ( appPath != null ) {
+                return appPath;
+            }
+            cur = cur.getSuperclass();
+        }
+
+        return null;
+    }
+
     public DeploymentMetaData createDeployment(Application application) {
-        ApplicationPath appPath = application.getClass().getAnnotation(ApplicationPath.class);
+        ApplicationPath appPath = findApplicationPathAnnotation(application);
+
         String path = "/";
-        if (appPath != null) path = appPath.value();
+        if (appPath != null) {
+            path = appPath.value();
+        }
         return createDeployment(application, path);
     }
 

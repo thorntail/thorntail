@@ -1,4 +1,4 @@
-package org.jboss.unimbus.jaxrs.impl;
+package org.jboss.unimbus.jaxrs;
 
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger;
