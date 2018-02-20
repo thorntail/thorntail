@@ -12,7 +12,7 @@
   <artifactId>full</artifactId>
 
   <name>Full</name>
-  <description>Equivalent to Full Profile</description>
+  <description>Equivalent to Full Platform</description>
 
   <packaging>jar</packaging>
 
@@ -40,11 +40,6 @@
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>batch-jberet</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>datasources</artifactId>
     </dependency>
 
     <dependency>

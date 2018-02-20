@@ -1,6 +1,6 @@
 = Full
 
-Provides a collection of fractions equivalent to the _Full Profile_:
+Provides a collection of fractions equivalent to the _Full Platform:
 
 * Bean Validation
 * Batch
