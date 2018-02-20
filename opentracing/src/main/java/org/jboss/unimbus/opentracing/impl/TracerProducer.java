@@ -27,14 +27,15 @@ public class TracerProducer {
     @Produces
     @Default
     @Singleton
-    public Tracer produceTracer() {
+    public Tracer tracer() {
         Tracer tracer = TracerResolver.resolveTracer();
         if (tracer == null) {
             logger.info("Could not get a valid OpenTracing Tracer from the classpath. Skipping.");
+            OpenTracingMessages.MESSAGES.noValidTracer();
             tracer = NoopTracerFactory.create();
         }
 
-        logger.info(String.format("Registering %s as the OpenTracing Tracer", tracer.getClass().getName()));
+        OpenTracingMessages.MESSAGES.registeredTracer(tracer.getClass().getName());
         GlobalTracer.register(tracer);
         return tracer;
     }

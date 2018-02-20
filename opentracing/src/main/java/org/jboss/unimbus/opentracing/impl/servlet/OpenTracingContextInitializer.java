@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl;
+package org.jboss.unimbus.opentracing.impl.servlet;
 
 import java.util.EnumSet;
 

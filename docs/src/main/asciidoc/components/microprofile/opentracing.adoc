@@ -13,7 +13,17 @@ The OpenTracing component supports the MicroProfile OpenTracing specification.
 </dependency>
 ----
 
+.Usage
+
+This component uses the OpenTracing `TracerResolver` to locate an appropriately-configured `Tracer` instance.
+
+.Configuration
+
 .CDI Components
 
 `Tracer`::
 An injectable OpenTracing `Tracer`.
+
+.Related Information
+
+* https://github.com/opentracing-contrib/java-tracerresolver[OpenTracing TracerResolver]

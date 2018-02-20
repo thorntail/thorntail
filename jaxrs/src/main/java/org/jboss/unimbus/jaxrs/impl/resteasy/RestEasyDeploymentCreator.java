@@ -14,7 +14,7 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
 import org.jboss.unimbus.events.LifecycleEvent;
-import org.jboss.unimbus.jaxrs.JaxrsMessages;
+import org.jboss.unimbus.jaxrs.impl.JaxrsMessages;
 import org.jboss.unimbus.servlet.DeploymentMetaData;
 import org.jboss.unimbus.servlet.Deployments;
 import org.jboss.unimbus.servlet.ServletMetaData;

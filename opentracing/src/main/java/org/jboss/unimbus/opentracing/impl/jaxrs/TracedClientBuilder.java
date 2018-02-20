@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl;
+package org.jboss.unimbus.opentracing.impl.jaxrs;
 
 import java.util.concurrent.Executors;
 
@@ -23,8 +23,7 @@ public class TracedClientBuilder extends ResteasyClientBuilder {
     public TracedClientBuilder() {
         Instance<Tracer> tracerInstance = CDI.current().select(Tracer.class);
         this.tracer = tracerInstance.get();
-        super.register(new ClientTracingFeature.Builder(tracer)
-                               .build());
+        super.register(new ClientTracingFeature.Builder(tracer).build());
     }
 
     @Override

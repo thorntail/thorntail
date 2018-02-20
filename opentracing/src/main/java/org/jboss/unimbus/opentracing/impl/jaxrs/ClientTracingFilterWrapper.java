@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl;
+package org.jboss.unimbus.opentracing.impl.jaxrs;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -38,8 +38,7 @@ public class ClientTracingFilterWrapper implements ClientRequestFilter, ClientRe
     }
 
     @Override
-    public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext)
-            throws IOException {
+    public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
         if (tracingFilter != null) {
             tracingFilter.filter(requestContext, responseContext);
         }

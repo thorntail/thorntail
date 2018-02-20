@@ -20,6 +20,8 @@
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
       <artifactId>unimbus-jaxrs</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.opentracing</groupId>

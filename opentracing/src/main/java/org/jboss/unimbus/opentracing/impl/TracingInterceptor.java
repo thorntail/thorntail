@@ -8,10 +8,9 @@ import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import javax.ws.rs.Path;
 
-import io.opentracing.Tracer;
 import io.opentracing.ActiveSpan;
+import io.opentracing.Tracer;
 import org.eclipse.microprofile.opentracing.Traced;
 
 /**
@@ -49,11 +48,32 @@ public class TracingInterceptor {
      * @return true if invoked method is jax-rs endpoint
      */
     protected boolean isJaxRs(Method method) {
-        if (method.getAnnotation(Path.class) != null ||
-                method.getDeclaringClass().getAnnotation(Path.class) != null) {
-            return true;
+        System.err.println( "isJaxrs: " + method );
+        for (Annotation annotation : method.getAnnotations()) {
+            if ( isJaxRsPathAnnotation(annotation)) {
+                System.err.println( "-- true");
+                return true;
+            }
         }
+
+        Class<?> cur = method.getDeclaringClass();
+
+        while ( cur != null ) {
+            for (Annotation annotation : cur.getAnnotations()) {
+                if ( isJaxRsPathAnnotation(annotation)) {
+                    System.err.println( "-- true");
+                    return true;
+                }
+            }
+
+            cur = cur.getSuperclass();
+        }
+
         return false;
+    }
+
+    protected boolean isJaxRsPathAnnotation(Annotation annotation) {
+        return annotation.annotationType().getName().equals(JAXRS_PATH_ANNOTATION_NAME);
     }
 
     /**

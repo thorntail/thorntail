@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl;
+package org.jboss.unimbus.opentracing.impl.jaxrs;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
