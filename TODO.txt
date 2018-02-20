@@ -6,7 +6,6 @@
   - MP REST Client
   - MP JWT
   - MP Fault Tolerance
-  - MP Open Tracing
   - MP Open API
   - Bean Validation
   - Hibernate Validator
