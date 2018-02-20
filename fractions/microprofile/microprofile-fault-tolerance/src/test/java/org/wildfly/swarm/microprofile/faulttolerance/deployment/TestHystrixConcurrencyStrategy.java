@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc, and individual contributors.
+ * Copyright 2018 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,15 @@
  */
 package org.wildfly.swarm.microprofile.faulttolerance.deployment;
 
-import javax.enterprise.inject.spi.Extension;
+import javax.annotation.Priority;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Alternative;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy;
 
-public class TestArchive {
-
-    public static JavaArchive createBase(String name) {
-        return ShrinkWrap.create(JavaArchive.class,name)
-                .addClass(TestHystrixConcurrencyStrategy.class)
-                .addAsServiceProvider(Extension.class, HystrixExtension.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE,
-                "beans.xml");
-    }
+@Priority(10)
+@Alternative
+@Dependent
+public class TestHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy {
 
 }

@@ -66,6 +66,8 @@ public class HystrixExtension implements Extension {
         // Add AnnotatedType for HystrixCommandInterceptor
         // It seems that fraction deployment module cannot be picked up as a CDI bean archive - see also SWARM-1725
         bbd.addAnnotatedType(bm.createAnnotatedType(HystrixCommandInterceptor.class), HystrixCommandInterceptor.class.getName());
+        bbd.addAnnotatedType(bm.createAnnotatedType(HystrixInitializer.class), HystrixInitializer.class.getName());
+        bbd.addAnnotatedType(bm.createAnnotatedType(DefaultHystrixConcurrencyStrategy.class), DefaultHystrixConcurrencyStrategy.class.getName());
     }
 
     /**
