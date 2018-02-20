@@ -30,8 +30,6 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
-import org.jboss.unimbus.classloading.ServiceRegistry;
-import org.jboss.unimbus.classloading.ServiceRegistryClassLoader;
 import org.jboss.unimbus.events.impl.EventEmitter;
 import org.jboss.unimbus.ext.UNimbusProvidingExtension;
 import org.jboss.unimbus.logging.impl.jdk.DefaultConsoleFormatter;
@@ -239,14 +237,26 @@ public class UNimbus {
         logger.setLevel(Level.INFO);
     }
 
+    /** Retrieve the classloader for this sytem.
+     *
+     * @return The classloader.
+     */
     public ClassLoader getClassLoader() {
         return this.classLoader;
     }
 
+    /** Retrieve the service-registry for this system.
+     *
+     * @return The service registry.
+     */
     public ServiceRegistry getServiceRegistry() {
         return this.serviceRegistryClassLoader;
     }
 
+    /** Retrieve the final service-registry-aware classloader for the application.
+     *
+     * @return The classloader.
+     */
     public ClassLoader getApplicationClassLoader() {
         return this.serviceRegistryClassLoader;
     }

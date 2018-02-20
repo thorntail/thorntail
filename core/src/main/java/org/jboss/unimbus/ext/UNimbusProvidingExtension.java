@@ -8,7 +8,7 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.unimbus.UNimbus;
-import org.jboss.unimbus.classloading.ServiceRegistry;
+import org.jboss.unimbus.ServiceRegistry;
 
 /**
  * Created by bob on 1/19/18.

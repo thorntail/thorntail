@@ -1,0 +1,19 @@
+[#component-opentracing]
+= OpenTracing
+
+The OpenTracing component supports the MicroProfile OpenTracing specification.
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-opentracing</artifactId>
+</dependency>
+----
+
+.CDI Components
+
+`Tracer`::
+An injectable OpenTracing `Tracer`.

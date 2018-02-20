@@ -25,7 +25,6 @@ public class OpenTracingContextInitializer implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        System.err.println( "CONTEXT INITIALIZED: " + servletContextEvent );
         ServletContext servletContext = servletContextEvent.getServletContext();
         FilterRegistration.Dynamic filterRegistration = servletContext
                 .addFilter("tracingFilter", new SpanFinishingFilter(tracer));

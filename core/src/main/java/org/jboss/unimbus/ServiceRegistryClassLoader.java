@@ -1,11 +1,10 @@
-package org.jboss.unimbus.classloading;
+package org.jboss.unimbus;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,13 +19,13 @@ import sun.reflect.CallerSensitive;
 /**
  * Created by bob on 2/20/18.
  */
-public class ServiceRegistryClassLoader extends ClassLoader implements ServiceRegistry {
+class ServiceRegistryClassLoader extends ClassLoader implements ServiceRegistry {
 
-    public ServiceRegistryClassLoader(ClassLoader delegate) {
+    ServiceRegistryClassLoader(ClassLoader delegate) {
         this.delegate = delegate;
     }
 
-    public void setDelegate(ClassLoader delegate) {
+    void setDelegate(ClassLoader delegate) {
         this.delegate = delegate;
     }
 
@@ -113,7 +112,7 @@ public class ServiceRegistryClassLoader extends ClassLoader implements ServiceRe
     }
 
     @Override
-    public void register(Class<?> serviceInterface, Class<?> implementationClass) {
+    public <T> void register(Class<T> serviceInterface, Class<? extends T> implementationClass) {
         Entry entry = this.entries.get(resourceLocation(serviceInterface));
         if (entry == null) {
             entry = new Entry();

@@ -5,7 +5,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
 
-import org.jboss.unimbus.classloading.ServiceRegistry;
+import org.jboss.unimbus.ServiceRegistry;
 import org.jboss.unimbus.events.LifecycleEvent;
 
 /**
