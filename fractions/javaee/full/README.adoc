@@ -5,6 +5,7 @@ Provides a collection of fractions equivalent to the _Full Profile_:
 * Bean Validation
 * Batch
 * CDI
+* Datasources
 * EJB
 * EJB-Remote
 * JCA

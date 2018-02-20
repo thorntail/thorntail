@@ -44,6 +44,11 @@
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>datasources</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>ejb-remote</artifactId>
     </dependency>
 
