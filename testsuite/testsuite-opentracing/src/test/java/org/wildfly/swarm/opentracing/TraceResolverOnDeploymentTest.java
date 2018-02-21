@@ -22,6 +22,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
@@ -55,6 +56,7 @@ public class TraceResolverOnDeploymentTest {
 
         // this is a simple servlet, that we can hit with our tests
         deployment.addClass(SimpleServlet.class);
+        deployment.addClass(AsyncServlet.class);
 
         return deployment;
     }
@@ -62,6 +64,11 @@ public class TraceResolverOnDeploymentTest {
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
         return new Swarm().fraction(new OpenTracingFraction());
+    }
+
+    @After
+    public void after() {
+        MockTracerResolver.TRACER_INSTANCE.reset();
     }
 
     @Test
@@ -73,12 +80,20 @@ public class TraceResolverOnDeploymentTest {
     public void testOneSpanIsReportedPerRequest() throws IOException {
         MockTracer tracer = MockTracerResolver.TRACER_INSTANCE;
         assertEquals(0, tracer.finishedSpans().size());
-        hitEndpoint();
+        hitEndpoint("http://localhost:8080/_opentracing/hello");
         assertEquals(2, tracer.finishedSpans().size());
     }
 
-    private void hitEndpoint() throws IOException {
-        InputStream response = new URL("http://localhost:8080/_opentracing/hello").openStream();
+    @Test
+    public void testAsyncEndpoint() throws IOException {
+        MockTracer tracer = MockTracerResolver.TRACER_INSTANCE;
+        assertEquals(0, tracer.finishedSpans().size());
+        hitEndpoint("http://localhost:8080/_opentracing/async");
+        assertEquals(1, tracer.finishedSpans().size());
+    }
+
+    private void hitEndpoint(String url) throws IOException {
+        InputStream response = new URL(url).openStream();
         String contents;
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(response))) {
             contents = buffer.lines().collect(Collectors.joining("\n"));
