@@ -40,4 +40,6 @@ For instance, auto-detection in WildFly Swarm only worked with core fractions; u
 
 Intertwingly code (and javadocs) make finding the delineation between public API and private implementations difficult.
 
+.Allow BYO components
 
+We don't want to decide _all_ of the implementations, and certainly not versions, of random components we support.
