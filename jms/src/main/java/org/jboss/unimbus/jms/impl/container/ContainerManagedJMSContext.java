@@ -1,4 +1,4 @@
-package org.jboss.unimbus.jms.impl;
+package org.jboss.unimbus.jms.impl.container;
 
 import java.io.Serializable;
 
@@ -21,12 +21,14 @@ import javax.jms.TemporaryTopic;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 
+import org.jboss.unimbus.jms.WrappedJMSContext;
+
 /**
  * Created by bob on 2/12/18.
  */
-public class WrappedJMSContext implements JMSContext {
+public class ContainerManagedJMSContext implements WrappedJMSContext {
 
-    public WrappedJMSContext(JMSContext delegate) {
+    public ContainerManagedJMSContext(JMSContext delegate) {
         this.delegate = delegate;
     }
 

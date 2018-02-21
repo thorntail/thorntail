@@ -1,7 +1,10 @@
 package org.jboss.unimbus.opentracing.impl;
 
+import java.lang.reflect.Field;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
@@ -37,6 +40,13 @@ public class TracerProducer {
 
         OpenTracingMessages.MESSAGES.registeredTracer(tracer.getClass().getName());
         GlobalTracer.register(tracer);
+        System.err.println( "PRODUCER: " + tracer);
         return tracer;
+    }
+
+    void dispose(@Disposes Tracer trace) throws NoSuchFieldException, IllegalAccessException {
+        Field f = GlobalTracer.class.getDeclaredField("tracer");
+        f.setAccessible(true);
+        f.set(null, NoopTracerFactory.create());
     }
 }

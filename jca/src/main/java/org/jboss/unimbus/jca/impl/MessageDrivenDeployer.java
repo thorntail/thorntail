@@ -22,6 +22,7 @@ import org.jboss.jca.core.spi.rar.Activation;
 import org.jboss.jca.core.spi.rar.MessageListener;
 import org.jboss.jca.core.spi.rar.NotFoundException;
 import org.jboss.jca.core.spi.rar.ResourceAdapterRepository;
+import org.jboss.unimbus.UNimbus;
 import org.jboss.unimbus.config.impl.ConfigImpl;
 import org.jboss.unimbus.events.LifecycleEvent;
 import org.jboss.unimbus.jca.ext.MessageDrivenExtension;
@@ -73,7 +74,7 @@ public class MessageDrivenDeployer {
     }
 
     MessageEndpointFactory factory(Class<?> driven, Class<?> listenerInterface) {
-        return new EndpointFactory(driven, listenerInterface);
+        return new EndpointFactory(this.system.getContainerId(), driven, listenerInterface);
     }
 
 
@@ -120,6 +121,9 @@ public class MessageDrivenDeployer {
 
     @Inject
     MessageDrivenExtension ext;
+
+    @Inject
+    UNimbus system;
 
     private List<Entry> entries = new ArrayList<>();
 

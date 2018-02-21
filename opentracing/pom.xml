@@ -19,6 +19,12 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
+      <artifactId>unimbus-jms</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
       <artifactId>unimbus-jaxrs</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
@@ -44,6 +50,15 @@
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-jaxrs2</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>io.opentracing</groupId>
+      <artifactId>opentracing-mock</artifactId>
+      <version>${version.opentracing}</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+
   </dependencies>
 
 </project>

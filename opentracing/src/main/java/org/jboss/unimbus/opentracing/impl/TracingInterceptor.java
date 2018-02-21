@@ -23,6 +23,7 @@ public class TracingInterceptor {
 
     private static final String JAXRS_PATH_ANNOTATION_NAME = "javax.ws.rs.Path";
 
+    private static final String EJB_MESSAGE_DRIVEN_NAME = "javax.ejb.MessageDriven";
     @Inject
     private Tracer tracer;
 
@@ -30,9 +31,8 @@ public class TracingInterceptor {
     public Object interceptTraced(InvocationContext ctx) throws Exception {
         ActiveSpan activeSpan = null;
         try {
-            if (!isJaxRs(ctx.getMethod()) && isTraced(ctx.getMethod())) {
-                activeSpan = this.tracer.buildSpan(getOperationName(ctx.getMethod()))
-                        .startActive();
+            if (!isJaxRs(ctx.getMethod()) && !isMessageDriven(ctx.getMethod()) && isTraced(ctx.getMethod())) {
+                activeSpan = this.tracer.buildSpan(getOperationName(ctx.getMethod())).startActive();
             }
             return ctx.proceed();
         } finally {
@@ -44,24 +44,22 @@ public class TracingInterceptor {
 
     /**
      * Determines whether invoked method is jax-rs endpoint
+     *
      * @param method invoked method
      * @return true if invoked method is jax-rs endpoint
      */
     protected boolean isJaxRs(Method method) {
-        System.err.println( "isJaxrs: " + method );
         for (Annotation annotation : method.getAnnotations()) {
-            if ( isJaxRsPathAnnotation(annotation)) {
-                System.err.println( "-- true");
+            if (isAnnotationOfType(annotation, JAXRS_PATH_ANNOTATION_NAME )) {
                 return true;
             }
         }
 
         Class<?> cur = method.getDeclaringClass();
 
-        while ( cur != null ) {
+        while (cur != null) {
             for (Annotation annotation : cur.getAnnotations()) {
-                if ( isJaxRsPathAnnotation(annotation)) {
-                    System.err.println( "-- true");
+                if (isAnnotationOfType(annotation, JAXRS_PATH_ANNOTATION_NAME)) {
                     return true;
                 }
             }
@@ -72,12 +70,29 @@ public class TracingInterceptor {
         return false;
     }
 
-    protected boolean isJaxRsPathAnnotation(Annotation annotation) {
-        return annotation.annotationType().getName().equals(JAXRS_PATH_ANNOTATION_NAME);
+    protected boolean isMessageDriven(Method method) {
+        Class<?> cur = method.getDeclaringClass();
+
+        while (cur != null) {
+            for (Annotation annotation : cur.getAnnotations()) {
+                if (isAnnotationOfType(annotation, EJB_MESSAGE_DRIVEN_NAME)) {
+                    return true;
+                }
+            }
+
+            cur = cur.getSuperclass();
+        }
+
+        return false;
+    }
+
+    protected boolean isAnnotationOfType(Annotation annotation, String type) {
+        return annotation.annotationType().getName().equals(type);
     }
 
     /**
      * Determines whether invoked method should be traced or not
+     *
      * @param method invoked method
      * @return true if {@link Traced} defined on method or class has value true
      */

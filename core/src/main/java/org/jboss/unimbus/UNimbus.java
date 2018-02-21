@@ -261,6 +261,10 @@ public class UNimbus {
         return this.serviceRegistryClassLoader;
     }
 
+    public String getContainerId() {
+        return this.container.getId();
+    }
+
     private ClassLoader classLoader = UNimbus.class.getClassLoader();
 
     private ServiceRegistryClassLoader serviceRegistryClassLoader = new ServiceRegistryClassLoader(UNimbus.class.getClassLoader());

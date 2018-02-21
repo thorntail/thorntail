@@ -84,6 +84,7 @@
     <module>jaxrs</module>
     <module>jaxrs-jsonp</module>
     <module>jms</module>
+    <module>jms-opentracing</module>
 
     <module>jpa</module>
     <module>vertx</module>

@@ -3,21 +3,31 @@ package org.jboss.unimbus.jca.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Unmanaged;
+import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.spi.Decorator;
 import javax.resource.spi.UnavailableException;
 import javax.resource.spi.endpoint.MessageEndpoint;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.transaction.xa.XAResource;
+
+import org.jboss.weld.injection.producer.BeanInjectionTarget;
+import org.jboss.weld.injection.producer.Instantiator;
+import org.jboss.weld.injection.producer.SubclassDecoratorApplyingInstantiator;
 
 /**
  * Created by bob on 2/8/18.
  */
 public class EndpointFactory implements MessageEndpointFactory {
 
-    public EndpointFactory(Class<?> instanceType, Class<?> listenerInterface) {
+    public EndpointFactory(String containerId, Class<?> instanceType, Class<?> listenerInterface) {
+        this.containerId = containerId;
         this.instanceType = instanceType;
         this.listenerInterface = listenerInterface;
     }
@@ -48,17 +58,36 @@ public class EndpointFactory implements MessageEndpointFactory {
     }
 
     MessageEndpoint create(XAResource xaResource) {
-        Unmanaged<?> unmanaged = new Unmanaged<>(this.instanceType);
-        Unmanaged.UnmanagedInstance<?> unmanagedInstance = unmanaged.newInstance();
+        BeanManager manager = CDI.current().getBeanManager();
 
-        unmanagedInstance.produce().postConstruct().inject().get();
+        AnnotatedType type = manager.createAnnotatedType(this.instanceType);
+        BeanInjectionTarget injectionTarget = (BeanInjectionTarget) manager.getInjectionTargetFactory(type).createInjectionTarget(null);
+        List<Decorator<?>> decorators = manager.resolveDecorators(Collections.singleton(this.listenerInterface), Any.Literal.INSTANCE);
+
+        EndpointBean bean = new EndpointBean(this.instanceType, this.listenerInterface, injectionTarget);
+
+        if ( ! decorators.isEmpty() ) {
+            Instantiator instantiator = injectionTarget.getInstantiator();
+            injectionTarget.setInstantiator(new SubclassDecoratorApplyingInstantiator(this.containerId, instantiator, bean, decorators));
+        }
+
+        CreationalContext<Object> context = manager.createCreationalContext(null);
+
+        Object instance = bean.create(context);
+
         InvocationHandler handler = (proxy, method, args) -> {
             if (method.getDeclaringClass() == MessageEndpoint.class) {
                 if (method.getName().equals("release")) {
-                    unmanagedInstance.preDestroy().dispose();
+                    //injectionTarget.preDestroy(instance);
+                    //injectionTarget.dispose(instance);
+                    bean.destroy(instance, context);
+                } else if ( method.getName().equals("beforeDelivery" ) ) {
+
+                } else if ( method.getName().equals("afterDelivery" ) ) {
+
                 }
             } else {
-                return method.invoke(unmanagedInstance.get(), args);
+                return method.invoke(instance, args);
             }
             return null;
         };
@@ -72,4 +101,6 @@ public class EndpointFactory implements MessageEndpointFactory {
     private final Class<?> listenerInterface;
 
     private final Class<?> instanceType;
+
+    private final String containerId;
 }
