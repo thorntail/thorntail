@@ -120,7 +120,7 @@ public class PartialResponse extends Response implements Serializable {
 
     @Override
     public void close() {
-
+        responseContext.getEntityStream().close();
     }
 
     @Override
