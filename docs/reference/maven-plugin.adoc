@@ -70,7 +70,7 @@ If set, the swarm process will suspend on start and open a debugger on this port
 [cols="1,2a"]
 |===
 |Property
-|_none_
+|`swarm.debug.port`
 
 |Default
 |
@@ -121,7 +121,7 @@ The mode of fraction detection. The available options are:
 [cols="1,2a"]
 |===
 |Property
-|`swarm.fractionDetectMode`
+|`swarm.detect.mode`
 
 |Default
 |`when_missing`
@@ -287,7 +287,7 @@ This JAR is not created automatically, so make sure you execute the `package` go
 [cols="1,2a"]
 |===
 |Property
-|`swarm.useUberJar`
+|`wildfly-swarm.useUberJar`
 
 |Default
 |false
