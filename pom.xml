@@ -519,6 +519,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>full</artifactId>
+        <version>2018.3.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>flyway</artifactId>
         <version>2018.3.0-SNAPSHOT</version>
       </dependency>
@@ -925,6 +931,7 @@
         <version>2018.3.0-SNAPSHOT</version>
       </dependency>
 
+
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>webservices</artifactId>
@@ -991,6 +998,7 @@
     <module>fractions/javaee/datasources</module>
     <module>fractions/javaee/ee</module>
     <module>fractions/javaee/ejb</module>
+    <module>fractions/javaee/full</module>
     <module>fractions/javaee/jaxrs</module>
     <module>fractions/javaee/jaxrs-cdi</module>
     <module>fractions/javaee/jaxrs-jaxb</module>
