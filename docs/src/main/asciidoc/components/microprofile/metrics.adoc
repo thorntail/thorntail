@@ -1,5 +1,26 @@
 [#component-metrics]
 = Metrics
 
-The `:metrics` component does blah.
+The Metrics component supports the collection and reporting of metrics using the MicroProfile Metrics spec.
+This includes providing a Prometheus-compliant endpoint.
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-metrics</artifactId>
+</dependency>
+----
+
+.Built-in Metrics
+
+Depending on which other components your application uses, some metrics will be automatically provided.
+Please refer to each component's documentation for details.
+
+.Related Information
+
+* xref:component-servlet-metrics[Servlet Metrics]
+
 

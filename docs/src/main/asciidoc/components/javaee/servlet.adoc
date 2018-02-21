@@ -107,3 +107,30 @@ An `InetSocketAddress` with the qualifier of `@Primary` is available for injecti
 It specifies the address and port of the management endpoint.
 This may be the same as the `InetSocketAddress` with the `@Primary` qualifier if the management endpoint has not been separately configured.
 
+[#component-servlet-metrics]
+.Supported Metrics
+
+A variety of metrics are automatically provided if xref:component-metrics[] is configured.
+
+deployment._name_.request::
+Total number of requests serviced by the named deployment.
+
+deployment._name_.request.1xx::
+Total number of requests which responded with an HTTP response code between 100 and 199.
+
+deployment._name_.request.2xx::
+Total number of requests which responded with an HTTP response code between 200 and 299.
+
+deployment._name_.request.3xx::
+Total number of requests which responded with an HTTP response code between 300 and 399.
+
+deployment._name_.request.4xx::
+Total number of requests which responded with an HTTP response code between 400 and 499.
+
+deployment._name_.request.5xx::
+Total number of requests which responded with an HTTP response code between 500 and 599.
+
+deployment._name_.response::
+Average response time for all responses.
+
+
