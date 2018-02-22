@@ -117,7 +117,7 @@ public class ServerBootstrapImpl implements ServerBootstrap {
                     logFractions();
                 }
 
-                RuntimeServer outerServer = LogSilencer.silently("org.jboss.weld").execute(() -> {
+                RuntimeServer outerServer = LogSilencer.silently("org.jboss.weld", "ServiceLoader").execute(() -> {
                     Weld weld = new Weld(WELD_INSTANCE_ID);
                     weld.setClassLoader(module.getClassLoader());
 
