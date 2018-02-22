@@ -33,14 +33,12 @@ public class TracerProducer {
     public Tracer tracer() {
         Tracer tracer = TracerResolver.resolveTracer();
         if (tracer == null) {
-            logger.info("Could not get a valid OpenTracing Tracer from the classpath. Skipping.");
             OpenTracingMessages.MESSAGES.noValidTracer();
             tracer = NoopTracerFactory.create();
         }
 
         OpenTracingMessages.MESSAGES.registeredTracer(tracer.getClass().getName());
         GlobalTracer.register(tracer);
-        System.err.println( "PRODUCER: " + tracer);
         return tracer;
     }
 

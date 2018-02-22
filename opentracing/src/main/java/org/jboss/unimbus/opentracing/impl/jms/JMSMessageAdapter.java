@@ -17,6 +17,8 @@ import io.opentracing.propagation.TextMap;
  */
 class JMSMessageAdapter implements TextMap {
 
+    static final String DASH = "_$dash$_";
+
     JMSMessageAdapter(Message message) {
         this.message = message;
     }
@@ -29,7 +31,7 @@ class JMSMessageAdapter implements TextMap {
             while ( names.hasMoreElements() ) {
                 String each = names.nextElement().toString();
                 try {
-                    map.put(each, this.message.getStringProperty(each));
+                    map.put(decodeDash(each), this.message.getStringProperty(each));
                 } catch (MessageFormatException e) {
                     // ignore
                 }
@@ -44,10 +46,18 @@ class JMSMessageAdapter implements TextMap {
     @Override
     public void put(String key, String value) {
         try {
-            this.message.setStringProperty(key,value);
+            this.message.setStringProperty(encodeDash(key),value);
         } catch (JMSException e) {
-            e.printStackTrace();
+            // ignore
         }
+    }
+
+    private String encodeDash(String key) {
+        return key.replace("-", DASH);
+    }
+
+    private String decodeDash(String key) {
+        return key.replace(DASH, "-");
     }
 
     private final Message message;

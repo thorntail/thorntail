@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl;
+package org.jboss.unimbus.opentracing.impl.mock;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;

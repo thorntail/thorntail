@@ -30,6 +30,7 @@
           </attributes>
           <doctype>book</doctype>
           <backend>html5</backend>
+          <sourceDocumentName>index.adoc</sourceDocumentName>
         </configuration>
         <executions>
           <execution>

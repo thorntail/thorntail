@@ -1,0 +1,44 @@
+[#component-opentracing-jaeger]
+= OpenTracing with Jaeger
+
+The OpenTracing component can detect the presence of Jaeger and enable its tracer.
+
+.Usage
+
+By setting `jaeger.endpoint` the HTTP sender will be used to send sampling information. 
+Otherwise, the UDP sender will be used and configured via `jaeger.agent.host` and `jaeger.agent.port`.
+
+.Configuration
+
+`jaeger.service-name`::
+Required service name for the application.
+
+`jaeger.sampler.type`::
+The sampler type.
+
+`jaeger.sampler.param`::
+The sampler parameter.
+
+`jaeger.sampler.manger.host-port`::
+The sampler remote manager host/port combination.
+
+`jaeger.agent.host`::
+The UDP agent host.
+
+`jaeger.agent.port`::
+The UDP agent port.
+
+`jaeger.endpoint`::
+The endpoint for the HTTP sender.
+
+.CDI Components
+
+`@Udp`::
+Qualifier for direct access to the Jaeger UDP `Sender`
+
+`@Http`::
+Qualifier for direct access to the Jaeger HTTP `Sender`
+
+.Related Information
+
+* https://jaeger.readthedocs.io/en/latest/[Jaeger Documentation]

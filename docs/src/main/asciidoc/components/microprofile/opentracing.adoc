@@ -36,3 +36,6 @@ An interface which application components may implement in order to assist in re
 .Related Information
 
 * https://github.com/opentracing-contrib/java-tracerresolver[OpenTracing TracerResolver]
+
+include::opentracing-jaeger.adoc[leveloffset=+1]
+

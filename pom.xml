@@ -20,9 +20,6 @@
     <version.hibernate>5.2.12.Final</version.hibernate>
     <version.ironjacamar>1.4.7.Final</version.ironjacamar>
     <version.keycloak>3.4.3.Final</version.keycloak>
-<!--
-    <version.resteasy>3.5.0.CR4</version.resteasy>
--->
     <version.resteasy>3.1.4.Final</version.resteasy>
     <version.undertow>1.4.21.Final</version.undertow>
     <version.activemq>2.4.0</version.activemq>
@@ -30,8 +27,12 @@
     <version.ejb-spec>1.0.1.Final</version.ejb-spec>
     <version.jaxrs-spec>1.0.1.Final</version.jaxrs-spec>
     <version.jandex>2.0.3.Final</version.jandex>
+
     <version.opentracing>0.30.0</version.opentracing>
     <version.opentracing-jaxrs>0.0.12</version.opentracing-jaxrs>
+    <version.opentracing-tracerresolver>0.1.4</version.opentracing-tracerresolver>
+    <version.jaeger>0.21.0</version.jaeger>
+
     <version.hystrix>1.5.12</version.hystrix>
     <version.hdrHistogram>2.1.9</version.hdrHistogram>
 
@@ -92,6 +93,11 @@
       </dependency>
 
       <dependency>
+        <groupId>com.uber.jaeger</groupId>
+        <artifactId>jaeger-core</artifactId>
+        <version>${version.jaeger}</version>
+      </dependency>
+      <dependency>
         <groupId>io.opentracing</groupId>
         <artifactId>opentracing-api</artifactId>
         <version>${version.opentracing}</version>
@@ -110,6 +116,16 @@
         <groupId>io.opentracing.contrib</groupId>
         <artifactId>opentracing-jaxrs2</artifactId>
         <version>${version.opentracing-jaxrs}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing</groupId>
+        <artifactId>opentracing-mock</artifactId>
+        <version>${version.opentracing}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-tracerresolver</artifactId>
+        <version>${version.opentracing-tracerresolver}</version>
       </dependency>
       <dependency>
         <groupId>io.undertow</groupId>
