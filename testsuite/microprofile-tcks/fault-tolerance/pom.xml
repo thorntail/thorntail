@@ -99,6 +99,11 @@
                      <name>java.util.logging.config.file</name>
                      <value>${project.build.testOutputDirectory}/logging.properties</value>
                   </property>
+                  <!-- Uncomment to debug arquillian test -->
+                  <!-- property>
+                     <name>swarm.debug.port</name>
+                     <value>8787</value>
+                  </property-->
                </systemProperties>
             </configuration>
          </plugin>
