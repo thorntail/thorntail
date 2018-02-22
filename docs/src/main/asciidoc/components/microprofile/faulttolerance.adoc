@@ -1,0 +1,14 @@
+[#component-faulttolerance]
+= Fault Tolerance
+
+The Fault Tolerance component supports the MicroProfile Fault Tolerance specification.
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-faulttolerance</artifactId>
+</dependency>
+----

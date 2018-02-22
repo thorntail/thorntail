@@ -20,5 +20,6 @@ public class UNimbusLoadableExtension implements LoadableExtension {
         extensionBuilder.override(ResourceProvider.class,
                                   URLResourceProvider.class,
                                   UNimbusURLResourceProvider.class);
+        extensionBuilder.observer(ContextLifecycleHandler.class);
     }
 }

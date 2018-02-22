@@ -48,6 +48,7 @@ include::components/javaee/jms-artemis.adoc[leveloffset=+2]
 ## MicroProfile
 
 include::components/microprofile/config.adoc[leveloffset=+2]
+include::components/microprofile/faulttolerance.adoc[leveloffset=+2]
 include::components/microprofile/health.adoc[leveloffset=+2]
 include::components/microprofile/metrics.adoc[leveloffset=+2]
 include::components/microprofile/opentracing.adoc[leveloffset=+2]

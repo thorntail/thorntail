@@ -14,6 +14,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.jboss.unimbus.UNimbus;
 import org.jboss.unimbus.test.arquillian.impl.util.ClassLoaderUtil;
+import org.jboss.weld.manager.api.WeldManager;
 
 /**
  * Created by bob on 1/25/18.
@@ -22,7 +23,11 @@ public class UNimbusDeployableContainer implements DeployableContainer<UNimbusCo
 
     @Inject
     @DeploymentScoped
-    InstanceProducer<BeanManager> beanManagerProducer;
+    private InstanceProducer<BeanManager> beanManagerProducer;
+
+    @Inject
+    @DeploymentScoped
+    private InstanceProducer<WeldManager> weldManagerProducer;
 
     @Override
     public Class<UNimbusContainerConfiguration> getConfigurationClass() {
@@ -53,6 +58,8 @@ public class UNimbusDeployableContainer implements DeployableContainer<UNimbusCo
             this.system = new UNimbus(cl);
             this.system.start();
             this.beanManagerProducer.set(this.system.getBeanManager());
+            this.weldManagerProducer.set((WeldManager) this.system.getBeanManager());
+
             return new ProtocolMetaData();
         } catch (Throwable t) {
             t.printStackTrace();
