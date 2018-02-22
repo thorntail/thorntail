@@ -12,6 +12,9 @@ import javax.interceptor.InvocationContext;
 import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import org.eclipse.microprofile.opentracing.Traced;
+import org.jboss.unimbus.cdi.AnnotationUtils;
+
+import static org.jboss.unimbus.cdi.AnnotationUtils.hasAnnotation;
 
 /**
  * @author Pavol Loffay
@@ -49,45 +52,11 @@ public class TracingInterceptor {
      * @return true if invoked method is jax-rs endpoint
      */
     protected boolean isJaxRs(Method method) {
-        for (Annotation annotation : method.getAnnotations()) {
-            if (isAnnotationOfType(annotation, JAXRS_PATH_ANNOTATION_NAME )) {
-                return true;
-            }
-        }
-
-        Class<?> cur = method.getDeclaringClass();
-
-        while (cur != null) {
-            for (Annotation annotation : cur.getAnnotations()) {
-                if (isAnnotationOfType(annotation, JAXRS_PATH_ANNOTATION_NAME)) {
-                    return true;
-                }
-            }
-
-            cur = cur.getSuperclass();
-        }
-
-        return false;
+        return hasAnnotation( method, JAXRS_PATH_ANNOTATION_NAME ) || hasAnnotation(method.getDeclaringClass(), JAXRS_PATH_ANNOTATION_NAME );
     }
 
     protected boolean isMessageDriven(Method method) {
-        Class<?> cur = method.getDeclaringClass();
-
-        while (cur != null) {
-            for (Annotation annotation : cur.getAnnotations()) {
-                if (isAnnotationOfType(annotation, EJB_MESSAGE_DRIVEN_NAME)) {
-                    return true;
-                }
-            }
-
-            cur = cur.getSuperclass();
-        }
-
-        return false;
-    }
-
-    protected boolean isAnnotationOfType(Annotation annotation, String type) {
-        return annotation.annotationType().getName().equals(type);
+        return hasAnnotation(method.getDeclaringClass(), EJB_MESSAGE_DRIVEN_NAME);
     }
 
     /**

@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl.jms;
+package org.jboss.unimbus.opentracing.impl.vertx;
 
 import javax.annotation.Priority;
 import javax.decorator.Decorator;
@@ -7,25 +7,25 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.interceptor.Interceptor;
-import javax.jms.Message;
-import javax.jms.MessageListener;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
+import io.vertx.core.eventbus.Message;
+import io.vertx.resourceadapter.inflow.VertxListener;
 import org.eclipse.microprofile.opentracing.Traced;
 import org.jboss.unimbus.cdi.AnnotationUtils;
 
 /**
- * Created by bob on 2/21/18.
+ * Created by bob on 2/22/18.
  */
 @Dependent
 @Decorator
 @Priority(Interceptor.Priority.LIBRARY_BEFORE)
-public class TracedMessageListener implements MessageListener {
+public class TracedVertxListener implements VertxListener {
 
     @Override
-    public void onMessage(Message message) {
+    public <T> void onMessage(Message<T> message) {
         if (AnnotationUtils.hasAnnotation(this.delegate, Traced.class)) {
             onMessageTraced(message);
         } else {
@@ -33,11 +33,12 @@ public class TracedMessageListener implements MessageListener {
         }
     }
 
-    protected void onMessageNotTraced(Message message) {
+    private <T> void onMessageNotTraced(Message<T> message) {
         this.delegate.onMessage(message);
     }
 
-    protected void onMessageTraced(Message message) {
+    private <T> void onMessageTraced(Message<T> message) {
+
         ActiveSpan span = null;
         try {
             SpanContext parent = TraceUtils.extract(message);
@@ -59,6 +60,5 @@ public class TracedMessageListener implements MessageListener {
     @Inject
     @Delegate
     @Any
-    MessageListener delegate;
-
+    VertxListener delegate;
 }
