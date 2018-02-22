@@ -14,7 +14,7 @@ import io.opentracing.ActiveSpan;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import org.eclipse.microprofile.opentracing.Traced;
-import org.jboss.unimbus.cdi.AnnotationUtils;
+import org.jboss.unimbus.util.AnnotationUtils;
 
 /**
  * Created by bob on 2/21/18.

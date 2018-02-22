@@ -1,6 +1,5 @@
 package org.jboss.unimbus.opentracing.impl;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import javax.annotation.Priority;
@@ -12,9 +11,8 @@ import javax.interceptor.InvocationContext;
 import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import org.eclipse.microprofile.opentracing.Traced;
-import org.jboss.unimbus.cdi.AnnotationUtils;
 
-import static org.jboss.unimbus.cdi.AnnotationUtils.hasAnnotation;
+import static org.jboss.unimbus.util.AnnotationUtils.hasAnnotation;
 
 /**
  * @author Pavol Loffay

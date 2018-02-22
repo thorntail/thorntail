@@ -16,6 +16,12 @@ The OpenTracing component supports the MicroProfile OpenTracing specification.
 .Usage
 
 This component uses the OpenTracing `TracerResolver` to locate an appropriately-configured `Tracer` instance.
+Additionally, applications may provide instances of `TracerProvider` which may also be used to discovered a fully-configured `Tracer` implementation.
+The discovered `Tracer` will be registered with the `GlobalTracer` which allows for easy access in arbitrary code.
+
+.Testing
+
+If the OpenTracing `MockResolver` is available on the classpath (usually through a `<scope>test</scope>` dependency), it is given the highest priority for resolution.
 
 .Configuration
 
@@ -23,6 +29,9 @@ This component uses the OpenTracing `TracerResolver` to locate an appropriately-
 
 `Tracer`::
 An injectable OpenTracing `Tracer`.
+
+`TracerProvider`::
+An interface which application components may implement in order to assist in resolving the current `Tracer` implementation.
 
 .Related Information
 

@@ -14,7 +14,7 @@ import io.opentracing.Tracer;
 import io.vertx.core.eventbus.Message;
 import io.vertx.resourceadapter.inflow.VertxListener;
 import org.eclipse.microprofile.opentracing.Traced;
-import org.jboss.unimbus.cdi.AnnotationUtils;
+import org.jboss.unimbus.util.AnnotationUtils;
 
 /**
  * Created by bob on 2/22/18.

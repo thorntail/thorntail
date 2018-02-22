@@ -6,11 +6,12 @@ import java.util.List;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Unmanaged;
 import javax.inject.Inject;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
+import org.jboss.unimbus.ActiveInstance;
+import org.jboss.unimbus.UNimbus;
 import org.jboss.unimbus.opentracing.TracerProvider;
 
 import static java.lang.Math.abs;
@@ -22,17 +23,18 @@ public class Resolver extends TracerResolver {
 
     @Override
     protected Tracer resolve() {
-        Unmanaged.UnmanagedInstance<Resolver> instance = new Unmanaged<>(Resolver.class).newInstance();
-        instance.produce().postConstruct().inject();
-
+        /*
+        ActiveInstance<Resolver> instance = UNimbus.current().activate(this);
         try {
             return instance.get().doResolve();
         } finally {
-            instance.preDestroy().dispose();
+            instance.release();
         }
+        */
+        return UNimbus.current().withActivated(this, (resolver) -> resolver.doResolve());
     }
 
-    protected Tracer doResolve() {
+    private Tracer doResolve() {
         for (TracerProvider provider : providers()) {
             Tracer tracer = provider.get();
             if (tracer != null) {

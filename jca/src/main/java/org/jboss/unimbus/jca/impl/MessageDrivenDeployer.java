@@ -74,7 +74,7 @@ public class MessageDrivenDeployer {
     }
 
     MessageEndpointFactory factory(Class<?> driven, Class<?> listenerInterface) {
-        return new EndpointFactory(this.system.getContainerId(), driven, listenerInterface);
+        return new EndpointFactory(this.system, driven, listenerInterface);
     }
 
 

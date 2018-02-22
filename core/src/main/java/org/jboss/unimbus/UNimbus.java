@@ -17,6 +17,8 @@ package org.jboss.unimbus;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -49,6 +51,12 @@ import static org.jboss.unimbus.impl.CoreMessages.MESSAGES;
  */
 public class UNimbus {
 
+    private static UNimbus INSTANCE;
+
+    public static UNimbus current() {
+        return INSTANCE;
+    }
+
     /**
      * Create an instance without arguments and start it.
      */
@@ -78,6 +86,7 @@ public class UNimbus {
      * Construct a container without configuration.
      */
     public UNimbus() {
+        INSTANCE = this;
     }
 
     /**
@@ -89,6 +98,7 @@ public class UNimbus {
             this.classLoader = this.configClass.getClassLoader();
             this.serviceRegistryClassLoader.setDelegate(this.classLoader);
         }
+        INSTANCE = this;
     }
 
     /**
@@ -99,6 +109,7 @@ public class UNimbus {
     public UNimbus(ClassLoader classLoader) {
         this.classLoader = classLoader;
         this.serviceRegistryClassLoader.setDelegate(classLoader);
+        INSTANCE = this;
     }
 
     /**
@@ -261,8 +272,47 @@ public class UNimbus {
         return this.serviceRegistryClassLoader;
     }
 
-    public String getContainerId() {
-        return this.container.getId();
+    /** Create an injected/decorated/intercepted instance of a given type.
+     *
+     * @param type The type of object to create.
+     * @param <T> The type of object to create.
+     * @return The newly created, injected, decorated, intercepted object.
+     */
+    public <T> ActiveInstance<T> instance(Class<T> type) {
+        return new ActiveInstance<T>(this.container.getId(), type, null);
+    }
+
+    /** Activate an already-constructed instance of an object.
+     *
+     * <p>Will inject, decorate and intercept as required.</p>
+     *
+     * <p>May throw a runtime exception if the object can not be proxied due to final methods.</p>
+     *
+     * @param object the object to activate.
+     * @param <T> The type of object.
+     * @return The activated object, probably a proxy.
+     */
+    public <T> ActiveInstance<T> activate(T object) {
+        return new ActiveInstance<T>(this.container.getId(), object);
+    }
+
+    /** Execute code with an activated variant of an object.
+     *
+     * @param object The object to activate.
+     * @param function The code to execute.
+     * @param <T> The type of the object.
+     * @param <R> The return type of the function.
+     * @return The value returned from the function.
+     *
+     * @see #activate(Object)
+     */
+    public <T,R> R withActivated(T object, Function<T,R> function) {
+        ActiveInstance<T> instance = activate(object);
+        try {
+            return function.apply(instance.get());
+        } finally {
+            instance.release();
+        }
     }
 
     private ClassLoader classLoader = UNimbus.class.getClassLoader();

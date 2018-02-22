@@ -606,7 +606,7 @@
         <inherited>false</inherited>
         <configuration>
           <failOnError>false</failOnError>
-          <excludePackageNames>*.impl,*.impl.*,*.ext,*.ext.*,*.testsuite.*,*.logging.jdk.*</excludePackageNames>
+          <excludePackageNames>*.tck.*,*.impl,*.impl.*,*.ext,*.ext.*,*.testsuite.*,*.logging.jdk.*</excludePackageNames>
           <doclint>none</doclint>
           <outputDirectory>target/apidocs</outputDirectory>
           <reportOutputDirectory>target/apidocs</reportOutputDirectory>

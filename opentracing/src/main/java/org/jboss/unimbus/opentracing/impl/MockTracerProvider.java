@@ -14,7 +14,7 @@ import org.jboss.unimbus.opentracing.TracerProvider;
  */
 @ApplicationScoped
 @RequiredClassPresent("io.opentracing.mock.MockTracer")
-@Priority(Integer.MIN_VALUE)
+@Priority(0)
 public class MockTracerProvider implements TracerProvider {
 
     @Override
