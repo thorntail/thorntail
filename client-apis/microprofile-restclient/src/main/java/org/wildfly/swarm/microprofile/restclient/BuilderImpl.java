@@ -109,11 +109,12 @@ class BuilderImpl implements RestClientBuilder {
 
         final T actualClient;
 
-        if (System.getProperty("http.proxyHost") != null
-                && !noProxyHosts.contains(this.baseURI.getHost())) {
+        final String proxyHost = System.getProperty("http.proxyHost");
+
+        if (proxyHost != null && !noProxyHosts.contains(this.baseURI.getHost())) {
             // Use proxy, if defined
             actualClient = this.builderDelegate.defaultProxy(
-                    System.getProperty("http.proxyHost"),
+                    proxyHost,
                     Integer.parseInt(System.getProperty("http.proxyPort", "80")))
                     .build()
                     .target(this.baseURI)
