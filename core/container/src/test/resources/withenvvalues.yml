@@ -1,0 +1,4 @@
+foo:
+  on:
+    startup: "${env.BOOL}"
+    somestring: "${env.URL:http://someurl}"
