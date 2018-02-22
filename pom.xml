@@ -1053,6 +1053,7 @@
 
     <module>standalone-servers</module>
     <module>standalone-servers/full</module>
+    <module>standalone-servers/microprofile</module>
     <module>standalone-servers/web</module>
   </modules>
 
@@ -1151,7 +1152,6 @@
 
         <module>standalone-servers/keycloak</module>
         <module>standalone-servers/management-console</module>
-        <module>standalone-servers/microprofile</module>
         <module>standalone-servers/swagger-ui</module>
 
         <module>boms</module>
