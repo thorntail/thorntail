@@ -122,7 +122,11 @@ public class HystrixCommandInterceptor {
             if (nonFallBackEnable && syncCircuitBreakerEnabled && metadata.hasCircuitBreaker()) {
                 syncCircuitBreaker = getSynchronousCircuitBreaker(metadata.commandKey, metadata.operation.getCircuitBreaker());
             }
-            DefaultCommand command = new DefaultCommand(metadata.setter, ctx, metadata.getFallback(ctx), retryContext, metadata.hasCircuitBreaker());
+            Supplier<Object> fallback = null;
+            if (retryContext == null || retryContext.isLastAttempt()) {
+                fallback = metadata.getFallback(ctx);
+            }
+            DefaultCommand command = new DefaultCommand(metadata.setter, ctx, fallback);
 
             try {
                 if (metadata.operation.isAsync()) {
@@ -166,15 +170,19 @@ public class HystrixCommandInterceptor {
                         throw bulkheadException;
                     case COMMAND_EXCEPTION:
                         if (retryContext != null && retryContext.shouldRetry()) {
-                            shouldRunCommand = shouldRetry(retryContext, e);
+                            shouldRunCommand = shouldRetry(retryContext, getCause(e));
                             continue;
                         }
                     default:
-                        throw (e.getCause() instanceof Exception) ? (Exception) e.getCause() : e;
+                        throw getCause(e);
                 }
             }
         }
         return res;
+    }
+
+    private Exception getCause(HystrixRuntimeException e) {
+        return (e.getCause() instanceof Exception) ? (Exception) e.getCause() : e;
     }
 
     private SynchronousCircuitBreaker getSynchronousCircuitBreaker(HystrixCommandKey commandKey, CircuitBreakerConfig config) {
@@ -195,7 +203,8 @@ public class HystrixCommandInterceptor {
     private Setter initSetter(HystrixCommandKey commandKey, Method method, FaultToleranceOperation operation) {
         HystrixCommandProperties.Setter propertiesSetter = HystrixCommandProperties.Setter();
 
-        if (operation.isAsync()) {
+        // Async and timeout operations use THREAD isolation strategy
+        if (operation.isAsync() || operation.hasTimeout()) {
             propertiesSetter.withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.THREAD);
         } else {
             propertiesSetter.withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE);
@@ -208,6 +217,7 @@ public class HystrixCommandInterceptor {
                 value = Long.valueOf(Integer.MAX_VALUE);
             }
             propertiesSetter.withExecutionTimeoutInMilliseconds(value.intValue());
+            propertiesSetter.withExecutionIsolationThreadInterruptOnTimeout(true);
         } else {
             propertiesSetter.withExecutionTimeoutEnabled(false);
         }
@@ -228,19 +238,23 @@ public class HystrixCommandInterceptor {
                 .andCommandKey(commandKey).andCommandPropertiesDefaults(propertiesSetter);
 
         if (nonFallBackEnable && operation.hasBulkhead()) {
-            // TODO: these options need further review
             BulkheadConfig bulkhead = operation.getBulkhead();
-            propertiesSetter.withExecutionIsolationSemaphoreMaxConcurrentRequests(bulkhead.get(BulkheadConfig.VALUE));
-            propertiesSetter.withExecutionIsolationThreadInterruptOnFutureCancel(true);
-            // Each bulkhead policy needs a dedicated thread pool
-            setter.andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey(commandKey.name()));
-            HystrixThreadPoolProperties.Setter threadPoolSetter = HystrixThreadPoolProperties.Setter();
-            threadPoolSetter.withAllowMaximumSizeToDivergeFromCoreSize(true);
-            threadPoolSetter.withCoreSize(bulkhead.get(BulkheadConfig.VALUE));
-            threadPoolSetter.withMaximumSize(bulkhead.get(BulkheadConfig.VALUE));
-            threadPoolSetter.withMaxQueueSize(bulkhead.get(BulkheadConfig.WAITING_TASK_QUEUE));
-            threadPoolSetter.withQueueSizeRejectionThreshold(bulkhead.get(BulkheadConfig.WAITING_TASK_QUEUE));
-            setter.andThreadPoolPropertiesDefaults(threadPoolSetter);
+            if (operation.isAsync()) {
+                // Each bulkhead policy needs a dedicated thread pool
+                setter.andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey(commandKey.name()));
+                HystrixThreadPoolProperties.Setter threadPoolSetter = HystrixThreadPoolProperties.Setter();
+                threadPoolSetter.withAllowMaximumSizeToDivergeFromCoreSize(true);
+                threadPoolSetter.withCoreSize(bulkhead.get(BulkheadConfig.VALUE));
+                threadPoolSetter.withMaximumSize(bulkhead.get(BulkheadConfig.VALUE));
+                threadPoolSetter.withMaxQueueSize(bulkhead.get(BulkheadConfig.WAITING_TASK_QUEUE));
+                threadPoolSetter.withQueueSizeRejectionThreshold(bulkhead.get(BulkheadConfig.WAITING_TASK_QUEUE));
+                setter.andThreadPoolPropertiesDefaults(threadPoolSetter);
+            } else {
+                // If used without @Asynchronous, the semaphore isolation approach must be used
+                propertiesSetter.withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE);
+                propertiesSetter.withExecutionIsolationSemaphoreMaxConcurrentRequests(bulkhead.get(BulkheadConfig.VALUE));
+                propertiesSetter.withExecutionIsolationThreadInterruptOnFutureCancel(true);
+            }
         }
         return setter;
     }
