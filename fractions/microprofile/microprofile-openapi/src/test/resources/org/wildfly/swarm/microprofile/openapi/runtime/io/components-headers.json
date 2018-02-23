@@ -1,0 +1,22 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "headers": {
+      "Header1": {
+        "description": "The number of allowed requests in the current period",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "Header2": {
+        "description": "The number of allowed requests in the current period",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "RefHeader": {
+        "$ref": "#/other/Ref"
+      }
+    }
+  }
+}

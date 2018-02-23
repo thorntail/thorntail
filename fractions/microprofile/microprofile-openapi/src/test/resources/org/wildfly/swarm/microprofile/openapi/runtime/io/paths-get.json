@@ -1,0 +1,20 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/foo": {
+      "summary": "Foo Resource",
+      "description": "CRUD for Foos.",
+      "get": {
+        "tags": [ "tag1", "tag2" ],
+        "summary": "List Pets",
+        "description": "Returns all pets from the system that the user has access to",
+        "externalDocs": {
+          "description": "Find more info here",
+          "url": "https://example.com"
+        },
+        "operationId": "listPets",
+        "deprecated": false
+      }
+    }
+  }
+}

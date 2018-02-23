@@ -1,0 +1,14 @@
+{
+  "components" : {
+    "schemas" : {
+      "org.wildfly.swarm.microprofile.openapi.runtime.entity.BuzzLinkedList" : {
+        "properties" : {
+          "next" : {
+            "description" : "Cyclic reference to org.wildfly.swarm.microprofile.openapi.runtime.entity.BuzzLinkedList",
+            "type" : "object"
+          }
+        }
+      }
+    }
+  }
+}

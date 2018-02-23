@@ -6,9 +6,6 @@ import javax.ws.rs.Produces;
 
 import org.joda.time.DateTime;
 
-/**
- * @author Ken Finnigan
- */
 @Path("/")
 public class MyResource {
 

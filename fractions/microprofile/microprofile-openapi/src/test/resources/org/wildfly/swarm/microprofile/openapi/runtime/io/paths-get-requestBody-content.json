@@ -1,0 +1,51 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/foo": {
+      "get": {
+        "requestBody": {
+          "content": {
+            "multipart/mixed": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "address": {
+                    "type": "object"
+                  },
+                  "historyMetadata": {
+                    "description": "metadata in XML format",
+                    "type": "object"
+                  },
+                  "profileImage": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "historyMetadata": {
+                  "contentType": "application/xml; charset=utf-8"
+                },
+                "profileImage": {
+                  "contentType": "image/png, image/jpeg",
+                  "headers": {
+                    "X-Rate-Limit-Limit": {
+                      "description": "The number of allowed requests in the current period",
+                      "schema": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

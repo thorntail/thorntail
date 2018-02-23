@@ -1,0 +1,35 @@
+{
+  "components" : {
+    "schemas" : {
+      "org.wildfly.swarm.microprofile.openapi.runtime.entity.SpecialCaseTestContainer" : {
+        "type" : "array",
+        "items" : {
+          "required" : [ "cardNumber", "cardholderName", "cvv", "expiryDate", "issuer" ],
+          "type" : "object",
+          "properties" : {
+            "cardNumber" : {
+              "type" : "string",
+              "example" : "**********1234"
+            },
+            "cardholderName" : {
+              "type" : "string",
+              "example" : "Joe Smith"
+            },
+            "cvv" : {
+              "type" : "string",
+              "example" : "0322"
+            },
+            "expiryDate" : {
+              "type" : "string",
+              "example" : "04/19"
+            },
+            "issuer" : {
+              "type" : "string",
+              "example" : "VISA"
+            }
+          }
+        }
+      }
+    }
+  }
+}

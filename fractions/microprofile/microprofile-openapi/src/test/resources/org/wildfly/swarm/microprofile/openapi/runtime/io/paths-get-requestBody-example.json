@@ -1,0 +1,37 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/foo": {
+      "get": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "user" : {
+                  "summary": "User Example",
+                  "description": "User example description.",
+                  "externalValue": "http://foo.bar/examples/user-example.json"
+                }
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "user" : {
+                  "summary": "User example in XML",
+                  "description": "User example description (in XML).",
+                  "externalValue": "http://foo.bar/examples/user-example.xml"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "x-vendor-property-1": "FOO",
+    "x-vendor-property-2": "bar",
+    "x-vendor-property-3": {
+      "sub-property-2": "beta"
+    }
+  }
+}
