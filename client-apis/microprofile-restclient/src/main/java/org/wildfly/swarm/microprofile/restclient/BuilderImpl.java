@@ -22,8 +22,10 @@ import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -102,13 +104,34 @@ class BuilderImpl implements RestClientBuilder {
 
         ClassLoader classLoader = aClass.getClassLoader();
 
-        final T actualClient = this.builderDelegate.build()
-                .target(this.baseURI)
-                .proxyBuilder(aClass)
-                .classloader(classLoader)
-                .defaultConsumes(MediaType.TEXT_PLAIN)
-                .defaultProduces(MediaType.TEXT_PLAIN)
-                .build();
+        List<String> noProxyHosts = Arrays.asList(
+                System.getProperty("http.nonProxyHosts", "localhost|127.*|[::1]").split("|"));
+
+        final T actualClient;
+
+        final String proxyHost = System.getProperty("http.proxyHost");
+
+        if (proxyHost != null && !noProxyHosts.contains(this.baseURI.getHost())) {
+            // Use proxy, if defined
+            actualClient = this.builderDelegate.defaultProxy(
+                    proxyHost,
+                    Integer.parseInt(System.getProperty("http.proxyPort", "80")))
+                    .build()
+                    .target(this.baseURI)
+                    .proxyBuilder(aClass)
+                    .classloader(classLoader)
+                    .defaultConsumes(MediaType.TEXT_PLAIN)
+                    .defaultProduces(MediaType.TEXT_PLAIN)
+                    .build();
+        } else {
+            actualClient = this.builderDelegate.build()
+                    .target(this.baseURI)
+                    .proxyBuilder(aClass)
+                    .classloader(classLoader)
+                    .defaultConsumes(MediaType.TEXT_PLAIN)
+                    .defaultProduces(MediaType.TEXT_PLAIN)
+                    .build();
+        }
 
         return (T) Proxy.newProxyInstance(
                 classLoader,
