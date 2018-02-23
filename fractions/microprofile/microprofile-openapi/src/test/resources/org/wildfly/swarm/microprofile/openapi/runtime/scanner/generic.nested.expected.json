@@ -1,0 +1,29 @@
+{
+  "components" : {
+    "schemas" : {
+      "org.wildfly.swarm.microprofile.openapi.runtime.entity.GenericTypeTestContainer" : {
+        "required" : [ "bar", "foo" ],
+        "properties" : {
+          "bar" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "foo" : {
+            "maxLength" : 123456,
+            "required" : [ "bar", "foo" ],
+            "type" : "object",
+            "properties" : {
+              "bar" : {
+                "type" : "string"
+              },
+              "foo" : {
+                "maxLength" : 123456,
+                "type" : "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

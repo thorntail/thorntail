@@ -15,18 +15,24 @@
  */
 package org.wildfly.swarm.microprofile.openapi.runtime.entity;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @SuppressWarnings("unused")
-public class KustomPair<A, B> {
+public class GenericFieldTestContainer<K, V> {
+    // Plain field K
+    V genericFieldK;
 
-    @Schema(required = true, maxLength = 123456)
-    private A foo;
+    // Collection of V with wildcard
+    ArrayList<? extends V> arrayListOfV;
 
-    @Schema(required = true)
-    private B bar;
+    // Simple K to V map
+    Map<K, V> mapOfKV;
+
+    // Map K to Foo
+    LinkedHashMap<K, Foo> mapOfKToFoo;
 }
-

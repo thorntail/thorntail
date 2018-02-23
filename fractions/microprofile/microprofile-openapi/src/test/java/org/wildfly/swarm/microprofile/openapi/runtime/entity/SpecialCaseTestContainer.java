@@ -15,18 +15,29 @@
  */
 package org.wildfly.swarm.microprofile.openapi.runtime.entity;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.apps.airlines.model.CreditCard;
+import org.eclipse.microprofile.openapi.apps.airlines.model.Flight;
+
+import java.util.List;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @SuppressWarnings("unused")
-public class KustomPair<A, B> {
+public class SpecialCaseTestContainer {
 
-    @Schema(required = true, maxLength = 123456)
-    private A foo;
+    // Collection with concrete generic type.
+    List<String> listOfString;
 
-    @Schema(required = true)
-    private B bar;
+    // List of indexed object. NB: Do we remember to read this?
+    List<CreditCard> ccList;
+
+    // Wildcard with super bound
+    List<? super Flight> listSuperFlight;
+
+    // Wildcard with extends bound
+    List<? extends Foo> listExtendsFoo;
+
+    // Wildcard with no bound
+    List<?> listOfAnything;
 }
-
