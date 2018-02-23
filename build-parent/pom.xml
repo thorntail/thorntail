@@ -633,6 +633,12 @@
             <version>${version.resteasy}</version>
           </dependency>
 
+          <dependency>
+            <groupId>org.eclipse.microprofile.openapi</groupId>
+            <artifactId>microprofile-openapi-api</artifactId>
+            <version>${version.microprofile-openapi}</version>
+          </dependency>
+
           <!-- Swagger -->
           <dependency>
             <groupId>io.swagger</groupId>
@@ -705,14 +711,13 @@
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-api</artifactId>
             <version>${version.microprofile-jwt-auth}</version>
-         </dependency>
+          </dependency>
 
-         <dependency>
-           <groupId>org.eclipse.microprofile.openapi</groupId>
-           <artifactId>microprofile-openapi-api</artifactId>
-           <version>${version.microprofile-openapi}</version>
-         </dependency>
-
+          <dependency>
+            <groupId>org.eclipse.microprofile.openapi</groupId>
+            <artifactId>microprofile-openapi-api</artifactId>
+            <version>${version.microprofile-openapi}</version>
+          </dependency>
         </dependencies>
       </dependencyManagement>
 
