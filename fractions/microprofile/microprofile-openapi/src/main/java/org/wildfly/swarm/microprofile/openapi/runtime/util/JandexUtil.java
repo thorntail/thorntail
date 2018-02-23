@@ -453,16 +453,6 @@ public class JandexUtil {
     }
 
     /**
-     * Holds relevant information about a jax-rs method parameter.  Specifically its name
-     * and type (path, query, cookie, etc).
-     * @author eric.wittmann@gmail.com
-     */
-    public static class JaxRsParameterInfo {
-        public String name;
-        public Parameter.In in;
-    }
-
-    /**
      * Returns true if the given @Schema annotation is a simple class schema.  This means that
      * the annotation only has one field defined, and that field is "implementation".
      * @param annotation
@@ -487,6 +477,16 @@ public class JandexUtil {
                 JandexUtil.enumValue(annotation, OpenApiConstants.PROP_TYPE, org.eclipse.microprofile.openapi.models.media.Schema.SchemaType.class);
         String implementation = JandexUtil.stringValue(annotation, OpenApiConstants.PROP_IMPLEMENTATION);
         return (type == org.eclipse.microprofile.openapi.models.media.Schema.SchemaType.ARRAY && implementation != null);
+    }
+
+    /**
+     * Holds relevant information about a jax-rs method parameter.  Specifically its name
+     * and type (path, query, cookie, etc).
+     * @author eric.wittmann@gmail.com
+     */
+    public static class JaxRsParameterInfo {
+        public String name;
+        public Parameter.In in;
     }
 
 }

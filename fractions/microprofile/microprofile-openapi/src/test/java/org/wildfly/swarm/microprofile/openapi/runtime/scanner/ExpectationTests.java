@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.microprofile.openapi.runtime.scanner;
 
+import static org.jboss.jandex.DotName.createSimple;
+
+import java.io.IOException;
+
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.jboss.jandex.ClassType;
 import org.jboss.jandex.DotName;
@@ -26,10 +30,6 @@ import org.wildfly.swarm.microprofile.openapi.runtime.entity.Bar;
 import org.wildfly.swarm.microprofile.openapi.runtime.entity.BuzzLinkedList;
 import org.wildfly.swarm.microprofile.openapi.runtime.entity.EnumContainer;
 import org.wildfly.swarm.microprofile.openapi.runtime.entity.GenericTypeTestContainer;
-
-import java.io.IOException;
-
-import static org.jboss.jandex.DotName.createSimple;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
