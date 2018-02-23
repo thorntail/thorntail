@@ -238,8 +238,8 @@ public final class OpenApiConstants {
 
     public static final DotName DOTNAME_RESPONSE = DotName.createSimple(Response.class.getName());
 
-    public static final String[] DEFAULT_CONSUMES = new String[] { MIME_ANY };
-    public static final String[] DEFAULT_PRODUCES = new String[] { MIME_ANY };
+    public static final String[] DEFAULT_CONSUMES = new String[] {MIME_ANY};
+    public static final String[] DEFAULT_PRODUCES = new String[] {MIME_ANY};
 
     public static final String REF_PREFIX_API_RESPONSE = "#/components/responses/";
     public static final String REF_PREFIX_CALLBACK = "#/components/callbacks/";
