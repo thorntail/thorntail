@@ -31,6 +31,7 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -67,6 +68,12 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     @Parameter(alias = "mainClass", property = "swarm.mainClass")
     protected String mainClass;
 
+    /**
+     * Flag to skip all executions
+     */
+    @Parameter(alias = "skipAll", defaultValue = "false", property = "swarm.skipAll")
+    protected boolean skipAll;
+
     @Parameter(alias = "properties")
     protected Properties properties;
 
@@ -100,12 +107,24 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         }
     }
 
+    @Override
+    public final void execute() throws MojoExecutionException, MojoFailureException {
+        deprecationWarnings();
+        if (this.skipAll) {
+            getLog().info("Skipping wildfly-swarm-plugin execution");
+            return;
+        }
+        executeSpecific();
+    }
+
+    public abstract void executeSpecific() throws MojoExecutionException, MojoFailureException;
+
     protected void deprecationWarnings() {
         if (mainClass != null && !mainClass.equals("")) {
             getLog().warn(
                     "\n------\n" +
                     "Custom main() usage is intended to be deprecated in a future release and is no longer supported, \n" +
-                            "please refer to http://reference.wildfly-swarm.io for YAML configuration that replaces it." +
+                            "please refer to http://docs.wildfly-swarm.io for YAML configuration that replaces it." +
                     "\n------"
             );
         }

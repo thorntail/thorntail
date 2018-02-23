@@ -267,7 +267,8 @@ public class MavenPluginTest {
             assertThat(log).contains("Custom main() usage is intended to be deprecated in a future release");
             // 1st warning for wildfly-swarm:package
             // 2nd warning possibly for wildfly-swarm:start for tests
-            assertThat(count).as("There should only be 1 or 2 warnings").isIn(1, 2);
+            // 3rd warning possibly for wildfly-swarm:stop for tests
+            assertThat(count).as("There should only be 1 to 3 warnings").isIn(1, 2, 3);
         } else {
             assertThat(log).doesNotContain("[WARNING]");
         }

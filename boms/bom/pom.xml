@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>boms</artifactId>
-    <version>2018.2.0-SNAPSHOT</version>
+    <version>2018.3.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -90,9 +90,15 @@
                            <analyzeRuntimeDependencies>true</analyzeRuntimeDependencies>
                            <!-- Use custom settings to point to the local maven repo cache -->
                            <userSettings>${project.parent.build.directory}/custom-settings.xml</userSettings>
+                           <additionalBom>org.wildfly.swarm:bom-certified:pom:${project.version}</additionalBom>
                            <excludes>
-                              <exclude>org/codehaus/plexus/plexus/1.0.4/.*</exclude>
+                             <exclude>org/codehaus/plexus/plexus/1.0.4/.*</exclude>
                            </excludes>
+                           <skipBomDependencies>
+                             <param>dependency-bom</param>
+                             <param>shrinkwrap</param>
+                             <param>fraction-metadata</param>
+                           </skipBomDependencies>
                         </configuration>
                      </execution>
                   </executions>

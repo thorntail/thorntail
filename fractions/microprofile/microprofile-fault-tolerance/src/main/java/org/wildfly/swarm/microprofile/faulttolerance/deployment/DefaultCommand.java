@@ -20,7 +20,6 @@ import java.util.function.Supplier;
 
 import com.netflix.hystrix.HystrixCommand;
 
-
 /**
  * @author Antoine Sabot-Durand
  */
@@ -31,60 +30,15 @@ public class DefaultCommand extends HystrixCommand<Object> {
      * @param setter
      * @param ctx
      * @param fallback
-     * @param retryContext
-     * @param hasCircuitBreaker
      */
-    protected DefaultCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback, RetryContext retryContext, boolean hasCircuitBreaker) {
+    protected DefaultCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback) {
         super(setter);
         this.ctx = ctx;
         this.fallback = fallback;
-        this.retryContext = retryContext;
-        this.hasCircuitBreaker = hasCircuitBreaker;
     }
 
     @Override
     protected Object run() throws Exception {
-        Object res;
-        if (hasCircuitBreaker) {
-            res = basicRun();
-        } else {
-            res = runWithRetry();
-        }
-        return res;
-    }
-
-    /**
-     * Run and handle the @Retry logic in the execution loop. This only works when a @CircuitBreaker configuraiton
-     * does not exist.
-     * @return the run result
-     * @throws Exception on execution failure
-     */
-    protected Object runWithRetry() throws Exception {
-        Object res = null;
-        boolean notExecuted = true;
-        if (retryContext == null) {
-            res = basicRun();
-        } else {
-            while (notExecuted && retryContext.shouldRetry()) {
-                retryContext.doRetry();
-                try {
-                    res = basicRun();
-                    notExecuted = false;
-                } catch (Exception e) {
-                    if (retryContext.shouldRetryOn(e, System.nanoTime())) {
-                        retryContext.delayIfNeeded();
-                        continue;
-                    } else {
-                        throw e;
-                    }
-                }
-            }
-        }
-
-        return res;
-    }
-
-    private Object basicRun() throws Exception {
         return ctx.proceed();
     }
 
@@ -99,9 +53,5 @@ public class DefaultCommand extends HystrixCommand<Object> {
     private final Supplier<Object> fallback;
 
     private final ExecutionContextWithInvocationContext ctx;
-
-    private final RetryContext retryContext;
-
-    private final boolean hasCircuitBreaker;
 
 }

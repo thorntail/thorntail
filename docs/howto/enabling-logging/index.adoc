@@ -1,0 +1,35 @@
+
+[#enabling-logging_{context}]
+= Enabling logging
+
+Each WildFly Swarm fraction is dependent on the Logging fraction, which means that if you use any WildFly Swarm fraction in your application, logging is automatically enabled on the `INFO` level and higher.
+If you want to enable logging explicitly, add the Logging fraction to the POM file of your application.
+
+.Prerequisites
+
+* A Maven-based application
+
+.Procedure
+
+. Find the `<dependencies>` section in the `pom.xml` file of your application.
+Verify it contains the following coordinates. If it does not, add them.
++
+[source,xml]
+----
+<dependency>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>logging</artifactId>
+</dependency>
+----
+
+. If you want to log messages of a level other than `INFO`, launch the application while specifying the `swarm.logging` system property:
++
+--
+[source,bash]
+----
+$ mvn swarm:run -Dswarm.logging=FINE
+----
+
+See the link:https://wildfly-swarm.github.io/wildfly-swarm-javadocs/{version}/apidocs/org/wildfly/swarm/config/logging/Level.html[`org.wildfly.swarm.config.logging.Level`] class for the list of available levels.
+--
+

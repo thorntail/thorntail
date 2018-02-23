@@ -26,7 +26,7 @@
    <parent>
       <groupId>org.wildfly.swarm.testsuite</groupId>
       <artifactId>wildlfy-swarm-microprofile-tck-parent</artifactId>
-      <version>2018.2.0-SNAPSHOT</version>
+      <version>2018.3.0-SNAPSHOT</version>
    </parent>
 
    <artifactId>wildlfy-swarm-microprofile-tck-fault-tolerance</artifactId>
@@ -99,6 +99,11 @@
                      <name>java.util.logging.config.file</name>
                      <value>${project.build.testOutputDirectory}/logging.properties</value>
                   </property>
+                  <!-- Uncomment to debug arquillian test -->
+                  <!-- property>
+                     <name>swarm.debug.port</name>
+                     <value>8787</value>
+                  </property-->
                </systemProperties>
             </configuration>
          </plugin>

@@ -42,16 +42,20 @@ class RetryContext {
         this.delay = Duration.of(config.get(RetryConfig.DELAY), config.get(RetryConfig.DELAY_UNIT)).toMillis();
     }
 
-    public RetryConfig getConfig() {
+    RetryConfig getConfig() {
         return config;
     }
 
-    public void doRetry() {
+    void doRetry() {
         remainingAttempts.decrementAndGet();
     }
 
-    public boolean shouldRetry() {
+    boolean shouldRetry() {
         return remainingAttempts.get() > 0;
+    }
+
+    boolean isLastAttempt() {
+        return remainingAttempts.get() == 1;
     }
 
     boolean shouldRetryOn(Exception exception, long time) {

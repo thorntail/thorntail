@@ -24,13 +24,18 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanAttributes;
 
+/**
+ * An implementation of BeanAttributes<Object> that wraps the generic producer BeanAttributes
+ * to allow the MPJWTExtension to collect the types of all corresponding injection sites
+ *
+ */
 public class ClaimProviderBeanAttributes implements BeanAttributes<Object> {
     /**
      * Decorate the ConfigPropertyProducer BeanAttributes to set the types the producer applies to. This set is collected
      * from all injection points annotated with @ConfigProperty.
      *
      * @param delegate - the original producer method BeanAttributes
-     * @param types    - the full set of @ConfigProperty injection point types
+     * @param types    - the full set of @Claim injection point types
      */
     public ClaimProviderBeanAttributes(BeanAttributes<Object> delegate, Set<Type> types, Set<Annotation> qualifiers) {
         this.delegate = delegate;

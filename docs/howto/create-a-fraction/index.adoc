@@ -165,12 +165,12 @@ Within the `runtime` sub-package of the fraction, a variety of CDI-enabled
 components may be used.  Within these classes, you can use typical CDI mechanisms
 such as `@Inject`, `@Produces`, and `Instance<>` in order to accomplish whatever
 is required for your fraction.  Typically these components would, at the minimum,
-inject their own fraction. They should each be marked as `@ApplicationScoped`.
+inject their own fraction.
 
 [source,java]
 ----
 @ApplicationScoped
-public class MyComponents implements Whatever {
+public class MyComponent implements Whatever {
 
   @Inject
   private MyFraction myFraction;
@@ -178,41 +178,27 @@ public class MyComponents implements Whatever {
 }
 ----
 
-#### `ArchivePreparer`
+#### `DeploymentProcessor`
 
-If your fraction needs an opportunity to alter or otherwise prepare all deployed
-archives, you may implement the `org.wildfly.swarm.spi.api.ArchivePreparer` interface.
+If your fraction needs an opportunity to process the deployment, e.g. to alter or otherwise prepare the deployed archive or to process Jandex metadata of the deployed
+archive, you may implement the `org.wildfly.swarm.spi.api.DeploymentProcessor` interface. The implementation class should be marked as `@DeploymentScoped`.
 
 [source,java]
 ----
-@ApplicationScoped
-public class MyArchivePreparer implements ArchivePreparer {
+@DeploymentScoped
+public class MyDeploymentProcessor implements DeploymentProcessor {
 
   @Inject
   private MyFraction myFraction;
 
-  public void prepareArchive(Archive<?> archive) {
-    archive.as( WARArchive.class ).setContextRoot( myFraction.getContextRoot() );
-  }
-}
-----
-
-#### `ArchiveMetadataProcessor`
-
-If your fraction needs an opportunity to process the Jandex metadata of all deployed
-archives, you may implement the `org.wildfly.swarm.spi.api.ArchiveMetadataProcessor`
-interface.
-
-[source,java]
-----
-@ApplicationScoped
-public class MyArchiveMetadataProcessor implements ArchiveMetadataProcessor {
+  @Inject
+  private Archive archive;
 
   @Inject
-  private MyFraction myFraction;
+  private IndexView index;
 
-  public void processArchive(Archive<?> archive, Index index) {
-    // ...
+  public void process() {
+     archive.as(WARArchive.class).setContextRoot(myFraction.getContextRoot());
   }
 }
 
@@ -277,7 +263,7 @@ public MyArchiveProducers {
 #### `@Configurable` and `Defaultable<>`
 
 When creating a new `Fraction` implementation, each of its fields
-will automatically be configurable through the `project-*.yml` 
+will automatically be configurable through the `project-*.yml`
 mechanisms.  In the case that different names for the configurable
 items are desired, the `@Configuration` annotation may be used.
 
@@ -409,7 +395,7 @@ public interface MyFractionMessages extends BasicLogger {
 }
 ----
 
-Now, typesafe logging may occur such as 
+Now, typesafe logging may occur such as
 
 [source,java]
 ----

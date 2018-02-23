@@ -10,6 +10,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
 import org.wildfly.swarm.container.runtime.cdi.DeploymentContext;
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
@@ -52,6 +53,10 @@ public class SwaggerArchivePreparer implements DeploymentProcessor {
 
     @Configurable("swarm.deployment.*.swagger.root")
     private String root;
+
+    @Configurable("swarm.deployment.*.context.path")
+    @Configurable("swarm.context.path")
+    Defaultable<String> contextPath = Defaultable.string("/");
 
     private final Archive archive;
 
@@ -118,7 +123,11 @@ public class SwaggerArchivePreparer implements DeploymentProcessor {
                 swaggerArchive.setContextRoot(this.root);
             } else {
                 if (!swaggerArchive.hasContextRoot()) {
-                    swaggerArchive.setContextRoot(deployment.getContextRoot());
+                    if (deployment.getContextRoot() != null) {
+                        swaggerArchive.setContextRoot(deployment.getContextRoot());
+                    } else {
+                        swaggerArchive.setContextRoot(contextPath.get());
+                    }
                 }
             }
 

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>teiid-parent</artifactId>
-    <version>2018.2.0-SNAPSHOT</version>
+    <version>2018.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>teiid</artifactId>
   <name>Teiid Fraction</name>
@@ -91,7 +91,12 @@
       <scope>provided</scope>
       <version>${version.teiid}</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.teiid</groupId>
+      <artifactId>teiid-jboss-admin</artifactId>
+      <scope>provided</scope>
+      <version>${version.teiid}</version>
+    </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>

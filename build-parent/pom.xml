@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>wildfly-swarm</artifactId>
-    <version>2018.2.0-SNAPSHOT</version>
+    <version>2018.3.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -22,14 +22,14 @@
   <description>Build Parent to bring in required dependencies</description>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>81</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>83</version.wildfly.swarm.fraction.plugin>
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
-    <version.wildfly.config-api>1.2.0</version.wildfly.config-api>
+    <version.wildfly.config-api>1.3.0</version.wildfly.config-api>
 
-    <version.keycloak.config-api>1.2.0.Final</version.keycloak.config-api>
-    <version.teiid.config-api>1.1.0.Final</version.teiid.config-api>
+    <version.keycloak.config-api>1.3.1.Final</version.keycloak.config-api>
+    <version.teiid.config-api>1.1.1.Final</version.teiid.config-api>
     <version.keycloak>3.4.0.Final</version.keycloak>
     <version.mongo.config-api>1.2.4</version.mongo.config-api>
     <version.cassandra.config-api>1.2.4</version.cassandra.config-api>
@@ -95,6 +95,8 @@
 
     <version.maven.aether>3.2.5</version.maven.aether>
 
+    <version.resteasy>3.0.24.Final</version.resteasy>
+
     <!-- MicroProfile APIs -->
     <!-- NOTE: we cannot use MP BOM as it does not define dependencyManagement -->
     <version.microprofile-config>1.2</version.microprofile-config>
@@ -102,6 +104,7 @@
     <version.microprofile-fault-tolerance>1.0</version.microprofile-fault-tolerance>
     <version.microprofile-jwt-auth>1.0</version.microprofile-jwt-auth>
     <version.microprofile-metrics>1.1</version.microprofile-metrics>
+    <version.microprofile.restclient>1.0</version.microprofile.restclient>
     <!-- MP Config implementation -->
     <version.wildfly-microprofile-config>1.2.1</version.wildfly-microprofile-config>
 
@@ -338,6 +341,50 @@
         <artifactId>openshift-restclient-java</artifactId>
         <version>${version.openshift.client}</version>
       </dependency>
+
+      <!-- MicroProfile 1.2 -->
+      <dependency>
+        <groupId>org.eclipse.microprofile.config</groupId>
+        <artifactId>microprofile-config-api</artifactId>
+        <version>${version.microprofile-config}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly</groupId>
+        <artifactId>wildfly-microprofile-config-implementation</artifactId>
+        <version>${version.wildfly-microprofile-config}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>microprofile-config-api</artifactId>
+        <version>${version.wildfly-microprofile-config}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
+        <artifactId>microprofile-fault-tolerance-api</artifactId>
+        <version>${version.microprofile-fault-tolerance}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.microprofile.health</groupId>
+        <artifactId>microprofile-health-api</artifactId>
+        <version>${version.microprofile-health}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.microprofile.metrics</groupId>
+        <artifactId>microprofile-metrics-api</artifactId>
+        <version>${version.microprofile-metrics}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.microprofile.jwt</groupId>
+        <artifactId>microprofile-jwt-auth-api</artifactId>
+        <version>${version.microprofile-jwt-auth}</version>
+      </dependency>
+
       <!-- The following are not used, they are here to make PME align proper versions-->
       <dependency>
         <groupId>com.squareup.okhttp3</groupId>
@@ -566,6 +613,26 @@
           </dependency>
           <!-- NoSQL end -->
 
+          <!-- Microprofile 1.3 -->
+          <dependency>
+            <groupId>org.eclipse.microprofile.rest.client</groupId>
+            <artifactId>microprofile-rest-client-api</artifactId>
+            <version>${version.microprofile.restclient}</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <version>${version.resteasy}</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client</artifactId>
+            <version>${version.resteasy}</version>
+          </dependency>
+
+          <!-- Swagger -->
           <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-jaxrs</artifactId>
@@ -596,48 +663,6 @@
             <version>${version.com.orbitz.consul}</version>
           </dependency>
 
-          <!-- MicroProfile -->
-          <dependency>
-            <groupId>org.eclipse.microprofile.config</groupId>
-            <artifactId>microprofile-config-api</artifactId>
-            <version>${version.microprofile-config}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-microprofile-config-implementation</artifactId>
-            <version>${version.wildfly-microprofile-config}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>microprofile-config-api</artifactId>
-            <version>${version.wildfly-microprofile-config}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
-            <artifactId>microprofile-fault-tolerance-api</artifactId>
-            <version>${version.microprofile-fault-tolerance}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.eclipse.microprofile.health</groupId>
-            <artifactId>microprofile-health-api</artifactId>
-            <version>${version.microprofile-health}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.eclipse.microprofile.metrics</groupId>
-            <artifactId>microprofile-metrics-api</artifactId>
-            <version>${version.microprofile-metrics}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.eclipse.microprofile.jwt</groupId>
-            <artifactId>microprofile-jwt-auth-api</artifactId>
-            <version>${version.microprofile-jwt-auth}</version>
-         </dependency>
 
         </dependencies>
       </dependencyManagement>

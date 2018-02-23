@@ -48,7 +48,7 @@ public class FaviconErrorHandler implements HttpHandler {
                 Module module = Module.getBootModuleLoader().loadModule("org.wildfly.swarm.undertow:runtime");
                 ClassLoader cl = module.getClassLoader();
 
-                try (InputStream in = cl.getResourceAsStream("favicon.ico")) {
+                try (InputStream in = cl.getResourceAsStream("favicon-default.ico")) {
                     if (in != null) {
                         // Return default
                         faviconHandled = writeFavicon(in, exchange);

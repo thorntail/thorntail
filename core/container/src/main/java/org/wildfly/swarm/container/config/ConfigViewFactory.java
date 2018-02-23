@@ -30,7 +30,6 @@ import org.jboss.modules.ModuleLoadException;
 import org.wildfly.swarm.spi.api.ConfigurationFilter;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.nodes.NodeId;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
@@ -146,7 +145,7 @@ public class ConfigViewFactory {
 
     @SuppressWarnings("unchecked")
     private void loadProjectStages(InputStream inputStream) {
-        Yaml yaml = newYaml();
+        Yaml yaml = newYaml(System.getenv());
         Iterable<Object> docs = yaml.loadAll(inputStream);
 
         for (Object item : docs) {
@@ -180,19 +179,26 @@ public class ConfigViewFactory {
         this.configView.withProfile(name);
     }
 
-    static Map<String, ?> loadYaml(InputStream input) {
-        Yaml yaml = newYaml();
+    static Map<String, ?> loadYaml(InputStream input, Map<String, String> environment) {
+        Yaml yaml = newYaml(environment);
         return (Map<String, ?>) yaml.load(input);
     }
 
-    private static Yaml newYaml() {
-        return new Yaml(new Constructor(),
+    static Map<String, ?> loadYaml(InputStream input) {
+        return loadYaml(input, System.getenv());
+    }
+
+    private static Yaml newYaml(Map<String, String> environment) {
+        return new Yaml(new EnvironmentConstructor(environment),
                         new Representer(),
                         new DumperOptions(),
                         new Resolver() {
                             @Override
                             public Tag resolve(NodeId kind, String value, boolean implicit) {
                                 if (value != null) {
+                                    if (value.startsWith("${env.")) {
+                                        return new Tag("!env");
+                                    }
                                     if (value.equalsIgnoreCase("on") ||
                                             value.equalsIgnoreCase("off") ||
                                             value.equalsIgnoreCase("yes") ||

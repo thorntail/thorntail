@@ -15,15 +15,15 @@
  */
 package org.wildfly.swarm.container.config;
 
-import org.junit.Test;
+import static org.fest.assertions.Assertions.assertThat;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import static org.fest.assertions.Assertions.assertThat;
-
+import org.junit.Test;
 
 /**
  * Created by bob on 4/3/17.
@@ -55,4 +55,19 @@ public class ConfigViewFactoryTest {
         assertThat( keysIter.next() ).isEqualTo("2-OAuth2");
         assertThat( keysIter.next() ).isEqualTo("1-JWT");
     }
+
+
+    @Test
+    public void testYamlWithEnvProperties() {
+        InputStream in = getClass().getResourceAsStream("/withenvvalues.yml");
+        Map<String, String> environment = new HashMap<>();
+        environment.put("BOOL", "true");
+        environment.put("LOG_NAME", "SomeString");
+        Map<String, ?> doc = ConfigViewFactory.loadYaml(in,environment);
+        Map<String, ?> foo = (Map<String, ?>) doc.get("foo");
+        Map<String, ?> on = (Map<String, ?>) foo.get("on");
+        assertThat(Boolean.valueOf((String)on.get("startup"))).isTrue();
+        assertThat( on.get("somestring") ).isEqualTo("http://someurl");
+    }
+
 }

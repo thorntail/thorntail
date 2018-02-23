@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>build-parent</artifactId>
-    <version>2018.2.0-SNAPSHOT</version>
+    <version>2018.3.0-SNAPSHOT</version>
     <relativePath>../../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -42,47 +42,47 @@
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>archaius</artifactId>
-        <version>2018.2.0-SNAPSHOT</version>
+        <version>2018.3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>netflix-guava</artifactId>
-        <version>2018.2.0-SNAPSHOT</version>
+        <version>2018.3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>hystrix</artifactId>
-        <version>2018.2.0-SNAPSHOT</version>
+        <version>2018.3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon</artifactId>
-        <version>2018.2.0-SNAPSHOT</version>
+        <version>2018.3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon-secured</artifactId>
-        <version>2018.2.0-SNAPSHOT</version>
+        <version>2018.3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>ribbon-secured-client</artifactId>
-        <version>2018.2.0-SNAPSHOT</version>
+        <version>2018.3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>netflix-rxjava</artifactId>
-        <version>2018.2.0-SNAPSHOT</version>
+        <version>2018.3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>netflix-rxnetty</artifactId>
-        <version>2018.2.0-SNAPSHOT</version>
+        <version>2018.3.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>servo</artifactId>
-        <version>2018.2.0-SNAPSHOT</version>
+        <version>2018.3.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -174,15 +174,29 @@
   </dependencyManagement>
 
   <modules>
-    <module>archaius</module>
     <module>guava</module>
     <module>hystrix</module>
-    <module>ribbon</module>
-    <module>ribbon-secured</module>
-    <module>ribbon-secured-client</module>
+    <module>archaius</module>
     <module>rxjava</module>
-    <module>rxnetty</module>
-    <module>servo</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>unsupported</id>
+      <activation>
+        <property>
+          <name>!swarm.product.build</name>
+        </property>
+      </activation>
+      <modules>
+        <module>ribbon</module>
+        <module>ribbon-secured</module>
+        <module>ribbon-secured-client</module>
+        <module>rxnetty</module>
+        <module>servo</module>
+      </modules>
+
+    </profile>
+  </profiles>
 
 </project>

@@ -19,6 +19,7 @@ import io.opentracing.Tracer;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.contrib.web.servlet.filter.TracingFilter;
 import io.opentracing.util.GlobalTracer;
+import javax.servlet.FilterRegistration.Dynamic;
 import org.jboss.logging.Logger;
 
 import javax.servlet.DispatcherType;
@@ -46,9 +47,10 @@ public class OpenTracingInitializer implements ServletContextListener {
         }
 
         logger.info("Registering Tracing Filter");
-        servletContext
-                .addFilter("tracingFilter", new TracingFilter())
-                .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
+        Dynamic filterRegistration = servletContext
+            .addFilter("tracingFilter", new TracingFilter());
+        filterRegistration.setAsyncSupported(true);
+        filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
 
         String skipParameter = servletContext.getInitParameter("skipOpenTracingResolver");
         if (skipParameter != null && Boolean.parseBoolean(skipParameter)) {
