@@ -41,7 +41,6 @@ import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Forma
  * @author eric.wittmann@gmail.com
  */
 @SuppressWarnings("rawtypes")
-//@Ignore
 public class ApimanManagerApiDeploymentTest {
 
     /**
@@ -64,7 +63,6 @@ public class ApimanManagerApiDeploymentTest {
     }
 
     @Test
-//    @Ignore
     public void testApimanManagerWAR() throws Exception {
         File warFile = Maven.resolver().resolve("io.apiman:apiman-manager-api-war:war:1.3.1.Final").withoutTransitivity().asSingleFile();
 
@@ -87,7 +85,6 @@ public class ApimanManagerApiDeploymentTest {
     }
 
     @Test
-//    @Ignore
     public void testApimanGatewayWAR() throws Exception {
         File warFile = Maven.resolver().resolve("io.apiman:apiman-gateway-platforms-war-wildfly8-api:war:1.3.1.Final").withoutTransitivity().asSingleFile();
 
@@ -105,7 +102,7 @@ public class ApimanManagerApiDeploymentTest {
         String actual = OpenApiSerializer.serialize(OpenApiDocument.INSTANCE.get(), Format.JSON);
         String expected = loadResource(getClass().getResource("testApimanGatewayWAR.expected.json"));
 
-        System.out.println(actual);
+//        System.out.println(actual);
         assertJsonEquals(expected, actual);
     }
 

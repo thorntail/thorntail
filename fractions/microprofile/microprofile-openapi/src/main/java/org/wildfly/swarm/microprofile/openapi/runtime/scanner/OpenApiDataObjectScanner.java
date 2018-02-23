@@ -367,7 +367,7 @@ public class OpenApiDataObjectScanner {
 
             for (FieldInfo enumField : enumKlazz.fields()) {
                 // Ignore the hidden enum array as it's not accessible. Add fields that look like enums (of type enumKlazz)
-                if (!enumField.name().equals("$VALUES") && TypeUtil.getName(enumField.type()).equals(enumKlazz.name())) {
+                if (!enumField.name().endsWith("$VALUES") && TypeUtil.getName(enumField.type()).equals(enumKlazz.name())) {
                     // Enum's value fields.
                     schema.addEnumeration(enumField.name());
                 }
