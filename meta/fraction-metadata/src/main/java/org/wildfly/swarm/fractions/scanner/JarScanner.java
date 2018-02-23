@@ -36,14 +36,18 @@ public class JarScanner implements Scanner<InputStream> {
 
     @Override
     public void scan(PathSource pathSource, Collection<FractionDetector<InputStream>> detectors, Consumer<File> handleFileAsZip) throws IOException {
+
         final File jarFile = File.createTempFile("swarmPackageDetector", ".jar");
-        jarFile.deleteOnExit();
 
-        try (InputStream input = pathSource.getInputStream();
-                FileOutputStream out = new FileOutputStream(jarFile)) {
-            copy(input, out);
+        try {
+            try (InputStream input = pathSource.getInputStream();
+                    FileOutputStream out = new FileOutputStream(jarFile)) {
+                copy(input, out);
+            }
+
+            handleFileAsZip.accept(jarFile);
+        } finally {
+            jarFile.delete();
         }
-
-        handleFileAsZip.accept(jarFile);
-    }
+      }
 }
