@@ -15,18 +15,26 @@
  */
 package org.wildfly.swarm.microprofile.openapi.runtime.entity;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @SuppressWarnings("unused")
-public class KustomPair<A, B> {
+public class GenericTypeTestContainer {
+    // Nesting generics.
+    KustomPair<KustomPair<String, String>, Integer> nesting;
 
-    @Schema(required = true, maxLength = 123456)
-    private A foo;
+    // More complex nesting of generics including unbounded wildcard
+    Fuzz<KustomPair<Fuzz<String, Date>, ?>, Double> complexNesting;
 
-    @Schema(required = true)
-    private B bar;
+    // Complex inheritance requiring manual resolution of type variables in superclasses
+    Foo complexInheritance;
+
+    // Generics with bounds
+    KustomPair<? extends Integer, ? super Integer> genericWithBounds;
+
+    // Type containing a variety of collections and maps.
+    GenericFieldTestContainer<String, LocalDateTime> genericContainer;
 }
-

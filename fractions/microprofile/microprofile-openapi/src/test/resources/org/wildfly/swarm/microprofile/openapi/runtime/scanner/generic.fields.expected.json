@@ -1,0 +1,54 @@
+{
+  "components" : {
+    "schemas" : {
+      "org.wildfly.swarm.microprofile.openapi.runtime.entity.GenericTypeTestContainer" : {
+        "properties" : {
+          "arrayListOfV" : {
+            "type" : "array",
+            "items" : {
+              "format" : "date-time",
+              "type" : "string"
+            }
+          },
+          "genericFieldK" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "mapOfKToFoo" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "properties" : {
+                "theQ" : {
+                  "type" : "string"
+                },
+                "theT" : {
+                  "type" : "object",
+                  "properties" : {
+                    "hellofrombazzy" : {
+                      "type" : "string"
+                    },
+                    "an_integer_value" : {
+                      "format" : "int32",
+                      "type" : "integer"
+                    }
+                  }
+                },
+                "ultimateTShouldBeQ" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "mapOfKV" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "format" : "date-time",
+              "type" : "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

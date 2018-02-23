@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile.openapi.runtime.entity;
+package org.wildfly.swarm.microprofile.openapi.runtime.scanner;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import java.util.Map;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
  */
 @SuppressWarnings("unused")
-public class KustomPair<A, B> {
-
-    @Schema(required = true, maxLength = 123456)
-    private A foo;
-
-    @Schema(required = true)
-    private B bar;
+public abstract class MapStandin<K, V> implements Map<K, V> {
+    K key;
+    V value;
 }
-

@@ -16,6 +16,7 @@
 package org.wildfly.swarm.microprofile.openapi.runtime.util;
 
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
+import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.FieldInfo;
@@ -23,15 +24,13 @@ import org.jboss.jandex.IndexView;
 import org.jboss.jandex.PrimitiveType;
 import org.jboss.jandex.Type;
 import org.jboss.jandex.WildcardType;
+import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiConstants;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -194,20 +193,6 @@ public class TypeUtil {
         return false;
     }
 
-    public static List<FieldInfo> getAllFields(IndexView index, ClassInfo leaf) {
-        List<FieldInfo> fields = new ArrayList<>(leaf.fields());
-        ClassInfo currentClass = leaf;
-        while (currentClass.superClassType() != null) {
-            currentClass = index.getClassByName(currentClass.superClassType().name());
-            if (currentClass == null) {
-                break;
-            }
-            fields.addAll(currentClass.fields());
-        }
-        Collections.reverse(fields);
-        return fields;
-    }
-
     public static DotName getName(Type type) {
         if (type.kind() == Type.Kind.ARRAY) {
             return type.asArrayType().component().name();
@@ -219,13 +204,55 @@ public class TypeUtil {
     }
 
     public static Type getBound(WildcardType wct) {
-        if (wct.superBound() != null) {
-            return wct.superBound();
-        } else if (wct.extendsBound() != null) {
+        if (wct.extendsBound() != null) {
             return wct.extendsBound();
         } else {
             return OBJECT_TYPE;
         }
+    }
+
+    public static Type resolveWildcard(WildcardType wildcardType) { // TODO move to typeutil?
+        return TypeUtil.getBound(wildcardType);
+    }
+
+    public static Type resolveWildcard(Type type) {
+        if (type.kind() != Type.Kind.WILDCARD_TYPE) {
+            return type;
+        }
+        return TypeUtil.getBound(type.asWildcardType());
+    }
+
+    public static AnnotationInstance getSchemaAnnotation(ClassInfo field) {
+        return getAnnotation(field, OpenApiConstants.DOTNAME_SCHEMA);
+    }
+
+    public static AnnotationInstance getSchemaAnnotation(FieldInfo field) {
+        return getAnnotation(field, OpenApiConstants.DOTNAME_SCHEMA);
+    }
+
+    public static AnnotationInstance getSchemaAnnotation(Type type) {
+        return getAnnotation(type, OpenApiConstants.DOTNAME_SCHEMA);
+    }
+
+    public static AnnotationInstance getAnnotation(Type type, DotName annotationName) {
+        return type.annotations().stream()
+                .filter(annotation -> annotation.name().equals(annotationName))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static AnnotationInstance getAnnotation(ClassInfo field, DotName annotationName) {
+        return field.classAnnotations().stream()
+                .filter(annotation -> annotation.name().equals(annotationName))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static AnnotationInstance getAnnotation(FieldInfo field, DotName annotationName) {
+        return field.annotations().stream()
+                .filter(annotation -> annotation.name().equals(annotationName))
+                .findFirst()
+                .orElse(null);
     }
 
     public static final class TypeWithFormat {
@@ -269,12 +296,9 @@ public class TypeUtil {
             return format;
         }
 
-        public boolean noFormat() {
-            return this == NONE;
-        }
-
         public boolean hasFormat() {
             return this != NONE;
         }
     }
+
 }

@@ -120,6 +120,7 @@ import org.wildfly.swarm.microprofile.openapi.api.models.servers.ServerVariableI
 import org.wildfly.swarm.microprofile.openapi.api.models.servers.ServerVariablesImpl;
 import org.wildfly.swarm.microprofile.openapi.api.models.tags.TagImpl;
 import org.wildfly.swarm.microprofile.openapi.api.util.MergeUtil;
+import org.wildfly.swarm.microprofile.openapi.runtime.scanner.OpenApiDataObjectScanner;
 import org.wildfly.swarm.microprofile.openapi.runtime.util.JandexUtil;
 import org.wildfly.swarm.microprofile.openapi.runtime.util.JandexUtil.JaxRsParameterInfo;
 import org.wildfly.swarm.microprofile.openapi.runtime.util.JandexUtil.RefType;
@@ -173,8 +174,20 @@ public class OpenApiAnnotationScanner {
         }
 
         Indexer indexer = new Indexer();
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/scanner/CollectionStandin.class");
+        index(indexer, "org/wildfly/swarm/microprofile/openapi/runtime/scanner/MapStandin.class");
         indexArchive(config, indexer, archive);
         return indexer.complete();
+    }
+
+    private static void index(Indexer indexer, String resName) {
+        InputStream stream = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(resName);
+        try {
+            indexer.index(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

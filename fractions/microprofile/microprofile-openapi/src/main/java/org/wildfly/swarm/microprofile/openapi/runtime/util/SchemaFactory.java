@@ -1,20 +1,23 @@
 package org.wildfly.swarm.microprofile.openapi.runtime.util;
 
+import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.ClassType;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Type;
+import org.wildfly.swarm.microprofile.openapi.api.models.ExternalDocumentationImpl;
 import org.wildfly.swarm.microprofile.openapi.api.util.MergeUtil;
-import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiDataObjectScanner;
-
-import static org.wildfly.swarm.microprofile.openapi.runtime.OpenApiConstants.*;
+import org.wildfly.swarm.microprofile.openapi.runtime.OpenApiConstants;
+import org.wildfly.swarm.microprofile.openapi.runtime.scanner.OpenApiDataObjectScanner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.wildfly.swarm.microprofile.openapi.runtime.OpenApiConstants.*;
 
 /**
  * @author Marc Savy {@literal <marc@rhymewithgravy.com>}
@@ -63,7 +66,7 @@ public class SchemaFactory {
         schema.setReadOnly((Boolean) overrides.getOrDefault(PROP_READ_ONLY, JandexUtil.booleanValue(annotation, PROP_READ_ONLY)));
         schema.setWriteOnly((Boolean) overrides.getOrDefault(PROP_WRITE_ONLY, JandexUtil.booleanValue(annotation, PROP_WRITE_ONLY)));
         schema.setExample(overrides.getOrDefault(PROP_EXAMPLE, JandexUtil.stringValue(annotation, PROP_EXAMPLE)));
-        //schema.setExternalDocs(readExternalDocs(annotation.value(OpenApiConstants.PROP_EXTERNAL_DOCS)));
+        schema.setExternalDocs(readExternalDocs(annotation.value(OpenApiConstants.PROP_EXTERNAL_DOCS)));
         schema.setDeprecated((Boolean) overrides.getOrDefault(PROP_DEPRECATED, JandexUtil.booleanValue(annotation, PROP_DEPRECATED)));
         schema.setType((Schema.SchemaType) overrides.getOrDefault(PROP_TYPE, JandexUtil.enumValue(annotation, PROP_TYPE, Schema.SchemaType.class)));
         schema.setEnumeration((List<Object>) overrides.getOrDefault(PROP_ENUM, JandexUtil.stringListValue(annotation, PROP_ENUM)));
@@ -117,5 +120,16 @@ public class SchemaFactory {
             schemas.add(schema);
         }
         return schemas;
+    }
+
+    private static ExternalDocumentation readExternalDocs(AnnotationValue externalDocAnno) {
+        if (externalDocAnno == null) {
+            return null;
+        }
+        AnnotationInstance nested = externalDocAnno.asNested();
+        ExternalDocumentation externalDoc = new ExternalDocumentationImpl();
+        externalDoc.setDescription(JandexUtil.stringValue(nested, OpenApiConstants.PROP_DESCRIPTION));
+        externalDoc.setUrl(JandexUtil.stringValue(nested, OpenApiConstants.PROP_URL));
+        return externalDoc;
     }
 }
