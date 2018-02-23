@@ -159,23 +159,27 @@
       },
       "Api" : {
         "properties" : {
-          "version" : {
+          "apiId" : {
             "type" : "string"
           },
-          "publicAPI" : {
-            "type" : "boolean"
+          "apiPolicies" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "policyImpl" : {
+                  "type" : "string"
+                },
+                "policyJsonConfig" : {
+                  "type" : "string"
+                }
+              }
+            }
           },
-          "parsePayload" : {
-            "type" : "boolean"
-          },
-          "organizationId" : {
+          "endpoint" : {
             "type" : "string"
           },
-          "maxPayloadBufferSize" : {
-            "format" : "int64",
-            "type" : "integer"
-          },
-          "endpointType" : {
+          "endpointContentType" : {
             "type" : "string"
           },
           "endpointProperties" : {
@@ -184,93 +188,92 @@
               "type" : "string"
             }
           },
-          "endpointContentType" : {
+          "endpointType" : {
             "type" : "string"
           },
-          "endpoint" : {
+          "maxPayloadBufferSize" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "organizationId" : {
             "type" : "string"
           },
-          "apiPolicies" : {
-            "type" : "array",
-            "items" : {
-              "properties" : {
-                "policyJsonConfig" : {
-                  "type" : "string"
-                },
-                "policyImpl" : {
-                  "type" : "string"
-                }
-              }
-            }
+          "parsePayload" : {
+            "type" : "boolean"
           },
-          "apiId" : {
+          "publicAPI" : {
+            "type" : "boolean"
+          },
+          "version" : {
             "type" : "string"
           }
         }
       },
       "Client" : {
         "properties" : {
-          "version" : {
+          "apiKey" : {
             "type" : "string"
           },
-          "organizationId" : {
+          "clientId" : {
             "type" : "string"
           },
           "contracts" : {
             "type" : "array",
             "items" : {
+              "type" : "object",
               "properties" : {
-                "policies" : {
-                  "type" : "array",
-                  "items" : {
-                    "properties" : {
-                      "policyJsonConfig" : {
-                        "type" : "string"
-                      },
-                      "policyImpl" : {
-                        "type" : "string"
-                      }
-                    }
-                  }
-                },
-                "plan" : {
-                  "type" : "string"
-                },
-                "apiVersion" : {
+                "apiId" : {
                   "type" : "string"
                 },
                 "apiOrgId" : {
                   "type" : "string"
                 },
-                "apiId" : {
+                "apiVersion" : {
                   "type" : "string"
+                },
+                "plan" : {
+                  "type" : "string"
+                },
+                "policies" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "object",
+                    "properties" : {
+                      "policyImpl" : {
+                        "type" : "string"
+                      },
+                      "policyJsonConfig" : {
+                        "type" : "string"
+                      }
+                    }
+                  }
                 }
               }
             }
           },
-          "clientId" : {
+          "organizationId" : {
             "type" : "string"
           },
-          "apiKey" : {
+          "version" : {
             "type" : "string"
           }
         }
       },
       "SystemStatus" : {
         "properties" : {
-          "version" : {
-            "type" : "string"
-          },
-          "up" : {
-            "type" : "boolean"
-          },
-          "name" : {
+          "description" : {
             "type" : "string"
           },
           "id" : {
             "type" : "string"
           },
-          "description" : {
+          "name" : {
+            "type" : "string"
+          },
+          "up" : {
+            "type" : "boolean"
+          },
+          "version" : {
             "type" : "string"
           }
         }

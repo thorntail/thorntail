@@ -54,7 +54,6 @@ import org.eclipse.microprofile.openapi.models.media.Discriminator;
 import org.eclipse.microprofile.openapi.models.media.Encoding;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
-import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter.In;
 import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
@@ -125,8 +124,6 @@ import org.wildfly.swarm.microprofile.openapi.runtime.util.JandexUtil;
 import org.wildfly.swarm.microprofile.openapi.runtime.util.JandexUtil.JaxRsParameterInfo;
 import org.wildfly.swarm.microprofile.openapi.runtime.util.JandexUtil.RefType;
 import org.wildfly.swarm.microprofile.openapi.runtime.util.ModelUtil;
-import org.wildfly.swarm.microprofile.openapi.runtime.util.TypeUtil;
-import org.wildfly.swarm.microprofile.openapi.runtime.util.TypeUtil.TypeWithFormat;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
@@ -859,21 +856,16 @@ public class OpenApiAnnotationScanner {
 
     /**
      * Converts a jandex type to a {@link Schema} model.
-     * @param paramType
+     * @param type
      */
-    private Schema typeToSchema(Type paramType) {
+    private Schema typeToSchema(Type type) {
         Schema schema = null;
-        if (paramType.kind() == Type.Kind.CLASS) {
-            schema = introspectClassToSchema(paramType.asClassType(), true);
-        } else if (paramType.kind() == Type.Kind.PRIMITIVE) {
-            TypeWithFormat typeFormat = TypeUtil.getTypeFormat(paramType.asPrimitiveType());
-            schema = new SchemaImpl();
-            schema.setType(typeFormat.getSchemaType());
-            schema.setFormat(typeFormat.getFormat().format());
-        } else if (paramType.kind() == Type.Kind.ARRAY) {
-            schema = new SchemaImpl();
-            schema.setType(SchemaType.ARRAY);
-            schema.setItems(typeToSchema(paramType.asArrayType().component()));
+        if (type.kind() == Type.Kind.CLASS) {
+            schema = introspectClassToSchema(type.asClassType(), true);
+        } else if (type.kind() == Type.Kind.PRIMITIVE) {
+            schema = OpenApiDataObjectScanner.process(type.asPrimitiveType());
+        } else {
+            schema = OpenApiDataObjectScanner.process(index, type);
         }
         return schema;
     }

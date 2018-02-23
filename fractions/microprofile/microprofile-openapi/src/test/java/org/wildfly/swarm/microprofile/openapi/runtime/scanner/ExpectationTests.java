@@ -20,6 +20,7 @@ import org.jboss.jandex.ClassType;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Type;
 import org.json.JSONException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.wildfly.swarm.microprofile.openapi.runtime.entity.Bar;
 import org.wildfly.swarm.microprofile.openapi.runtime.entity.BuzzLinkedList;
@@ -39,6 +40,7 @@ public class ExpectationTests extends OpenApiDataObjectScannerTestBase {
      * Unresolvable type parameter.
      */
     @Test
+    @Ignore
     public void testUnresolvable() throws IOException, JSONException {
         DotName bar = createSimple(Bar.class.getName());
         OpenApiDataObjectScanner scanner = new OpenApiDataObjectScanner(index, ClassType.create(bar, Type.Kind.CLASS));
