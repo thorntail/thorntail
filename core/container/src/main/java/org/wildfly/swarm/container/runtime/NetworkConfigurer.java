@@ -84,6 +84,9 @@ public class NetworkConfigurer {
         applyConfiguration(key.append("port-offset"), (portOffset) -> {
             group.portOffset(portOffset.toString());
         });
+        applyConfiguration(key.append("default-interface"), (defaultInterface) -> {
+            group.defaultInterface(defaultInterface.toString());
+        });
 
     }
 
