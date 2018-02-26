@@ -4,7 +4,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.inject.Qualifier;
+import javax.interceptor.InterceptorBinding;
 
 /**
  * Utility class for working with annotations.
@@ -15,9 +21,9 @@ import java.util.List;
  * <p>Additionally, they provide methods for looking for annotations by string class name, instead
  * of requiring the actual annotation class to be on the classpath.</p>
  */
-public class AnnotationUtils {
+public class Annotations {
 
-    private AnnotationUtils() {
+    private Annotations() {
 
     }
 
@@ -140,6 +146,53 @@ public class AnnotationUtils {
             }
         }
         return null;
+    }
+
+    /** Retrieve annotations of type of {@code @Qualifier}.
+     *
+     * @param cls The class to check.
+     * @return The set of all annotations of type {@code @Qualifier}
+     */
+    public static Set<Annotation> getQualifiers(Class<?> cls) {
+        Set<Annotation> annotations = new HashSet<>();
+        Class<?> cur = cls;
+
+        while ( cur != null ) {
+            annotations.addAll( Arrays.asList( cur.getAnnotations()));
+            cur = cur.getSuperclass();
+        }
+
+        Set<Annotation> set = new HashSet<>();
+        for (Annotation each : annotations) {
+            if (each.annotationType().getAnnotation(Qualifier.class) != null) {
+                set.add(each);
+            }
+        }
+        return set;
+    }
+
+    /** Retrieve annotations of type of {@code @InterceptorBinding}.
+     *
+     * @param cls The class to check.
+     * @return The set of all annotations of type {@code @InterceptorBinding}
+     */
+    public static Set<Annotation> getInterceptorBindings(Class<?> cls) {
+        Set<Annotation> annotations = new HashSet<>();
+        Class<?> cur = cls;
+
+        while ( cur != null ) {
+            annotations.addAll( Arrays.asList( cur.getAnnotations()));
+            cur = cur.getSuperclass();
+        }
+
+        Set<Annotation> set = new HashSet<>();
+        for (Annotation each : annotations) {
+            System.err.println( "test: " + each );
+            if (each.annotationType().getAnnotation(InterceptorBinding.class) != null) {
+                set.add(each);
+            }
+        }
+        return set;
     }
 
     /**

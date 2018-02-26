@@ -1,5 +1,6 @@
 package org.jboss.unimbus;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -37,7 +38,7 @@ public class ActiveInstance<T> {
             injectionTarget.setInstantiator(new InstanceInstantiator(object));
         }
 
-        List<Decorator<?>> decorators = manager.resolveDecorators(bean.getTypes(), Any.Literal.INSTANCE);
+        List<Decorator<?>> decorators = manager.resolveDecorators(bean.getTypes(), bean.getQualifiers().toArray(new Annotation[]{}));
 
         if (!decorators.isEmpty()) {
             Instantiator instantiator = injectionTarget.getInstantiator();

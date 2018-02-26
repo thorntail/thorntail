@@ -3,15 +3,19 @@ package org.jboss.unimbus;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 
-import org.jboss.unimbus.util.TypeUtils;
+import org.jboss.unimbus.util.Annotations;
+import org.jboss.unimbus.util.Types;
 
 /**
  * Created by bob on 2/21/18.
@@ -55,12 +59,18 @@ class InstanceBean<T> implements Bean<T> {
 
     @Override
     public Set<Type> getTypes() {
-        return TypeUtils.getTypeClosure(this.instanceType);
+        return Types.getTypeClosure(this.instanceType);
     }
 
     @Override
     public Set<Annotation> getQualifiers() {
-        return Collections.emptySet();
+        Set<Annotation> set = new HashSet<>();
+        set.addAll(Annotations.getQualifiers(this.instanceType) );
+        if ( set.isEmpty() ) {
+            set.add(Default.Literal.INSTANCE);
+            set.add(Any.Literal.INSTANCE);
+        }
+        return set;
     }
 
     @Override

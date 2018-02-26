@@ -26,7 +26,6 @@ public class Receiver implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        System.err.println( "-- on message --");
         try {
             this.results.add(message.getBody(String.class));
         } catch (JMSException e) {

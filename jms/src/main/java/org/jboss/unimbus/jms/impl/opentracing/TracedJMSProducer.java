@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl.jms;
+package org.jboss.unimbus.jms.impl.opentracing;
 
 import javax.jms.Destination;
 import javax.jms.JMSProducer;
@@ -6,6 +6,7 @@ import javax.jms.Message;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
+import io.opentracing.tag.Tags;
 import org.jboss.unimbus.jms.SimpleWrappedJMSProducer;
 
 /**
@@ -25,6 +26,7 @@ public class TracedJMSProducer extends SimpleWrappedJMSProducer {
         Tracer.SpanBuilder builder = TraceUtils.build("send", message, destination);
         ActiveSpan sendSpan = null;
         if (builder != null) {
+            builder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_PRODUCER);
             sendSpan = builder.startActive();
             TraceUtils.inject(message);
         }

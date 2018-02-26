@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl.jms;
+package org.jboss.unimbus.jms.impl.opentracing;
 
 import javax.annotation.Priority;
 import javax.decorator.Decorator;
@@ -13,20 +13,24 @@ import javax.jms.MessageListener;
 import io.opentracing.ActiveSpan;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
+import io.opentracing.tag.Tags;
 import org.eclipse.microprofile.opentracing.Traced;
-import org.jboss.unimbus.util.AnnotationUtils;
+import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
+import org.jboss.unimbus.util.Annotations;
 
 /**
  * Created by bob on 2/21/18.
  */
+@RequiredClassPresent("org.eclipse.microprofile.opentracing.Traced")
 @Dependent
 @Decorator
+@Traced
 @Priority(Interceptor.Priority.LIBRARY_BEFORE)
 public class TracedMessageListener implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        if (AnnotationUtils.hasAnnotation(this.delegate, Traced.class)) {
+        if (Annotations.hasAnnotation(this.delegate, Traced.class)) {
             onMessageTraced(message);
         } else {
             onMessageNotTraced(message);
@@ -46,6 +50,7 @@ public class TracedMessageListener implements MessageListener {
                 if (parent != null) {
                     builder.asChildOf(parent);
                 }
+                builder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER);
                 span = builder.startActive();
             }
             this.delegate.onMessage(message);

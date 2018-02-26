@@ -11,6 +11,7 @@ import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
+import io.opentracing.tag.Tags;
 import org.jboss.unimbus.test.EphemeralPorts;
 import org.jboss.unimbus.test.UNimbusTestRunner;
 import org.jboss.unimbus.testsuite.jms.opentracing.util.SpanNode;
@@ -48,22 +49,23 @@ public class JMSAppIT {
         assertThat(received).contains("three");
 
         SpanTree tree = new SpanTree((MockTracer) this.tracer);
-
-        System.err.println( tree );
         assertThat(tree.getRootNodes()).hasSize(1);
 
         SpanNode root = tree.getRootNodes().get(0);
         assertThat(root.getChildren()).hasSize(3);
 
         for (SpanNode spanNode : root.getChildren()) {
-            assertThat(spanNode.getTags()).hasSize(1);
+            assertThat(spanNode.getTags()).hasSize(2);
             assertThat(spanNode.operationName()).isEqualTo("send");
-            assertThat(spanNode.getTags().get("jms.destination")).isEqualTo("test");
+            assertThat(spanNode.getTags().get(Tags.MESSAGE_BUS_DESTINATION.getKey())).isEqualTo("test");
+            assertThat(spanNode.getTags().get(Tags.SPAN_KIND.getKey())).isEqualTo(Tags.SPAN_KIND_PRODUCER);
             assertThat(spanNode.getChildren()).hasSize(1);
+
             SpanNode child = spanNode.getChildren().get(0);
-            assertThat(child.getTags()).hasSize(2);
+            assertThat(child.getTags()).hasSize(3);
             assertThat(child.operationName()).isEqualTo("receive");
-            assertThat(child.getTags().get("jms.destination")).isEqualTo("test");
+            assertThat(child.getTags().get(Tags.MESSAGE_BUS_DESTINATION.getKey())).isEqualTo("test");
+            assertThat(child.getTags().get(Tags.SPAN_KIND.getKey())).isEqualTo(Tags.SPAN_KIND_CONSUMER);
             assertThat(child.getTags().get("jms.message.id")).isNotNull();
         }
     }

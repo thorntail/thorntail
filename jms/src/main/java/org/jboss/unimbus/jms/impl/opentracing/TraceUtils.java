@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl.jms;
+package org.jboss.unimbus.jms.impl.opentracing;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -6,18 +6,16 @@ import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
+import io.opentracing.tag.Tags;
 import io.opentracing.util.GlobalTracer;
 
 /**
  * Created by bob on 2/21/18.
  */
 class TraceUtils {
-
-    static final String JMS_DESTINATION_TAG = "jms.destination";
 
     static final String JMS_CORRELATION_ID_TAG = "jms.correlation.id";
 
@@ -78,7 +76,7 @@ class TraceUtils {
             }
         }
         if (destination != null) {
-            builder.withTag(JMS_DESTINATION_TAG, nameOf(destination));
+            builder.withTag(Tags.MESSAGE_BUS_DESTINATION.getKey(), nameOf(destination));
         }
         try {
             String correlationId = message.getJMSCorrelationID();

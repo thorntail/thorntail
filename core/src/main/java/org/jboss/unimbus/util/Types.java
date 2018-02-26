@@ -7,9 +7,9 @@ import java.util.Set;
 /**
  * Utilities for working with Java classes and types.
  */
-public class TypeUtils {
+public class Types {
 
-    private TypeUtils() {
+    private Types() {
 
     }
 

@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl.jms;
+package org.jboss.unimbus.jms.impl.opentracing;
 
 import javax.jms.Destination;
 import javax.jms.JMSConsumer;
@@ -6,7 +6,6 @@ import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.JMSProducer;
 import javax.jms.JMSRuntimeException;
-import javax.jms.JMSSessionMode;
 import javax.jms.Message;
 
 import org.jboss.unimbus.jms.SimpleWrappedJMSContext;

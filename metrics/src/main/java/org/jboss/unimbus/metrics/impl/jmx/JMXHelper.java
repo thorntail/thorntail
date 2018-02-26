@@ -35,6 +35,7 @@ import javax.management.openmbean.CompositeData;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.jboss.unimbus.metrics.impl.MetricRegistries;
+import org.jboss.unimbus.metrics.impl.MetricsMessages;
 
 /**
  * @author hrupp
@@ -152,8 +153,7 @@ public class JMXHelper {
                         String keyValue = oName.getKeyPropertyList().get(keyHolder);
                         String newName = entry.getName();
                         if (!newName.contains(PLACEHOLDER)) {
-                            System.err.println("Name [" + newName + "] did not contain a %s, no replacement will be done, check" +
-                                                       " the configuration");
+                            MetricsMessages.MESSAGES.jmxMetricLacksPlaceholder(newName);
                         }
                         newName = newName.replace(PLACEHOLDER, keyValue);
                         String newDisplayName = entry.getDisplayName().replace(PLACEHOLDER, keyValue);

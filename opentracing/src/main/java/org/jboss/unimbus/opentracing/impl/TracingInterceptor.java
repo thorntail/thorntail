@@ -1,6 +1,8 @@
 package org.jboss.unimbus.opentracing.impl;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Set;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
@@ -11,8 +13,10 @@ import javax.interceptor.InvocationContext;
 import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import org.eclipse.microprofile.opentracing.Traced;
+import org.jboss.unimbus.opentracing.ext.TracingExtension;
+import org.jboss.unimbus.util.Types;
 
-import static org.jboss.unimbus.util.AnnotationUtils.hasAnnotation;
+import static org.jboss.unimbus.util.Annotations.hasAnnotation;
 
 /**
  * @author Pavol Loffay
@@ -25,14 +29,19 @@ public class TracingInterceptor {
     private static final String JAXRS_PATH_ANNOTATION_NAME = "javax.ws.rs.Path";
 
     private static final String EJB_MESSAGE_DRIVEN_NAME = "javax.ejb.MessageDriven";
+
     @Inject
     private Tracer tracer;
 
     @AroundInvoke
     public Object interceptTraced(InvocationContext ctx) throws Exception {
+
+        Object target = ctx.getTarget();
+
         ActiveSpan activeSpan = null;
         try {
-            if (!isJaxRs(ctx.getMethod()) && !isMessageDriven(ctx.getMethod()) && isTraced(ctx.getMethod())) {
+            //if (!isJaxRs(ctx.getMethod()) && !isMessageDriven(ctx.getMethod()) && isTraced(ctx.getMethod())) {
+            if (isTraced(ctx.getMethod()) && ! isHandledByOther(target, ctx.getMethod())) {
                 activeSpan = this.tracer.buildSpan(getOperationName(ctx.getMethod())).startActive();
             }
             return ctx.proceed();
@@ -50,11 +59,17 @@ public class TracingInterceptor {
      * @return true if invoked method is jax-rs endpoint
      */
     protected boolean isJaxRs(Method method) {
-        return hasAnnotation( method, JAXRS_PATH_ANNOTATION_NAME ) || hasAnnotation(method.getDeclaringClass(), JAXRS_PATH_ANNOTATION_NAME );
+        return hasAnnotation(method, JAXRS_PATH_ANNOTATION_NAME) || hasAnnotation(method.getDeclaringClass(), JAXRS_PATH_ANNOTATION_NAME);
     }
 
-    protected boolean isMessageDriven(Method method) {
-        return hasAnnotation(method.getDeclaringClass(), EJB_MESSAGE_DRIVEN_NAME);
+    protected boolean isHandledByOther(Object target, Method method) {
+        if ( isJaxRs(method)) {
+            return true;
+        }
+
+        Set<Type> types = Types.getTypeClosure(target.getClass());
+
+        return this.tracingExtension.canHandle(types);
     }
 
     /**
@@ -88,4 +103,7 @@ public class TracingInterceptor {
         }
         return String.format("%s.%s", method.getDeclaringClass().getName(), method.getName());
     }
+
+    @Inject
+    TracingExtension tracingExtension;
 }

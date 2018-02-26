@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl.vertx;
+package org.jboss.unimbus.vertx.impl.opentracing;
 
 import javax.annotation.Priority;
 import javax.decorator.Decorator;
@@ -14,11 +14,13 @@ import io.opentracing.Tracer;
 import io.vertx.core.eventbus.Message;
 import io.vertx.resourceadapter.inflow.VertxListener;
 import org.eclipse.microprofile.opentracing.Traced;
-import org.jboss.unimbus.util.AnnotationUtils;
+import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
+import org.jboss.unimbus.util.Annotations;
 
 /**
  * Created by bob on 2/22/18.
  */
+@RequiredClassPresent("org.eclipse.microprofile.opentracing.Traced")
 @Dependent
 @Decorator
 @Priority(Interceptor.Priority.LIBRARY_BEFORE)
@@ -26,7 +28,7 @@ public class TracedVertxListener implements VertxListener {
 
     @Override
     public <T> void onMessage(Message<T> message) {
-        if (AnnotationUtils.hasAnnotation(this.delegate, Traced.class)) {
+        if (Annotations.hasAnnotation(this.delegate, Traced.class)) {
             onMessageTraced(message);
         } else {
             onMessageNotTraced(message);

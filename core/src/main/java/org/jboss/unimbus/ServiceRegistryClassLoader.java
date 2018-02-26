@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import sun.reflect.CallerSensitive;
-
 /**
  * Created by bob on 2/20/18.
  */
@@ -61,7 +59,6 @@ class ServiceRegistryClassLoader extends ClassLoader implements ServiceRegistry 
         return delegate.getResources(name);
     }
 
-    @CallerSensitive
     public static boolean registerAsParallelCapable() {
         return ClassLoader.registerAsParallelCapable();
     }
@@ -86,7 +83,6 @@ class ServiceRegistryClassLoader extends ClassLoader implements ServiceRegistry 
         return ClassLoader.getSystemResourceAsStream(name);
     }
 
-    @CallerSensitive
     public static ClassLoader getSystemClassLoader() {
         return ClassLoader.getSystemClassLoader();
     }

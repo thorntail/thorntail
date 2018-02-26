@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl.vertx;
+package org.jboss.unimbus.vertx.impl.opentracing;
 
 import java.util.Iterator;
 import java.util.Map;

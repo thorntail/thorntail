@@ -1,4 +1,4 @@
-package org.jboss.unimbus.opentracing.impl.jms;
+package org.jboss.unimbus.jms.impl.opentracing;
 
 import java.util.Collections;
 import java.util.Enumeration;

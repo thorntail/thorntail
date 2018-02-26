@@ -1,22 +1,15 @@
-package org.jboss.unimbus.opentracing.impl.jms;
+package org.jboss.unimbus.jms.impl.opentracing;
 
 import javax.jms.Destination;
 import javax.jms.JMSConsumer;
-import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.JMSRuntimeException;
 import javax.jms.Message;
-import javax.jms.Queue;
-import javax.jms.Topic;
 
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-import io.opentracing.propagation.Format;
-import io.opentracing.util.GlobalTracer;
+import io.opentracing.tag.Tags;
 import org.jboss.unimbus.jms.SimpleWrappedJMSConsumer;
-
-import static org.jboss.unimbus.opentracing.impl.jms.TraceUtils.JMS_DESTINATION_TAG;
-import static org.jboss.unimbus.opentracing.impl.jms.TraceUtils.nameOf;
 
 /**
  * Created by bob on 2/21/18.
@@ -41,6 +34,7 @@ public class TracedJMSConsumer extends SimpleWrappedJMSConsumer {
             if (parent != null) {
                 builder.asChildOf(parent);
             }
+            builder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER);
             builder.startActive().deactivate();
         }
         return message;

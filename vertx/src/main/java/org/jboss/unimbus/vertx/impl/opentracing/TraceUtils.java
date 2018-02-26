@@ -1,8 +1,9 @@
-package org.jboss.unimbus.opentracing.impl.vertx;
+package org.jboss.unimbus.vertx.impl.opentracing;
 
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
+import io.opentracing.tag.Tags;
 import io.opentracing.util.GlobalTracer;
 import io.vertx.core.eventbus.Message;
 
@@ -10,8 +11,6 @@ import io.vertx.core.eventbus.Message;
  * Created by bob on 2/21/18.
  */
 class TraceUtils {
-
-    static final String VERTX_ADDRESS_TAG = "vertx.address";
 
     static SpanContext extract(Message<?> message) {
         Tracer tracer = GlobalTracer.get();
@@ -49,7 +48,7 @@ class TraceUtils {
             address = message.address();
         }
         if (address != null) {
-            builder.withTag(VERTX_ADDRESS_TAG, address );
+            builder.withTag(Tags.MESSAGE_BUS_DESTINATION.getKey(), address );
         }
 
         return builder;
