@@ -580,11 +580,19 @@
     <module>testing</module>
     <module>testing-arquillian</module>
 
-    <module>tck</module>
     <module>testsuite</module>
 
     <module>docs</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>tck</id>
+      <modules>
+        <module>tck</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <build>
     <resources>

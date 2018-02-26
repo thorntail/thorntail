@@ -2,7 +2,7 @@
 
 = µNimbus PoC
 
-. Install the unimbus-maven-plugin
+.Install the unimbus-maven-plugin
 
 Until it is published, you'll need to clone the repository and install it using Maven.
 
@@ -12,13 +12,20 @@ Until it is published, you'll need to clone the repository and install it using 
 
     mvn install
 
-. Build uNimbus-proper
+.Build uNimbus-proper
 
 The build assumes Docker is present in some cases for deeper integration tests.
 
 You may skip all tests (and its Docker usage) using `-DskipTests`
 
     mvn clean && mvn install
+
+.Build while running the various TCKs
+
+By default the MicroProfile TCKs are _not_ included in the build.
+To include them, simply add `-Ptck` to any `mvn` invocation:
+
+    mvn clean -Ptck && mvn install -Ptck
 
 .Enjoy the documentation
 
