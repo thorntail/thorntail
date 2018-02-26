@@ -28,8 +28,6 @@ public class TracingInterceptor {
 
     private static final String JAXRS_PATH_ANNOTATION_NAME = "javax.ws.rs.Path";
 
-    private static final String EJB_MESSAGE_DRIVEN_NAME = "javax.ejb.MessageDriven";
-
     @Inject
     private Tracer tracer;
 
@@ -40,7 +38,6 @@ public class TracingInterceptor {
 
         ActiveSpan activeSpan = null;
         try {
-            //if (!isJaxRs(ctx.getMethod()) && !isMessageDriven(ctx.getMethod()) && isTraced(ctx.getMethod())) {
             if (isTraced(ctx.getMethod()) && ! isHandledByOther(target, ctx.getMethod())) {
                 activeSpan = this.tracer.buildSpan(getOperationName(ctx.getMethod())).startActive();
             }
