@@ -43,3 +43,13 @@ Intertwingly code (and javadocs) make finding the delineation between public API
 .Allow BYO components
 
 We don't want to decide _all_ of the implementations, and certainly not versions, of random components we support.
+
+.Be a framework, not a platform
+
+Frameworks are easier to integrate into an existing app; a platform becomes the target with (generally too many) constraints.
+
+.Maintain tests & documentation 
+
+Ensure the definition of "done" includes both tests and documentation.
+
+
