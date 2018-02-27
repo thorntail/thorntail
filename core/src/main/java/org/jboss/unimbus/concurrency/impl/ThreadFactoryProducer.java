@@ -1,4 +1,4 @@
-package org.jboss.unimbus.concurrency;
+package org.jboss.unimbus.concurrency.impl;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;

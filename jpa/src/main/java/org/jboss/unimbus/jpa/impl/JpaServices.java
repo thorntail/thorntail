@@ -1,5 +1,7 @@
 package org.jboss.unimbus.jpa.impl;
 
+import java.util.Optional;
+
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.persistence.EntityManager;
@@ -7,6 +9,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.jboss.unimbus.datasources.TraceMode;
+import org.jboss.unimbus.jpa.impl.opentracing.TracedEntityManagerResourceProvider;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceReferenceFactory;
@@ -15,6 +21,7 @@ import org.jboss.weld.injection.spi.ResourceReferenceFactory;
  * @author Ken Finnigan
  */
 public class JpaServices implements JpaInjectionServices {
+
     @Override
     public ResourceReferenceFactory<EntityManager> registerPersistenceContextInjectionPoint(InjectionPoint injectionPoint) {
         final PersistenceContext context = getResourceAnnotated(injectionPoint).getAnnotation(PersistenceContext.class);
@@ -24,6 +31,14 @@ public class JpaServices implements JpaInjectionServices {
 
         String scopedPuName = getScopedPuName(context.unitName());
         JpaMessages.MESSAGES.createFactoryForPersistence(PersistenceContext.class, scopedPuName);
+
+        Config config = ConfigProviderResolver.instance().getConfig();
+
+        Optional<TraceMode> traceMode = config.getOptionalValue("jpa." + scopedPuName + ".trace", TraceMode.class);
+        if ( traceMode.isPresent() &&  traceMode.get() != TraceMode.OFF ) {
+            JpaMessages.MESSAGES.tracingEnabled(scopedPuName);
+            return new TracedEntityManagerResourceProvider(traceMode.get(), scopedPuName);
+        }
 
         return new EntityManagerResourceProvider(scopedPuName);
     }

@@ -1,5 +1,10 @@
 [#component-jpa]
 = JPA
 
-The `:jpa` component does blah.
+The JPA component provides support for JPA `EntityManager` and `@PersistenceContext` resources.
 
+.Configuration
+
+`jpa._PersistenceUnitId_.trace`::
+Enable tracing if `OpenTracing` is available. Acceptable values are `OFF`, `ALWAYS`, and `ACTIVE`.
+By setting to `ACTIVE`, only usage of the `EntityManager` when there is already an active parent context will be traced.

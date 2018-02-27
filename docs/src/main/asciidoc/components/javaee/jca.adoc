@@ -42,6 +42,8 @@ Any normal POJO marked as `@MessageDriven` and implementing the appropriate inte
 These components exist within the normal CDI container, and will be injected as appropriate.
 These components are generally short-lived and managed by the appropriate resource-adapter, and therefore may _not_ be injected directly into other CDI components.
 
+If OpenTracing is available, these components may be marked with `@Traced` to trace their invocations.
+
 .CDI Components
 
 `ResourceAdapterDeploymentFactory`::

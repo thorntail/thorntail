@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.Config;
 import org.jboss.unimbus.datasources.DataSourceMetaData;
-import org.jboss.unimbus.datasources.impl.DataSourcesMessages;
+import org.jboss.unimbus.datasources.TraceMode;
 
 /**
  * Created by bob on 2/1/18.
@@ -43,25 +43,27 @@ public class DataSourceRegistry implements Iterable<DataSourceMetaData> {
 
     DataSourceMetaData create(String id, List<String> configProps) {
         DataSourceMetaData ds = new DataSourceMetaData(id);
-        configProps.forEach( e->{
-            String simpleName = e.substring( (PREFIX + id).length()+1);
-            if ( simpleName.equals("connection-url")) {
-                ds.setConnectionUrl( config.getValue(e, String.class));
-            } else if ( simpleName.equals( "driver" ) ) {
+        configProps.forEach(e -> {
+            String simpleName = e.substring((PREFIX + id).length() + 1);
+            if (simpleName.equals("connection-url")) {
+                ds.setConnectionUrl(config.getValue(e, String.class));
+            } else if (simpleName.equals("driver")) {
                 ds.setDriver(config.getValue(e, String.class));
-            } else if ( simpleName.equals("username")) {
+            } else if (simpleName.equals("username")) {
                 ds.setUsername(config.getValue(e, String.class));
-            } else if ( simpleName.equals("password")) {
+            } else if (simpleName.equals("password")) {
                 ds.setPassword(config.getValue(e, String.class));
-            } else if ( simpleName.equals("jndi-name")) {
+            } else if (simpleName.equals("jndi-name")) {
                 ds.setJNDIName(config.getValue(e, String.class));
+            } else if (simpleName.equals("trace")) {
+                ds.setTraceMode(config.getValue(e, TraceMode.class));
             } else {
                 DataSourcesMessages.MESSAGES.unknownConfigParameter(e, config.getValue(e, String.class));
             }
         });
 
-        if ( ds.getJNDIName() == null ) {
-            ds.setJNDIName( "java:jboss/datasources/" + ds.getId() );
+        if (ds.getJNDIName() == null) {
+            ds.setJNDIName("java:jboss/datasources/" + ds.getId());
         }
 
         return ds;

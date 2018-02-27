@@ -493,6 +493,18 @@
         <version>1.0.0-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>unimbus-testutils-async</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>unimbus-testutils-opentracing</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <scope>test</scope>
+      </dependency>
 
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
@@ -579,6 +591,9 @@
 
     <module>testing</module>
     <module>testing-arquillian</module>
+
+    <module>testutils-async</module>
+    <module>testutils-opentracing</module>
 
     <module>testsuite</module>
 
@@ -673,7 +688,7 @@
         <inherited>false</inherited>
         <configuration>
           <failOnError>false</failOnError>
-          <excludePackageNames>*.tck.*,*.impl,*.impl.*,*.ext,*.ext.*,*.testsuite.*,*.logging.jdk.*</excludePackageNames>
+          <excludePackageNames>*.testutils.*,*.tck.*,*.impl,*.impl.*,*.ext,*.ext.*,*.testsuite.*,*.logging.jdk.*</excludePackageNames>
           <doclint>none</doclint>
           <outputDirectory>target/apidocs</outputDirectory>
           <reportOutputDirectory>target/apidocs</reportOutputDirectory>

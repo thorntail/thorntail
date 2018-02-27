@@ -11,15 +11,19 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
 
 import org.eclipse.microprofile.opentracing.Traced;
+import org.jboss.unimbus.opentracing.TracingDecorator;
 
 /**
  * Extension that looks for any @Decorator that is also @Traced.
  */
 public class TracingExtension implements Extension {
 
-    public <T> void discoverDecorators(@Observes @WithAnnotations({Decorator.class}) ProcessAnnotatedType<T> event) {
+    public <T> void discoverDecorators(@Observes @WithAnnotations({TracingDecorator.class}) ProcessAnnotatedType<T> event) {
         if (event.getAnnotatedType().isAnnotationPresent(Traced.class)) {
-            this.handledTypes.add(event.getAnnotatedType().getJavaClass());
+            TracingDecorator anno = event.getAnnotatedType().getAnnotation(TracingDecorator.class);
+            for (Class each : anno.value()) {
+                this.handledTypes.add(each);
+            }
         }
     }
 

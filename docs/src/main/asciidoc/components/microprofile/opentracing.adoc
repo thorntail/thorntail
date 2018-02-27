@@ -23,8 +23,6 @@ The discovered `Tracer` will be registered with the `GlobalTracer` which allows 
 
 If the OpenTracing `MockResolver` is available on the classpath (usually through a `<scope>test</scope>` dependency), it is given the highest priority for resolution.
 
-.Configuration
-
 .CDI Components
 
 `Tracer`::

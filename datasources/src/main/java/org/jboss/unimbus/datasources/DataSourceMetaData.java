@@ -133,6 +133,33 @@ public class DataSourceMetaData {
         return this.jndiName;
     }
 
+    /**
+     * Enable tracing for this datasource.
+     *
+     * <p>Requires the {@code opentracing} component to be available if set to {@code true}.</p>
+     *
+     * @param trace Flag to determine if this datasource should be traced.
+     */
+    public void setTraceMode(TraceMode trace) {
+        this.trace = trace;
+    }
+
+    /**
+     * Determine if tracing is enabled for this datasource.
+     *
+     * <p>Requires the {@code opentracing} component to be available if set to {@code true}.</p>
+     *
+     * @return {@code true} if tracing is requested, otherwise {@code false}.
+     */
+    public TraceMode getTraceMode() {
+        return this.trace;
+    }
+
+    @Override
+    public String toString() {
+        return "[DS: id="+ this.id + "; driver=" + this.driver + "; jndiName=" + this.jndiName + "; trace=" + this.trace + "]";
+    }
+
     private final String id;
 
     private String driver;
@@ -144,4 +171,7 @@ public class DataSourceMetaData {
     private String jndiName;
 
     private String connectionUrl;
+
+    private TraceMode trace = TraceMode.OFF;
+
 }

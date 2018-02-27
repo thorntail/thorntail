@@ -18,7 +18,6 @@ The DataSources component provides access to managed JDBC datasources.
 DataSources may be configured by providing a set of configuration properties for each datasource.
 Each configuration property has the prefix of `datasource._MyDS_`.
 
-
 `datasource._MyDS_.username`::
 The username for connecting to the datasource.
 
@@ -30,6 +29,10 @@ The JDBC connection URL for the datasource.
 
 `datasource._MyDS_.driver`::
 The simple identifier of the JDBC driver for the datasource.
+
+`datasource._MyDS_.trace`::
+Enable tracing if `OpenTracing` is available. Acceptable values are `OFF`, `ALWAYS`, and `ACTIVE`. 
+By setting to `ACTIVE`, only usage of the datasource when there is already an active parent context will be traced. 
 
 .Related Information
 

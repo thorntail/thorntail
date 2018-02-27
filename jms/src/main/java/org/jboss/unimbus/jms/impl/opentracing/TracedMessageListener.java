@@ -16,6 +16,7 @@ import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 import org.eclipse.microprofile.opentracing.Traced;
 import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
+import org.jboss.unimbus.opentracing.TracingDecorator;
 import org.jboss.unimbus.util.Annotations;
 
 /**
@@ -26,6 +27,7 @@ import org.jboss.unimbus.util.Annotations;
 @Decorator
 @Traced
 @Priority(Interceptor.Priority.LIBRARY_BEFORE)
+@TracingDecorator({MessageListener.class})
 public class TracedMessageListener implements MessageListener {
 
     @Override

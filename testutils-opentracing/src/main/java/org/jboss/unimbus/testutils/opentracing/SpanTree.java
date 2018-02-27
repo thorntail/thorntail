@@ -1,4 +1,4 @@
-package org.jboss.unimbus.testsuite.jms.opentracing.util;
+package org.jboss.unimbus.testutils.opentracing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +44,10 @@ public class SpanTree {
         str.append( "]\n");
 
         return str.toString();
+    }
+
+    public static SpanTreeAssert assertThat(SpanTree tree) {
+        return new SpanTreeAssert(tree);
     }
 
 

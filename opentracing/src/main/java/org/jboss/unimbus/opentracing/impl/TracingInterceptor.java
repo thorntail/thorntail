@@ -14,6 +14,7 @@ import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import org.eclipse.microprofile.opentracing.Traced;
 import org.jboss.unimbus.opentracing.ext.TracingExtension;
+import org.jboss.unimbus.util.Annotations;
 import org.jboss.unimbus.util.Types;
 
 import static org.jboss.unimbus.util.Annotations.hasAnnotation;
@@ -38,7 +39,8 @@ public class TracingInterceptor {
 
         ActiveSpan activeSpan = null;
         try {
-            if (isTraced(ctx.getMethod()) && ! isHandledByOther(target, ctx.getMethod())) {
+            if (isTraced(target, ctx.getMethod()) && ! isHandledByOther(target, ctx.getMethod())) {
+                System.err.println( "INTERCEPT: " + target + " // " + ctx.getMethod() );
                 activeSpan = this.tracer.buildSpan(getOperationName(ctx.getMethod())).startActive();
             }
             return ctx.proceed();
@@ -75,9 +77,10 @@ public class TracingInterceptor {
      * @param method invoked method
      * @return true if {@link Traced} defined on method or class has value true
      */
-    protected boolean isTraced(Method method) {
-        Traced classTraced = method.getDeclaringClass().getAnnotation(Traced.class);
+    protected boolean isTraced(Object target, Method method) {
+        Traced classTraced = Annotations.getAnnotation(target.getClass(), Traced.class);
         Traced methodTraced = method.getAnnotation(Traced.class);
+
         if (methodTraced != null) {
             return methodTraced.value();
         }

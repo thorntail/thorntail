@@ -1,4 +1,4 @@
-package org.jboss.unimbus.testsuite.jms.opentracing.util;
+package org.jboss.unimbus.testutils.opentracing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +57,11 @@ public class SpanNode {
     public List<SpanNode> getChildren() {
         return this.children;
     }
+
+    public static SpanNodeAssert assertThat(SpanNode node) {
+        return new SpanNodeAssert(node);
+    }
+
 
     private final MockSpan span;
 

@@ -89,11 +89,11 @@ public class Annotations {
      * @param annotationType The class of the annotation.
      * @return {@code true} if the annotation is present, otherwise {@code false}.
      */
-    public static Annotation getAnnotation(Class<?> cls, Class<? extends Annotation> annotationType) {
+    public static <T extends Annotation> T getAnnotation(Class<?> cls, Class<T> annotationType) {
         Class<?> cur = cls;
 
         while (cur != null) {
-            Annotation anno = cur.getAnnotation(annotationType);
+            T anno = cur.getAnnotation(annotationType);
             if (anno != null) {
                 return anno;
             }
@@ -187,7 +187,6 @@ public class Annotations {
 
         Set<Annotation> set = new HashSet<>();
         for (Annotation each : annotations) {
-            System.err.println( "test: " + each );
             if (each.annotationType().getAnnotation(InterceptorBinding.class) != null) {
                 set.add(each);
             }

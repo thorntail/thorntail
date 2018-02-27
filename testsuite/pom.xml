@@ -87,6 +87,7 @@
     <module>jms-opentracing</module>
 
     <module>jpa</module>
+    <module>jpa-opentracing</module>
     <module>vertx</module>
 
     <module>keycloak</module>
