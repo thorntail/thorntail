@@ -47,4 +47,3 @@ public interface DataSourcesMessages extends BasicLogger {
     @Message(id = 6 + OFFSET, value = "datasource '%s' specified requested tracing, but tracing is not available.")
     void tracingEnabled(String id);
 }
-}
