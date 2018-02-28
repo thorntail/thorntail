@@ -40,7 +40,6 @@ public class TracingInterceptor {
         ActiveSpan activeSpan = null;
         try {
             if (isTraced(target, ctx.getMethod()) && ! isHandledByOther(target, ctx.getMethod())) {
-                System.err.println( "INTERCEPT: " + target + " // " + ctx.getMethod() );
                 activeSpan = this.tracer.buildSpan(getOperationName(ctx.getMethod())).startActive();
             }
             return ctx.proceed();

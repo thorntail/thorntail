@@ -3,6 +3,7 @@ package org.jboss.unimbus.opentracing.jaeger.impl;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import com.uber.jaeger.Configuration;
 import com.uber.jaeger.senders.Sender;
@@ -16,9 +17,10 @@ import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
 public class ReporterConfigurationProducer {
 
     @Produces
-    @ApplicationScoped
+    @Singleton
     Configuration.ReporterConfiguration reporterConfiguration() {
-        return new Configuration.ReporterConfiguration(this.sender);
+        Configuration.ReporterConfiguration config = new Configuration.ReporterConfiguration(this.sender);
+        return config;
     }
 
     @Inject

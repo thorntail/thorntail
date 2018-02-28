@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.inject.Provider;
+import javax.inject.Singleton;
 
 import com.uber.jaeger.senders.UdpSender;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -20,7 +20,7 @@ import org.jboss.unimbus.opentracing.jaeger.Udp;
 public class UdpSenderProducer {
 
     @Produces
-    @ApplicationScoped
+    @Singleton
     @Udp
     public UdpSender get() {
         return new UdpSender(this.agentHost.orElse(null),
@@ -28,6 +28,7 @@ public class UdpSenderProducer {
                              0);
     }
 
+    @Inject
     @ConfigProperty(name = "jaeger.agent.host")
     Optional<String> agentHost;
 

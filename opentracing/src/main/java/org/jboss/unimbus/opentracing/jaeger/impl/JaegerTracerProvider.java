@@ -3,6 +3,7 @@ package org.jboss.unimbus.opentracing.jaeger.impl;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import com.uber.jaeger.Configuration;
 import io.opentracing.Tracer;
@@ -23,6 +24,5 @@ public class JaegerTracerProvider implements TracerProvider {
 
     @Inject
     Configuration configuration;
-
 
 }

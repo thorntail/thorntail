@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import com.uber.jaeger.Configuration;
 import com.uber.jaeger.samplers.RemoteControlledSampler;
@@ -19,7 +20,7 @@ import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
 public class SamplerConfigurationProducer {
 
     @Produces
-    @ApplicationScoped
+    @Singleton
     Configuration.SamplerConfiguration samplerConfiguration() {
         Configuration.SamplerConfiguration config = new Configuration.SamplerConfiguration(
                 this.type.orElse(RemoteControlledSampler.TYPE),
@@ -35,7 +36,7 @@ public class SamplerConfigurationProducer {
 
     @Inject
     @ConfigProperty(name="jaeger.sampler.param")
-    Optional<Number> param;
+    Optional<Double> param;
 
     @Inject
     @ConfigProperty(name="jaeger.sampler.manager.host-port")

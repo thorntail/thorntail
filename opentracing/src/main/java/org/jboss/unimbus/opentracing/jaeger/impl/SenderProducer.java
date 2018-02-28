@@ -6,12 +6,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import com.uber.jaeger.senders.HttpSender;
 import com.uber.jaeger.senders.Sender;
 import com.uber.jaeger.senders.UdpSender;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
+import org.jboss.unimbus.opentracing.jaeger.Http;
+import org.jboss.unimbus.opentracing.jaeger.Udp;
 
 /**
  * Created by bob on 2/22/18.
@@ -21,9 +24,9 @@ import org.jboss.unimbus.condition.annotation.RequiredClassPresent;
 public class SenderProducer {
 
     @Produces
-    @ApplicationScoped
+    @Singleton
     Sender sender() {
-        if ( this.endpoint.isPresent() ) {
+        if (this.endpoint.isPresent()) {
             return this.httpSenderProvider.get();
         }
         return this.udpSenderProvider.get();
@@ -31,11 +34,13 @@ public class SenderProducer {
 
     @Inject
     @ConfigProperty(name = "jaeger.endpoint")
-    Optional<Boolean> endpoint;
+    Optional<String> endpoint;
 
     @Inject
+    @Udp
     Instance<UdpSender> udpSenderProvider;
 
     @Inject
+    @Http
     Instance<HttpSender> httpSenderProvider;
 }

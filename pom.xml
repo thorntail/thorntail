@@ -153,6 +153,16 @@
         <version>${version.activemq}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>4.4.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.3</version>
+      </dependency>
+      <dependency>
         <groupId>javax.json</groupId>
         <artifactId>javax.json-api</artifactId>
         <version>${version.javax-json}</version>
@@ -505,6 +515,11 @@
         <version>1.0.0-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>unimbus-testutils-opentracing-jaeger</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
 
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
@@ -594,6 +609,7 @@
 
     <module>testutils-async</module>
     <module>testutils-opentracing</module>
+    <module>testutils-opentracing-jaeger</module>
 
     <module>testsuite</module>
 

@@ -88,6 +88,9 @@
 
     <module>jpa</module>
     <module>jpa-opentracing</module>
+
+    <module>opentracing-jaeger</module>
+
     <module>vertx</module>
 
     <module>keycloak</module>

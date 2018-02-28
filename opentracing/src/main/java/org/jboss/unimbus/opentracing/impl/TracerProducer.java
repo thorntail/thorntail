@@ -42,7 +42,7 @@ public class TracerProducer {
         return tracer;
     }
 
-    void dispose(@Disposes Tracer trace) throws NoSuchFieldException, IllegalAccessException {
+    void dispose(@Disposes Tracer tracer) throws NoSuchFieldException, IllegalAccessException {
         Field f = GlobalTracer.class.getDeclaredField("tracer");
         f.setAccessible(true);
         f.set(null, NoopTracerFactory.create());

@@ -135,18 +135,21 @@ public class ResourceAdapterBuilder {
     }
 
     private boolean isTracingAvailable() {
-        return this.tracingAvailable.updateAndGet((prev) -> {
+        Boolean result = this.tracingAvailable.updateAndGet((prev) -> {
             if (prev != null) {
                 return prev;
             }
-
             try {
                 Class<?> globalTracer = Class.forName("io.opentracing.util.GlobalTracer");
-                return Boolean.TRUE;
+                if ( globalTracer != null ) {
+                    return Boolean.TRUE;
+                }
             } catch (ClassNotFoundException e) {
-                return Boolean.FALSE;
+                // ignore, false will follow.
             }
+            return Boolean.FALSE;
         });
+        return result;
     }
 
 

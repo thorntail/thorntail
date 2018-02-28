@@ -23,14 +23,6 @@ public class Resolver extends TracerResolver {
 
     @Override
     protected Tracer resolve() {
-        /*
-        ActiveInstance<Resolver> instance = UNimbus.current().activate(this);
-        try {
-            return instance.get().doResolve();
-        } finally {
-            instance.release();
-        }
-        */
         return UNimbus.current().withActivated(this, (resolver) -> resolver.doResolve());
     }
 
@@ -59,8 +51,8 @@ public class Resolver extends TracerResolver {
                 return 0;
             }
 
-            if (leftPrio > 0) {
-                if (rightPrio > 0) {
+            if (leftPrio >= 0) {
+                if (rightPrio >= 0) {
                     return Integer.compare(abs(leftPrio), abs(rightPrio));
                 } else {
                     return 1;

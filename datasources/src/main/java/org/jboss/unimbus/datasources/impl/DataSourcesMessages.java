@@ -40,10 +40,10 @@ public interface DataSourcesMessages extends BasicLogger {
     void implicitlyUsingDriver(String datasource, String driver);
 
     @LogMessage(level = Logger.Level.WARN)
-    @Message(id = 5 + OFFSET, value = "datasource '%s' specified requested tracing, but tracing is not available.")
+    @Message(id = 5 + OFFSET, value = "datasource '%s' specified requested tracing, but tracing is not available")
     void tracingNotAvailable(String id);
 
     @LogMessage(level = Logger.Level.WARN)
-    @Message(id = 6 + OFFSET, value = "datasource '%s' specified requested tracing, but tracing is not available.")
+    @Message(id = 6 + OFFSET, value = "datasource '%s' will be traced")
     void tracingEnabled(String id);
 }
