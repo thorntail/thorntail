@@ -14,6 +14,11 @@ It's Maven coordinates are:
 </dependency>
 ----
 
+.CDI Components
+
+`ThreadFactoryProducer`::
+Produces a `Dependent` scoped `ThreadFactory` for utilizing `Thread` instances.
+
 == Configuration
 
 Configuration of applications built on {project_name} is performed using MicroProfile-config mechanisms.
