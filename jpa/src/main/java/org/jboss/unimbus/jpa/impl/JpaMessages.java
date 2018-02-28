@@ -24,10 +24,10 @@ public interface JpaMessages extends BasicLogger {
     IllegalArgumentException annotationNotFound(Class<? extends Annotation> type, Member member);
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 1 + JPA_OFFSET, value = "Creating %s for '%s'")
+    @Message(id = 1 + JPA_OFFSET, value = "creating %s for '%s'")
     void createFactoryForPersistence(Class<? extends Annotation> type, String name);
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 10 + JPA_OFFSET, value = "Creating %s for '%s'")
+    @Message(id = 10 + JPA_OFFSET, value = "tracing enabled for '%s'")
     void tracingEnabled(String puName);
 }
