@@ -85,7 +85,7 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
             WARArchive warArchive = archive.as(WARArchive.class);
             warArchive.findWebXmlAsset().addListener(LISTENER_CLASS);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to register OpenAPI listerner", e);
+            throw new RuntimeException("Failed to register OpenAPI listener", e);
         }
         // Set models from annotations and static file
         OpenApiDocument openApiDocument = OpenApiDocument.INSTANCE;
