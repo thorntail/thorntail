@@ -26,6 +26,15 @@
 -- https://github.com/vert-x3/vertx-web/blob/master/vertx-web-api-contract/src/main/java/io/vertx/ext/web/api/contract/openapi3/OpenAPI3RouterFactory.java
 -- https://github.com/rhoar-shootout/rhoar-vertx/blob/master/adjective/src/main/java/com/redhat/labs/adjective/MainVerticle.java#L131
 
+. Bugs
+
+e.g., @MessageDriven by default creates a pool of 15, so I see this 15x
+INFO  : Thu Mar 01 10:44:01 EST 2018 [org.hibernate.jpa.internal.util.LogHelper] HHH000204: Processing PersistenceUnitInfo [
+name: MyPU
+...]
+
+Likely an issue with EMF not being cached properly
+
 . Low priority
 
 - Fuller testing of Java EE tech in testsuite
