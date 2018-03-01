@@ -35,7 +35,7 @@ Executes your application in the Maven process. The application is stopped if th
 [#maven-plugin-multistart-goal]
 start and multistart::
 Executes your application in a forked process. Generally, it is only useful for running integration tests using a plugin, such as the `maven-failsafe-plugin`.
-The `multistart` variant allows starting multiple WildFly Swarm&ndash;built applications using Maven GAVs to support complex testing scenarios.
+The `multistart` variant allows starting multiple WildFly Swarm{ndash}built applications using Maven GAVs to support complex testing scenarios.
 
 stop::
 Stops any previously started applications.
