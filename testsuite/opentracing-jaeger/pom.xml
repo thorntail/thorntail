@@ -25,6 +25,28 @@
         <configuration>
           <images>
             <image>
+              <name>vromero/activemq-artemis</name>
+              <alias>artemis</alias>
+              <run>
+                <env>
+                  <ARTEMIS_USERNAME>guest</ARTEMIS_USERNAME>
+                  <ARTEMIS_PASSWORD>guest</ARTEMIS_PASSWORD>
+                </env>
+                <ports>
+                  <port>61616:61616</port>
+                </ports>
+                <wait>
+                  <tcp>
+                    <mode>mapped</mode>
+                    <ports>
+                      <port>61616</port>
+                    </ports>
+                  </tcp>
+                  <time>10000</time>
+                </wait>
+              </run>
+            </image>
+            <image>
               <name>jaegertracing/all-in-one</name>
               <alias>jaeger</alias>
               <run>
@@ -64,7 +86,11 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-servlet</artifactId>
+      <artifactId>unimbus-jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
+      <artifactId>unimbus-jms-artemis</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.unimbus</groupId>

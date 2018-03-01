@@ -1,6 +1,7 @@
 package org.jboss.unimbus.testutils.opentracing.jaeger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,7 +10,7 @@ import java.util.stream.Collectors;
 /**
  * Created by bob on 2/21/18.
  */
-public class SpanNode {
+public class SpanNode implements Comparable<SpanNode> {
 
     SpanNode(Map<String, ?> span) {
         this.span = span;
@@ -24,6 +25,14 @@ public class SpanNode {
             return null;
         }
         return (String) parentRef.get().get("spanID");
+    }
+
+    public long startTime() {
+        return (Long) this.span.get("startTime");
+    }
+
+    public long duration() {
+        return (Long) this.span.get( "duration");
     }
 
     public String spanId() {
@@ -75,10 +84,21 @@ public class SpanNode {
         return new SpanNodeAssert(node);
     }
 
+    @Override
+    public int compareTo(SpanNode o) {
+        return Long.compare(this.startTime(), o.startTime());
+    }
+
+    public void sort() {
+        Collections.sort(this.children);
+        for (SpanNode child : this.children) {
+            child.sort();
+        }
+    }
+
 
     private final Map<String, ?> span;
 
     private List<SpanNode> children = new ArrayList<>();
 
-    private boolean childNodes;
 }

@@ -6,6 +6,7 @@ import javax.jms.JMSException;
 import javax.jms.JMSRuntimeException;
 import javax.jms.Message;
 
+import io.opentracing.References;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
@@ -33,6 +34,7 @@ public class TracedJMSConsumer extends SimpleWrappedJMSConsumer {
         if (builder != null) {
             if (parent != null) {
                 builder.asChildOf(parent);
+                //builder.addReference(References.FOLLOWS_FROM, parent);
             }
             builder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER);
             builder.startActive().deactivate();

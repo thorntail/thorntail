@@ -1,11 +1,15 @@
 package org.jboss.unimbus.testsuite.opentracing.jaeger;
 
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
 import org.jboss.unimbus.UNimbus;
 
 /**
  * @author Ken Finnigan
  */
-public class MyJpaApplication {
+@ApplicationPath("/")
+public class MyJpaApplication extends Application {
     public static void main(String... args) {
         UNimbus.run();
     }

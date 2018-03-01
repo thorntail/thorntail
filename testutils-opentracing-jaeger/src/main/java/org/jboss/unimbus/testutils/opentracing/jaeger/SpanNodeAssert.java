@@ -36,6 +36,17 @@ public class SpanNodeAssert {
         assertThat(tag).describedAs("has tag '" + key + "' with value '" + value + "'").isEqualTo(value);
         return this;
     }
+    public SpanNodeAssert hasTag(String key, Integer value) {
+        Object tag = node.getTags().get(key);
+        assertThat(tag).describedAs("has tag '" + key + "' with value '" + value + "'").isEqualTo(value);
+        return this;
+    }
+
+    public SpanNodeAssert hasTag(String key, Long value) {
+        Object tag = node.getTags().get(key);
+        assertThat(tag).describedAs("has tag '" + key + "' with value '" + value + "'").isEqualTo(value);
+        return this;
+    }
 
 
     private final SpanNode node;

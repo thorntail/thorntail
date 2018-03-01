@@ -1,9 +1,12 @@
 package org.jboss.unimbus.testutils.opentracing.jaeger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javafx.collections.transformation.SortedList;
 
 /**
  * Created by bob on 2/21/18.
@@ -27,6 +30,13 @@ public class SpanTree {
                 parent.add(node);
             }
         }
+
+        Collections.sort(this.rootNodes);
+
+        for (SpanNode rootNode : this.rootNodes) {
+            rootNode.sort();
+        }
+
     }
 
     public List<SpanNode> getRootNodes() {
