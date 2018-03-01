@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.Config;
 import org.jboss.unimbus.datasources.DataSourceMetaData;
-import org.jboss.unimbus.datasources.TraceMode;
+import org.jboss.unimbus.TraceMode;
 
 /**
  * Created by bob on 2/1/18.

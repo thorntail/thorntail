@@ -19,8 +19,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import org.jboss.unimbus.datasources.TraceMode;
-
 /**
  * Created by bob on 2/26/18.
  */

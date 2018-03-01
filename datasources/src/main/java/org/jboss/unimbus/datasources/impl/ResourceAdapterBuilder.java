@@ -28,7 +28,7 @@ import org.jboss.jca.common.metadata.spec.ConnectionDefinitionImpl;
 import org.jboss.jca.common.metadata.spec.OutboundResourceAdapterImpl;
 import org.jboss.jca.common.metadata.spec.ResourceAdapterImpl;
 import org.jboss.unimbus.datasources.DataSourceMetaData;
-import org.jboss.unimbus.datasources.TraceMode;
+import org.jboss.unimbus.TraceMode;
 import org.jboss.unimbus.datasources.impl.opentracing.TracedLocalManagedConnectionFactory;
 import org.jboss.unimbus.jdbc.impl.JDBCDriverRegistry;
 

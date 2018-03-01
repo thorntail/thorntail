@@ -90,12 +90,14 @@ public class OpenTracingJaegerAppIT {
         SpanNode send = employees.getChildren().get(0);
         assertThat(send)
                 .hasChildSpans(1)
+                .hasOperationName("jms-send")
                 .hasTag("message_bus.destination", "employees")
                 .hasTag("span.kind", "producer");
 
         SpanNode receive = send.getChildren().get(0);
         assertThat(receive)
-                .hasChildSpans(2)
+                .hasChildSpans(3)
+                .hasOperationName("jms-receive")
                 .hasTag("message_bus.destination", "employees")
                 .hasTag("span.kind", "consumer");
 
@@ -116,17 +118,31 @@ public class OpenTracingJaegerAppIT {
         SpanNode reply = receive.getChildren().get(1);
         assertThat(reply)
                 .hasChildSpans(1)
-                .hasOperationName("send")
+                .hasOperationName("jms-send")
                 .hasTag("span.kind", "producer")
                 .hasTag("message_bus.destination");
 
         SpanNode receiveReply = reply.getChildren().get(0);
         assertThat( receiveReply )
                 .hasChildSpans(0)
-                .hasOperationName("receive")
+                .hasOperationName("jms-receive")
                 .hasTag("span.kind", "consumer")
                 .hasTag("jms.message.id" )
                 .hasTag("message_bus.destination", (String) reply.getTags().get("message_bus.destination"));
+
+        SpanNode loggerSend = receive.getChildren().get(2);
+        assertThat(loggerSend)
+                .hasChildSpans(1)
+                .hasOperationName("vertx-send")
+                .hasTag("span.kind", "producer")
+                .hasTag("message_bus.destination", "fetch-logger");
+
+        SpanNode loggerReceive = loggerSend.getChildren().get(0);
+        assertThat(loggerReceive)
+                .hasChildSpans(0)
+                .hasOperationName("vertx-receive")
+                .hasTag("span.kind", "consumer")
+                .hasTag("message_bus.destination", "fetch-logger");
 
 
 

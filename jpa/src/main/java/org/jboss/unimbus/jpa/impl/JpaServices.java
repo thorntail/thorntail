@@ -11,7 +11,7 @@ import javax.persistence.PersistenceUnit;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
-import org.jboss.unimbus.datasources.TraceMode;
+import org.jboss.unimbus.TraceMode;
 import org.jboss.unimbus.jpa.impl.opentracing.TracedEntityManagerResourceProvider;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.spi.JpaInjectionServices;

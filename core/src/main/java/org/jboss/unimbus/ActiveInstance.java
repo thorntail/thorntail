@@ -1,11 +1,15 @@
 package org.jboss.unimbus;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.Decorator;
@@ -40,6 +44,8 @@ public class ActiveInstance<T> {
 
         List<Decorator<?>> decorators = manager.resolveDecorators(bean.getTypes(), bean.getQualifiers().toArray(new Annotation[]{}));
 
+        decorators = filter(bean, decorators);
+
         if (!decorators.isEmpty()) {
             Instantiator instantiator = injectionTarget.getInstantiator();
             injectionTarget.setInstantiator(new SubclassDecoratorApplyingInstantiator(containerId, instantiator, bean, decorators));
@@ -48,6 +54,27 @@ public class ActiveInstance<T> {
         this.context = manager.createCreationalContext(null);
         this.instance = bean.create(context);
 
+    }
+
+    List<Decorator<?>> filter(Bean<?> bean, List<Decorator<?>> decorators) {
+        List<Decorator<?>> filtered = new ArrayList<>();
+
+        List<Annotation> beanAnnos = Arrays.asList(bean.getBeanClass().getAnnotations());
+        Set<Class<? extends Annotation>> beanAnnoTypes = beanAnnos.stream().map(e -> e.annotationType()).collect(Collectors.toSet());
+
+        for (Decorator<?> decorator : decorators) {
+            List<Annotation> decoratorAnnos = Arrays.asList(decorator.getBeanClass().getAnnotations());
+            Set<Class<? extends Annotation>> decoratorAnnoTypes = decoratorAnnos.stream().map(e -> e.annotationType()).collect(Collectors.toSet());
+
+            for (Class<? extends Annotation> beanAnnoType : beanAnnoTypes) {
+                if ( decoratorAnnoTypes.contains(beanAnnoType ) ) {
+                    filtered.add(decorator);
+                    break;
+                }
+            }
+        }
+
+        return filtered;
     }
 
     /**

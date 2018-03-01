@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javafx.collections.transformation.SortedList;
-
 /**
  * Created by bob on 2/21/18.
  */

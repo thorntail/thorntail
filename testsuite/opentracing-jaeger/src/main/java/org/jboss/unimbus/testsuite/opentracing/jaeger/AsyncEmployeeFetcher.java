@@ -14,6 +14,11 @@ import javax.jms.MessageListener;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.resourceadapter.VertxEventBus;
 import org.eclipse.microprofile.opentracing.Traced;
 
 /**
@@ -34,7 +39,16 @@ public class AsyncEmployeeFetcher implements MessageListener {
         try {
             Destination replyTo = message.getJMSReplyTo();
             List<Employee> employees = em.createNamedQuery("Employee.findAll", Employee.class).getResultList();
-            this.context.createProducer().send( replyTo, (Serializable) employees);
+            this.context.createProducer().send(replyTo, (Serializable) employees);
+
+            JsonArray array = new JsonArray();
+            for (Employee employee : employees) {
+                array.add(new JsonObject()
+                                  .put("name", employee.getName())
+                                  .put("id", employee.getId())
+                );
+            }
+            this.eventBus.send("fetch-logger", array);
         } catch (JMSException e) {
             e.printStackTrace();
         }
@@ -45,4 +59,7 @@ public class AsyncEmployeeFetcher implements MessageListener {
 
     @Inject
     JMSContext context;
+
+    @Inject
+    VertxEventBus eventBus;
 }

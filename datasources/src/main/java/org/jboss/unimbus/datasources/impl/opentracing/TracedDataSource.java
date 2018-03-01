@@ -13,7 +13,6 @@ import javax.resource.Referenceable;
 import javax.sql.DataSource;
 
 import org.jboss.jca.adapters.jdbc.WrapperDataSource;
-import org.jboss.unimbus.datasources.TraceMode;
 
 /**
  * Created by bob on 2/26/18.

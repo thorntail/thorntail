@@ -23,7 +23,7 @@ public class TracedJMSProducer extends SimpleWrappedJMSProducer {
     }
 
     public JMSProducer send(Destination destination, Message message) {
-        Tracer.SpanBuilder builder = TraceUtils.build("send", message, destination);
+        Tracer.SpanBuilder builder = TraceUtils.build("jms-send", message, destination);
         ActiveSpan sendSpan = null;
         if (builder != null) {
             builder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_PRODUCER);

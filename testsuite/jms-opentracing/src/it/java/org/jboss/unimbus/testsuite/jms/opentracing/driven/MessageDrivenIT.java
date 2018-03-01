@@ -50,12 +50,12 @@ public class MessageDrivenIT {
 
         for (SpanNode send : root.getChildren()) {
             assertThat(send).hasChildSpans(1);
-            assertThat(send).hasOperationName("send");
+            assertThat(send).hasOperationName("jms-send");
             assertThat(send).hasTag("span.kind", "producer");
             assertThat(send).hasTag("message_bus.destination", "driven");
             SpanNode receive = send.getChildren().get(0);
             assertThat(receive).hasNoChildSpans();
-            assertThat(receive).hasOperationName("receive");
+            assertThat(receive).hasOperationName("jms-receive");
             assertThat(receive).hasTag("span.kind", "consumer");
             assertThat(receive).hasTag("message_bus.destination", "driven");
             assertThat(receive).hasTag("jms.message.id");

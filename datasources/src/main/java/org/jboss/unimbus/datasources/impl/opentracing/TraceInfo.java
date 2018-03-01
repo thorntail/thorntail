@@ -6,7 +6,7 @@ import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 import io.opentracing.util.GlobalTracer;
-import org.jboss.unimbus.datasources.TraceMode;
+import org.jboss.unimbus.TraceMode;
 
 /**
  * Created by bob on 2/27/18.

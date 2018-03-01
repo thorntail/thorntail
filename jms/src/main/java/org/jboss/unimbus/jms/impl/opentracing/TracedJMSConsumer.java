@@ -30,7 +30,7 @@ public class TracedJMSConsumer extends SimpleWrappedJMSConsumer {
             return message;
         }
         SpanContext parent = TraceUtils.extract(message);
-        Tracer.SpanBuilder builder = TraceUtils.build("receive", message);
+        Tracer.SpanBuilder builder = TraceUtils.build("jms-receive", message);
         if (builder != null) {
             if (parent != null) {
                 builder.asChildOf(parent);

@@ -1,5 +1,6 @@
 package org.jboss.unimbus.datasources;
 
+import org.jboss.unimbus.TraceMode;
 import org.jboss.unimbus.jdbc.DriverMetaData;
 
 /**

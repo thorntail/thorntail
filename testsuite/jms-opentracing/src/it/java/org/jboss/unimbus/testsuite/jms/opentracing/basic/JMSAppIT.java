@@ -56,14 +56,14 @@ public class JMSAppIT {
 
         for (SpanNode spanNode : root.getChildren()) {
             assertThat(spanNode.getTags()).hasSize(2);
-            assertThat(spanNode.operationName()).isEqualTo("send");
+            assertThat(spanNode.operationName()).isEqualTo("jms-send");
             assertThat(spanNode.getTags().get(Tags.MESSAGE_BUS_DESTINATION.getKey())).isEqualTo("test");
             assertThat(spanNode.getTags().get(Tags.SPAN_KIND.getKey())).isEqualTo(Tags.SPAN_KIND_PRODUCER);
             assertThat(spanNode.getChildren()).hasSize(1);
 
             SpanNode child = spanNode.getChildren().get(0);
             assertThat(child.getTags()).hasSize(3);
-            assertThat(child.operationName()).isEqualTo("receive");
+            assertThat(child.operationName()).isEqualTo("jms-receive");
             assertThat(child.getTags().get(Tags.MESSAGE_BUS_DESTINATION.getKey())).isEqualTo("test");
             assertThat(child.getTags().get(Tags.SPAN_KIND.getKey())).isEqualTo(Tags.SPAN_KIND_CONSUMER);
             assertThat(child.getTags().get("jms.message.id")).isNotNull();

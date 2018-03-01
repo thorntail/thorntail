@@ -7,7 +7,7 @@ import javax.resource.spi.ConnectionManager;
 
 import org.jboss.jca.adapters.jdbc.WrapperDataSource;
 import org.jboss.jca.adapters.jdbc.local.LocalManagedConnectionFactory;
-import org.jboss.unimbus.datasources.TraceMode;
+import org.jboss.unimbus.TraceMode;
 
 /**
  * Created by bob on 2/26/18.

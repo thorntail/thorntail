@@ -5,7 +5,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
-import org.jboss.unimbus.datasources.TraceMode;
+import org.jboss.unimbus.TraceMode;
 import org.jboss.unimbus.jpa.impl.EntityManagerResourceProvider;
 
 /**

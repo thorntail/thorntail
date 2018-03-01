@@ -1,7 +1,7 @@
-package org.jboss.unimbus.datasources;
+package org.jboss.unimbus;
 
 /**
- * Mode for tracing of datasource activity if {@code opentracing} is available.
+ * Mode for tracing of activity if {@code opentracing} is available.
  */
 public enum TraceMode {
     /**

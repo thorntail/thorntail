@@ -5,6 +5,7 @@ import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.tag.Tags;
 import io.opentracing.util.GlobalTracer;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
 
 /**
@@ -28,6 +29,17 @@ class TraceUtils {
         }
 
         MessageAdapter carrier = new MessageAdapter(message);
+        SpanContext context = tracer.activeSpan().context();
+        tracer.inject( context, Format.Builtin.HTTP_HEADERS, carrier);
+    }
+
+    static void inject(DeliveryOptions options) {
+        Tracer tracer = GlobalTracer.get();
+        if ( tracer == null ) {
+            return;
+        }
+
+        DeliveryOptionsAdapter carrier = new DeliveryOptionsAdapter(options);
         SpanContext context = tracer.activeSpan().context();
         tracer.inject( context, Format.Builtin.HTTP_HEADERS, carrier);
     }
