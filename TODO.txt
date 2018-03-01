@@ -34,6 +34,7 @@ name: MyPU
 ...]
 
 Likely an issue with EMF not being cached properly
+This is visible in the opentracing-jaeger testsuite console output.
 
 . Low priority
 
