@@ -136,39 +136,40 @@ public class TypeUtil {
         return OBJECT_FORMAT;
     }
 
-    public static Class<?> getClass(Type type) {
+    public static Class<?> getClass(Type type) throws ClassNotFoundException {
         return getClass(getName(type).toString());
     }
 
-    public static Class<?> getClass(String name) {
-        try {
-            return Class.forName(name);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public static Class<?> getClass(String name) throws ClassNotFoundException {
+        return Class.forName(name);
     }
 
     /**
      * Test whether testSubject is an instanceof type test.
-     *
+     * <p>
      * For example, test whether List is a Collection.
-     *
+     * <p>
      * Attempts to work with both Jandex and using standard class.
      *
-     * @param index Jandex index
+     * @param index       Jandex index
      * @param testSubject type to test
-     * @param testObject type to test against
+     * @param testObject  type to test against
      * @return true if is of type
      */
     public static boolean isA(IndexView index, Type testSubject, Type testObject) {
         // First, look in Jandex, as target might not be in our classloader
-        ClassInfo jandexKlazz = index.getClassByName(getName(testSubject));
-        if (jandexKlazz != null) {
-            return jandexKlazz.interfaceNames().contains(getName(testObject)) || hasSuper(index, jandexKlazz, testObject);
+        ClassInfo subJandexKlazz = index.getClassByName(getName(testSubject));
+
+        if (subJandexKlazz != null) {
+            return subJandexKlazz.interfaceNames().contains(getName(testObject)) || hasSuper(index, subJandexKlazz, testObject);
         } else {
-            Class<?> subjectKlazz = TypeUtil.getClass(testSubject);
-            Class<?> objectKlazz = TypeUtil.getClass(testObject);
-            return objectKlazz.isAssignableFrom(subjectKlazz);
+            try {
+                Class<?> subjectKlazz = TypeUtil.getClass(testSubject);
+                Class<?> objectKlazz = TypeUtil.getClass(testObject);
+                return objectKlazz.isAssignableFrom(subjectKlazz);
+            } catch (ClassNotFoundException nfe) {
+                return false;
+            }
         }
     }
 
@@ -184,7 +185,7 @@ public class TypeUtil {
                     Class<?> subjectKlazz = TypeUtil.getClass(testSubject.name().toString());
                     Class<?> objectKlazz = TypeUtil.getClass(testObject);
                     return objectKlazz.isAssignableFrom(subjectKlazz);
-                } catch (RuntimeException e) {
+                } catch (ClassNotFoundException nfe) {
                     return false;
                 }
             }
