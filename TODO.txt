@@ -1,7 +1,7 @@
 . High priority
 
 - test keycloak integration using docker
-- Some type of BOM to bring the bits together. Maybe just 3 types: Stable, New/Experimental, Deprecated
+- Some type of BOM to bring the bits together. Stick to 1 for now
 - Pieces to implement:
   - MP REST Client
   - MP JWT

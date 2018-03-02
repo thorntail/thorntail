@@ -52,4 +52,12 @@ Frameworks are easier to integrate into an existing app; a platform becomes the 
 
 Ensure the definition of "done" includes both tests and documentation.
 
+.Productization complexity
 
+The greater divergence between community and product, the more effort is required for productization.
+Complicating any process to automate productization from community.
+
+.BOM complexity
+
+Related to productization as well, but of itself having a handful of BOMs made life confusing for us and for users.
+There were often times where fractions would be "Unstable" or "Experimental" for months with no real reason other than we forgot to update it.
