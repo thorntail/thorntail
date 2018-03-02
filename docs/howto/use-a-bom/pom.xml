@@ -13,7 +13,7 @@
    <parent>
     <groupId>org.wildfly.swarm.howto</groupId>
     <artifactId>howto-parent</artifactId>
-    <version>2018.3.0-SNAPSHOT</version>
+    <version>2018.3.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -23,7 +23,7 @@
 
   <properties>
     <!-- tag::property[] -->
-    <version.wildfly-swarm>2018.3.0-SNAPSHOT</version.wildfly-swarm>
+    <version.wildfly-swarm>2018.3.0</version.wildfly-swarm>
     <!-- end::property[] -->
   </properties>
 
