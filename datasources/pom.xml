@@ -33,12 +33,6 @@
       <groupId>org.jboss.unimbus</groupId>
       <artifactId>unimbus-jta</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-opentracing</artifactId>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
 
     <dependency>
       <groupId>org.jboss.ironjacamar</groupId>

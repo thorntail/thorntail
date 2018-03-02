@@ -1,5 +1,6 @@
 package org.jboss.unimbus.vertx.impl.opentracing;
 
+import io.opentracing.ActiveSpan;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
@@ -40,8 +41,11 @@ class TraceUtils {
         }
 
         DeliveryOptionsAdapter carrier = new DeliveryOptionsAdapter(options);
-        SpanContext context = tracer.activeSpan().context();
-        tracer.inject( context, Format.Builtin.HTTP_HEADERS, carrier);
+        ActiveSpan span = tracer.activeSpan();
+        if ( span != null ) {
+            SpanContext context = span.context();
+            tracer.inject(context, Format.Builtin.HTTP_HEADERS, carrier);
+        }
     }
 
     static Tracer.SpanBuilder build(String operationName, Message message) {
@@ -62,6 +66,8 @@ class TraceUtils {
         if (address != null) {
             builder.withTag(Tags.MESSAGE_BUS_DESTINATION.getKey(), address );
         }
+
+        builder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER);
 
         return builder;
     }

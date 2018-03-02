@@ -3,6 +3,7 @@ package org.jboss.unimbus.util;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Utilities for working with Java classes and types.
@@ -22,6 +23,17 @@ public class Types {
         Set<Type> types = new HashSet<>();
         getTypeClosure(types, cls);
         return types;
+    }
+
+    public static Set<Type> getInterfaces(Class<?> cls) {
+        return filterInterfaces(getTypeClosure(cls));
+    }
+
+    public static Set<Type> filterInterfaces(Set<Type> types) {
+        return types.stream()
+                .filter(e->e instanceof Class)
+                .filter(e->((Class)e).isInterface())
+                .collect(Collectors.toSet());
     }
 
     private static void getTypeClosure(Set<Type> set, Class<?> cls) {

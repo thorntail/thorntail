@@ -9,8 +9,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Qualifier;
 import javax.interceptor.InterceptorBinding;
+
+import org.jboss.weld.bean.builtin.BeanManagerProxy;
 
 /**
  * Utility class for working with annotations.
@@ -123,6 +127,20 @@ public class Annotations {
 
         return null;
     }
+    public static <T extends Annotation> T getAnnotation(Object instance, Class<T> annotationType) {
+        Class<?> cur = instance.getClass();
+
+        while (cur != null) {
+            T anno = getAnnotation(cur.getAnnotations(), annotationType);
+            if (anno != null) {
+                return anno;
+            }
+            cur = cur.getSuperclass();
+        }
+
+        return null;
+
+    }
 
     /**
      * Retrieve one annotation of a method, by annotation class name.
@@ -148,6 +166,15 @@ public class Annotations {
         return null;
     }
 
+    private static <T extends Annotation> T getAnnotation(Annotation[] annos, Class<T> annotationType) {
+        for (Annotation anno : annos) {
+            if (anno.annotationType().equals(annotationType)) {
+                return (T) anno;
+            }
+        }
+        return null;
+    }
+
     /** Retrieve annotations of type of {@code @Qualifier}.
      *
      * @param cls The class to check.
@@ -162,11 +189,16 @@ public class Annotations {
             cur = cur.getSuperclass();
         }
 
+        BeanManager beanManager = CDI.current().getBeanManager();
+
         Set<Annotation> set = new HashSet<>();
         for (Annotation each : annotations) {
-            if (each.annotationType().getAnnotation(Qualifier.class) != null) {
-                set.add(each);
+            if ( beanManager.isQualifier(each.annotationType())) {
+                set.add( each );
             }
+            //if (each.annotationType().getAnnotation(Qualifier.class) != null) {
+                //set.add(each);
+            //}
         }
         return set;
     }

@@ -48,6 +48,16 @@ public interface CoreMessages extends BasicLogger {
     @Message(id = 20 + OFFSET, value = "Unable to process YAML configuration %s. Add snakeyaml to your dependencies to enable")
     void unableToProcessYaml(String url);
 
+    // --
+
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 30 + OFFSET, value = "No valid OpenTracing Tracer resolved")
+    void noValidTracer();
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 31 + OFFSET, value = "Registered OpenTracing Tracer '%s'")
+    void registeredTracer(String tracerClass);
+
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 999 + OFFSET, value = NAME + " started in %s")
     void started(String startTime);

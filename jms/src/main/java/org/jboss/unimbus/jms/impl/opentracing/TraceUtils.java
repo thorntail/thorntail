@@ -6,6 +6,7 @@ import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
+import io.opentracing.ActiveSpan;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
@@ -38,22 +39,18 @@ class TraceUtils {
 
     static SpanContext extract(Message message) {
         Tracer tracer = GlobalTracer.get();
-        if (tracer == null) {
-            return null;
-        }
         JMSMessageAdapter carrier = new JMSMessageAdapter(message);
         return tracer.extract(Format.Builtin.HTTP_HEADERS, carrier);
     }
 
     static void inject(Message message) {
         Tracer tracer = GlobalTracer.get();
-        if ( tracer == null ) {
-            return;
-        }
-
         JMSMessageAdapter carrier = new JMSMessageAdapter(message);
-        SpanContext context = tracer.activeSpan().context();
-        tracer.inject( context, Format.Builtin.HTTP_HEADERS, carrier);
+        ActiveSpan span = tracer.activeSpan();
+        if (span != null) {
+            SpanContext context = tracer.activeSpan().context();
+            tracer.inject(context, Format.Builtin.HTTP_HEADERS, carrier);
+        }
     }
 
     static Tracer.SpanBuilder build(String operationName, Message message) {
@@ -62,10 +59,6 @@ class TraceUtils {
 
     static Tracer.SpanBuilder build(String operationName, Message message, Destination destination) {
         Tracer tracer = GlobalTracer.get();
-        if (tracer == null) {
-            return null;
-        }
-
         Tracer.SpanBuilder builder = tracer.buildSpan(operationName);
 
         if (destination == null) {

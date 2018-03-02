@@ -1,6 +1,7 @@
 package org.jboss.unimbus;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,9 +43,8 @@ public class ActiveInstance<T> {
             injectionTarget.setInstantiator(new InstanceInstantiator(object));
         }
 
-        List<Decorator<?>> decorators = manager.resolveDecorators(bean.getTypes(), bean.getQualifiers().toArray(new Annotation[]{}));
-
-        decorators = filter(bean, decorators);
+        Set<Type> types = bean.getTypes();
+        List<Decorator<?>> decorators = manager.resolveDecorators(types, bean.getQualifiers().toArray(new Annotation[]{}));
 
         if (!decorators.isEmpty()) {
             Instantiator instantiator = injectionTarget.getInstantiator();
@@ -54,27 +54,6 @@ public class ActiveInstance<T> {
         this.context = manager.createCreationalContext(null);
         this.instance = bean.create(context);
 
-    }
-
-    List<Decorator<?>> filter(Bean<?> bean, List<Decorator<?>> decorators) {
-        List<Decorator<?>> filtered = new ArrayList<>();
-
-        List<Annotation> beanAnnos = Arrays.asList(bean.getBeanClass().getAnnotations());
-        Set<Class<? extends Annotation>> beanAnnoTypes = beanAnnos.stream().map(e -> e.annotationType()).collect(Collectors.toSet());
-
-        for (Decorator<?> decorator : decorators) {
-            List<Annotation> decoratorAnnos = Arrays.asList(decorator.getBeanClass().getAnnotations());
-            Set<Class<? extends Annotation>> decoratorAnnoTypes = decoratorAnnos.stream().map(e -> e.annotationType()).collect(Collectors.toSet());
-
-            for (Class<? extends Annotation> beanAnnoType : beanAnnoTypes) {
-                if ( decoratorAnnoTypes.contains(beanAnnoType ) ) {
-                    filtered.add(decorator);
-                    break;
-                }
-            }
-        }
-
-        return filtered;
     }
 
     /**

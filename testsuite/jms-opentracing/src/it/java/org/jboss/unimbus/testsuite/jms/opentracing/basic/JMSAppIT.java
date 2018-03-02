@@ -51,6 +51,10 @@ public class JMSAppIT {
         SpanTree tree = new SpanTree((MockTracer) this.tracer);
         assertThat(tree.getRootNodes()).hasSize(1);
 
+        System.err.println( "--- tree ---");
+        System.err.println( tree );
+        System.err.println( "--- tree ---");
+
         SpanNode root = tree.getRootNodes().get(0);
         assertThat(root.getChildren()).hasSize(3);
 

@@ -1,17 +1,13 @@
 package org.jboss.unimbus.testsuite.jms.driven;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+
+import org.eclipse.microprofile.opentracing.Traced;
 
 
 /**
@@ -24,6 +20,7 @@ import javax.jms.MessageListener;
                 @ActivationConfigProperty(propertyName = "useJndi", propertyValue = "false"),
         }
 )
+@Traced
 public class Receiver implements MessageListener {
 
 
