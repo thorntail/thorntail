@@ -1,0 +1,61 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/foo": {
+      "summary": "Foo Resource",
+      "description": "CRUD for Foos.",
+      "get": {
+        "tags": [ "tag1", "tag2" ],
+        "summary": "List Pets",
+        "description": "Returns all pets from the system that the user has access to",
+        "externalDocs": {
+          "description": "Find more info here",
+          "url": "https://example.com"
+        },
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "list": {
+                    "summary": "List of names",
+                    "value" : ["Bob","Diane","Mary","Bill"]
+                  },
+                  "empty":{
+                    "summary": "Empty List",
+                    "value": []
+                  }
+                }
+              },
+              "application/xml": {
+                "examples": {
+                  "list": {
+                    "summary": "List of names",
+                    "value": "<Users><User name='Bob'/><User name='Diane'/><User name='Mary'/><User name='Bill'/></Users>"
+                  },
+                  "empty": {
+                    "summary":"Empty",
+                    "value": "<Users/>"
+                  }
+                }
+              },
+              "text/plain": {
+                "examples": {
+                  "list": {
+                    "summary": "List of names",
+                    "value": "Bob,Diane,Mary,Bill"
+                  },
+                  "empty": {
+                    "summary": "Empty",
+                    "value" : ""
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

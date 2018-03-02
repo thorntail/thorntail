@@ -747,9 +747,10 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
-        <artifactId>mp_fault_tolerance_cdi_extension</artifactId>
-        <version>2017.12.0-SNAPSHOT</version>
+        <artifactId>microprofile-openapi</artifactId>
+        <version>2018.3.0-SNAPSHOT</version>
       </dependency>
+
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>microprofile-fault-tolerance</artifactId>
@@ -1048,6 +1049,7 @@
     <module>fractions/microprofile/microprofile-health</module>
     <module>fractions/microprofile/microprofile-jwt</module>
     <module>fractions/microprofile/microprofile-metrics</module>
+    <module>fractions/microprofile/microprofile-openapi</module>
     <module>fractions/microprofile/microprofile-fault-tolerance</module>
     <module>fractions/microprofile/microprofile</module>
     <module>fractions/monitor</module>
@@ -1282,6 +1284,7 @@
         <module>testsuite/testsuite-management-console</module>
         <module>testsuite/testsuite-messaging</module>
         <module>testsuite/testsuite-messaging-remote</module>
+        <module>testsuite/testsuite-microprofile-openapi</module>
         <module>testsuite/testsuite-mod_cluster</module>
         <module>testsuite/testsuite-opentracing</module>
         <module>testsuite/testsuite-resource-adapters</module>
@@ -1381,6 +1384,7 @@
         <module>testsuite/microprofile-tcks/metrics</module>
         <module>testsuite/microprofile-tcks/fault-tolerance</module>
         <module>testsuite/microprofile-tcks/restclient</module>
+        <module>testsuite/microprofile-tcks/openapi</module>
       </modules>
     </profile>
 

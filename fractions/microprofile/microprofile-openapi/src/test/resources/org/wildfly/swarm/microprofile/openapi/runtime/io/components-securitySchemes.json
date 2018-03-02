@@ -1,0 +1,49 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "securitySchemes": {
+      "BASIC": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "APIKey": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      },
+      "JWT": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "ImplicitOAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "https://example.com/api/oauth/dialog",
+            "scopes": {
+              "write:pets": "modify pets in your account",
+              "read:pets": "read your pets"
+            }
+          }
+        }
+      },
+      "ClientCredentialsOAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://example.com/api/oauth/token",
+            "refreshUrl": "https://example.com/api/oauth/refresh",
+            "scopes": {
+              "write:client": "modify clients",
+              "read:admin": "read admin info"
+            }
+          }
+        }
+      },
+      "RefAuth": {
+        "$ref": "#/other/Ref"
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "schemas": {
+	    "Example": {
+	      "type": "object",
+	      "properties": {
+	        "id": {
+	          "type": "integer",
+	          "format": "int64"
+	        },
+	        "name": {
+	          "type": "string"
+	        }
+	      },
+	      "additionalProperties" : {
+	        "type": "object",
+	        "required": [
+	          "name"
+	        ],
+	        "properties": {
+	          "name": {
+	            "type": "string"
+	          },
+	          "address": {
+	            "$ref": "#/definitions/Address"
+	          },
+	          "age": {
+	            "type": "integer",
+	            "format": "int32",
+	            "minimum": 0
+	          }
+	        }
+	      }
+	    }
+	  }
+  }
+}

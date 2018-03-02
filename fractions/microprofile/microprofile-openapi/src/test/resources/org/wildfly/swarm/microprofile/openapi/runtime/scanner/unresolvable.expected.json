@@ -1,0 +1,19 @@
+{
+  "components": {
+    "schemas": {
+      "org.wildfly.swarm.microprofile.openapi.runtime.entity.Bar": {
+        "properties": {
+          "theQ": {
+            "type": "object"
+          },
+          "theT": {
+            "type": "object"
+          },
+          "ultimateTShouldBeQ": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}
