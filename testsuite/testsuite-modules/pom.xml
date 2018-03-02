@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.wildfly.swarm.testsuite</groupId>
     <artifactId>testsuite-parent</artifactId>
-    <version>2018.3.0</version>
+    <version>2018.4.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
