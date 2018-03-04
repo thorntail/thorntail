@@ -100,6 +100,7 @@ public class PackageTask extends DefaultTask {
                 .properties(getPropertiesFromFile())
                 .properties(PropertiesUtil.filteredSystemProperties(propertiesFromExtension, false))
                 .fractionDetectionMode(getSwarmExtension().getFractionDetectMode())
+                .hollow(getHollow())
                 .additionalModules(moduleDirs.stream()
                                            .filter(File::exists)
                                            .map(File::getAbsolutePath)
@@ -223,6 +224,12 @@ public class PackageTask extends DefaultTask {
     }
 
     @Input
+    @Optional
+    private Boolean getHollow() {
+        return getSwarmExtension().getHollow();
+    }
+
+    @Input
     private boolean getExecutable() {
         return getSwarmExtension().getExecutable();
     }
@@ -270,7 +277,7 @@ public class PackageTask extends DefaultTask {
     }
 
     private String getBaseName() {
-        return getProject().getName();
+        return getProject().getName() + (this.getHollow() ? "-hollow" : "");
     }
 
     private Path getOutputDirectory() {

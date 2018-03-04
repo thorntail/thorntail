@@ -51,6 +51,8 @@ public class SwarmExtension {
 
     private BuildTool.FractionDetectionMode fractionDetectMode = BuildTool.FractionDetectionMode.when_missing;
 
+    private Boolean hollow = false;
+
     public SwarmExtension(Project project) {
         this.project = project;
     }
@@ -130,5 +132,13 @@ public class SwarmExtension {
 
     public void setFractionDetectMode(BuildTool.FractionDetectionMode fractionDetectMode) {
         this.fractionDetectMode = fractionDetectMode;
+    }
+
+    public void setHollow(Boolean hollow) {
+        this.hollow = hollow;
+    }
+
+    public Boolean getHollow() {
+        return hollow;
     }
 }
