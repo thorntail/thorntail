@@ -275,9 +275,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 System.err.println("-> " + each.getKey());
             }*/
 
-        File executable = File.createTempFile(TempFileManager.WFSWARM_TMP_PREFIX + "arquillian", "-swarm.jar");
+        executable = File.createTempFile(TempFileManager.WFSWARM_TMP_PREFIX + "arquillian", "-swarm.jar");
         wrapped.as(ZipExporter.class).exportTo(executable, true);
-        executable.deleteOnExit();
 
         String mavenRepoLocal = System.getProperty("maven.repo.local");
 
@@ -357,6 +356,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
     public void stop() throws Exception {
         this.process.stop();
         TempFileManager.deleteRecursively(workingDirectory);
+        executable.delete();
     }
 
     private String ga(final MavenCoordinate coord) {
@@ -413,6 +413,8 @@ public class UberjarSimpleContainer implements SimpleContainer {
     private String javaVmArguments;
 
     private File workingDirectory;
+
+    private File executable;
 
 }
 
