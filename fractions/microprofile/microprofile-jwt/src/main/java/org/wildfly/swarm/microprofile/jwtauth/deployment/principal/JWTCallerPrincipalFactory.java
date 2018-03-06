@@ -84,19 +84,21 @@ public abstract class JWTCallerPrincipalFactory {
             URL u = cl.getResource("/META-INF/services/org.eclipse.microprofile.jwt.principal.JWTCallerPrincipalFactory");
             log.debugf("loadSpi, cl=%s, u=%s, sl=%s", cl, u, sl);
             try {
-                for (JWTCallerPrincipalFactory spi : sl) {
-                    if (instance != null) {
-                        throw new MultipleFactoriesException(spi.getClass().getName());
-                    } else {
-                        log.debugf("sl=%s, loaded=%s", sl, spi);
-                        instance = spi;
+                for (Object spi : sl) {
+                    if (spi instanceof JWTCallerPrincipalFactory) {
+                        if (instance != null) {
+                            throw new MultipleFactoriesException(spi.getClass().getName());
+                        } else {
+                            log.debugf("sl=%s, loaded=%s", sl, spi);
+                            instance = (JWTCallerPrincipalFactory)spi;
+                        }
                     }
                 }
             } catch (MultipleFactoriesException e) {
                 log.warn("Multiple JWTCallerPrincipalFactory implementations found: "
                           + e.getSpiClassName() + " and " + instance.getClass().getName());
             } catch (Throwable e) {
-                log.debugf("Failed to locate JWTCallerPrincipalFactory provider, e=%s", e);
+                log.warn("Failed to locate JWTCallerPrincipalFactory provider", e);
             }
         }
         return instance;
