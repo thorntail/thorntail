@@ -35,6 +35,12 @@
                <exclude name="testBulkheadQueReplacesDueToClassRetryFailures" />
             </methods>
          </class>
+         <class
+            name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchRetryTest">
+            <methods>
+               <exclude name="testBulkheadMethodAsynchronousRetry55Trip" />
+            </methods>
+         </class>
       </classes>
 
    </test>
