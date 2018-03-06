@@ -55,7 +55,7 @@ public abstract class JWTCallerPrincipalFactory {
                     newInstance = loadSpi(cl);
                 }
                 if (newInstance == null) {
-                    throw new IllegalStateException("No JWTCallerPrincipalFactory implementation found!");
+                    newInstance = new DefaultJWTCallerPrincipalFactory();
                 }
 
                 instance = newInstance;
@@ -86,17 +86,17 @@ public abstract class JWTCallerPrincipalFactory {
             try {
                 for (JWTCallerPrincipalFactory spi : sl) {
                     if (instance != null) {
-                        throw new IllegalStateException(
-                                "Multiple JWTCallerPrincipalFactory implementations found: "
-                                        + spi.getClass().getName() + " and "
-                                        + instance.getClass().getName());
+                        throw new MultipleFactoriesException(spi.getClass().getName());
                     } else {
                         log.debugf("sl=%s, loaded=%s", sl, spi);
                         instance = spi;
                     }
                 }
+            } catch (MultipleFactoriesException e) {
+                log.warn("Multiple JWTCallerPrincipalFactory implementations found: "
+                          + e.getSpiClassName() + " and " + instance.getClass().getName());
             } catch (Throwable e) {
-                log.warn("Failed to locate JWTCallerPrincipalFactory provider", e);
+                log.debugf("Failed to locate JWTCallerPrincipalFactory provider, e=%s", e);
             }
         }
         return instance;
@@ -119,4 +119,14 @@ public abstract class JWTCallerPrincipalFactory {
      * @throws ParseException on parse or verification failure.
      */
     public abstract JWTCallerPrincipal parse(String token, JWTAuthContextInfo authContextInfo) throws ParseException;
+
+    private static class MultipleFactoriesException extends Exception {
+        String spiClassName;
+        MultipleFactoriesException(String spiClassName) {
+            this.spiClassName = spiClassName;
+        }
+        String getSpiClassName() {
+            return spiClassName;
+        }
+    }
 }
