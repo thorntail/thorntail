@@ -1,0 +1,28 @@
+{
+  "components" : {
+    "schemas" : {
+      "org.wildfly.swarm.microprofile.openapi.runtime.entity.GenericTypeTestContainer" : {
+        "properties" : {
+          "theQ" : {
+            "type" : "string"
+          },
+          "theT" : {
+            "type" : "object",
+            "properties" : {
+              "hellofrombazzy" : {
+                "type" : "string"
+              },
+              "an_integer_value" : {
+                "format" : "int32",
+                "type" : "integer"
+              }
+            }
+          },
+          "ultimateTShouldBeQ" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}

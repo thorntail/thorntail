@@ -1,0 +1,37 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "requestBodies": {
+      "Body1": {
+        "description": "The request body.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/User"
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        },
+        "required": true
+      },
+      "Body2": {
+        "description": "The *other* request body.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/OtherUser"
+            }
+          }
+        },
+        "required": false
+      },
+      "RefBody": {
+        "$ref": "#/other/Ref"
+      }
+    }
+  }
+}

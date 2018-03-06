@@ -1,0 +1,283 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Generated API",
+    "version" : "1.0"
+  },
+  "paths" : {
+    "/apis" : {
+      "put" : {
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Api"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : { }
+        }
+      }
+    },
+    "/apis/{organizationId}/{apiId}/{version}" : {
+      "delete" : {
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "apiId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "version",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : { }
+        }
+      }
+    },
+    "/apis/{organizationId}/{apiId}/{version}/endpoint" : {
+      "get" : {
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "apiId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "version",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiEndpoint"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/clients" : {
+      "put" : {
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Client"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : { }
+        }
+      }
+    },
+    "/clients/{organizationId}/{clientId}/{version}" : {
+      "delete" : {
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "version",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : { }
+        }
+      }
+    },
+    "/system/status" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SystemStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ApiEndpoint" : {
+        "properties" : {
+          "endpoint" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Api" : {
+        "properties" : {
+          "apiId" : {
+            "type" : "string"
+          },
+          "apiPolicies" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "policyImpl" : {
+                  "type" : "string"
+                },
+                "policyJsonConfig" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "endpoint" : {
+            "type" : "string"
+          },
+          "endpointContentType" : {
+            "type" : "string"
+          },
+          "endpointProperties" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "endpointType" : {
+            "type" : "string"
+          },
+          "maxPayloadBufferSize" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "organizationId" : {
+            "type" : "string"
+          },
+          "parsePayload" : {
+            "type" : "boolean"
+          },
+          "publicAPI" : {
+            "type" : "boolean"
+          },
+          "version" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Client" : {
+        "properties" : {
+          "apiKey" : {
+            "type" : "string"
+          },
+          "clientId" : {
+            "type" : "string"
+          },
+          "contracts" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : {
+                "apiId" : {
+                  "type" : "string"
+                },
+                "apiOrgId" : {
+                  "type" : "string"
+                },
+                "apiVersion" : {
+                  "type" : "string"
+                },
+                "plan" : {
+                  "type" : "string"
+                },
+                "policies" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "object",
+                    "properties" : {
+                      "policyImpl" : {
+                        "type" : "string"
+                      },
+                      "policyJsonConfig" : {
+                        "type" : "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "organizationId" : {
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SystemStatus" : {
+        "properties" : {
+          "description" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "up" : {
+            "type" : "boolean"
+          },
+          "version" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
