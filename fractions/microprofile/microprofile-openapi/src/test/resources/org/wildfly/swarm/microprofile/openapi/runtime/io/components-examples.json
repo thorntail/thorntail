@@ -1,0 +1,25 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "examples": {
+      "Example1": {
+        "summary" : "Example 1 Summary",
+        "description": "Example 1 description.",
+        "value": "Example1Value"
+      },
+      "Example2": {
+        "summary" : "Example 2 Summary",
+        "description": "Example 2 description.",
+        "value": 47
+      },
+      "Example3": {
+        "summary" : "Example 1 Summary",
+        "description": "Example 1 description.",
+        "externalValue": "http://example.org/examples/address-example.xml"
+      },
+      "RefExample": {
+        "$ref": "#/other/Ref"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "components" : {
+    "schemas" : {
+      "org.wildfly.swarm.microprofile.openapi.runtime.entity.EnumContainer" : {
+        "properties" : {
+          "bazEnum" : {
+            "enum" : [ "Gold", "Green", "Orange" ],
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}

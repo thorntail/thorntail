@@ -1,0 +1,13 @@
+{
+	"openapi": "3.0.1",
+	"info": {
+		"title": "Model Reader API",
+		"description": "This is an API created by the Model Reader.",
+		"contact": {
+			"name": "API Support",
+			"url": "http://www.example.com/support",
+			"email": "support@example.com"
+		},
+		"version": "1.17"
+	}
+}

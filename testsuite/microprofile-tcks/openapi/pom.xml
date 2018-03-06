@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2010, Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>org.wildfly.swarm.testsuite</groupId>
+      <artifactId>wildlfy-swarm-microprofile-tck-parent</artifactId>
+      <version>2018.4.0-SNAPSHOT</version>
+   </parent>
+
+   <artifactId>wildlfy-swarm-microprofile-tck-openapi</artifactId>
+   <name>MicroProfile TCK: OpenAPI</name>
+
+   <dependencies>
+
+      <dependency>
+         <groupId>org.eclipse.microprofile.openapi</groupId>
+         <artifactId>microprofile-openapi-tck</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.wildfly.swarm</groupId>
+         <artifactId>microprofile-openapi</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.testng</groupId>
+         <artifactId>testng</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>org.jboss.arquillian.testng</groupId>
+         <artifactId>arquillian-testng-container</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+         <groupId>org.wildfly.swarm</groupId>
+         <artifactId>arquillian</artifactId>
+         <scope>test</scope>
+         <exclusions>
+            <!-- https://issues.jboss.org/browse/SWARM-1699 -->
+            <exclusion>
+               <groupId>org.jboss.arquillian.junit</groupId>
+               <artifactId>arquillian-junit-container</artifactId>
+            </exclusion>
+            <!-- The following enrichers are not needed by tck -->
+            <exclusion>
+              <groupId>org.jboss.arquillian.testenricher</groupId>
+              <artifactId>arquillian-testenricher-cdi</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.jboss.arquillian.testenricher</groupId>
+              <artifactId>arquillian-testenricher-ejb</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>commons-logging</groupId>
+         <artifactId>commons-logging</artifactId>
+      </dependency>
+
+   </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <suiteXmlFiles>
+                  <suiteXmlFile>src/test/tck-suite.xml</suiteXmlFile>
+               </suiteXmlFiles>
+               <!-- This workaround allows to run a single test using "test"
+                  system property -->
+               <!-- https://issues.apache.org/jira/browse/SUREFIRE-569 -->
+               <dependenciesToScan>
+                  <dependency>org.eclipse.microprofile.openapi:microprofile-openapi-tck</dependency>
+               </dependenciesToScan>
+               <systemPropertyVariables>
+                  <java.util.logging.config.file>${project.build.testOutputDirectory}/logging.properties</java.util.logging.config.file>
+                  <test.url>http://localhost:8080</test.url>
+               </systemPropertyVariables>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>
+
