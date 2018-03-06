@@ -1114,6 +1114,7 @@
 
         <module>fractions/javaee/jpa-spatial</module>
         <module>fractions/javaee/jpa-eclipselink</module>
+        <module>fractions/javaee/mvc</module>
 
 
         <!-- MP 1.3 -->
