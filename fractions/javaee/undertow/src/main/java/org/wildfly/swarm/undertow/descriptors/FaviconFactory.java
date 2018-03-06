@@ -19,8 +19,8 @@ import java.io.IOException;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.Remapper;
+import org.objectweb.asm.commons.RemappingClassAdapter;
 import org.wildfly.swarm.undertow.internal.FaviconErrorHandler;
 import org.wildfly.swarm.undertow.internal.FaviconServletExtension;
 
@@ -48,7 +48,7 @@ public final class FaviconFactory {
             }
         };
 
-        ClassRemapper adapter = new ClassRemapper(writer, remapper);
+        RemappingClassAdapter adapter = new RemappingClassAdapter(writer, remapper);
         reader.accept(adapter, ClassReader.EXPAND_FRAMES);
 
         writer.visitEnd();
@@ -72,7 +72,7 @@ public final class FaviconFactory {
             }
         };
 
-        ClassRemapper adapter = new ClassRemapper(writer, remapper);
+        RemappingClassAdapter adapter = new RemappingClassAdapter(writer, remapper);
         reader.accept(adapter, ClassReader.EXPAND_FRAMES);
 
         writer.visitEnd();
