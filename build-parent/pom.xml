@@ -105,7 +105,7 @@
     <version.microprofile-jwt-auth>1.0</version.microprofile-jwt-auth>
     <version.microprofile-metrics>1.1</version.microprofile-metrics>
     <version.microprofile.restclient>1.0</version.microprofile.restclient>
-    <version.microprofile-openapi>1.1-SNAPSHOT</version.microprofile-openapi>
+    <version.microprofile-openapi>1.0.1</version.microprofile-openapi>
     <!-- MP Config implementation -->
     <version.wildfly-microprofile-config>1.2.1</version.wildfly-microprofile-config>
 
@@ -151,7 +151,7 @@
       <dependency>
         <groupId>org.jboss</groupId>
         <artifactId>jandex</artifactId>
-        <version>2.0.3.Final</version>
+        <version>2.0.4.Final</version>
       </dependency>
 
 
@@ -670,54 +670,6 @@
             <version>${version.com.orbitz.consul}</version>
           </dependency>
 
-          <!-- MicroProfile -->
-          <dependency>
-            <groupId>org.eclipse.microprofile.config</groupId>
-            <artifactId>microprofile-config-api</artifactId>
-            <version>${version.microprofile-config}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-microprofile-config-implementation</artifactId>
-            <version>${version.wildfly-microprofile-config}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>microprofile-config-api</artifactId>
-            <version>${version.wildfly-microprofile-config}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
-            <artifactId>microprofile-fault-tolerance-api</artifactId>
-            <version>${version.microprofile-fault-tolerance}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.eclipse.microprofile.health</groupId>
-            <artifactId>microprofile-health-api</artifactId>
-            <version>${version.microprofile-health}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.eclipse.microprofile.metrics</groupId>
-            <artifactId>microprofile-metrics-api</artifactId>
-            <version>${version.microprofile-metrics}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.eclipse.microprofile.jwt</groupId>
-            <artifactId>microprofile-jwt-auth-api</artifactId>
-            <version>${version.microprofile-jwt-auth}</version>
-          </dependency>
-
-          <dependency>
-            <groupId>org.eclipse.microprofile.openapi</groupId>
-            <artifactId>microprofile-openapi-api</artifactId>
-            <version>${version.microprofile-openapi}</version>
-          </dependency>
         </dependencies>
       </dependencyManagement>
 
