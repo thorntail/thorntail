@@ -29,13 +29,6 @@
 
 . Bugs
 
-e.g., @MessageDriven by default creates a pool of 15, so I see this 15x
-INFO  : Thu Mar 01 10:44:01 EST 2018 [org.hibernate.jpa.internal.util.LogHelper] HHH000204: Processing PersistenceUnitInfo [
-name: MyPU
-...]
-
-Likely an issue with EMF not being cached properly
-This is visible in the opentracing-jaeger testsuite console output.
 
 . Low priority
 

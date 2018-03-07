@@ -1,6 +1,8 @@
 package org.jboss.unimbus.jpa.impl;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -22,6 +24,12 @@ import org.jboss.weld.injection.spi.ResourceReferenceFactory;
  */
 public class JpaServices implements JpaInjectionServices {
 
+    private String emptyScopeDefaultName;
+
+    private Map<String, ResourceReferenceFactory<EntityManagerFactory>> emfs = new ConcurrentHashMap<>();
+
+    private Map<String, ResourceReferenceFactory<EntityManager>> ems = new ConcurrentHashMap<>();
+
     @Override
     public ResourceReferenceFactory<EntityManager> registerPersistenceContextInjectionPoint(InjectionPoint injectionPoint) {
         final PersistenceContext context = getResourceAnnotated(injectionPoint).getAnnotation(PersistenceContext.class);
@@ -35,12 +43,19 @@ public class JpaServices implements JpaInjectionServices {
         Config config = ConfigProviderResolver.instance().getConfig();
 
         Optional<TraceMode> traceMode = config.getOptionalValue("jpa." + scopedPuName + ".trace", TraceMode.class);
-        if ( traceMode.isPresent() &&  traceMode.get() != TraceMode.OFF ) {
+        if (traceMode.isPresent() && traceMode.get() != TraceMode.OFF) {
             JpaMessages.MESSAGES.tracingEnabled(scopedPuName);
-            return new TracedEntityManagerResourceProvider(traceMode.get(), scopedPuName);
+
+            if (!ems.containsKey(scopedPuName)) {
+                ems.put(scopedPuName, new TracedEntityManagerResourceProvider(traceMode.get(), scopedPuName));
+            }
         }
 
-        return new EntityManagerResourceProvider(scopedPuName);
+        if (!ems.containsKey(scopedPuName)) {
+            ems.put(scopedPuName, new EntityManagerResourceProvider(scopedPuName));
+        }
+
+        return ems.get(scopedPuName);
     }
 
     @Override
@@ -53,7 +68,11 @@ public class JpaServices implements JpaInjectionServices {
         String scopedPuName = getScopedPuName(context.unitName());
         JpaMessages.MESSAGES.createFactoryForPersistence(PersistenceUnit.class, scopedPuName);
 
-        return new EntityManagerFactoryResourceProvider(scopedPuName);
+        if (!emfs.containsKey(scopedPuName)) {
+            emfs.put(scopedPuName, new EntityManagerFactoryResourceProvider(scopedPuName));
+        }
+
+        return emfs.get(scopedPuName);
     }
 
     @Override
@@ -81,6 +100,13 @@ public class JpaServices implements JpaInjectionServices {
     private String getScopedPuName(String unitName) {
         return (null != unitName && unitName.trim().length() > 0)
                 ? unitName
-                : new PersistenceUnitDescriptorProducer().persistenceUnitDescriptor().getName();
+                :
+                (null != this.emptyScopeDefaultName
+                        ? this.emptyScopeDefaultName : getPersistentUnitNameFromDescriptor());
+    }
+
+    private String getPersistentUnitNameFromDescriptor() {
+        this.emptyScopeDefaultName = new PersistenceUnitDescriptorProducer().persistenceUnitDescriptor().getName();
+        return this.emptyScopeDefaultName;
     }
 }
