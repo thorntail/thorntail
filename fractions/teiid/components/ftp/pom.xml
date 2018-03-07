@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>teiid-components</artifactId>
-    <version>2018.4.0-SNAPSHOT</version>
+    <version>2018.3.2</version>
   </parent>
 
   <name>Teiid File Ftp Translator</name>
