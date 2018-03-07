@@ -38,6 +38,9 @@
     <properties>
         <!-- Do not upgrade until https://issues.jboss.org/browse/ARQ-2144 is fixed -->
         <version.testng>6.9.9</version.testng>
+        <!-- When upgrading testng, make sure to use swarm version of arquillian -->
+        <version.arquillian.testng>1.1.13.Final</version.arquillian.testng>
+        
         <!-- Overriding 2.19 due to https://issues.apache.org/jira/browse/SUREFIRE-1252 -->
         <version.maven-surefire>2.20.1</version.maven-surefire>
         <!-- commons-logging (needed by httpclient) is for some reason exluded -->
@@ -79,6 +82,13 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>${version.testng}</version>
+            <scope>test</scope>
+         </dependency>
+	     
+         <dependency>
+            <groupId>org.jboss.arquillian.testng</groupId>
+            <artifactId>arquillian-testng-container</artifactId>
+            <version>${version.arquillian.testng}</version>
             <scope>test</scope>
          </dependency>
 
