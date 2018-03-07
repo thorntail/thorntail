@@ -5,7 +5,6 @@
     <artifact name="io.opentracing:opentracing-noop:${version.opentracing}"/>
     <artifact name="io.opentracing.contrib:opentracing-tracerresolver:${version.opentracing.tracerresolver}"/>
     <artifact name="io.opentracing.contrib:opentracing-web-servlet-filter:${version.opentracing.servlet}"/>
-    <artifact name="io.opentracing.contrib:opentracing-spanmanager:${version.opentracing.spanmanager}"/>
   </resources>
 
   <dependencies>
