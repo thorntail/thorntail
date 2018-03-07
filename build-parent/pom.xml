@@ -82,10 +82,9 @@
     <version.zipkin>1.13.1</version.zipkin>
 
     <!-- OpenTracing related versions -->
-    <version.opentracing.tracerresolver>0.1.0</version.opentracing.tracerresolver>
-    <version.opentracing.servlet>0.0.9</version.opentracing.servlet>
-    <version.opentracing.spanmanager>0.0.5</version.opentracing.spanmanager>
-    <version.jaeger>0.20.0</version.jaeger>
+    <version.opentracing.tracerresolver>0.1.4</version.opentracing.tracerresolver>
+    <version.opentracing.servlet>0.1.0</version.opentracing.servlet>
+    <version.jaeger>0.25.0</version.jaeger>
     <version.jaeger.apache.thrift>0.9.2</version.jaeger.apache.thrift>
     <version.jaeger.apache.httpclient>4.2.5</version.jaeger.apache.httpclient>
     <version.jaeger.commons.logging>1.1.1</version.jaeger.commons.logging>

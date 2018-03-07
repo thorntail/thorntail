@@ -42,7 +42,7 @@
     <version.mockito>2.2.28</version.mockito>
 
     <!-- OpenTracing related versions. Needed at this level because it's used by testsuite -->
-    <version.opentracing>0.30.0</version.opentracing>
+    <version.opentracing>0.31.0</version.opentracing>
 
     <!-- NoSQL related versions.  Needed at this level because it's used by testsuite -->
     <version.mongodb.driver>3.2.2</version.mongodb.driver>
