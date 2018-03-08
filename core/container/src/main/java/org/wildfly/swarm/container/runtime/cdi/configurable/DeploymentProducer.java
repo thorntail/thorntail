@@ -100,8 +100,10 @@ public class DeploymentProducer {
                     LOGGER.debugv("Indexing asset: {0} from archive: {1}", entry.getKey().get(), archive.getName());
                     indexer.index(contentStream);
                 } catch (IOException indexerIOException) {
-                    LOGGER.warn("Failed parsing: " + entry.getKey().get() + " from archive: " + archive.getName(),
-                            indexerIOException);
+                    LOGGER.warnv(indexerIOException,
+                            "Failed parsing: {0} from archive: {1}",
+                            entry.getKey().get(),
+                            archive.getName());
                 }
             }
             Index index = indexer.complete();
