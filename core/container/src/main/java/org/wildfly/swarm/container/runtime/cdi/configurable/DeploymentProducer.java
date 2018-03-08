@@ -95,10 +95,15 @@ public class DeploymentProducer {
         } else {
             // No index found - index all classes found
             Indexer indexer = new Indexer();
-            for (Map.Entry<ArchivePath, Node> entry : archive.getContent(a -> a.get().endsWith(CLASS_SUFFIX)).entrySet()) {
+            for (Map.Entry<ArchivePath, Node> entry : archive.getContent(this::isClass).entrySet()) {
                 try (InputStream contentStream = entry.getValue().getAsset().openStream()) {
                     LOGGER.debugv("Indexing asset: {0} from archive: {1}", entry.getKey().get(), archive.getName());
                     indexer.index(contentStream);
+                } catch (IOException indexerIOException) {
+                    LOGGER.warnv(indexerIOException,
+                            "Failed parsing: {0} from archive: {1}",
+                            entry.getKey().get(),
+                            archive.getName());
                 }
             }
             Index index = indexer.complete();
@@ -119,6 +124,11 @@ public class DeploymentProducer {
                 }
             }
         }
+    }
+
+    private boolean isClass(ArchivePath a) {
+        String path = a.get();
+        return path.endsWith(CLASS_SUFFIX) && !path.endsWith("module-info.class");
     }
 
 }
