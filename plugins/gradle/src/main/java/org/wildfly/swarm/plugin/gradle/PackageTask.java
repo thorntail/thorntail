@@ -273,7 +273,7 @@ public class PackageTask extends DefaultTask {
 
     @OutputFile
     private File getOutputFile() {
-        return BuildTool.getOutputFile(getBaseName(), getOutputDirectory());
+        return BuildTool.getOutputFile(getBaseName() + "-swarm.jar", getOutputDirectory());
     }
 
     private String getBaseName() {

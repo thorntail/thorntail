@@ -438,7 +438,7 @@ public class BuildTool {
     }
 
     public static File getOutputFile(String baseName, Path directory) {
-        return new File(directory.toFile(), baseName + "-swarm.jar");
+        return new File(directory.toFile(), baseName);
     }
 
     private File createJar(String baseName, Path dir) throws IOException {
