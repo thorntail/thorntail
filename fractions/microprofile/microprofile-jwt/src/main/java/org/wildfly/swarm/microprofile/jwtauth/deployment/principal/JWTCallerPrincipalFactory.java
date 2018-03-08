@@ -87,16 +87,15 @@ public abstract class JWTCallerPrincipalFactory {
                 for (Object spi : sl) {
                     if (spi instanceof JWTCallerPrincipalFactory) {
                         if (instance != null) {
-                            throw new MultipleFactoriesException(spi.getClass().getName());
+                            log.warn("Multiple JWTCallerPrincipalFactory implementations found: "
+                                + spi.getClass().getName() + " and " + instance.getClass().getName());
+                            break;
                         } else {
                             log.debugf("sl=%s, loaded=%s", sl, spi);
                             instance = (JWTCallerPrincipalFactory)spi;
                         }
                     }
                 }
-            } catch (MultipleFactoriesException e) {
-                log.warn("Multiple JWTCallerPrincipalFactory implementations found: "
-                          + e.getSpiClassName() + " and " + instance.getClass().getName());
             } catch (Throwable e) {
                 log.warn("Failed to locate JWTCallerPrincipalFactory provider", e);
             }
@@ -121,14 +120,4 @@ public abstract class JWTCallerPrincipalFactory {
      * @throws ParseException on parse or verification failure.
      */
     public abstract JWTCallerPrincipal parse(String token, JWTAuthContextInfo authContextInfo) throws ParseException;
-
-    private static class MultipleFactoriesException extends Exception {
-        String spiClassName;
-        MultipleFactoriesException(String spiClassName) {
-            this.spiClassName = spiClassName;
-        }
-        String getSpiClassName() {
-            return spiClassName;
-        }
-    }
 }
