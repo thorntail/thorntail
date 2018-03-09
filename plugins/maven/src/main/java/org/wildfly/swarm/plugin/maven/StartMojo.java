@@ -200,7 +200,11 @@ public class StartMojo extends AbstractSwarmMojo {
             finalName = finalName + ".war";
         }
 
-        return executor(Paths.get(this.projectBuildDir, finalName), finalName, false);
+        Path warPath = Paths.get(this.projectBuildDir, finalName);
+        SwarmExecutor executor = executor(warPath, finalName, false);
+        // Specify swarm.app.path property so that repackaged war is used
+        executor.withProperty(BootstrapProperties.APP_PATH, warPath.toString());
+        return executor;
     }
 
 
