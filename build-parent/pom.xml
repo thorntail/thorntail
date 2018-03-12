@@ -140,6 +140,14 @@
       </dependency>
 
       <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>${version.org.arquillian}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.wildfly</groupId>
         <artifactId>wildfly-parent</artifactId>
         <version>${version.wildfly}</version>
