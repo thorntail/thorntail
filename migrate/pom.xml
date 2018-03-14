@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>org.jboss.unimbus</groupId>
+    <artifactId>unimbus-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jboss.unimbus.migrate</groupId>
+  <artifactId>unimbus-migrate</artifactId>
+  <packaging>jar</packaging>
+
+  <properties>
+    <version.maven>3.5.3</version.maven>
+    <version.maven-model-jdom>1.6</version.maven-model-jdom>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>unimbus-maven-plugin</artifactId>
+        <configuration>
+          <format>jar</format>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>package</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
+      <artifactId>unimbus-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+      <version>${version.maven}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.commonjava.maven</groupId>
+      <artifactId>maven3-model-jdom-support</artifactId>
+      <version>${version.maven-model-jdom}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+    </dependency>
+  </dependencies>
+</project>

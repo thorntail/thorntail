@@ -608,6 +608,8 @@
     <module>testsuite</module>
 
     <module>docs</module>
+
+    <module>migrate</module>
   </modules>
 
   <profiles>
