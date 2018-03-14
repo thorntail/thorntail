@@ -67,6 +67,22 @@ To use a property on the command line, pass it as a command-line parameter to th
 $ java -Dswarm.bind.address=127.0.0.1 -jar myapp-swarm.jar
 ----
 
+[discrete]
+==== Specifying JDBC drivers for Hollow Jars
+
+When executing a Hollow Jar,
+there's now a way to specify a JDBC Driver jar without needing to package it into the Hollow Jar.
+
+We can use the `swarm.classpath` System property:
+
+[source,shell]
+----
+$ java -Dswarm.classpath=./h2-1.4.196.jar -jar microprofile-jpa-hollow-swarm.jar example-jpa-jaxrs-cdi.war
+----
+
+The `swarm.classpath` property can accept multiple JARs separated by `;`,
+allowing multiple JDBC Drivers, or other libraries, to be added to the application module classpath.
+
 [#configuring-an-application-using-yaml]
 == Configuring an application using YAML
 

@@ -243,8 +243,6 @@ public class ApplicationEnvironment {
                 throw new RuntimeException(e);
             }
         });
-
-        this.manifests.sort(new ManifestComparator());
     }
 
     private void loadFractionManifests(ClassLoader cl) throws IOException {
@@ -305,8 +303,6 @@ public class ApplicationEnvironment {
 
             this.removeableDependencies.removeAll(applicationDependencies);
         }
-
-        this.manifests.sort(new ManifestComparator());
     }
 
     /**
