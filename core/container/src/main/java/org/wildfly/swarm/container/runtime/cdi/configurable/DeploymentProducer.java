@@ -16,19 +16,31 @@
 package org.wildfly.swarm.container.runtime.cdi.configurable;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.jboss.jandex.CompositeIndex;
+import org.jboss.jandex.Index;
+import org.jboss.jandex.IndexReader;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Indexer;
+import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.ArchiveAsset;
+import org.jboss.shrinkwrap.api.container.LibraryContainer;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.container.runtime.cdi.DeploymentContext;
+import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 
 /**
@@ -37,34 +49,86 @@ import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 @ApplicationScoped
 public class DeploymentProducer {
 
+    private static final Logger LOGGER = Logger.getLogger("org.wildfly.swarm.deployment");
+
     private static final String CLASS_SUFFIX = ".class";
+
+    private static final String JAR_SUFFIX = ".jar";
+
+    static final String INDEX_LOCATION = "META-INF/jandex.idx";
 
     @Inject
     DeploymentContext context;
 
     @Produces
     @DeploymentScoped
-    @Default
     Archive archive() {
         return context.getCurrentArchive();
     }
 
     @Produces
     @DeploymentScoped
-    @Default
     IndexView index() {
-        Indexer indexer = new Indexer();
-        Map<ArchivePath, Node> c = context.getCurrentArchive().getContent();
+        return createDeploymentIndex(context.getCurrentArchive());
+    }
+
+    IndexView createDeploymentIndex(Archive<?> deployment) {
+        List<IndexView> indexes = new ArrayList<IndexView>();
         try {
-            for (Map.Entry<ArchivePath, Node> each : c.entrySet()) {
-                if (each.getKey().get().endsWith(CLASS_SUFFIX)) {
-                    indexer.index(each.getValue().getAsset().openStream());
-                }
-            }
+            index(deployment, indexes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return indexer.complete();
+        return CompositeIndex.create(indexes);
     }
+
+    private void index(Archive<?> archive, List<IndexView> indexes) throws IOException {
+        LOGGER.debugv("Indexing archive: {0}", archive.getName());
+
+        // First try to load attached index
+        Node indexNode = archive.get(ArchivePaths.create(INDEX_LOCATION));
+        if (indexNode != null) {
+            try (InputStream indexStream = indexNode.getAsset().openStream()) {
+                LOGGER.debugv("Loading attached index from archive: {0}", archive.getName());
+                indexes.add(new IndexReader(indexStream).read());
+            }
+        } else {
+            // No index found - index all classes found
+            Indexer indexer = new Indexer();
+            for (Map.Entry<ArchivePath, Node> entry : archive.getContent(this::isClass).entrySet()) {
+                try (InputStream contentStream = entry.getValue().getAsset().openStream()) {
+                    LOGGER.debugv("Indexing asset: {0} from archive: {1}", entry.getKey().get(), archive.getName());
+                    indexer.index(contentStream);
+                } catch (IOException indexerIOException) {
+                    LOGGER.warnv(indexerIOException,
+                            "Failed parsing: {0} from archive: {1}",
+                            entry.getKey().get(),
+                            archive.getName());
+                }
+            }
+            Index index = indexer.complete();
+            indexes.add(index);
+        }
+
+        if (archive instanceof LibraryContainer) {
+            for (Map.Entry<ArchivePath, Node> entry : archive.getContent(a -> a.get().endsWith(JAR_SUFFIX)).entrySet()) {
+                if (entry.getValue().getAsset() instanceof ArchiveAsset) {
+                    ArchiveAsset archiveAsset = (ArchiveAsset) entry.getValue().getAsset();
+                    index(archiveAsset.getArchive(), indexes);
+                } else {
+                    try (InputStream contentStream = entry.getValue().getAsset().openStream()) {
+                        JARArchive jarArchive = ShrinkWrap.create(JARArchive.class, entry.getKey().get()).as(ZipImporter.class).importFrom(contentStream)
+                                .as(JARArchive.class);
+                        index(jarArchive, indexes);
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isClass(ArchivePath a) {
+        String path = a.get();
+        return path.endsWith(CLASS_SUFFIX) && !path.endsWith("module-info.class");
+    }
+
 }

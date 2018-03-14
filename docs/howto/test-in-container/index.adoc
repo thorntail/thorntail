@@ -4,7 +4,7 @@
 Using Arquillian, you have the capability of injecting unit tests into a
 running application. This allows you to verify your application is behaving
 correctly. There is an adapter for WildFly Swarm that makes Arquillian-based
-testing work well with WildFly Swarm&ndash;based applications.
+testing work well with WildFly Swarm{ndash}based applications.
 
 .Prerequisites
 

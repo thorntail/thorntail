@@ -4,7 +4,7 @@
 :sectanchors:
 :source-highlighter: coderay
 
-
+:ndash: &#x2013;
 
 = WildFly Swarm Documentation
 The WildFly Swarm Team

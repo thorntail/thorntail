@@ -68,6 +68,7 @@ public class SwaggerWebAppDeploymentProducer {
         WARArchive war = ShrinkWrap.create(WARArchive.class, "swagger-ui.war")
                 .addAsLibrary(relocatedJar)
                 .setContextRoot(this.fraction.getContext());
+        war.addClass(SwaggerDefaultUrlChangerServlet.class);
 
         // If any user content has been provided, merge that with the swagger-ui bits
         Archive<?> userContent = this.fraction.getWebContent();

@@ -37,6 +37,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.fractions.FractionDescriptor;
 import org.wildfly.swarm.fractions.FractionList;
 import org.wildfly.swarm.fractions.FractionUsageAnalyzer;
@@ -112,7 +113,16 @@ public class StartMojo extends AbstractSwarmMojo {
 
         final SwarmProcess process;
         try {
+
+            File tmp;
+            try {
+                tmp = Files.createTempFile("swarm-process-file", null).toFile();
+            } catch (IOException e) {
+                throw new MojoFailureException("Error while creating process file");
+            }
+
             process = executor.withDebug(debugPort)
+                    .withProcessFile(tmp)
                     .withProperties(this.properties)
                     .withStdoutFile(this.stdoutFile != null ? this.stdoutFile.toPath() : null)
                     .withStderrFile(this.stderrFile != null ? this.stderrFile.toPath() : null)
@@ -125,14 +135,6 @@ public class StartMojo extends AbstractSwarmMojo {
                                                       .collect(Collectors.toList())))
                     .execute();
 
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    // Sleeping for a few millis will give time to shutdown gracefully
-                    Thread.sleep(100L);
-                    process.stop(10, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                }
-            }));
             int startTimeoutSeconds;
             try {
                 startTimeoutSeconds = Integer.valueOf(this.properties.getProperty("start.timeout.seconds", "120"));
@@ -215,6 +217,7 @@ public class StartMojo extends AbstractSwarmMojo {
     @SuppressWarnings("deprecation")
     protected SwarmExecutor executor(final Path appPath, final String name,
                                      final boolean scanDependencies) throws MojoFailureException {
+
         final SwarmExecutor executor = new SwarmExecutor()
                 .withModules(expandModules())
                 .withProperty(BootstrapProperties.APP_NAME, name)
@@ -326,8 +329,8 @@ public class StartMojo extends AbstractSwarmMojo {
                 // multi-start doesn't have a projectBuildDir
 
                 File tmp = this.projectBuildDir != null ?
-                        Files.createTempFile(Paths.get(this.projectBuildDir), "swarm-", "-cp.txt").toFile() :
-                        Files.createTempFile("swarm-", "-cp.txt").toFile();
+                        Files.createTempFile(Paths.get(this.projectBuildDir), TempFileManager.WFSWARM_TMP_PREFIX + "swarm-", "-cp.txt").toFile() :
+                        Files.createTempFile(TempFileManager.WFSWARM_TMP_PREFIX + "swarm-", "-cp.txt").toFile();
 
                 tmp.deleteOnExit();
                 getPluginContext().put("swarm-cp-file", tmp);

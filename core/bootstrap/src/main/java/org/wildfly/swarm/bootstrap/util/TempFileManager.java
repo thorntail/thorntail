@@ -29,6 +29,8 @@ public class TempFileManager {
 
     public static final String TMPDIR_PROPERTY = "swarm.io.tmpdir";
 
+    public static final String WFSWARM_TMP_PREFIX = "wfswarm";
+
     public static final TempFileManager INSTANCE = new TempFileManager();
 
     private TempFileManager() {
@@ -43,24 +45,19 @@ public class TempFileManager {
                 }
             }
         }
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            INSTANCE.close();
-        }));
     }
 
     public File newTempDirectory(String base, String ext) throws IOException {
-        File tmp = File.createTempFile(base, ext, this.tmpDir);
+        File tmp = File.createTempFile(WFSWARM_TMP_PREFIX + base, ext, this.tmpDir);
         tmp.delete();
         tmp.mkdirs();
-        tmp.deleteOnExit();
         register(tmp);
         return tmp;
     }
 
     public File newTempFile(String base, String ext) throws IOException {
-        File tmp = File.createTempFile(base, ext, this.tmpDir);
+        File tmp = File.createTempFile(WFSWARM_TMP_PREFIX + base, ext, this.tmpDir);
         tmp.delete();
-        tmp.deleteOnExit();
         register(tmp);
         return tmp;
     }
@@ -69,26 +66,26 @@ public class TempFileManager {
         this.registered.add(file);
     }
 
-    private void close() {
+    public void close() {
         for (File file : registered) {
             deleteRecursively(file);
         }
     }
 
-    private void deleteRecursively(File file) {
-        if (!file.exists()) {
-            return;
+    public static boolean deleteRecursively(File f) {
+        if (!f.exists()) {
+            return false;
         }
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            if (files != null) {
-                for (File child : files) {
-                    deleteRecursively(child);
+        if (f.isDirectory()) {
+            File[] children = f.listFiles();
+            for (int i = 0; i < children.length; ++i) {
+                if (!deleteRecursively(children[i])) {
+                    return false;
                 }
             }
         }
 
-        file.delete();
+        return f.delete();
     }
 
     private Set<File> registered = Collections.newSetFromMap(new ConcurrentHashMap<>());

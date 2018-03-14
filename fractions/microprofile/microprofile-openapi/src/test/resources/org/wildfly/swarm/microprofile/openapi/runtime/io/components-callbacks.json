@@ -1,0 +1,52 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "callbacks": {
+      "Callback1": {
+        "$request.header#/put-url": {
+          "put": {
+            "requestBody": {
+              "description": "Callback payload",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/OtherPayload"
+                  }
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "webhook successfully processed and no retries will be performed"
+              }
+            }
+          }
+        }
+      },
+      "Callback2": {
+        "$request.body#/url": {
+          "post": {
+            "requestBody": {
+              "description": "Callback payload",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/SomePayload"
+                  }
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "webhook successfully processed and no retries will be performed"
+              }
+            }
+          }
+        }
+      },
+      "RefCallback": {
+        "$ref": "#/foo/RCB"
+      }
+    }
+  }
+}

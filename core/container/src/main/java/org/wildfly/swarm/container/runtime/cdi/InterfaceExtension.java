@@ -17,7 +17,6 @@ package org.wildfly.swarm.container.runtime.cdi;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -63,8 +62,6 @@ public class InterfaceExtension extends AbstractNetworkExtension<Interface> {
 
             Set<Bean<?>> ifaces = beanManager.getBeans(Interface.class, AnyLiteral.INSTANCE);
 
-            AtomicBoolean producerRequired = new AtomicBoolean(false);
-
             if (ifaces
                     .stream()
                     .noneMatch(e -> e.getQualifiers()
@@ -73,8 +70,7 @@ public class InterfaceExtension extends AbstractNetworkExtension<Interface> {
 
                 Interface iface = new Interface(interfaceName.name(), "0.0.0.0");
                 applyConfiguration(iface);
-                if (producerRequired.get()) {
-                    CommonBean<Interface> interfaceBean = CommonBeanBuilder.newBuilder(Interface.class)
+                CommonBean<Interface> interfaceBean = CommonBeanBuilder.newBuilder(Interface.class)
                             .beanClass(InterfaceExtension.class)
                             .scope(ApplicationScoped.class)
                             .addQualifier(AnyLiteral.INSTANCE)
@@ -84,8 +80,7 @@ public class InterfaceExtension extends AbstractNetworkExtension<Interface> {
                             .addType(Object.class)
                             .build();
 
-                    abd.addBean(interfaceBean);
-                }
+                abd.addBean(interfaceBean);
             }
         }
     }

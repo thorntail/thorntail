@@ -1,0 +1,15 @@
+{
+  "openapi" : "3.0.0",
+  "security" : [
+    {
+      "api_key": []
+    },
+    {
+      "api_key": [],
+      "petstore_auth": [
+        "write:pets",
+        "read:pets"
+      ]
+    }
+  ]
+}

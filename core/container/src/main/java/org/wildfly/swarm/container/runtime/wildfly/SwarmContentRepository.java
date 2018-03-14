@@ -39,7 +39,6 @@ package org.wildfly.swarm.container.runtime.wildfly;
 
 import java.io.BufferedInputStream;
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -70,6 +69,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 
 /**
  * A content-repository capable of providing a static bit of content.
@@ -94,17 +94,17 @@ public class SwarmContentRepository implements ContentRepository, Service<Conten
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
             byte[] sha1Bytes;
-            Path tmp = File.createTempFile("content", ".tmp").toPath();
-            try (OutputStream fos = Files.newOutputStream(tmp)) {
+            Path tmp = TempFileManager.INSTANCE.newTempFile("content", ".tmp").toPath();
+            try (OutputStream fos = Files.newOutputStream(tmp); BufferedInputStream bis = new BufferedInputStream(stream)) {
                 messageDigest.reset();
-                DigestOutputStream dos = new DigestOutputStream(fos, messageDigest);
-                BufferedInputStream bis = new BufferedInputStream(stream);
-                byte[] bytes = new byte[8192];
-                int read;
-                while ((read = bis.read(bytes)) > -1) {
-                    dos.write(bytes, 0, read);
+                try (DigestOutputStream dos = new DigestOutputStream(fos, messageDigest)) {
+                    byte[] bytes = new byte[8192];
+                    int read;
+                    while ((read = bis.read(bytes)) > -1) {
+                        dos.write(bytes, 0, read);
+                    }
+                    fos.flush();
                 }
-                fos.flush();
                 sha1Bytes = messageDigest.digest();
             }
             String key = toKey(sha1Bytes);
@@ -174,7 +174,6 @@ public class SwarmContentRepository implements ContentRepository, Service<Conten
     }
 
     public void removeAllContent() throws IOException {
-        IOException exception = null;
         for (URI uri : this.index.values()) {
             VirtualFile file = VFS.getChild(uri);
             file.delete();

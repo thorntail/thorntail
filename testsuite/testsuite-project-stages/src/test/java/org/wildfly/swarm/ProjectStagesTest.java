@@ -1,11 +1,16 @@
 package org.wildfly.swarm;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.junit.After;
 import org.junit.Test;
+import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
+import org.wildfly.swarm.bootstrap.util.JarFileManager;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 import org.wildfly.swarm.spi.api.config.ConfigView;
 
@@ -15,6 +20,17 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Bob McWhirter
  */
 public class ProjectStagesTest {
+
+    @After
+    public void tearDown() {
+        try {
+            JarFileManager.INSTANCE.close();
+            MavenResolvers.close();
+            TempFileManager.INSTANCE.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void testPropertyBasedConfigStagesFile() throws Exception {

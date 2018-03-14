@@ -16,17 +16,31 @@
 package org.wildfly.swarm.undertow.runtime;
 
 import category.CommunityOnly;
+
+import org.junit.After;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
+import org.wildfly.swarm.bootstrap.util.JarFileManager;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.undertow.UndertowFraction;
 import org.wildfly.swarm.undertow.descriptors.CertInfo;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.io.IOException;
+
 /**
  * @author Bob McWhirter
  */
 public class CertInfoProducerTest {
+
+    @After
+    public void tearDown() throws Exception {
+        JarFileManager.INSTANCE.close();
+        MavenResolvers.close();
+        TempFileManager.INSTANCE.close();
+    }
 
     @Test
     public void testDefaults() {

@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import org.wildfly.swarm.bootstrap.performance.Performance;
 /**
  * @author Bob McWhirter
  */
-public class MultiMavenResolver implements MavenResolver {
+public class MultiMavenResolver implements MavenResolver, Closeable {
 
 
     public MultiMavenResolver() {
@@ -52,6 +53,15 @@ public class MultiMavenResolver implements MavenResolver {
             return null;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void close() throws IOException {
+        for (MavenResolver resolver : this.resolvers) {
+            if (resolver instanceof Closeable) {
+                Closeable closeable = (Closeable) resolver;
+                closeable.close();
+            }
         }
     }
 

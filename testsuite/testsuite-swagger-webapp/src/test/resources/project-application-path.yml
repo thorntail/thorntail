@@ -1,0 +1,6 @@
+swarm:
+  swagger:
+    web-app:
+      json:
+        path: /rest/swagger.json
+      context: /api/docs

@@ -31,6 +31,7 @@ import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.ResourceLoaderSpec;
 import org.jboss.modules.ResourceLoaders;
 import org.wildfly.swarm.bootstrap.modules.DynamicModuleFinder;
+import org.wildfly.swarm.bootstrap.util.JarFileManager;
 
 /**
  * DriverModuleBuilder for applications that bring their own drivers.
@@ -77,9 +78,8 @@ public abstract class DriverModuleBuilder {
                 ModuleSpec.Builder builder = ModuleSpec.build(id);
 
                 for (File eachJar : optionalJars) {
-
                     try {
-                        JarFile jar = new JarFile(eachJar);
+                        JarFile jar = JarFileManager.INSTANCE.addJarFile(eachJar);
                         builder.addResourceRoot(ResourceLoaderSpec.createResourceLoaderSpec(
                                 ResourceLoaders.createIterableJarResourceLoader(jar.getName(), jar)
                         ));

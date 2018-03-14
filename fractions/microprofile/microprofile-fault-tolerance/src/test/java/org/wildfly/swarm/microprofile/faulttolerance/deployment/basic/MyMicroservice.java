@@ -55,16 +55,6 @@ public class MyMicroservice {
         return HELLO;
     }
 
-    @Timeout(200)
-    public String sayHelloTimeoutNoFallback() {
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return HELLO;
-    }
-
     @Asynchronous
     public Future<String> sayHelloAsync() {
         try {

@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>build-parent</artifactId>
-    <version>2018.3.0-SNAPSHOT</version>
+    <version>2018.4.0-SNAPSHOT</version>
     <relativePath>../../../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -73,6 +73,12 @@
     <dependency>
       <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
       <artifactId>microprofile-fault-tolerance-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.osgi</groupId>
+          <artifactId>org.osgi.annotation.versioning</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
    <!-- Test dependencies -->

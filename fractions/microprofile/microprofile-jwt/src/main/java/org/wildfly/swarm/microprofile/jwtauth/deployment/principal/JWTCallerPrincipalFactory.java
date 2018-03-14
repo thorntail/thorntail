@@ -55,7 +55,7 @@ public abstract class JWTCallerPrincipalFactory {
                     newInstance = loadSpi(cl);
                 }
                 if (newInstance == null) {
-                    throw new IllegalStateException("No JWTCallerPrincipalFactory implementation found!");
+                    newInstance = new DefaultJWTCallerPrincipalFactory();
                 }
 
                 instance = newInstance;
@@ -84,15 +84,16 @@ public abstract class JWTCallerPrincipalFactory {
             URL u = cl.getResource("/META-INF/services/org.eclipse.microprofile.jwt.principal.JWTCallerPrincipalFactory");
             log.debugf("loadSpi, cl=%s, u=%s, sl=%s", cl, u, sl);
             try {
-                for (JWTCallerPrincipalFactory spi : sl) {
-                    if (instance != null) {
-                        throw new IllegalStateException(
-                                "Multiple JWTCallerPrincipalFactory implementations found: "
-                                        + spi.getClass().getName() + " and "
-                                        + instance.getClass().getName());
-                    } else {
-                        log.debugf("sl=%s, loaded=%s", sl, spi);
-                        instance = spi;
+                for (Object spi : sl) {
+                    if (spi instanceof JWTCallerPrincipalFactory) {
+                        if (instance != null) {
+                            log.warn("Multiple JWTCallerPrincipalFactory implementations found: "
+                                + spi.getClass().getName() + " and " + instance.getClass().getName());
+                            break;
+                        } else {
+                            log.debugf("sl=%s, loaded=%s", sl, spi);
+                            instance = (JWTCallerPrincipalFactory)spi;
+                        }
                     }
                 }
             } catch (Throwable e) {

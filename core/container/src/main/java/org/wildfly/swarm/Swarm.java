@@ -653,8 +653,8 @@ public class Swarm {
             Resource each = iter.next();
             if (each.getName().endsWith(".class")) {
                 if (!each.getName().equals("module-info.class")) {
-                    try {
-                        indexer.index(each.openStream());
+                    try (InputStream is = each.openStream()) {
+                        indexer.index(is);
                     } catch (IOException e) {
                         // ignore
                     }

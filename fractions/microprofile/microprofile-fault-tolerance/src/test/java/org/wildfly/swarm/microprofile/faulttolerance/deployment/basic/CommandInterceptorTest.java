@@ -64,13 +64,6 @@ public class CommandInterceptorTest {
         assertTrue(MyFallbackHandler.DISPOSED.get());
     }
 
-    // TODO: should throw TimeoutException instead!
-    @Test(expected = RuntimeException.class)
-    public void testTimeoutNoFallback() {
-        service.sayHelloTimeoutNoFallback();
-        fail();
-    }
-
     @Test
     public void testHelloAsync() throws InterruptedException, ExecutionException {
         Object result = service.sayHelloAsync();

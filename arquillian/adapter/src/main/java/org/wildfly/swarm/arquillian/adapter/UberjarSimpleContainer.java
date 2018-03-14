@@ -65,6 +65,7 @@ import org.wildfly.swarm.tools.DeclaredDependencies;
 import org.wildfly.swarm.tools.exec.SwarmExecutor;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
+
 public class UberjarSimpleContainer implements SimpleContainer {
 
     private final ContainerContext containerContext;
@@ -274,7 +275,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 System.err.println("-> " + each.getKey());
             }*/
 
-        File executable = File.createTempFile("arquillian", "-swarm.jar");
+        File executable = File.createTempFile(TempFileManager.WFSWARM_TMP_PREFIX + "arquillian", "-swarm.jar");
         wrapped.as(ZipExporter.class).exportTo(executable, true);
         executable.deleteOnExit();
 
@@ -286,15 +287,14 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         executor.withProperty("java.net.preferIPv4Stack", "true");
 
-        File processFile = File.createTempFile("mainprocessfile", null);
-        processFile.deleteOnExit();
+        File processFile = File.createTempFile(TempFileManager.WFSWARM_TMP_PREFIX + "mainprocessfile", null);
 
         executor.withProcessFile(processFile);
 
         executor.withJVMArguments(getJavaVmArgumentsList());
         executor.withExecutableJar(executable.toPath());
 
-        File workingDirectory = TempFileManager.INSTANCE.newTempDirectory("arquillian", null);
+        workingDirectory = TempFileManager.INSTANCE.newTempDirectory("arquillian", null);
         executor.withWorkingDirectory(workingDirectory.toPath());
 
         this.process = executor.execute();
@@ -356,6 +356,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
     @Override
     public void stop() throws Exception {
         this.process.stop();
+        TempFileManager.deleteRecursively(workingDirectory);
     }
 
     private String ga(final MavenCoordinate coord) {
@@ -395,5 +396,6 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     private String javaVmArguments;
 
+    private File workingDirectory;
 }
 

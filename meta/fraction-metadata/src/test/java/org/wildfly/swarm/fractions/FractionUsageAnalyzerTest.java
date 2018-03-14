@@ -17,12 +17,14 @@ package org.wildfly.swarm.fractions;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.time.temporal.TemporalField;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.After;
 import org.junit.Test;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
@@ -30,6 +32,11 @@ import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import static org.fest.assertions.Assertions.assertThat;
 
 public class FractionUsageAnalyzerTest {
+
+    @After
+    public void tearDown() {
+        TempFileManager.INSTANCE.close();
+    }
 
     @Test
     public void testFractionMatching() throws Exception {
@@ -39,7 +46,6 @@ public class FractionUsageAnalyzerTest {
 
         final File out = Files.createTempFile(archive.getName(), ".war").toFile();
         archive.as(ZipExporter.class).exportTo(out, true);
-        out.deleteOnExit();
 
         analyzer.source(out);
         assertThat(analyzer.detectNeededFractions()
@@ -47,6 +53,8 @@ public class FractionUsageAnalyzerTest {
                            .filter(fd -> fd.getArtifactId().equals("jaxrs"))
                            .count())
                 .isEqualTo(1);
+
+        out.delete();
     }
 
     @Test
@@ -74,7 +82,6 @@ public class FractionUsageAnalyzerTest {
 
         final File out = Files.createTempFile(archive.getName(), ".war").toFile();
         archive.as(ZipExporter.class).exportTo(out, true);
-        out.deleteOnExit();
 
         analyzer.source(out);
         assertThat(analyzer.detectNeededFractions()
@@ -82,5 +89,7 @@ public class FractionUsageAnalyzerTest {
                            .filter(fd -> fd.getArtifactId().equals("undertow"))
                            .count())
                 .isEqualTo(1);
+
+        out.delete();
     }
 }

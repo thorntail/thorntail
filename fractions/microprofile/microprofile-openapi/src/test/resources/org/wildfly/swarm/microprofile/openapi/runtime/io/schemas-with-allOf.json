@@ -1,0 +1,26 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "schemas": {
+	    "Example": {
+	      "type": "object",
+	      "allOf": [
+	        {
+	          "$ref": "#/definitions/address"
+	        },
+	        {
+	          "properties": {
+	            "type": {
+	              "enum": [
+	                "residential",
+	                "business"
+	              ]
+	            }
+	          }
+	        }
+	      ],
+	      "additionalProperties" : false
+	    }
+	  }
+  }
+}

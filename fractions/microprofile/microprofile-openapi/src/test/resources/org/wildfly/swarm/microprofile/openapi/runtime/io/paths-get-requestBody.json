@@ -1,0 +1,25 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/foo": {
+      "get": {
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    }
+  }
+}

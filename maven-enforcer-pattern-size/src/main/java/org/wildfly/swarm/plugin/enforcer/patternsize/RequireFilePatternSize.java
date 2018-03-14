@@ -72,7 +72,7 @@ public class RequireFilePatternSize implements EnforcerRule {
                         new SimpleFileVisitor<Path>() {
                         @Override
                         public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) throws IOException {
-                             Matcher matcher = pattern.matcher(filePath.toAbsolutePath().toString());
+                             Matcher matcher = pattern.matcher(filePath.getFileName().toString());
                              if (matcher.matches()) {
                                  File file = filePath.toFile();
                                  matchedFiles.add(file);

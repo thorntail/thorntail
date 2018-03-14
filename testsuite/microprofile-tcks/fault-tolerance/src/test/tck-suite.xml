@@ -26,6 +26,23 @@
       <packages>
          <package name="org.eclipse.microprofile.fault.tolerance.tck.*" />
       </packages>
+
+      <classes>
+         <!-- Issues in the TCK -->
+         <class
+            name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadSynchRetryTest">
+            <methods>
+               <exclude name="testBulkheadQueReplacesDueToClassRetryFailures" />
+            </methods>
+         </class>
+         <class
+            name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchRetryTest">
+            <methods>
+               <exclude name="testBulkheadMethodAsynchronousRetry55Trip" />
+            </methods>
+         </class>
+      </classes>
+
    </test>
 
 </suite>

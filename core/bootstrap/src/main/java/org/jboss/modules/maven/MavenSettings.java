@@ -93,10 +93,10 @@ final class MavenSettings {
     }
 
     static MavenSettings parseSettingsXml(Path settings, MavenSettings mavenSettings) throws IOException {
-        try {
-            final MXParser reader = new MXParser();
+        final MXParser reader = new MXParser();
+
+        try (InputStream source = Files.newInputStream(settings, StandardOpenOption.READ)){
             reader.setFeature(FEATURE_PROCESS_NAMESPACES, false);
-            InputStream source = Files.newInputStream(settings, StandardOpenOption.READ);
             reader.setInput(source, null);
             int eventType;
             while ((eventType = reader.next()) != END_DOCUMENT) {
