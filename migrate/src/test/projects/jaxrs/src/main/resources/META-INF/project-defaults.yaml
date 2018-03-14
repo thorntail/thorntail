@@ -1,0 +1,3 @@
+swarm:
+  http:
+    port: 8081
