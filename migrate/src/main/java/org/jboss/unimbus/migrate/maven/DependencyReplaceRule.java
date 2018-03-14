@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.model.Dependency;
+import org.jboss.unimbus.Info;
 
 /**
  * Created by bob on 3/13/18.
@@ -24,6 +25,7 @@ public class DependencyReplaceRule extends DependencyRule {
         Dependency replacement = new Dependency();
         replacement.setGroupId(this.replacementGroupId);
         replacement.setArtifactId(this.replacementArtifactId);
+        replacement.setVersion("${version." + Info.KEY + "}");
         matches.add(new DependencyAddAction(this, replacement));
         return matches;
     }

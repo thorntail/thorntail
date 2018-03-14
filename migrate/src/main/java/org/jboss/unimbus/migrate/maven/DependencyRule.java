@@ -20,19 +20,31 @@ public abstract class DependencyRule implements ModelRule {
     public List<DependencyAction<?>> match(Model context) {
         List<DependencyAction<?>> matches = new ArrayList<>();
         for (Dependency dependency : context.getDependencies()) {
-            if (dependency.getGroupId().equals(this.groupId) && dependency.getArtifactId().equals(this.artifactId)) {
+            if (isMatch(dependency)) {
                 matches.addAll(createMatches(dependency));
             }
         }
         if (context.getDependencyManagement() != null) {
             for (Dependency dependency : context.getDependencyManagement().getDependencies()) {
-                if (dependency.getGroupId().equals(this.groupId) && dependency.getArtifactId().equals(this.artifactId)) {
+                if (isMatch((dependency))) {
                     matches.addAll(createMatches(dependency));
                 }
             }
         }
 
         return matches;
+    }
+
+    boolean isMatch(Dependency dependency) {
+        if (!dependency.getGroupId().equals(this.groupId)) {
+            return false;
+        }
+        if (this.artifactId.endsWith("*")) {
+            String simple = this.artifactId.substring(0, this.artifactId.length() - 1);
+            return dependency.getArtifactId().startsWith(simple);
+        }
+
+        return dependency.getArtifactId().equals(this.artifactId);
     }
 
     protected abstract List<? extends DependencyAction<?>> createMatches(Dependency context);

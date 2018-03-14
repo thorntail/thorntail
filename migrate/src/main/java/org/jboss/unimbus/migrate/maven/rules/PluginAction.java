@@ -4,6 +4,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.jboss.unimbus.Info;
 import org.jboss.unimbus.migrate.maven.ModelAction;
 
 /**
@@ -22,6 +23,7 @@ public class PluginAction implements ModelAction {
         Plugin replacement = new Plugin();
         replacement.setGroupId("org.jboss.unimbus");
         replacement.setArtifactId("unimbus-maven-plugin");
+        replacement.setVersion("${version." + Info.KEY + "}");
 
         Xpp3Dom config = new Xpp3Dom("configuration");
         Xpp3Dom format = new Xpp3Dom("format");

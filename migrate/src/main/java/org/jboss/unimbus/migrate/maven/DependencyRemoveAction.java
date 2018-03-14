@@ -14,5 +14,8 @@ public class DependencyRemoveAction extends DependencyAction<DependencyRule> {
     @Override
     public void apply(Model model) {
         model.getDependencies().remove(this.dependency);
+        if ( model.getDependencyManagement() != null ) {
+            model.getDependencyManagement().getDependencies().remove(this.dependency);
+        }
     }
 }
