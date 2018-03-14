@@ -81,6 +81,8 @@
     <version.zipkin.reporter>0.6.1</version.zipkin.reporter>
     <version.zipkin>1.13.1</version.zipkin>
 
+    <version.xnio>3.5.4.Final</version.xnio>
+
     <!-- OpenTracing related versions -->
     <version.opentracing.tracerresolver>0.1.4</version.opentracing.tracerresolver>
     <version.opentracing.servlet>0.1.0</version.opentracing.servlet>
@@ -91,6 +93,8 @@
     <version.jaeger.commons.codec>1.6</version.jaeger.commons.codec>
     <version.jaeger.apache.httpcore>4.2.4</version.jaeger.apache.httpcore>
     <version.jaeger.gson>2.8.0</version.jaeger.gson>
+
+    <version.javax.activation>1.1.1</version.javax.activation>
 
     <version.maven.aether>3.2.5</version.maven.aether>
 
@@ -350,6 +354,18 @@
         <version>${version.openshift.client}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.jboss.xnio</groupId>
+        <artifactId>xnio-api</artifactId>
+        <version>${version.xnio}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.xnio</groupId>
+        <artifactId>xnio-nio</artifactId>
+        <version>${version.xnio}</version>
+      </dependency>
+
       <!-- MicroProfile 1.2 -->
       <dependency>
         <groupId>org.eclipse.microprofile.config</groupId>
@@ -408,6 +424,11 @@
         <groupId>com.squareup.okio</groupId>
         <artifactId>okio</artifactId>
         <version>${version.com.squareup.okio}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.activation</groupId>
+        <artifactId>activation</artifactId>
+        <version>${version.javax.activation}</version>
       </dependency>
       <!-- end of unused dependencies -->
 
