@@ -28,7 +28,7 @@
     <resource-root path="service-loader-resources"/>
   </resources>
   <dependencies>
-    <module name="sun.scripting" export="true"/>
+    <module name="sun.scripting" export="true" services="export"/>
     <system export="true">
       <paths>
         <path name="com/sun/image/codec/jpeg"/>
