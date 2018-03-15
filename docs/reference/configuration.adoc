@@ -68,20 +68,18 @@ $ java -Dswarm.bind.address=127.0.0.1 -jar myapp-swarm.jar
 ----
 
 [discrete]
-==== Specifying JDBC drivers for Hollow Jars
+==== Specifying JDBC drivers for hollow JARs
 
-When executing a Hollow Jar,
-there's now a way to specify a JDBC Driver jar without needing to package it into the Hollow Jar.
+When executing a hollow JAR, you can specify a JDBC Driver JAR using the `swarm.classpath` property.
+This way, you do not need to package the driver in the hollow JAR.
 
-We can use the `swarm.classpath` System property:
-
-[source,shell]
+[source,bash]
 ----
 $ java -Dswarm.classpath=./h2-1.4.196.jar -jar microprofile-jpa-hollow-swarm.jar example-jpa-jaxrs-cdi.war
 ----
 
-The `swarm.classpath` property can accept multiple JARs separated by `;`,
-allowing multiple JDBC Drivers, or other libraries, to be added to the application module classpath.
+The `swarm.classpath` property accepts one or more paths to JAR files separated by `;`.
+The specified JAR files are added to the classpath of the application.
 
 [#configuring-an-application-using-yaml]
 == Configuring an application using YAML
