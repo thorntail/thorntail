@@ -12,8 +12,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <version.cdi>2.0</version.cdi>
-    <version.weld>3.0.2.Final</version.weld>
+    <version.weld>3.0.3.Final</version.weld>
     <version.snakeyaml>1.19</version.snakeyaml>
 
     <version.arjuna>5.7.1.Final</version.arjuna>
@@ -318,12 +317,6 @@
         <groupId>org.jboss.weld.servlet</groupId>
         <artifactId>weld-servlet-core</artifactId>
         <version>${version.weld}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-core-impl</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.yaml</groupId>

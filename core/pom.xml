@@ -14,13 +14,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <version>${version.cdi}</version>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se-shaded</artifactId>
+      <artifactId>weld-se-core</artifactId>
       <version>${version.weld}</version>
     </dependency>
 
