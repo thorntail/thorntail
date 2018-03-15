@@ -85,7 +85,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
         addDependencies(builder, env);
 
         try {
-            addJDBCDrivers(builder);
+            addClasspathJars(builder);
         } catch (IOException e) {
             throw new ModuleLoadException(e);
         }
@@ -191,7 +191,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                 });
     }
 
-    private void addJDBCDrivers(ModuleSpec.Builder builder) throws IOException {
+    private void addClasspathJars(ModuleSpec.Builder builder) throws IOException {
         String driversList = System.getProperty("swarm.classpath");
 
         if (driversList != null && driversList.trim().length() > 0) {
