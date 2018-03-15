@@ -7,3 +7,6 @@ target
 log
 dependency-reduced-pom.xml
 tmp
+*.project
+*.classpath
+*.settings
