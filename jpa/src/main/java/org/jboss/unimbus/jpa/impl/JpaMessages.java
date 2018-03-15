@@ -30,4 +30,8 @@ public interface JpaMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 10 + JPA_OFFSET, value = "tracing enabled for '%s'")
     void tracingEnabled(String puName);
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 11 + JPA_OFFSET, value = "initializing persistence contexts")
+    void persistencecontextInitialization();
 }

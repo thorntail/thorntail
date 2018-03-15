@@ -87,6 +87,7 @@
     <module>jms-opentracing</module>
 
     <module>jpa</module>
+    <module>jpa-jta</module>
     <module>jpa-opentracing</module>
 
     <module>opentracing-jaeger</module>
