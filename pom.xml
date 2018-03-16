@@ -1162,6 +1162,7 @@
         <module>standalone-servers/keycloak</module>
         <module>standalone-servers/management-console</module>
         <module>standalone-servers/swagger-ui</module>
+        <module>standalone-servers/microprofile-jpa</module>
 
         <module>boms</module>
         <module>boms/bom</module>

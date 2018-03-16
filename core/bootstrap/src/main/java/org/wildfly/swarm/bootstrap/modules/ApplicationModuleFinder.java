@@ -84,6 +84,12 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
         addDependencies(builder, env);
 
+        try {
+            addClasspathJars(builder);
+        } catch (IOException e) {
+            throw new ModuleLoadException(e);
+        }
+
         builder.addDependency(DependencySpec.createModuleDependencySpec("org.jboss.modules"));
         builder.addDependency(DependencySpec.createModuleDependencySpec("org.jboss.shrinkwrap"));
         builder.addDependency(DependencySpec.createModuleDependencySpec("org.wildfly.swarm.configuration", false, true));
@@ -183,6 +189,26 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                         throw new RuntimeException(e);
                     }
                 });
+    }
+
+    private void addClasspathJars(ModuleSpec.Builder builder) throws IOException {
+        String driversList = System.getProperty("swarm.classpath");
+
+        if (driversList != null && driversList.trim().length() > 0) {
+            String[] drivers = driversList.split(";");
+
+            for (String driver : drivers) {
+                File driverFile = new File(driver);
+
+                if (driverFile.exists()) {
+                    builder.addResourceRoot(
+                            ResourceLoaderSpec.createResourceLoaderSpec(
+                                    ResourceLoaders.createJarResourceLoader(driverFile.getName(), new JarFile(driverFile))
+                            )
+                    );
+                }
+            }
+        }
     }
 
     private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.application");
