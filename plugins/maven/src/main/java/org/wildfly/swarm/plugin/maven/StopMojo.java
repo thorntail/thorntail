@@ -27,6 +27,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 /**
@@ -68,28 +69,12 @@ public class StopMojo extends AbstractSwarmMojo {
         if (tmpDir.toFile().exists()) {
             File[] filesTmp = tmpDir.toFile().listFiles();
             for (File tmpFile : filesTmp) {
-                Matcher matcher = tempFilePattern.matcher(tmpFile.getName().toString());
+                Matcher matcher = tempFilePattern.matcher(tmpFile.getName());
                 if (matcher.matches()) {
-                    deleteRecursively(tmpFile);
+                    TempFileManager.deleteRecursively(tmpFile);
                 }
             }
         }
-    }
-
-    public boolean deleteRecursively(File f) {
-        if (!f.exists()) {
-            return false;
-        }
-        if (f.isDirectory()) {
-            File[] children = f.listFiles();
-            for (int i = 0; i < children.length; ++i) {
-                if (!deleteRecursively(children[i])) {
-                    return false;
-                }
-            }
-        }
-
-        return f.delete();
     }
 
     protected void stop(SwarmProcess process) throws MojoFailureException {

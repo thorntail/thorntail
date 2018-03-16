@@ -51,7 +51,7 @@ public class DaemonService implements Service<Server> {
     public void stop(StopContext context) {
         try {
             this.server.stop();
-        } catch (ServerLifecycleException e) {
+        } catch (ServerLifecycleException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
