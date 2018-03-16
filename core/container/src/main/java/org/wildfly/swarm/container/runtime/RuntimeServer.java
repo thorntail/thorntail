@@ -20,12 +20,14 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
@@ -198,7 +200,9 @@ public class RuntimeServer implements Server {
 
         List<ServiceActivator> activators = new ArrayList<>();
 
-        this.serviceActivators.forEach(activators::add);
+        StreamSupport.stream(serviceActivators.spliterator(), false)
+                .filter(Objects::nonNull)
+                .forEach(activators::add);
 
         activators.add(new ContentRepositoryServiceActivator(this.contentRepository));
 
