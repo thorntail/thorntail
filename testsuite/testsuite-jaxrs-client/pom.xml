@@ -18,7 +18,6 @@
 
   <name>Test Suite: JAX-RS Client</name>
   <description>Test Suite: JAX-RS Client</description>
-  <version>2018.4.0-SNAPSHOT</version>
 
   <packaging>war</packaging>
 

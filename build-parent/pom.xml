@@ -113,6 +113,86 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <excludedGroups>${testCategory.excluded}</excludedGroups>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
+          <runOrder>alphabetical</runOrder>
+          <failIfNoTests>false</failIfNoTests>
+          <excludedGroups>${testCategory.excluded}</excludedGroups>
+          <systemPropertyVariables>
+            <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
+            <swarm.bind.address>127.0.0.1</swarm.bind.address>
+            <project.version>${project.version}</project.version>
+            <org.apache.maven.user-settings>${session.request.userSettingsFile.path}</org.apache.maven.user-settings>
+          </systemPropertyVariables>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>build-resources</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.4.1</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>wildfly-swarm-enforcer-pattern-size</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <phase>verify</phase>
+            <configuration>
+              <rules>
+                <patternSizeRule implementation="org.wildfly.swarm.plugin.enforcer.patternsize.RequireFilePatternSize">
+                  <requiredFilePatterns>
+                    <requiredFilePattern>
+                      <maxSize>0</maxSize>
+                      <recursive>false</recursive>
+                      <directory>${project.build.directory}</directory>
+                      <pattern>wfswarm\S+[0-9]{5,}.\S{5,}</pattern>
+                    </requiredFilePattern>
+                    <requiredFilePattern>
+                      <maxSize>0</maxSize>
+                      <recursive>false</recursive>
+                      <directory>${java.io.tmpdir}</directory>
+                      <pattern>wfswarm\S+[0-9]{5,}.\S{5,}</pattern>
+                    </requiredFilePattern>
+                  </requiredFilePatterns>
+                </patternSizeRule>
+              </rules>
+            </configuration>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-fraction-plugin</artifactId>
         <version>${version.wildfly.swarm.fraction.plugin}</version>
@@ -129,6 +209,13 @@
     </plugins>
   </build>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>build-resources</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
   <dependencyManagement>
     <dependencies>
       <dependency>

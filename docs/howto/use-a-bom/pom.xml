@@ -23,7 +23,7 @@
 
   <properties>
     <!-- tag::property[] -->
-    <version.wildfly-swarm>2018.4.0-SNAPSHOT</version.wildfly-swarm>
+    <version.wildfly-swarm>${project.version}</version.wildfly-swarm>
     <!-- end::property[] -->
   </properties>
 
@@ -93,7 +93,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${version.maven-failsafe-plugin}</version>
         <configuration>
           <includes>
             <include>**/*IT.java</include>

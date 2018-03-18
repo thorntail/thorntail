@@ -85,7 +85,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${version.maven-failsafe-plugin}</version>
         <configuration>
           <includes>
             <include>**/*IT.java</include>
