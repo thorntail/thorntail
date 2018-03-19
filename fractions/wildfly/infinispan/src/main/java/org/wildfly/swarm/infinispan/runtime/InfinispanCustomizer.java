@@ -16,6 +16,7 @@
 package org.wildfly.swarm.infinispan.runtime;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -32,6 +33,8 @@ import org.wildfly.swarm.config.infinispan.cache_container.TransactionComponent;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
+
+import static org.wildfly.swarm.infinispan.InfinispanMessages.MESSAGES;
 
 /**
  * @author Bob McWhirter
@@ -188,26 +191,35 @@ public class InfinispanCustomizer implements Customizer {
     }
 
     @Produces
-    @ApplicationScoped
+    @Dependent
     public ServiceActivator defaultActivator() {
         return new CacheActivator("server");
     }
 
     @Produces
-    @ApplicationScoped
+    @Dependent
     public ServiceActivator undertowActivator() {
-        return new CacheActivator("undertow");
+        return createActivatorIfSatisfied(this.undertow, "web");
     }
 
     @Produces
-    @ApplicationScoped
+    @Dependent
     public ServiceActivator ejbActivator() {
-        return new CacheActivator("ejb");
+        return createActivatorIfSatisfied(this.ejb, "ejb");
     }
 
     @Produces
-    @ApplicationScoped
+    @Dependent
     public ServiceActivator jpaActivator() {
-        return new CacheActivator("jpa");
+        return createActivatorIfSatisfied(this.jpa, "hibernate");
+    }
+
+    private ServiceActivator createActivatorIfSatisfied(Instance instance, String cache) {
+        if (instance.isUnsatisfied()) {
+            MESSAGES.skippingCacheActivation(cache);
+            return null;
+        } else {
+            return new CacheActivator(cache);
+        }
     }
 }
