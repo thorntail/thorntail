@@ -355,7 +355,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
     @Override
     public void stop() throws Exception {
-        this.process.stop();
+        this.process.stop(2, TimeUnit.MINUTES); // Because my laptop is slower than yours.
         TempFileManager.deleteRecursively(workingDirectory);
     }
 

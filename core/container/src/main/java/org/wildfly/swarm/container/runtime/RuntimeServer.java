@@ -18,7 +18,6 @@ package org.wildfly.swarm.container.runtime;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -53,7 +52,6 @@ import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.JarFileManager;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
-
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
@@ -301,7 +299,7 @@ public class RuntimeServer implements Server {
         if (shutdownHookHolder != null) {
             Field containersSetField = shutdownHookHolder.getDeclaredField("containers");
             containersSetField.setAccessible(true);
-            Set<?> set = (Set<?>)containersSetField.get(null);
+            Set<?> set = (Set<?>) containersSetField.get(null);
             set.clear();
         }
 
@@ -310,7 +308,15 @@ public class RuntimeServer implements Server {
         this.client = null;
         this.deployer.get().removeAllContent();
         this.deployer = null;
+        cleanup();
+    }
 
+    /**
+     * Clean up all open resources.
+     *
+     * @throws IOException if the close operation fails.
+     */
+    private void cleanup() throws IOException {
         JarFileManager.INSTANCE.close();
         TempFileManager.INSTANCE.close();
         MavenResolvers.close();
