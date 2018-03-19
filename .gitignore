@@ -24,7 +24,7 @@ catalog.xml
 #
 maven-ant-tasks.jar
 test-output
-transaction.log
+
 # vim files
 *.swp
 /.gitk-tmp.*
@@ -35,10 +35,6 @@ atlassian-ide-plugin.xml
 pom.xml.versionsBackup
 # hprof dumps
 /*.hprof
-# ignore 'randomly' strewn around logs
-server.log
-# ignore java crashes
-hs_err_pid*.log
 # H2 databases produced by tests
 *.h2.db
 *.trace.db

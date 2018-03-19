@@ -5,14 +5,14 @@
     <artifact name="io.swagger:swagger-models:${version.io.swagger}"/>
     <artifact name="io.swagger:swagger-annotations:${version.io.swagger}"/>
 
-    <artifact name="com.google.guava:guava:${version.swagger.guava}"/>
     <artifact name="org.reflections:reflections:${version.swagger.reflections}"/>
-    <artifact name="org.javassist:javassist:${version.swagger.javassist}"/>
     <artifact name="org.apache.commons:commons-lang3:${version.swagger.commons.lang}"/>
 
   </resources>
 
   <dependencies>
+    <module name="com.google.guava"/>
+    <module name="org.javassist"/>
     <module name="javax.ws.rs.api"/>
     <module name="javax.servlet.api"/>
     <module name="javax.xml.bind.api"/>
