@@ -90,7 +90,7 @@ public class PackageTask extends DefaultTask {
 
 
         this.tool = new BuildTool(resolvingHelper)
-                .projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(),
+                .projectArtifact(this.jarTask.getGroup().toString(), this.jarTask.getBaseName(), this.jarTask.getVersion(),
                                  getPackaging(), getProjectArtifactFile())
                 .mainClass(getMainClassName())
                 .bundleDependencies(getBundleDependencies())
