@@ -1057,6 +1057,8 @@
     <module>fractions/topology-openshift</module>
     <module>fractions/topology-webapp</module>
 
+    <module>fractions/opentracing</module>
+
     <module>fractions/cdi-extensions/cdi-config</module>
 
     <module>standalone-servers</module>
@@ -1131,7 +1133,6 @@
         <module>fractions/jolokia</module>
         <module>fractions/logstash</module>
         <module>fractions/keycloak-server</module>
-        <module>fractions/opentracing</module>
         <module>fractions/spring</module>
         <module>fractions/swagger</module>
         <module>fractions/swagger-webapp</module>
