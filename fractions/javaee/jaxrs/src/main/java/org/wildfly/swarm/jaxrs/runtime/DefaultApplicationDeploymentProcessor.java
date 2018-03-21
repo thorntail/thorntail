@@ -20,8 +20,11 @@ import java.io.InputStream;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import org.jboss.jandex.DotName;
+import org.jboss.jandex.IndexView;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -55,7 +58,10 @@ public class DefaultApplicationDeploymentProcessor implements DeploymentProcesso
     private final Archive archive;
 
     @Inject
-    DeploymentContext deploymentContext;
+    private IndexView indexView;
+
+    @Inject
+    private DeploymentContext deploymentContext;
 
     @Inject
     public DefaultApplicationDeploymentProcessor(Archive archive) {
@@ -165,7 +171,20 @@ public class DefaultApplicationDeploymentProcessor implements DeploymentProcesso
      * mapping for <code>javax.ws.rs.core.Application</code> servlet, <code>false</code> otherwise
      */
     private boolean hasApplicationPathOrServletMapping(Archive<?> archive) {
-        return hasApplicationServletMapping(archive) || hasApplicationPathAnnotation(archive);
+        return hasApplicationServletMapping(archive) || isApplicationPathAnnotationPresentInIndexView()
+                || hasApplicationPathAnnotation(archive);
+    }
+
+    /**
+     * Parse the deployment index file and check to see if there are any classes that are annotated with the
+     * {@link javax.ws.rs.ApplicationPath} annotation.
+     */
+    private boolean isApplicationPathAnnotationPresentInIndexView() {
+        if (indexView != null) {
+            DotName dotName = DotName.createSimple(ApplicationPath.class.getName());
+            return !indexView.getAnnotations(dotName).isEmpty();
+        }
+        return false;
     }
 
 }
