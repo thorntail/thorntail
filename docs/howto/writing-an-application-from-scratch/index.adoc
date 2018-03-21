@@ -1,0 +1,96 @@
+
+[id='writing-an-application-from-scratch_{context}']
+= Creating an application from scratch
+
+Creating a simple WildFly Swarm{ndash}based application with a REST endpoint from scratch.
+
+[discrete]
+== Prerequisites
+
+* JDK 8 or newer installed
+* Maven 3.3.x or newer installed
+
+[discrete]
+== Procedure
+
+. Create a directory for the application and navigate to it:
++
+--
+[source,bash,options="nowrap"]
+----
+$ mkdir myApp
+$ cd myApp
+----
+
+We recommend you start tracking the directory contents with Git.
+For more information, see https://git-scm.com/docs/gittutorial[Git tutorial].
+--
+
+. In the directory, create a `pom.xml` file with the following content.
++
+[source,xml,options="nowrap",subs="attributes+"]
+----
+include::src/main/resources/pom.xml[]
+----
+
+. Create a directory structure for your application:
++
+[source,bash,options="nowrap"]
+----
+mkdir -p src/main/java/com/example/rest
+----
+
+. In the `src/main/java/com/example/rest` directory, create the source files:
+** `HelloWorldEndpoint.java` with the class that serves the HTTP endpoint:
++
+[source,java,options="nowrap"]
+----
+include::src/main/resources/HelloWorldEndpoint.java[]
+----
+
+** `RestApplication.java` with the application context:
++
+[source,java,options="nowrap"]
+----
+include::src/main/resources/RestApplication.java[]
+----
+
+. Execute the application using Maven:
++
+[source,bash,options="nowrap"]
+----
+$ mvn wildfly-swarm:run
+----
+
+[discrete]
+== Results
+
+Accessing the `http://localhost:8080/rest/hello` URL in your browser should return the following message:
+
+[source]
+----
+Hello from WildFly Swarm!
+----
+
+After finishing the procedure, there should be a directory on your hard drive with the following contents:
+
+[source,options="nowrap"]
+----
+myApp
+├── pom.xml
+└── src
+    └── main
+        └── java
+            └── com
+                └── example
+                    └── rest
+                        ├── HelloWorldEndpoint.java
+                        └── RestApplication.java
+----
+
+[discrete]
+== Next steps
+
+ifdef::product[* xref:deploying-an-application-to-openshift[Deploy the application to Openshift]]
+* Package the application in an xref:creating-an-uberjar[uberjar].
+
