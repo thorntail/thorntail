@@ -2,5 +2,7 @@
 swarm:
   deployment:
     SwaggerConfiguredArquillianTest.war:
+      jaxrs:
+        application-path: /
       swagger:
         title: My Custom App

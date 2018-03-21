@@ -16,6 +16,7 @@
 package org.wildfly.swarm.jaxrs;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -38,12 +39,16 @@ public class ArqJAXRSExceptionMapperTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() throws Exception {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("project-test-defaults-path.yml");
+        assertThat(url).isNotNull();
+        File projectDefaults = new File(url.toURI());
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
         deployment.addClass(JsonProcessingExceptionMapper.class);
         deployment.addClass(CustomExceptionMapper.class);
         deployment.addClass(CustomException.class);
         deployment.addResource(JsonParsingExceptionResource.class);
         deployment.addResource(CustomExceptionResource.class);
+        deployment.addAsResource(projectDefaults, "/project-defaults.yml");
         deployment.addAllDependencies();
         return deployment;
     }

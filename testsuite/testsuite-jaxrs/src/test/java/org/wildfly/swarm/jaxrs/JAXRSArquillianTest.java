@@ -15,7 +15,9 @@
  */
 package org.wildfly.swarm.jaxrs;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -39,11 +41,15 @@ public class JAXRSArquillianTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() throws Exception {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("project-test-defaults-path.yml");
+        assertThat(url).isNotNull();
+        File projectDefaults = new File(url.toURI());
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
         deployment.addClass(SuccessfulChecks.class);
         deployment.addClass(CustomJsonProvider.class);
         deployment.addClass(MyResource.class);
         deployment.setContextRoot("rest");
+        deployment.addAsResource(projectDefaults, "/project-defaults.yml");
         deployment.addAllDependencies();
         return deployment;
     }
