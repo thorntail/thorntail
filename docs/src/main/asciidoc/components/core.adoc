@@ -19,6 +19,11 @@ It's Maven coordinates are:
 `ThreadFactoryProducer`::
 Produces a `Dependent` scoped `ThreadFactory` for utilizing `Thread` instances.
 
+`IndexProducer`::
+Produces an `Application` scoped `IndexView` representing the jandex'd files of the Deployment,
+read from `META-INF/unimbus.idx` which is created by the plugin.
+If not found, it produces an empty `IndexView` instance.
+
 == Configuration
 
 Configuration of applications built on {project_name} is performed using MicroProfile-config mechanisms.

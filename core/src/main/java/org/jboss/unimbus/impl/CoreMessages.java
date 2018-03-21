@@ -1,7 +1,10 @@
 package org.jboss.unimbus.impl;
 
+import java.io.IOException;
+
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger;
+import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
@@ -57,6 +60,22 @@ public interface CoreMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 31 + OFFSET, value = "Registered OpenTracing Tracer '%s'")
     void registeredTracer(String tracerClass);
+
+    // --
+
+    @LogMessage(level = Logger.Level.DEBUG)
+    @Message(id = 40 + OFFSET, value = "Loading attached index from %s")
+    void loadIndex(String indexLocation);
+
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 41 + OFFSET, value = "Failed to load index from %s")
+    void loadingIndexFileFailed(String indexLocation, @Cause IOException ioe);
+
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 42 + OFFSET, value = "No index found at %s")
+    void indexNotFound(String indexLocation);
+
+    // --
 
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 999 + OFFSET, value = NAME + " started in %s")
