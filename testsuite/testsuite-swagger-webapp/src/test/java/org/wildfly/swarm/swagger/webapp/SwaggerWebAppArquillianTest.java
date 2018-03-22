@@ -15,11 +15,10 @@
  */
 package org.wildfly.swarm.swagger.webapp;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
+import java.nio.charset.Charset;
 
+import org.apache.commons.io.IOUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -61,31 +60,8 @@ public class SwaggerWebAppArquillianTest {
     @RunAsClient
     @Test
     public void testEndpoints() throws Exception {
-        String content = getUrlContents("http://127.0.0.1:8080/swagger-ui");
-        assertThat(content).contains("<title>Swagger UI</title>" );
-    }
-
-    private static String getUrlContents(String theUrl) {
-        StringBuilder content = new StringBuilder();
-
-        try {
-            URL url = new URL(theUrl);
-            URLConnection urlConnection = url.openConnection();
-            BufferedReader bufferedReader = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream())
-            );
-
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                content.append(line + "\n");
-            }
-            bufferedReader.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return content.toString();
+        String content = IOUtils.toString(new URL("http://127.0.0.1:8080/swagger-ui"), Charset.forName("UTF-8"));
+        assertThat(content).contains("<title>Swagger UI</title>");
     }
 
 }

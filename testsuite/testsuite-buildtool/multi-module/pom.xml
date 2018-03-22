@@ -72,13 +72,6 @@
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jaxrs</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>arquillian</artifactId>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
 
 

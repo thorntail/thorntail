@@ -51,7 +51,11 @@
       <groupId>org.wildfly.swarm.testsuite</groupId>
       <artifactId>multi-module-api</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </dependency>
   </dependencies>
 
 

@@ -16,25 +16,16 @@ package org.wildfly.swarm.infinispan.test;
  * limitations under the License.
  */
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.util.UUID;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.apache.commons.io.IOUtils;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
-import org.wildfly.swarm.infinispan.InfinispanFraction;
-import org.wildfly.swarm.jaxrs.JAXRSArchive;
-import org.wildfly.swarm.jaxrs.JAXRSFraction;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -49,34 +40,12 @@ import static org.junit.Assert.assertNotNull;
 public class Swarm551Test {
 
     @Test
-    public void testAccess() {
-        String response = getUrlContents("http://localhost:8080");
+    public void testAccess() throws IOException {
+        String response = IOUtils.toString(new URL("http://localhost:8080"), Charset.forName("UTF-8"));
         response = response.trim();
 
-        UUID uuid = UUID.fromString( response );
-        assertNotNull( uuid );
+        UUID uuid = UUID.fromString(response);
+        assertNotNull(uuid);
     }
 
-    static String getUrlContents(String theUrl) {
-        StringBuilder content = new StringBuilder();
-
-        try {
-            URL url = new URL(theUrl);
-            URLConnection urlConnection = url.openConnection();
-            BufferedReader bufferedReader = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream())
-            );
-
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                content.append(line + "\n");
-            }
-            bufferedReader.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return content.toString();
-    }
 }
