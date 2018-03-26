@@ -17,6 +17,7 @@
 
     <version.arjuna>5.7.1.Final</version.arjuna>
     <version.hibernate>5.2.12.Final</version.hibernate>
+    <version.hibernate-validator>6.0.8.Final</version.hibernate-validator>
     <version.ironjacamar>1.4.7.Final</version.ironjacamar>
     <version.keycloak>3.4.3.Final</version.keycloak>
     <version.resteasy>3.1.4.Final</version.resteasy>
@@ -42,6 +43,7 @@
     <version.javax-transaction>1.0.1.Final</version.javax-transaction>
     <version.javax-json>1.1.2</version.javax-json>
     <version.glassfish-json>1.1.2</version.glassfish-json>
+    <version.glassfish-el>3.0.1-b10</version.glassfish-el>
 
     <version.h2>1.4.187</version.h2>
     <version.mysql>5.1.39</version.mysql>
@@ -168,6 +170,11 @@
       </dependency>
       <dependency>
         <groupId>org.glassfish</groupId>
+        <artifactId>javax.el</artifactId>
+        <version>${version.glassfish-el}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish</groupId>
         <artifactId>javax.json</artifactId>
         <version>${version.glassfish-json}</version>
       </dependency>
@@ -175,6 +182,16 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-core</artifactId>
         <version>${version.hibernate}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate.validator</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>${version.hibernate-validator}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate.validator</groupId>
+        <artifactId>hibernate-validator-cdi</artifactId>
+        <version>${version.hibernate-validator}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss</groupId>
@@ -328,6 +345,11 @@
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
         <artifactId>unimbus-core</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>unimbus-bean-validation</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -573,6 +595,8 @@
 
   <modules>
     <module>core</module>
+
+    <module>bean-validation</module>
     <module>datasources</module>
     <module>health</module>
     <module>jaxrs</module>

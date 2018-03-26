@@ -33,6 +33,7 @@ include::components/core.adoc[leveloffset=+1]
 
 ## Java EE
 
+include::components/javaee/bean-validation.adoc[leveloffset=+2]
 include::components/javaee/servlet.adoc[leveloffset=+2]
 include::components/javaee/jaxrs.adoc[leveloffset=+2]
 include::components/javaee/jsonp.adoc[leveloffset=+2]

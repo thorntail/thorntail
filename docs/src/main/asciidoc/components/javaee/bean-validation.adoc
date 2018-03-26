@@ -1,0 +1,23 @@
+[#component-bean-validation]
+= Bean Validation
+
+The Bean Validation component provides for using _bean validation_ according to JSR 380.
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-bean-validation</artifactId>
+</dependency>
+----
+
+.CDI Components
+
+Injectable components are defined by the http://beanvalidation.org/2.0/spec/#integration-cdi[Bean Validation specification].
+
+.Related Information
+
+* xref:component-datasources[]
+* xref:component-jms[]

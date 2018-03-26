@@ -13,6 +13,8 @@
   <artifactId>unimbus-migrate</artifactId>
   <packaging>jar</packaging>
 
+  <name>uNimbus Migration Tool</name>
+
   <properties>
     <version.maven>3.5.3</version.maven>
     <version.maven-model-jdom>1.6</version.maven-model-jdom>

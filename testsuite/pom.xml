@@ -79,6 +79,7 @@
   </build>
 
   <modules>
+    <module>bean-validation</module>
     <module>servlet</module>
     <module>servlet-static</module>
     <module>jaxrs</module>
