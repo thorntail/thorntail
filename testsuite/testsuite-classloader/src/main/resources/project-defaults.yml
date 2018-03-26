@@ -1,0 +1,5 @@
+swarm:
+  deployment:
+    ClassLoaderTest.war:
+      jaxrs:
+        application-path: /

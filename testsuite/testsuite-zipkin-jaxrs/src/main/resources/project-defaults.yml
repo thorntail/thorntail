@@ -1,0 +1,6 @@
+
+swarm:
+  deployment:
+    myapp.war:
+      jaxrs:
+        application-path: /
