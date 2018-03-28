@@ -50,6 +50,10 @@ public class InjectionCoercerTest {
 
     }.getType();
 
+    private static final Type OPTIONAL_INTEGER_LIST = new TypeLiteral<Optional<List<Integer>>>() {
+
+    }.getType();
+
     @Before
     public void setupConfig() {
         this.source = new MapConfigSource("test");
@@ -229,7 +233,7 @@ public class InjectionCoercerTest {
     }
 
     @Test
-    public void testOptionalStringList() throws Exception {
+    public void testOptionalStringSet() throws Exception {
         InjectionCoercer coercer = new InjectionCoercer(OPTIONAL_STRING_SET);
         assertThat(coercer.getTargetType()).isEqualTo(OPTIONAL_STRING_SET);
         assertThat(coercer.getRequestType()).isEqualTo(String[].class);
@@ -250,7 +254,7 @@ public class InjectionCoercerTest {
     }
 
     @Test
-    public void testNullOptionalStringList() throws Exception {
+    public void testNullOptionalStringSet() throws Exception {
         InjectionCoercer coercer = new InjectionCoercer(OPTIONAL_STRING_SET);
         assertThat(coercer.getTargetType()).isEqualTo(OPTIONAL_STRING_SET);
         assertThat(coercer.getRequestType()).isEqualTo(String[].class);
@@ -264,7 +268,126 @@ public class InjectionCoercerTest {
         assertThat(result).isInstanceOf(Optional.class);
 
         assertThat( ((Optional<Set<String>>) result).isPresent() ).isFalse();
+    }
 
+    @Test
+    public void testOptionalStringSetViaConfig() throws Exception {
+        this.source.setValue("optional.string.list", "foo,bar");
+
+        InjectionCoercer coercer = new InjectionCoercer(OPTIONAL_STRING_SET);
+        assertThat(coercer.getTargetType()).isEqualTo(OPTIONAL_STRING_SET);
+        assertThat(coercer.getRequestType()).isEqualTo(String[].class);
+        assertThat(coercer.isOptional()).isTrue();
+
+        Object result = null;
+
+        result = coercer.coerce(this.config, "optional.string.list", null);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(Optional.class);
+
+        Set<String> set = ((Optional<Set<String>>) result).get();
+
+        assertThat(set).isNotNull();
+        assertThat(set).contains("foo");
+        assertThat(set).contains("bar");
+    }
+
+    @Test
+    public void testNullOptionalStringSetViaConfig() throws Exception {
+        InjectionCoercer coercer = new InjectionCoercer(OPTIONAL_STRING_SET);
+        assertThat(coercer.getTargetType()).isEqualTo(OPTIONAL_STRING_SET);
+        assertThat(coercer.getRequestType()).isEqualTo(String[].class);
+        assertThat(coercer.isOptional()).isTrue();
+
+        Object result = null;
+
+        result = coercer.coerce(this.config, "optional.string.list", null);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(Optional.class);
+
+        assertThat( ((Optional<Set<String>>) result).isPresent() ).isFalse();
+    }
+
+    // --
+
+    @Test
+    public void testOptionalIntegerList() throws Exception {
+        InjectionCoercer coercer = new InjectionCoercer(OPTIONAL_INTEGER_LIST);
+        assertThat(coercer.getTargetType()).isEqualTo(OPTIONAL_INTEGER_LIST);
+        assertThat(coercer.getRequestType()).isEqualTo(Integer[].class);
+        assertThat(coercer.isOptional()).isTrue();
+
+        Object result = null;
+
+        result = coercer.coerce(new Integer[]{42, 88});
+
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(Optional.class);
+
+        List<Integer> list = ((Optional<List<Integer>>) result).get();
+
+        assertThat(list).isNotNull();
+        assertThat(list).contains(42);
+        assertThat(list).contains(88);
+    }
+
+    @Test
+    public void testNullOptionalIntegerList() throws Exception {
+        InjectionCoercer coercer = new InjectionCoercer(OPTIONAL_INTEGER_LIST);
+        assertThat(coercer.getTargetType()).isEqualTo(OPTIONAL_INTEGER_LIST);
+        assertThat(coercer.getRequestType()).isEqualTo(Integer[].class);
+        assertThat(coercer.isOptional()).isTrue();
+
+        Object result = null;
+
+        result = coercer.coerce(null);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(Optional.class);
+
+        assertThat( ((Optional<List<Integer>>) result).isPresent() ).isFalse();
+    }
+
+    @Test
+    public void testOptionalIntegerListViaConfig() throws Exception {
+        this.source.setValue("optional.int.list", "42,88");
+
+        InjectionCoercer coercer = new InjectionCoercer(OPTIONAL_INTEGER_LIST);
+        assertThat(coercer.getTargetType()).isEqualTo(OPTIONAL_INTEGER_LIST);
+        assertThat(coercer.getRequestType()).isEqualTo(Integer[].class);
+        assertThat(coercer.isOptional()).isTrue();
+
+        Object result = null;
+
+        result = coercer.coerce(this.config, "optional.int.list", null);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(Optional.class);
+
+        List<Integer> list = ((Optional<List<Integer>>) result).get();
+
+        assertThat(list).isNotNull();
+        assertThat(list).contains(42);
+        assertThat(list).contains(88);
+    }
+
+    @Test
+    public void testNullOptionalIntegerListViaConfig() throws Exception {
+        InjectionCoercer coercer = new InjectionCoercer(OPTIONAL_INTEGER_LIST);
+        assertThat(coercer.getTargetType()).isEqualTo(OPTIONAL_INTEGER_LIST);
+        assertThat(coercer.getRequestType()).isEqualTo(Integer[].class);
+        assertThat(coercer.isOptional()).isTrue();
+
+        Object result = null;
+
+        result = coercer.coerce(this.config, "optional.int.list", null);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(Optional.class);
+
+        assertThat( ((Optional<List<Integer>>) result).isPresent() ).isFalse();
     }
 
 
