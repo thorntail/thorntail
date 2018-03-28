@@ -92,7 +92,7 @@ class ConfigBuilderImpl implements ConfigBuilder {
             this.sources.add(ConfigSources.systemEnvironment());
 
             this.sources.addAll(ConfigSources.frameworkDefaults(this.classLoader));
-            this.sources.addAll(ConfigSources.microprofileConfig(this.classLoader));
+            this.sources.addAll(ConfigSources.microprofileConfig(Thread.currentThread().getContextClassLoader()));
             this.sources.addAll(ConfigSources.application(this.classLoader));
             this.sources.addAll(ConfigSources.applicationProfiles(this.classLoader));
         }

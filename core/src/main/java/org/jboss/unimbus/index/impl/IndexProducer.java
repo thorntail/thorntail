@@ -3,9 +3,7 @@ package org.jboss.unimbus.index.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -30,7 +28,6 @@ public class IndexProducer {
     @Produces
     @ApplicationScoped
     IndexView produceIndex() {
-        List<IndexView> indexes = new ArrayList<>();
         URL indexUrl = uNimbus.getClassLoader().getResource(INDEX_LOCATION);
 
         if (indexUrl != null) {

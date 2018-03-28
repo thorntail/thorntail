@@ -50,10 +50,13 @@
     <version.h2>1.4.187</version.h2>
     <version.mysql>5.1.39</version.mysql>
 
+    <version.jackson>2.9.4</version.jackson>
+
     <version.mp-config>1.2.1</version.mp-config>
     <version.mp-fault-tolerance>1.0</version.mp-fault-tolerance>
     <version.mp-health>1.0</version.mp-health>
     <version.mp-metrics>1.1</version.mp-metrics>
+    <version.mp-openapi>1.0.1</version.mp-openapi>
     <version.mp-opentracing>1.0</version.mp-opentracing>
     <version.mp-jwt-auth>1.0</version.mp-jwt-auth>
 
@@ -350,6 +353,22 @@
       </dependency>
 
       <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${version.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${version.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-yaml</artifactId>
+        <version>${version.jackson}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.jboss.unimbus</groupId>
         <artifactId>unimbus-core</artifactId>
         <version>1.0.0-SNAPSHOT</version>
@@ -431,6 +450,11 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
+        <artifactId>unimbus-openapi</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
         <artifactId>unimbus-security</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
@@ -506,6 +530,16 @@
         <groupId>org.eclipse.microprofile.metrics</groupId>
         <artifactId>microprofile-metrics-rest-tck</artifactId>
         <version>${version.mp-metrics}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.microprofile.openapi</groupId>
+        <artifactId>microprofile-openapi-api</artifactId>
+        <version>${version.mp-openapi}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.microprofile.openapi</groupId>
+        <artifactId>microprofile-openapi-tck</artifactId>
+        <version>${version.mp-openapi}</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.microprofile.opentracing</groupId>
@@ -628,6 +662,7 @@
     <module>jwt-auth</module>
     <module>faulttolerance</module>
     <module>metrics</module>
+    <module>openapi</module>
     <module>security</module>
     <module>security-keycloak</module>
     <module>servlet</module>

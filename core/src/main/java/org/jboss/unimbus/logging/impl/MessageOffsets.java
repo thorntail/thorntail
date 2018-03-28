@@ -19,6 +19,6 @@ public interface MessageOffsets {
     int SECURITY_OFFSET = 11000;
     int KEYCLOAK_OFFSET = 12000;
     int JCA_OFFSET = 13000;
-    int OPENTRACING_OFFSET = 14000;
+    int OPENAPI_OFFSET = 14000;
     int VERTX_OFFSET = 15000;
 }
