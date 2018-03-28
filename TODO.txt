@@ -5,7 +5,6 @@
 - Switch to using https://github.com/agroal/agroal for datasources instead of Ironjacamar
 - Pieces to implement:
   - MP REST Client
-  - MP JWT
   - MP Open API
   - JAX-RS Validation (may not be anything for this in the new world)
   - JMX ??
