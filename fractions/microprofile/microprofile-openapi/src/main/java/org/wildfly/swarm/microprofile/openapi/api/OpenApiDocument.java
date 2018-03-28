@@ -90,6 +90,15 @@ public class OpenApiDocument {
         }
     }
 
+    /**
+     * @param {{@code true} if model initialized
+     */
+    public boolean isSet() {
+        synchronized (INSTANCE) {
+            return model != null;
+        }
+    }
+
     public synchronized void config(OpenApiConfig config) {
         set(() -> this.config = config);
     }
