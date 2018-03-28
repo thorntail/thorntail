@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
 import org.jboss.shrinkwrap.api.Archive;
@@ -80,6 +81,10 @@ public class SwaggerArchivePreparer implements DeploymentProcessor {
 
             // Make the deployment a swagger archive
             SwaggerArchive swaggerArchive = deployment.as(SwaggerArchive.class);
+            // SWARM-1667: Add the custom CDI extension to the deployment to provide a workaround solution.
+            deployment.addModule("org.wildfly.swarm.swagger", "deployment");
+            deployment.addAsServiceProvider(Extension.class.getName(), "org.wildfly.swarm.swagger.deployment.SwaggerExtension");
+
 
             if (this.title != null) {
                 swaggerArchive.setTitle(this.title);

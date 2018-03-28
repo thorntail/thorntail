@@ -19,6 +19,7 @@
 
 package org.wildfly.swarm.swagger;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.jboss.logging.BasicLogger;
@@ -55,5 +56,15 @@ public interface SwaggerMessages extends BasicLogger {
     @Message(id = 5, value = "Configure Swagger for deployment %s with packages %s")
     void configureSwaggerForSeveralPackages(String deployment, List<String> packages);
 
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 6, value = "Multiple application paths found for REST application: %s")
+    void multipleApplicationPathsFound(Collection<String> paths);
 
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 7, value = "Adding Swagger resources to JAX-RS deployment.")
+    void addingSwaggerResourcesToCustomApplicationSubClass();
+
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 8, value = "Swagger interceptor added incorrectly to bean with type: %s")
+    void warnInvalidBeanTarget(Class<?> beanType);
 }
