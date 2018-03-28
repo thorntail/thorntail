@@ -52,6 +52,7 @@ include::components/microprofile/config.adoc[leveloffset=+2]
 include::components/microprofile/faulttolerance.adoc[leveloffset=+2]
 include::components/microprofile/health.adoc[leveloffset=+2]
 include::components/microprofile/metrics.adoc[leveloffset=+2]
+include::components/microprofile/openapi.adoc[leveloffset=+2]
 include::components/microprofile/opentracing.adoc[leveloffset=+2]
 
 ## Other

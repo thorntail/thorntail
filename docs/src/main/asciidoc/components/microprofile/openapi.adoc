@@ -1,0 +1,23 @@
+[#component-openapi]
+= OpenAPI
+
+The OpenAPI component supports the generation of an OpenAPI document representing the JAX-RS Resources using the MicroProfile OpenAPI spec.
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-openapi</artifactId>
+</dependency>
+----
+
+.Management Deployment
+
+The OpenAPI component will deploy a servlet to the /openapi endpoint which returns the OpenAPI document for the application.
+The /openapi endpoint is accessible under the management host and port.
+
+.Related Information
+
+* xref:component-management-endpoints[Servlet Management Endpoints]

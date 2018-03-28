@@ -44,6 +44,7 @@ web.primary.port::
 Sets the port to bind the primary endpoint connection listener.
 If this value is set to `0`, a random available port will be used.
 
+[#component-management-endpoints]
 .Configuration of Management Endpoints
 
 Two configuration properties control which host and port management endpoints are served from.
