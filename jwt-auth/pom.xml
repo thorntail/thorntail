@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.jboss.unimbus</groupId>
+    <artifactId>unimbus-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>unimbus-jwt-auth</artifactId>
+  <name>JWT Auth</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
+      <artifactId>unimbus-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
+      <artifactId>unimbus-jaxrs</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
+      <artifactId>unimbus-jsonp</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.microprofile.jwt</groupId>
+      <artifactId>microprofile-jwt-auth-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.bitbucket.b_c</groupId>
+      <artifactId>jose4j</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.picketbox</groupId>
+      <artifactId>picketbox-spi-bare</artifactId>
+      <version>5.0.3.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.picketbox</groupId>
+      <artifactId>picketbox-identity-impl</artifactId>
+      <version>5.0.3.Final</version>
+    </dependency>
+
+  </dependencies>
+
+</project>

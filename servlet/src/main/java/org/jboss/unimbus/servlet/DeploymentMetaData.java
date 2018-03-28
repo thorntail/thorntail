@@ -237,6 +237,16 @@ public class DeploymentMetaData {
         return this.servletContextListeners;
     }
 
+    public <T> DeploymentMetaData putAttachment(Class<T> cls, T object) {
+        this.attachments.put( cls, object );
+        return this;
+    }
+
+    public <T> T getAttachment(Class<T> cls) {
+        return (T) this.attachments.get(cls);
+    }
+
+
     private String name;
 
     private boolean management;
@@ -258,4 +268,6 @@ public class DeploymentMetaData {
     private List<SecurityConstraintMetaData> securityConstraints = new ArrayList<>();
 
     private List<ServletContextListener> servletContextListeners = new ArrayList<>();
+
+    private Map<Class<?>, Object> attachments = new HashMap<>();
 }

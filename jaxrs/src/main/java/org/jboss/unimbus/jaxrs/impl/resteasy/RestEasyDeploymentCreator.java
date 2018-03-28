@@ -30,6 +30,7 @@ public class RestEasyDeploymentCreator {
     public void createDeployments(@Observes LifecycleEvent.Scan event) {
         for (Application application : this.applications) {
             DeploymentMetaData metaData = createDeployment(application);
+            metaData.putAttachment(Application.class, application);
             this.deployments.addDeployment(metaData);
             JaxrsMessages.MESSAGES.deploymentCreated(metaData.getName());
         }
@@ -70,6 +71,7 @@ public class RestEasyDeploymentCreator {
         deployment.setInjectorFactoryClass(CdiInjectorFactory.class.getName());
         deployment.setActualResourceClasses(extension.getResources());
         deployment.setActualProviderClasses(extension.getProviders());
+        //deployment.setSecurityEnabled(true);
 
         DeploymentMetaData meta = createServletDeployment(deployment, application);
         meta.setContextPath(contextPath);
@@ -114,6 +116,8 @@ public class RestEasyDeploymentCreator {
         appName = appName.replace('.', '_' );
 
         DeploymentMetaData meta = new DeploymentMetaData("jaxrs-" + appName);
+
+        meta.addServletContextAttribute("resteasy.role.based.security", true);
 
         meta.addServletContextAttribute(ResteasyDeployment.class.getName(), deployment);
         meta.addServlet(servlet);

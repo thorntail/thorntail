@@ -33,6 +33,8 @@
     <version.opentracing-tracerresolver>0.1.4</version.opentracing-tracerresolver>
     <version.jaeger>0.21.0</version.jaeger>
 
+    <version.jose4j>0.6.0</version.jose4j>
+
     <version.hystrix>1.5.12</version.hystrix>
     <version.hdrHistogram>2.1.9</version.hdrHistogram>
 
@@ -53,6 +55,7 @@
     <version.mp-health>1.0</version.mp-health>
     <version.mp-metrics>1.1</version.mp-metrics>
     <version.mp-opentracing>1.0</version.mp-opentracing>
+    <version.mp-jwt-auth>1.0</version.mp-jwt-auth>
 
     <version.arquillian-core>1.2.1.Final</version.arquillian-core>
     <version.fest-assert>1.4</version.fest-assert>
@@ -147,6 +150,11 @@
         <groupId>io.vertx</groupId>
         <artifactId>vertx-jca-adapter</artifactId>
         <version>${version.vertx}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bitbucket.b_c</groupId>
+        <artifactId>jose4j</artifactId>
+        <version>${version.jose4j}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.activemq</groupId>
@@ -341,7 +349,6 @@
         <version>${version.snakeyaml}</version>
       </dependency>
 
-
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
         <artifactId>unimbus-core</artifactId>
@@ -405,6 +412,11 @@
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
         <artifactId>unimbus-jta</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>unimbus-jwt-auth</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
@@ -474,6 +486,11 @@
         <groupId>org.eclipse.microprofile.health</groupId>
         <artifactId>microprofile-health-tck</artifactId>
         <version>${version.mp-health}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.microprofile.jwt</groupId>
+        <artifactId>microprofile-jwt-auth-api</artifactId>
+        <version>${version.mp-jwt-auth}</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.microprofile.metrics</groupId>
@@ -608,6 +625,7 @@
     <module>jpa</module>
     <module>jta</module>
     <module>json-p</module>
+    <module>jwt-auth</module>
     <module>faulttolerance</module>
     <module>metrics</module>
     <module>security</module>

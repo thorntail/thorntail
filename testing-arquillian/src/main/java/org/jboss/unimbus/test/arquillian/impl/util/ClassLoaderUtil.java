@@ -109,7 +109,23 @@ public class ClassLoaderUtil {
         });
 
         classes.add(EmptyAsset.INSTANCE, "/META-INF/beans.xml");
+
+        Map<ArchivePath, Node> metaInfContents = archive.getContent((path) -> {
+            String str = path.get();
+            return str.startsWith("/META-INF/");
+        });
+
+        metaInfContents.entrySet().forEach(e -> {
+            if (e.getValue().getAsset() != null) {
+                classes.add(e.getValue().getAsset(), e.getKey());
+            }
+
+        });
         archives.add(classes);
+
+        //System.err.println( "------------------DEPLOYMENT");
+        //System.err.println(classes.toString(true));
+        //System.err.println( "------------------DEPLOYMENT");
 
         return archives;
     }
