@@ -46,6 +46,10 @@ public class InjectionCoercerTest {
     private static final Type INTEGER_PROVIDER = new TypeLiteral<Provider<Integer>>() {
     }.getType();
 
+    private static final Type OPTIONAL_STRING_SET = new TypeLiteral<Optional<Set<String>>>() {
+
+    }.getType();
+
     @Before
     public void setupConfig() {
         this.source = new MapConfigSource("test");
@@ -223,6 +227,46 @@ public class InjectionCoercerTest {
         assertThat(((Set<Integer>) result)).contains(42);
         assertThat(((Set<Integer>) result)).contains(101);
     }
+
+    @Test
+    public void testOptionalStringList() throws Exception {
+        InjectionCoercer coercer = new InjectionCoercer(OPTIONAL_STRING_SET);
+        assertThat(coercer.getTargetType()).isEqualTo(OPTIONAL_STRING_SET);
+        assertThat(coercer.getRequestType()).isEqualTo(String[].class);
+        assertThat(coercer.isOptional()).isTrue();
+
+        Object result = null;
+
+        result = coercer.coerce(new String[]{"foo", "bar"});
+
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(Optional.class);
+
+        Set<String> set = ((Optional<Set<String>>) result).get();
+
+        assertThat(set).isNotNull();
+        assertThat(set).contains("foo");
+        assertThat(set).contains("bar");
+    }
+
+    @Test
+    public void testNullOptionalStringList() throws Exception {
+        InjectionCoercer coercer = new InjectionCoercer(OPTIONAL_STRING_SET);
+        assertThat(coercer.getTargetType()).isEqualTo(OPTIONAL_STRING_SET);
+        assertThat(coercer.getRequestType()).isEqualTo(String[].class);
+        assertThat(coercer.isOptional()).isTrue();
+
+        Object result = null;
+
+        result = coercer.coerce(null);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(Optional.class);
+
+        assertThat( ((Optional<Set<String>>) result).isPresent() ).isFalse();
+
+    }
+
 
     private ConfigImpl config;
 
