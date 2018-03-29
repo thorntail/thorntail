@@ -9,4 +9,6 @@ public interface Logging {
     void initialize();
 
     void setLevel(String name, Level level);
+
+    void dump();
 }

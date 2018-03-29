@@ -1,6 +1,13 @@
 package org.jboss.unimbus.jaxrs.impl.resteasy;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -38,9 +45,9 @@ public class RestEasyDeploymentCreator {
 
     ApplicationPath findApplicationPathAnnotation(Application application) {
         Class<?> cur = application.getClass();
-        while ( cur != null ){
+        while (cur != null) {
             ApplicationPath appPath = cur.getAnnotation(ApplicationPath.class);
-            if ( appPath != null ) {
+            if (appPath != null) {
                 return appPath;
             }
             cur = cur.getSuperclass();
@@ -69,10 +76,9 @@ public class RestEasyDeploymentCreator {
 
         ResteasyDeployment deployment = new ResteasyDeployment();
         deployment.setInjectorFactoryClass(CdiInjectorFactory.class.getName());
-        deployment.setActualResourceClasses(extension.getResources());
-        deployment.setActualProviderClasses(extension.getProviders());
-        //deployment.setSecurityEnabled(true);
-
+        //deployment.setApplication(application);
+        deployment.setScannedResourceClasses( extension.getResources().stream().map(e->e.getName()).collect(Collectors.toList()));
+        deployment.setScannedProviderClasses( extension.getProviders().stream().map(e->e.getName()).collect(Collectors.toList()));
         DeploymentMetaData meta = createServletDeployment(deployment, application);
         meta.setContextPath(contextPath);
         return meta;
@@ -110,10 +116,10 @@ public class RestEasyDeploymentCreator {
 
         String appName = application.getClass().getSimpleName();
         int dollarLoc = appName.indexOf('$');
-        if ( dollarLoc >0 ) {
+        if (dollarLoc > 0) {
             appName = appName.substring(0, dollarLoc);
         }
-        appName = appName.replace('.', '_' );
+        appName = appName.replace('.', '_');
 
         DeploymentMetaData meta = new DeploymentMetaData("jaxrs-" + appName);
 

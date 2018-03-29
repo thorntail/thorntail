@@ -1,8 +1,13 @@
 package org.jboss.unimbus.logging.impl.jdk;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -29,13 +34,44 @@ public class JDKLogging implements Logging {
             }
         }
         logger.setLevel(Level.INFO);
-
     }
 
     @Override
     public void setLevel(String name, Level level) {
         Logger logger = Logger.getLogger(name);
         logger.setLevel(level);
+    }
+
+    @Override
+    public void dump() {
+        LogManager lm = LogManager.getLogManager();
+
+        Enumeration<String> names = lm.getLoggerNames();
+
+        List<String> sortedNames = new ArrayList<>();
+
+        while (names.hasMoreElements()) {
+            sortedNames.add(names.nextElement());
+        }
+
+        Collections.sort(sortedNames);
+
+        for ( String each : sortedNames ) {
+            Logger logger = lm.getLogger(each);
+            Logger cur = logger;
+
+            if ( cur == null ) {
+                System.err.println( "null logger: " + each );
+                break;
+            }
+            while ( cur.getLevel() == null ) {
+                cur = cur.getParent();
+            }
+
+            if ( cur.getLevel() != null ) {
+                System.err.println(String.format("%10s %s", cur.getLevel().toString(), logger.getName()));
+            }
+        }
     }
 
     @Inject

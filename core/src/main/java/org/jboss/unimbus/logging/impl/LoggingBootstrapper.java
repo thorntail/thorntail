@@ -36,8 +36,19 @@ public class LoggingBootstrapper {
         for (String loggingLevelPropName : loggingLevelPropNames) {
             Level level = config.getValue(loggingLevelPropName, Level.class);
             String loggerName = loggingLevelPropName.substring(PREFIX.length());
+            System.err.println( "SET: " + loggerName + "=>" + level);
             logging.setLevel(loggerName, level);
         }
+    }
+
+    void dump(@Observes LifecycleEvent.BeforeStart event) {
+        System.err.println( "before start");
+        this.logging.get().dump();
+    }
+
+    void dump(@Observes LifecycleEvent.AfterStart event) {
+        System.err.println( "after start");
+        this.logging.get().dump();
     }
 
     @Inject
