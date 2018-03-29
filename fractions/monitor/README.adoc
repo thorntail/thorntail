@@ -1,0 +1,5 @@
+= Monitor
+
+WARNING: This fraction is deprecated.
+Use the `org.wildfly.swarm:microprofile-health` fraction instead.
+
