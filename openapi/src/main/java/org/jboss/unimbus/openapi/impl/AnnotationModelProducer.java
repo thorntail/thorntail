@@ -154,20 +154,20 @@ public class AnnotationModelProducer {
     private Optional<Boolean> scanDisabled;
 
     @Inject
-    @ConfigProperty(name = OASConfig.SCAN_PACKAGES, defaultValue = "")
-    private Set<String> scanPackages;
+    @ConfigProperty(name = OASConfig.SCAN_PACKAGES)
+    private Optional<Set<String>> scanPackages;
 
     @Inject
-    @ConfigProperty(name = OASConfig.SCAN_CLASSES, defaultValue = "")
-    private Set<String> scanClasses;
+    @ConfigProperty(name = OASConfig.SCAN_CLASSES)
+    private Optional<Set<String>> scanClasses;
 
     @Inject
-    @ConfigProperty(name = OASConfig.SCAN_EXCLUDE_PACKAGES, defaultValue = "")
-    private Set<String> scanExcludePackages;
+    @ConfigProperty(name = OASConfig.SCAN_EXCLUDE_PACKAGES)
+    private Optional<Set<String>> scanExcludePackages;
 
     @Inject
-    @ConfigProperty(name = OASConfig.SCAN_EXCLUDE_CLASSES, defaultValue = "")
-    private Set<String> scanExcludeClasses;
+    @ConfigProperty(name = OASConfig.SCAN_EXCLUDE_CLASSES)
+    private Optional<Set<String>> scanExcludeClasses;
 
     /**
      * Scan the deployment for relevant annotations.  Produces an OpenAPI data model that was
@@ -220,7 +220,7 @@ public class AnnotationModelProducer {
     }
 
     private boolean filterClasses(ClassInfo classInfo) {
-        if (scanClasses.isEmpty() && scanPackages.isEmpty() && scanExcludeClasses.isEmpty() && scanExcludePackages.isEmpty()) {
+        if (!scanClasses.isPresent() && !scanPackages.isPresent() && !scanExcludeClasses.isPresent() && !scanExcludePackages.isPresent()) {
             return true;
         }
 
@@ -234,20 +234,20 @@ public class AnnotationModelProducer {
 
         boolean accept;
         // Includes
-        if (scanClasses.isEmpty() && scanPackages.isEmpty()) {
+        if (!scanClasses.isPresent() && !scanPackages.isPresent()) {
             accept = true;
-        } else if (!scanClasses.isEmpty() && scanPackages.isEmpty()) {
-            accept = scanClasses.contains(fqcn);
-        } else if (scanClasses.isEmpty() && !scanPackages.isEmpty()) {
-            accept = scanPackages.contains(packageName);
+        } else if (scanClasses.isPresent() && !scanPackages.isPresent()) {
+            accept = scanClasses.get().contains(fqcn);
+        } else if (!scanClasses.isPresent() && scanPackages.isPresent()) {
+            accept = scanPackages.get().contains(packageName);
         } else {
-            accept = scanClasses.contains(fqcn) || scanPackages.contains(packageName);
+            accept = scanClasses.get().contains(fqcn) || scanPackages.get().contains(packageName);
         }
         // Excludes override includes
-        if (!scanExcludeClasses.isEmpty() && scanExcludeClasses.contains(fqcn)) {
+        if (scanExcludeClasses.isPresent() && scanExcludeClasses.get().contains(fqcn)) {
             accept = false;
         }
-        if (!scanExcludePackages.isEmpty() && scanExcludePackages.contains(packageName)) {
+        if (scanExcludePackages.isPresent() && scanExcludePackages.get().contains(packageName)) {
             accept = false;
         }
         return accept;

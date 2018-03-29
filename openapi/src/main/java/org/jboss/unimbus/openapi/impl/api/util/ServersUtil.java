@@ -18,6 +18,7 @@ package org.jboss.unimbus.openapi.impl.api.util;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -45,14 +46,14 @@ public class ServersUtil {
     private Config config;
 
     @Inject
-    @ConfigProperty(name = OASConfig.SERVERS, defaultValue = "")
-    private Set<String> servers;
+    @ConfigProperty(name = OASConfig.SERVERS)
+    private Optional<Set<String>> servers;
 
     public void configureServers(OpenAPI oai) {
         // Start with the global servers.
-        if (this.servers != null && !this.servers.isEmpty()) {
+        if (this.servers.isPresent() && !this.servers.get().isEmpty()) {
             oai.servers(new ArrayList<>());
-            for (String server : this.servers) {
+            for (String server : this.servers.get()) {
                 Server s = new ServerImpl();
                 s.setUrl(server);
                 oai.addServer(s);
