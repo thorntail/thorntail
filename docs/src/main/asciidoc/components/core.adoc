@@ -134,6 +134,9 @@ Will be replaced with the current value of the configuration item `web.managemen
 If not such value exists, will be replaced by the current value of the configuration item `web.primary.port` if it exists.
 If no such value exists, the value of `8080` will be provided, and converted as appropriate.
 
+`thing-${thing.type:default}-impl`::
+Will be a combination of the literal `thing-` text, the value of `thing.type` configuration item` if present, using the word 'default' if not, with a suffix of `-impl`.
+
 `%40-$`::
 Will result in a string literal of `%40-$`
 
