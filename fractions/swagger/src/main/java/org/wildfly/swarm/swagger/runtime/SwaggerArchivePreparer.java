@@ -1,12 +1,21 @@
 package org.wildfly.swarm.swagger.runtime;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
+import javax.ws.rs.ApplicationPath;
 
+import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationTarget;
+import org.jboss.jandex.DotName;
+import org.jboss.jandex.IndexView;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Node;
@@ -62,7 +71,10 @@ public class SwaggerArchivePreparer implements DeploymentProcessor {
     private final Archive archive;
 
     @Inject
-    DeploymentContext deploymentContext;
+    private DeploymentContext deploymentContext;
+
+    @Inject
+    private IndexView indexView;
 
     @Inject
     public SwaggerArchivePreparer(Archive archive) {
@@ -74,6 +86,18 @@ public class SwaggerArchivePreparer implements DeploymentProcessor {
         if (this.deploymentContext != null && this.deploymentContext.isImplicit()) {
             return;
         }
+
+        // Append the JAX-RS application path to the context path (as the default value).
+        // This value can always be overridden by the various settings in place.
+        final String restApplicationPath = getRestApplicationPath();
+        if (!restApplicationPath.isEmpty()) {
+            String path = contextPath.get() + restApplicationPath;
+            path = path.replaceAll("//", "/");
+            if (!Objects.equals(contextPath.get(), path)) {
+                contextPath.set(path);
+            }
+        }
+
         if (archive.getName().endsWith(".war")) {
             // Create a JAX-RS deployment archive
             WARArchive deployment = archive.as(WARArchive.class);
@@ -129,7 +153,12 @@ public class SwaggerArchivePreparer implements DeploymentProcessor {
             } else {
                 if (!swaggerArchive.hasContextRoot()) {
                     if (deployment.getContextRoot() != null) {
-                        swaggerArchive.setContextRoot(deployment.getContextRoot());
+                        String path = deployment.getContextRoot();
+                        if (!restApplicationPath.isEmpty()) {
+                            path = deployment.getContextRoot() + "/" + restApplicationPath;
+                            path = path.replaceAll("/+", "/");
+                        }
+                        swaggerArchive.setContextRoot(path);
                     } else {
                         swaggerArchive.setContextRoot(contextPath.get());
                     }
@@ -173,5 +202,40 @@ public class SwaggerArchivePreparer implements DeploymentProcessor {
             deployment.addClass(io.swagger.jaxrs.listing.ApiListingResource.class);
             deployment.addClass(io.swagger.jaxrs.listing.SwaggerSerializers.class);
         }
+    }
+
+    /**
+     * Get the JAX-RS application path configured this deployment. If the IndexView is not available, or if there is no class
+     * that has the annotated @ApplicationPath, then this method will return an empty string.
+     *
+     * @return the JAX-RS application path configured this deployment.
+     */
+    private String getRestApplicationPath() {
+        String path = "";
+        // Check to see if we have any class annotated with the @ApplicationPath. If found, ensure that we set the context path
+        // for Swagger resources to webAppContextPath + applicationPath.
+        if (indexView != null) {
+            DotName dotName = DotName.createSimple(ApplicationPath.class.getName());
+            Collection<AnnotationInstance> instances = indexView.getAnnotations(dotName);
+            Set<String> applicationPaths = new HashSet<>();
+            for (AnnotationInstance ai : instances) {
+                AnnotationTarget target = ai.target();
+                if (target.kind() == AnnotationTarget.Kind.CLASS) {
+                    Object value = ai.value().value();
+                    if (value != null) {
+                        applicationPaths.add(String.valueOf(value));
+                    }
+                }
+            }
+            if (applicationPaths.size() > 1) {
+                // We wouldn't know which application path to pick for serving the swagger resources. Let the deployment choose
+                // this value explicitly.
+                SwaggerMessages.MESSAGES.multipleApplicationPathsFound(applicationPaths);
+            } else if (!applicationPaths.isEmpty()) {
+                // Update the context path for swagger
+                path = applicationPaths.iterator().next();
+            }
+        }
+        return path;
     }
 }
