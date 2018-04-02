@@ -18,6 +18,7 @@ import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.Converter;
 import org.jboss.unimbus.config.impl.converters.FallbackConverter;
+import org.jboss.unimbus.config.impl.interpolation.Interpolator;
 
 public class ConfigImpl implements Config {
 
@@ -25,6 +26,7 @@ public class ConfigImpl implements Config {
         this.sources.addAll(sources);
         this.converters.putAll(converters);
         this.fallbackConverters.addAll(fallbackConverters);
+        this.interpolator = new Interpolator(this);
     }
 
     @Override
@@ -41,6 +43,10 @@ public class ConfigImpl implements Config {
                 .map(e -> e.getValue(propertyName))
                 .filter(Objects::nonNull)
                 .findFirst();
+
+        if ( result.isPresent() ) {
+            result = Optional.ofNullable( this.interpolator.interpolate(result.get()));
+        }
 
         Optional<T> converted = convert(result, propertyType);
 
@@ -157,7 +163,11 @@ public class ConfigImpl implements Config {
 
     private final Map<Class<?>, List<Converter<?>>> converters = new HashMap<>();
 
+    private final Interpolator interpolator;
+
     private List<FallbackConverter> fallbackConverters = new ArrayList<>();
 
     private Set<ConfigSource> sources = new TreeSet<>(new OrdinalComparator());
+
+
 }

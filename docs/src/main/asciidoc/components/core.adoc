@@ -108,7 +108,37 @@ These defaults have a priority of `-1000` to allow easy overriding of them.
 
 |===
 
+.Interpolation
 
+Configuration values may be interpreted and assembled from other values. 
+Interpolation expressions are wrapped within delimeters of `${' and `}'. 
+Additionally, expressions may provide a default value, which may in turn be another expression or a literal.
+All interpolation is performed before using the value converters to convert to the desired type.
 
+As with normal usage of `Config`, if an interpolation expression references a configuration key and provides no default, if that key does not exist, a `NoSuchElementException` will be thrown.
 
+In the event that a literal `${` is desired within a value, without interpolation, a `\` character may be used to escape it.
 
+All other `\` which appear before any other character will be included literally in the value, not as an escape.
+
+`${web.primary.port}`::
+Will be replaced with the current value of the configuration item `web.primary.port` if it exists.
+If no such value exists, an exception will be thrown.
+
+`${web.primary.port:8080}`::
+Will be replaced with the current value of the configuration item `web.primary.port` if it exists.
+If no such value exists, the value of `8080` will be provided, and converted as appropriate.
+
+`${web.management.port:${web.primary.port:8080}}`::
+Will be replaced with the current value of the configuration item `web.management.port` if it exists.
+If not such value exists, will be replaced by the current value of the configuration item `web.primary.port` if it exists.
+If no such value exists, the value of `8080` will be provided, and converted as appropriate.
+
+`%40-$`::
+Will result in a string literal of `%40-$`
+
+`\${foo}`::
+Will result in a string literal of `${foo}` without interpolation, removing the escape character.
+
+`foo\,bar`::
+Will result in a string literal of `foo\,bar` without removal of the escape character.
