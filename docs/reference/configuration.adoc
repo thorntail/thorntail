@@ -2,15 +2,15 @@
 = Configuring a WildFly Swarm application
 
 You can configure numerous options with applications built with WildFly Swarm.
-For all options, reasonable defaults are already applied, so you do not have to change any options unless you explicitly want to.
+For most options, reasonable defaults are already applied, so you do not have to change any options unless you explicitly want to.
 
 This reference is a complete list of all configurable items, grouped by the fraction that introduces them.
 Only the items related to the fractions that your application uses are relevant to you.
 
-[#configuring-an-application-using-properties]
-== Configuring an application using properties
+[#configuring-an-application-using-system-properties]
+== Configuring an application using system properties
 
-Here, configuration items are presented using dotted notation, and are suitable for use as Java property names, which your application consumes through explicit setting in the Maven plugin configuration, or through the command line when your application is being executed.
+Configuration properties are presented using dotted notation, and are suitable for use as Java system property names, which your application consumes through explicit setting in the Maven plugin configuration, or through the command line when your application is being executed.
 
 Any property that has the _KEY_ parameter in its name indicates that you must supply a key or identifier in that segment of the name.
 
@@ -22,7 +22,7 @@ In practical usage, the property would be, for example, `swarm.undertow.servers.
 ====
 
 [discrete]
-=== Maven plugin properties
+=== Setting System Properties using Maven Plugin
 
 If you want to set explicit configuration values as defaults through the Maven plugin, add a `<properties>` section to the `<configuration>` block of the plugin in the `pom.xml` file in your application.
 
@@ -55,9 +55,10 @@ NOTE: It is not recommended to set properties using the Maven plugin to control 
 Instead, use the xref:configuring-an-application-using-yaml[YAML method].
 
 [discrete]
-=== Setting properties using the Command Line
+=== Setting System Properties using the Command Line
 
 Setting properties using the Maven plugin is useful for temporarily changing a configuration item for a single execution of your application.
+
 You can customize an environment-specific setting or experiment with configuration items before setting them in a YAML configuration file.
 
 To use a property on the command line, pass it as a command-line parameter to the Java binary:
@@ -164,3 +165,47 @@ $ java -jar myapp-swarm.jar -Scloud -Stesting -s/home/app/openshift.yml
 ----
 ====
 
+[#configuring-an-application-using-env]
+== Configuring an application using Environment Variables
+
+When working with containerized deployments like running your WildFly Swarm application in a Docker container use
+of environment variables is recommended. However, they can be used with non-container deployments too.
+
+  
+Environment Variables configuration
+====
+For example, for a property documented as `swarm.undertow.servers.KEY.default-host` translates to the following ENV structure, substituting the `KEY` segment with the `default` identifier:
+
+[source,yaml]
+----
+export SWARM.UNDERTOW.SERVERS.DEFAULT.DEFAULT_DASH_HOST=<myhost>
+----
+====
+
+Unlike other configuration options, when properties are defined as environment variables in Linux based containers they do not allow defining non-alphanumeric characters like dot(.), DASH/HYPHEN(-) or any other characters not in [A-Za-z0-9_] range. However, since there are lot of configuration properties in WildFly Swarm that do have these characters, the following rules need to followed when defining the environment variables. When properties are defined using these conditions, then they will be correctly converted back to their respective configuration properties at runtime. For environments where there is no restrictions, they can use original names as is.
+
+Linux based container Rules
+====
+* It is a naming convention that all environment properties are defined using UPPERCASE letters. For example: property `serveraddress` is defined as `SERVERADDRESS`. 
+* All the dot(.) characters MUST to be replaced with underscore (_). For example: property `swarm.bind.address=127.0.0.1` should be defined as `SWARM_BIND_ADDRESS=127.0.0.1`
+* All dash(-) characters MUST be replaced with string "__DASH__". For example: a property `swarm.data-sources.foo.url=<url>` needs to be `SWARM_DATA_DASH_SOURCES_FOO_URL=<url>`
+* If the property name has underscores then all underscore(-) characters MUST be replaced with string "__UNDERSCORE__". For example: a property `swarm.data_sources.foo.url=<url>` needs to be `SWARM_DATA_UNDERSCORE_SOURCES_FOO_URL=<url>`
+=====
+
+Example Data Source Configuration, if your System properties are defined as
+====
+ -Dswarm.datasources.data-sources.devwf.connection-url=jdbc:postgresql://localhost:5432/sampledb
+ -Dswarm.datasources.data-sources.devwf.driver-name=postgresql
+ -Dswarm.datasources.data-sources.devwf.jndiname=java:/jboss/datasources/devwf
+ -Dswarm.datasources.data-sources.devwf.user-name=postgres
+ -Dswarm.datasources.data-sources.devwf.password=admin
+====
+
+Then same can be achieved by defining following environment based properties
+====
+SWARM_DATASOURCES_DATA_DASH_SOURCES_DEVWF_CONNECTION_DASH_URL='jdbc:postgresql://localhost:5432/sampledb'
+SWARM_DATASOURCES_DATA_DASH_SOURCES_DEVWF_DRIVER_DASH_NAME='postgresql'
+SWARM_DATASOURCES_DATA_DASH_SOURCES_DEVWF_JNDI_DASH_NAME='java:/jboss/datasources/devwf'
+SWARM_DATASOURCES_DATA_DASH_SOURCES_DEVWF_USER_DASH_NAME='postgres'
+SWARM_DATASOURCES_DATA_DASH_SOURCES_DEVWF_PASSWORD='admin'
+====
