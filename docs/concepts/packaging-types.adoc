@@ -55,7 +55,7 @@ $ java -jar myapp-hollow-swarm.jar myapp.war
 
 === Pre-Build hollow jars
 
-Wildfly Swarm ships three pre-build hollow jar types, for different use cases:
+WildFly Swarm ships three pre-built hollow jar types, for different use cases:
 
 * full: The main Java EE related capabilities
 * web: A smaller functional scope, focused on web technologies
