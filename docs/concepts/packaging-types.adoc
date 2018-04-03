@@ -53,13 +53,13 @@ executing the hollow JAR:
 $ java -jar myapp-hollow-swarm.jar myapp.war
 ----
 
-=== Pre-Build hollow jars
+=== Pre-Built hollow jars
 
 WildFly Swarm ships three pre-built hollow jar types, for different use cases:
 
 * full: The main Java EE related capabilities
 * web: A smaller functional scope, focused on web technologies
-* microprofile: The capabilities belonging the microprofile specification
+* microprofile: Functionality defined by all Eclipse MicroProfile specifications
 
 They ship under the following coordinates:
 
