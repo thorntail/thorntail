@@ -53,7 +53,7 @@ executing the hollow JAR:
 $ java -jar myapp-hollow-swarm.jar myapp.war
 ----
 
-=== Pre-Built hollow jars
+=== Pre-Built Hollow Jars
 
 WildFly Swarm ships three pre-built hollow jar types, for different use cases:
 
