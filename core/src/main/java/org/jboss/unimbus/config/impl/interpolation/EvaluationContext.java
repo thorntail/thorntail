@@ -9,21 +9,8 @@ import java.util.Set;
  */
 class EvaluationContext {
 
-    EvaluationContext(Interpolator interpolator, String eval) {
+    EvaluationContext(Interpolator interpolator) {
         this.interpolator = interpolator;
-        this.eval = eval;
-    }
-
-    int incr() {
-        return (++this.uses);
-    }
-
-    int decr() {
-        return (--this.uses);
-    }
-
-    int uses() {
-        return this.uses;
     }
 
     void markSeen(String varName) {
@@ -41,11 +28,7 @@ class EvaluationContext {
         return this.interpolator.config.getOptionalValue(name, String.class);
     }
 
-    private final String eval;
-
     private Interpolator interpolator;
 
     private Set<String> seen = new HashSet<>();
-
-    private volatile int uses;
 }

@@ -14,33 +14,28 @@ public class Interpolator {
     public String interpolate(String str) {
         EvaluationContext ctx = CTX.get();
 
-        if ( ctx == null ) {
-            ctx = new EvaluationContext(this, str);
-            CTX.set(ctx);
-        }
-
-        try {
-            return interpolate(str, ctx);
-        } finally {
-            if ( ctx.uses() == 0 ) {
+        if (ctx == null) {
+            try {
+                ctx = new EvaluationContext(this);
+                CTX.set(ctx);
+                return interpolate(str, ctx);
+            } finally {
                 CTX.remove();
             }
+        } else {
+            return interpolate(str, ctx);
         }
+
     }
 
     private String interpolate(String str, EvaluationContext ctx) {
-        ctx.incr();
-        try {
-            if (str == null) {
-                return null;
-            }
-            if (str.indexOf('$') < 0) {
-                return str;
-            }
-            return ExpressionParser.parse(str).evaluate(ctx);
-        } finally {
-            ctx.decr();
+        if (str == null) {
+            return null;
         }
+        if (str.indexOf('$') < 0) {
+            return str;
+        }
+        return ExpressionParser.parse(str).evaluate(ctx);
     }
 
     final Config config;
