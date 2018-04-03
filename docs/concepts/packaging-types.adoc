@@ -55,20 +55,19 @@ $ java -jar myapp-hollow-swarm.jar myapp.war
 
 === Pre-Built Hollow Jars
 
-WildFly Swarm ships three pre-built hollow jar types, for different use cases:
+WildFly Swarm ships the following pre-built hollow JARs:
 
-* full: The main Java EE related capabilities
-* web: A smaller functional scope, focused on web technologies
-* microprofile: Functionality defined by all Eclipse MicroProfile specifications
+full:: The main Java EE related capabilities
+web:: A smaller functional scope, focused on web technologies
+microprofile:: Functionality defined by all Eclipse MicroProfile specifications
 
-They ship under the following coordinates:
+The hollow JARs are available under the following coordinates:
 
-[source]
----
+[source,xml,options="nowrap"]
+----
 <dependency>
     <groupId>org.wildfly.swarm.servers</groupId>
     <artifactId>[full|web|microprofile]</artifactId>
 </dependency>
----
-
+----
 
