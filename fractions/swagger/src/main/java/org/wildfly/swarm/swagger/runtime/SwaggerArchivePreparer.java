@@ -1,19 +1,25 @@
 package org.wildfly.swarm.swagger.runtime;
 
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Path;
 
+import io.swagger.annotations.Api;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;
+import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.shrinkwrap.api.Archive;
@@ -170,38 +176,140 @@ public class SwaggerArchivePreparer implements DeploymentProcessor {
             // try to be smart about it, and find the topmost package that's not in the
             // org.wildfly.swarm package space
             if (!swaggerArchive.hasResourcePackages()) {
-                String packageName = null;
-                for (Map.Entry<ArchivePath, Node> entry : deployment.getContent().entrySet()) {
-                    final ArchivePath key = entry.getKey();
-                    if (key.get().endsWith(".class")) {
-                        String parentPath = key.getParent().get();
-                        parentPath = parentPath.replaceFirst("/", "");
-
-                        String parentPackage = parentPath.replaceFirst(".*/classes/", "");
-                        parentPackage = parentPackage.replaceAll("/", ".");
-
-                        if (parentPackage.startsWith("org.wildfly.swarm")) {
-                            SwaggerMessages.MESSAGES.ignoringPackage(parentPackage);
-                        } else {
-                            packageName = parentPackage;
-                            break;
-                        }
-                    }
-                }
-                if (packageName == null) {
+                String[] packages = getPackagesForScanning(deployment).toArray(new String[0]);
+                if (packages.length == 0) {
                     SwaggerMessages.MESSAGES.noEligiblePackages(archive.getName());
                 } else {
-                    SwaggerMessages.MESSAGES.configureSwaggerForPackage(archive.getName(), packageName);
-                    swaggerArchive.setResourcePackages(packageName);
+                    if (packages.length == 1) {
+                        SwaggerMessages.MESSAGES.configureSwaggerForPackage(archive.getName(), packages[0]);
+                    } else {
+                        SwaggerMessages.MESSAGES.configureSwaggerForSeveralPackages(archive.getName(), Arrays.asList(packages));
+                    }
+                    swaggerArchive.setResourcePackages(packages);
                 }
             } else {
-                SwaggerMessages.MESSAGES.configureSwaggerForSeveralPackages(archive.getName(), Arrays.asList(swaggerArchive.getResourcePackages()));
+                SwaggerMessages.MESSAGES.configureSwaggerForSeveralPackages(archive.getName(),
+                                                                            Arrays.asList(swaggerArchive.getResourcePackages()));
             }
 
             // Now add the swagger resources to our deployment
             deployment.addClass(io.swagger.jaxrs.listing.ApiListingResource.class);
             deployment.addClass(io.swagger.jaxrs.listing.SwaggerSerializers.class);
         }
+    }
+
+    /**
+     * Get the packages that should be scanned by Swagger. This method attempts to determine the root packages by leveraging
+     * the IndexView of the deployment. If the IndexView is unavailable, then this method will fallback to the scanning the
+     * classes manually.
+     *
+     * @return the packages that should be scanned by Swagger.
+     */
+    private Set<String> getPackagesForScanning(WARArchive deployment) {
+        final Set<String> packages = new TreeSet<>();
+        if (indexView != null) {
+            DotName dotName = DotName.createSimple(Api.class.getName());
+            Collection<AnnotationInstance> instances = indexView.getAnnotations(dotName);
+            instances.forEach(ai -> {
+                AnnotationTarget target = ai.target();
+                if (target.kind() == AnnotationTarget.Kind.CLASS) {
+                    extractAndAddPackageInfo(target.asClass(), packages, indexView);
+                }
+            });
+
+            // Scan for all top level resources.
+            dotName = DotName.createSimple(Path.class.getName());
+            instances = indexView.getAnnotations(dotName);
+            instances.forEach(ai -> {
+                AnnotationTarget target = ai.target();
+                switch (target.kind()) {
+                    case CLASS:
+                        extractAndAddPackageInfo(target.asClass(), packages, indexView);
+                        break;
+                    case METHOD:
+                        extractAndAddPackageInfo(target.asMethod().declaringClass(), packages, indexView);
+                        break;
+                    default:
+                        // Do nothing. Probably log something here?
+                }
+            });
+
+            // Reduce the packages to just about what is required.
+            Set<String> tmp = new HashSet<>(packages);
+            Iterator<String> itr = packages.iterator();
+            while (itr.hasNext()) {
+                String current = itr.next();
+                boolean remove = false;
+                if (current.startsWith("org.wildfly.swarm")) {
+                    remove = true;
+                } else {
+                    // Search through the list to see if a parent package has already been included in the list.
+                    for (String s : tmp) {
+                        if (s.length() < current.length() && current.startsWith(s)) {
+                            remove = true;
+                            break;
+                        }
+                    }
+                }
+                if (remove) {
+                    itr.remove();
+                }
+            }
+        } else {
+            //
+            // Existing default behavior.
+            //
+            String packageName = null;
+            for (Map.Entry<ArchivePath, Node> entry : deployment.getContent().entrySet()) {
+                final ArchivePath key = entry.getKey();
+                if (key.get().endsWith(".class")) {
+                    String parentPath = key.getParent().get();
+                    parentPath = parentPath.replaceFirst("/", "");
+
+                    String parentPackage = parentPath.replaceFirst(".*/classes/", "");
+                    parentPackage = parentPackage.replaceAll("/", ".");
+
+                    if (parentPackage.startsWith("org.wildfly.swarm")) {
+                        SwaggerMessages.MESSAGES.ignoringPackage(parentPackage);
+                    } else {
+                        packageName = parentPackage;
+                        break;
+                    }
+                }
+            }
+            packages.add(packageName);
+        }
+        return packages;
+    }
+
+    /**
+     * Extract the package information from the given {@code ClassInfo} object.
+     *
+     * @param classInfo the class metadata.
+     * @param packages  the collection to which we need to add the package information.
+     */
+    private static void extractAndAddPackageInfo(ClassInfo classInfo, Set<String> packages, IndexView indexView) {
+        if (classInfo == null) {
+            return;
+        }
+
+        // Check if we were given an abstract class / interface, in which case we need to check the IndexView to see if there
+        // is an implementation or not.
+        String className = classInfo.name().toString();
+        if (indexView != null) {
+            DotName dotName = DotName.createSimple(className);
+            if (Modifier.isInterface(classInfo.flags())) {
+                indexView.getAllKnownImplementors(dotName).forEach(ci -> extractAndAddPackageInfo(ci, packages, indexView));
+            } else if (Modifier.isAbstract(classInfo.flags())) {
+                indexView.getAllKnownSubclasses(dotName).forEach(ci -> extractAndAddPackageInfo(ci, packages, indexView));
+            }
+        }
+        StringBuilder builder = new StringBuilder(className).reverse();
+        int idx = builder.indexOf(".");
+        if (idx != -1) {
+            builder.delete(0, idx + 1);
+        }
+        packages.add(builder.reverse().toString());
     }
 
     /**
