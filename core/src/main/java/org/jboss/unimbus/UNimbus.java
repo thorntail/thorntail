@@ -17,7 +17,6 @@ package org.jboss.unimbus;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -35,6 +34,8 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.unimbus.events.impl.EventEmitter;
 import org.jboss.unimbus.ext.UNimbusProvidingExtension;
 import org.jboss.unimbus.logging.impl.jdk.DefaultConsoleFormatter;
+import org.jboss.unimbus.runner.DirectRunner;
+import org.jboss.unimbus.runner.DebugRunner;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 
@@ -60,7 +61,7 @@ public class UNimbus {
     /**
      * Create an instance without arguments and start it.
      */
-    public static void run() {
+    public static void run() throws Exception {
         UNimbus.run(null);
     }
 
@@ -69,8 +70,18 @@ public class UNimbus {
      *
      * @param configClass The configuration class.
      */
-    public static void run(Class<?> configClass) {
-        new UNimbus(configClass).start();
+    public static void run(Class<?> configClass) throws Exception {
+        String isDebug = System.getenv(Info.KEY.toUpperCase() + "_DEBUG");
+        if (isDebug != null &&
+                (
+                        isDebug.equals("1") || isDebug.equalsIgnoreCase("true") || isDebug.equalsIgnoreCase("debug")
+                )) {
+            bootstrapLogging();
+            new DebugRunner().run();
+        } else {
+            new DirectRunner(configClass).run();
+        }
+        //new UNimbus(configClass).start();
     }
 
     /**
@@ -78,7 +89,7 @@ public class UNimbus {
      *
      * @param args Command-line arguments.
      */
-    public static void main(String... args) {
+    public static void main(String... args) throws Exception {
         run();
     }
 
@@ -236,7 +247,7 @@ public class UNimbus {
         return this.container.getBeanManager();
     }
 
-    private void bootstrapLogging() {
+    static private void bootstrapLogging() {
         Logger logger = Logger.getLogger("");
         logger.setLevel(Level.ALL);
         for (Handler handler : logger.getHandlers()) {
@@ -248,7 +259,8 @@ public class UNimbus {
         logger.setLevel(Level.INFO);
     }
 
-    /** Retrieve the classloader for this sytem.
+    /**
+     * Retrieve the classloader for this sytem.
      *
      * @return The classloader.
      */
@@ -256,7 +268,8 @@ public class UNimbus {
         return this.classLoader;
     }
 
-    /** Retrieve the service-registry for this system.
+    /**
+     * Retrieve the service-registry for this system.
      *
      * @return The service registry.
      */
@@ -264,7 +277,8 @@ public class UNimbus {
         return this.serviceRegistryClassLoader;
     }
 
-    /** Retrieve the final service-registry-aware classloader for the application.
+    /**
+     * Retrieve the final service-registry-aware classloader for the application.
      *
      * @return The classloader.
      */
@@ -272,41 +286,43 @@ public class UNimbus {
         return this.serviceRegistryClassLoader;
     }
 
-    /** Create an injected/decorated/intercepted instance of a given type.
+    /**
+     * Create an injected/decorated/intercepted instance of a given type.
      *
      * @param type The type of object to create.
-     * @param <T> The type of object to create.
+     * @param <T>  The type of object to create.
      * @return The newly created, injected, decorated, intercepted object.
      */
     public <T> ActiveInstance<T> instance(Class<T> type) {
         return new ActiveInstance<T>(this.container.getId(), type, null);
     }
 
-    /** Activate an already-constructed instance of an object.
+    /**
+     * Activate an already-constructed instance of an object.
      *
      * <p>Will inject, decorate and intercept as required.</p>
      *
      * <p>May throw a runtime exception if the object can not be proxied due to final methods.</p>
      *
      * @param object the object to activate.
-     * @param <T> The type of object.
+     * @param <T>    The type of object.
      * @return The activated object, probably a proxy.
      */
     public <T> ActiveInstance<T> activate(T object) {
         return new ActiveInstance<T>(this.container.getId(), object);
     }
 
-    /** Execute code with an activated variant of an object.
+    /**
+     * Execute code with an activated variant of an object.
      *
-     * @param object The object to activate.
+     * @param object   The object to activate.
      * @param function The code to execute.
-     * @param <T> The type of the object.
-     * @param <R> The return type of the function.
+     * @param <T>      The type of the object.
+     * @param <R>      The return type of the function.
      * @return The value returned from the function.
-     *
      * @see #activate(Object)
      */
-    public <T,R> R withActivated(T object, Function<T,R> function) {
+    public <T, R> R withActivated(T object, Function<T, R> function) {
         ActiveInstance<T> instance = activate(object);
         try {
             return function.apply(instance.get());

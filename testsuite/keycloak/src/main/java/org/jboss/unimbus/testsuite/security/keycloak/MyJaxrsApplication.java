@@ -11,7 +11,7 @@ import org.jboss.unimbus.UNimbus;
  */
 @ApplicationPath("/")
 public class MyJaxrsApplication extends Application {
-    public static void main(String... args) {
+    public static void main(String... args) throws Exception {
         UNimbus.run();
     }
 }

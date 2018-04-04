@@ -18,6 +18,9 @@
       <plugin>
         <groupId>org.jboss.unimbus</groupId>
         <artifactId>unimbus-maven-plugin</artifactId>
+        <configuration>
+          <format>dir</format>
+        </configuration>
       </plugin>
     </plugins>
   </build>

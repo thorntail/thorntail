@@ -78,6 +78,48 @@ public interface CoreMessages extends BasicLogger {
     // --
 
     @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 50 + OFFSET, value = "Using debug runner")
+    void usingDebugRunner();
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 51 + OFFSET, value = "Debug listener at port: %s")
+    void debugPort(int port);
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 52 + OFFSET, value = "Enabled high-sensitive file watching")
+    void highSensitiveFileWatching();
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 53 + OFFSET, value = "Destroying child process")
+    void destroyingChildProcess();
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 54 + OFFSET, value = "Destroying child process forcibly")
+    void destroyingChildProcessForcibly();
+
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 55 + OFFSET, value = "Launching child process")
+    void launchingChildProcess();
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 56 + OFFSET, value = "Child process did not exit, giving up")
+    void childProcessDidNotExit();
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 57 + OFFSET, value = "Watching for changes in '%s'")
+    void watchingDirectory(String dir);
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 58 + OFFSET, value = "Change detected in '%s'")
+    void changeDetected(String dir);
+
+
+
+    // --
+
+    @LogMessage(level = Logger.Level.INFO)
     @Message(id = 999 + OFFSET, value = NAME + " started in %s")
     void started(String startTime);
+
 }

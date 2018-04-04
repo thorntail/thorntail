@@ -37,6 +37,6 @@ public class ConfigTest {
     List<String> requiredList;
 
     @Inject
-    @ConfigProperty(name = "mp.config.optional.string.optionalList.not.present")
+    @ConfigProperty(name = "mp.config.optional.string.optional.not.present")
     Optional<List<String>> notPresentList;
 }
