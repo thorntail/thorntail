@@ -62,12 +62,17 @@ public class KeycloakArquillianTest {
         createSwarmConfiguration(file, warName);
 
         URL keyCloakJsonUrl = KeycloakArquillianTest.class.getResource("/keycloak.json");
-        System.setProperty("swarm.keycloak.json.path", keyCloakJsonUrl.toURI().getPath());
+        System.setProperty("swarm.keycloak.json.path", stripLeadingSlashIfWin(keyCloakJsonUrl.toURI().getPath()));
         URL migrationRealmUrl = KeycloakArquillianTest.class.getResource("/wildfly-swarm-keycloak-example-realm.json");
-        System.setProperty("keycloak.migration.file", migrationRealmUrl.toURI().getPath());
+        System.setProperty("keycloak.migration.file", stripLeadingSlashIfWin(migrationRealmUrl.toURI().getPath()));
         System.setProperty("keycloak.migration.provider", "singleFile");
         System.setProperty("keycloak.migration.action", "import");
-        return new Swarm("-s" + file.toURI().toURL().toString());
+        return new Swarm("-s" + stripLeadingSlashIfWin(file.toURI().getPath()));
+    }
+
+    private static String stripLeadingSlashIfWin(String path) {
+        return System.getProperty("os.name").toLowerCase().indexOf("win") >= 0 && path.startsWith("/") 
+            ? path.substring(1) : path;
     }
 
     @Test
