@@ -164,7 +164,7 @@ class SynchronousCircuitBreaker implements HystrixCircuitBreaker {
         if (requestCount < requestVolumeThreshold) {
             return false;
         }
-        double failureCheck = failureCount.get() / requestCount;
+        double failureCheck = failureCount.get() / (double) requestCount;
         double failureRatio = config.get(CircuitBreakerConfig.FAILURE_RATIO);
         return (failureCheck >= failureRatio) || (failureRatio <= 0 && failureCheck == 1);
     }
