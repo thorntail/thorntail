@@ -28,7 +28,6 @@ An uberjar can be executed like any executable JAR:
 $ java -jar myapp-swarm.jar
 ----
 
-ifndef::product[]
 [#hollow-jar]
 == Hollow JAR
 
@@ -53,5 +52,22 @@ executing the hollow JAR:
 ----
 $ java -jar myapp-hollow-swarm.jar myapp.war
 ----
-endif::[]
+
+=== Pre-Built Hollow JARs
+
+WildFly Swarm ships the following pre-built hollow JARs:
+
+full:: The main Java EE related capabilities
+web:: A smaller functional scope, focused on web technologies
+microprofile:: Functionality defined by all Eclipse MicroProfile specifications
+
+The hollow JARs are available under the following coordinates:
+
+[source,xml,options="nowrap"]
+----
+<dependency>
+    <groupId>org.wildfly.swarm.servers</groupId>
+    <artifactId>[full|web|microprofile]</artifactId>
+</dependency>
+----
 
