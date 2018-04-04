@@ -16,7 +16,11 @@
 
 package org.wildfly.swarm.microprofile.faulttolerance.deployment;
 
+import static org.wildfly.swarm.microprofile.faulttolerance.deployment.config.CircuitBreakerConfig.FAIL_ON;
+
 import java.util.function.Supplier;
+
+import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.FaultToleranceOperation;
 
 import com.netflix.hystrix.HystrixCommand;
 
@@ -30,25 +34,55 @@ public class DefaultCommand extends HystrixCommand<Object> {
      * @param setter
      * @param ctx
      * @param fallback
+     * @param operation
      */
-    protected DefaultCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback) {
+    protected DefaultCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback, FaultToleranceOperation operation) {
         super(setter);
         this.ctx = ctx;
         this.fallback = fallback;
+        this.failure = null;
+        this.operation = operation;
     }
 
     @Override
     protected Object run() throws Exception {
-        return ctx.proceed();
+        try {
+            return ctx.proceed();
+        } catch (Throwable e) {
+            this.failure = e;
+            throw e;
+        }
     }
 
     @Override
     protected Object getFallback() {
+        if (failure != null && operation.hasCircuitBreaker() && !isFailureAssignableFromAnyFailureException()) {
+            // Command failed but the fallback should not be used
+            throw new FailureNotHandledException(failure);
+        }
         if (fallback == null) {
             return super.getFallback();
         }
         return fallback.get();
     }
+
+    boolean hasFailure() {
+        return failure != null;
+    }
+
+    private boolean isFailureAssignableFromAnyFailureException() {
+        Class<?>[] exceptions = operation.getCircuitBreaker().<Class<?>[]>get(FAIL_ON);
+        for (Class<?> exception : exceptions) {
+            if (exception.isAssignableFrom(failure.getClass())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Throwable failure;
+
+    private final FaultToleranceOperation operation;
 
     private final Supplier<Object> fallback;
 

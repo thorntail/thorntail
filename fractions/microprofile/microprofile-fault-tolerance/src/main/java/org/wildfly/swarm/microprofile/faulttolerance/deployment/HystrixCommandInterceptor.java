@@ -126,7 +126,7 @@ public class HystrixCommandInterceptor {
             if (retryContext == null || retryContext.isLastAttempt()) {
                 fallback = metadata.getFallback(ctx);
             }
-            DefaultCommand command = new DefaultCommand(metadata.setter, ctx, fallback);
+            DefaultCommand command = new DefaultCommand(metadata.setter, ctx, fallback, metadata.operation);
 
             try {
                 if (metadata.operation.isAsync()) {
@@ -137,9 +137,22 @@ public class HystrixCommandInterceptor {
                     res = command.execute();
                 }
                 if (syncCircuitBreaker != null) {
-                    syncCircuitBreaker.executionSucceeded();
+                    // Note that HystrixRuntimeException is only thrown if command fails and does not have a fallback
+                    if (command.hasFailure()) {
+                        // Command failed, fallback was used and the failure should be handled
+                        syncCircuitBreaker.executionFailed();
+                    } else {
+                        syncCircuitBreaker.executionSucceeded();
+                    }
                 }
             } catch (HystrixRuntimeException e) {
+                // See also SWARM-1933
+                Throwable fallbackException = e.getFallbackException();
+                if (fallbackException instanceof FailureNotHandledException) {
+                    // Command failed but the circuit breaker should not be used at all
+                    FailureNotHandledException failureNotHandledException = (FailureNotHandledException) fallbackException;
+                    throw (Exception) failureNotHandledException.getCause();
+                }
                 if (syncCircuitBreaker != null) {
                     syncCircuitBreaker.executionFailed();
                 }
