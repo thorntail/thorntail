@@ -7,17 +7,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.wildfly.swarm</groupId>
+    <artifactId>wildfly-swarm</artifactId>
+    <version>2018.4.0-SNAPSHOT</version>
+    <relativePath>../../</relativePath>
+  </parent>
+
   <groupId>org.wildfly.swarm.howto</groupId>
   <artifactId>howto-parent</artifactId>
-  <version>2018.4.0-SNAPSHOT</version>
 
   <name>WildFly Swarm HOWTO: Parent</name>
   <packaging>pom</packaging>
 
   <properties>
-    <version.wildfly-swarm>2018.4.0-SNAPSHOT</version.wildfly-swarm>
+    <version.wildfly-swarm>${project.version}</version.wildfly-swarm>
     <version.maven-war-plugin>2.2</version.maven-war-plugin>
-    <version.maven-failsafe-plugin>2.19.1</version.maven-failsafe-plugin>
     <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>
     <version.arquillian>1.1.12.Final</version.arquillian>
     <version.arquillian-drone>2.0.1.Final</version.arquillian-drone>
