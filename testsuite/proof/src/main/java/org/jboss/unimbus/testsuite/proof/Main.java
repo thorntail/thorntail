@@ -20,8 +20,5 @@ import org.jboss.unimbus.UNimbus;
 /**
  * @author Ken Finnigan
  */
-public class Main {
-    public static void main(String... args) throws Exception {
-        UNimbus.run();
-    }
+public class Main extends UNimbus.Main {
 }

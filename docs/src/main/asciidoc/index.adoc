@@ -26,6 +26,7 @@ include::concepts/flat-classpath.adoc[leveloffset=+1]
 include::tools/maven-plugin.adoc[leveloffset=+1]
 include::tools/testing-junit.adoc[leveloffset=+1]
 include::tools/testing-arquillian.adoc[leveloffset=+1]
+include::tools/devtools.adoc[leveloffset=+1]
 
 # Components
 

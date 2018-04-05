@@ -35,7 +35,8 @@ import org.jboss.unimbus.events.impl.EventEmitter;
 import org.jboss.unimbus.ext.UNimbusProvidingExtension;
 import org.jboss.unimbus.logging.impl.jdk.DefaultConsoleFormatter;
 import org.jboss.unimbus.runner.DirectRunner;
-import org.jboss.unimbus.runner.DebugRunner;
+import org.jboss.unimbus.runner.ReloadRunner;
+import org.jboss.unimbus.runner.RestartRunner;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 
@@ -51,6 +52,13 @@ import static org.jboss.unimbus.impl.CoreMessages.MESSAGES;
  * @author Bob McWhirter
  */
 public class UNimbus {
+
+    public static class Main {
+        public static void main(String...args) throws Exception {
+            UNimbus.run();
+        }
+
+    }
 
     private static UNimbus INSTANCE;
 
@@ -71,13 +79,12 @@ public class UNimbus {
      * @param configClass The configuration class.
      */
     public static void run(Class<?> configClass) throws Exception {
-        String isDebug = System.getenv(Info.KEY.toUpperCase() + "_DEBUG");
-        if (isDebug != null &&
-                (
-                        isDebug.equals("1") || isDebug.equalsIgnoreCase("true") || isDebug.equalsIgnoreCase("debug")
-                )) {
+        if ( DevMode.isRestart()) {
             bootstrapLogging();
-            new DebugRunner().run();
+            new RestartRunner().run();
+        } else if ( DevMode.isReload() ) {
+            bootstrapLogging();
+            new ReloadRunner().run();
         } else {
             new DirectRunner(configClass).run();
         }

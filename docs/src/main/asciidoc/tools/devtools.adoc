@@ -1,0 +1,70 @@
+[#devtools]
+= Developer Tools
+
+{project_name} provides a set of developer tools to allow for restarting or reloading classes when developing a {project_name}-based application.
+The simple ability to restart a running process when compiled `.class` files or packaged `.jar` files are changed is built in to the core.
+To gain the ability to hot reload classes into an running executable, an additional dependency is required.
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-devtools</artifactId>
+  <scope>test</scope>
+</dependency>
+----
+
+.Setting the `{PROJECT_ENV}_DEV_MODE`
+
+To enable either the restarting of processes or hot-reloading of classes, the environment variable `{PROJECT_ENV}_DEV_MODE` must be set.
+
+`restart`::
+Capability always included in the core, which will watch the contents of the classpath.
+Upon noticing changes, the process will be terminated and restarted, causing the JVM to load new versions of all classes.
+
+`reload`::
+Capbility only available if the above `{project_key}-devtools` dependency is added to the project.
+It will watch for changes to the contents of the classpath (only `.class` files, not packaged `.jar` files) and attempt to load and redefine the classes within the running process.
+
+.Using `restart` mode
+
+Restart works primarily with directory layouts. 
+The provided `bin/run.sh` will use either the application's own packaged `.jar` if built using `<mode>fat</mode>` or will attempt to use `target/classes/` if built with `<mode>thin</mode>`.
+Start the process with the environment variable set to `restart`
+
+[source,shell,subs="verbatim,attributes"]
+----
+$ {PROJECT_ENV}_DEV_MODE=restart ./target/myapp-bin/bin/run.sh
+----
+
+The rebuilt your project as appropriate
+
+[source,shell]
+----
+$ mvn compile
+----
+
+Within the console of the running process, you should see, within a few seconds, the process stop and restart automatically.
+
+.Using `reload` mode
+
+Add the above Maven `<dependency>` block to your project.
+
+Then follow the same steps as for `restart`, but setting the mode to `reload`.
+
+[source,shell,subs="verbatim,attributes"]
+----
+$ {PROJECT_ENV}_DEV_MODE=reload ./target/myapp-bin/bin/run.sh
+----
+
+The rebuilt your project as appropriate
+
+[source,shell]
+----
+$ mvn compile
+----
+
+Additionally, the same behavior is available if you execute your `main()` directly from your IDE with the environment variable set appropriately.
+Triggering a recompilation from within your IDE should also cause hot reloading of your classes within the running process.

@@ -13,7 +13,6 @@ public class DirectRunner implements Runner {
 
     @Override
     public void run() throws Exception {
-        System.err.println( "direct runner");
         new UNimbus(this.configClass).start();
     }
 

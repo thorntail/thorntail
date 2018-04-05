@@ -51,6 +51,7 @@
     <version.mysql>5.1.39</version.mysql>
 
     <version.jackson>2.9.4</version.jackson>
+    <version.fakereplace>1.0.0.Alpha6</version.fakereplace>
 
     <version.mp-config>1.2.1</version.mp-config>
     <version.mp-fault-tolerance>1.0</version.mp-fault-tolerance>
@@ -178,6 +179,11 @@
         <groupId>javax.json</groupId>
         <artifactId>javax.json-api</artifactId>
         <version>${version.javax-json}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.fakereplace</groupId>
+        <artifactId>fakereplace-dist</artifactId>
+        <version>${version.fakereplace}</version>
       </dependency>
       <dependency>
         <groupId>org.glassfish</groupId>
@@ -474,6 +480,12 @@
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>unimbus-devtools</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+
 
       <dependency>
         <groupId>org.eclipse.microprofile.config</groupId>
@@ -667,6 +679,8 @@
     <module>security-keycloak</module>
     <module>servlet</module>
     <module>vertx</module>
+
+    <module>devtools</module>
 
     <module>testing</module>
     <module>testing-arquillian</module>

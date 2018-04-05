@@ -22,7 +22,7 @@ public class ProofResource {
     @Path("/")
     @Counted(monotonic = true, tags = "app=proof")
     public String get() {
-        return "Hello! " + this.url + " // " + this.entityManager;
+        return "Hello there! " + this.url + " // " + this.entityManager;
     }
 
     @Inject

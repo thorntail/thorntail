@@ -78,42 +78,53 @@ public interface CoreMessages extends BasicLogger {
     // --
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 50 + OFFSET, value = "Using debug runner")
-    void usingDebugRunner();
+    @Message(id = 50 + OFFSET, value = "Using dev-mode: %s")
+    void usingDevMode(String mode);
 
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 51 + OFFSET, value = "Debug listener at port: %s")
     void debugPort(int port);
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 52 + OFFSET, value = "Enabled high-sensitive file watching")
+    @Message(id = 52 + OFFSET, value = "Process restart enabled")
+    void restartEnabled();
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 53 + OFFSET, value = "Enabled high-sensitive file watching")
     void highSensitiveFileWatching();
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 53 + OFFSET, value = "Destroying child process")
+    @Message(id = 54 + OFFSET, value = "Destroying child process")
     void destroyingChildProcess();
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 54 + OFFSET, value = "Destroying child process forcibly")
+    @Message(id = 55 + OFFSET, value = "Destroying child process forcibly")
     void destroyingChildProcessForcibly();
 
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 55 + OFFSET, value = "Launching child process")
+    @Message(id = 56 + OFFSET, value = "Launching child process")
     void launchingChildProcess();
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 56 + OFFSET, value = "Child process did not exit, giving up")
+    @Message(id = 57 + OFFSET, value = "Child process did not exit, giving up")
     void childProcessDidNotExit();
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 57 + OFFSET, value = "Watching for changes in '%s'")
+    @Message(id = 58 + OFFSET, value = "Watching for changes in '%s'")
     void watchingDirectory(String dir);
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 58 + OFFSET, value = "Change detected in '%s'")
+    @Message(id = 59 + OFFSET, value = "Change detected in '%s'")
     void changeDetected(String dir);
 
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 60 + OFFSET, value = "Class reloading requested but is not available; falling back to restart mode.\nEnsure :devtools dependency is included.")
+    void reloadRequestedButUnavailable();
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 61 + OFFSET, value = "Class reloading enabled")
+    void reloadEnabled();
 
 
     // --

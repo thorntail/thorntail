@@ -1,6 +1,9 @@
 package org.jboss.unimbus;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 /**
@@ -40,4 +43,5 @@ public class Info {
      * Version.
      */
     public static final String VERSION;
+
 }

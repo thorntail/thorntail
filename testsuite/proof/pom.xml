@@ -20,6 +20,7 @@
         <artifactId>unimbus-maven-plugin</artifactId>
         <configuration>
           <format>dir</format>
+          <mode>thin</mode>
         </configuration>
       </plugin>
     </plugins>
@@ -45,6 +46,11 @@
     <dependency>
       <groupId>org.jboss.unimbus</groupId>
       <artifactId>unimbus-security</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.unimbus</groupId>
+      <artifactId>unimbus-devtools</artifactId>
     </dependency>
 
     <dependency>

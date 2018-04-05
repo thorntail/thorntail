@@ -10,3 +10,4 @@ tmp
 *.project
 *.classpath
 *.settings
+*.index
