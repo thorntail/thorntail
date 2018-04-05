@@ -112,12 +112,4 @@ vendor:
     description: Peak usage of the %s memory pool
     multi: true
     type: gauge
-  - name: "test"
-    mbean: "jboss.modules:type=ModuleLoader,name=BootModuleLoader-2/LoadedModuleCount"
-    description: Just testing
-    unit: "none"
-    type: "gauge"
-    labels:
-      - key: "domain"
-        value: "test"
 
