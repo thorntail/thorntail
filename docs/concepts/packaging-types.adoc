@@ -71,3 +71,23 @@ The hollow JARs are available under the following coordinates:
 </dependency>
 ----
 
+[NOTE]
+====
+anchor:hollow-jar-limitations[]Using pre-built hollow JARs has certain limitations:
+
+* To enable WildFly Swarm to autodetect a JDBC driver, you must add the JAR with the driver to the `swarm.classpath` system property, for example:
++
+[source,bash,options="nowrap"]
+----
+$ java -Dswarm.classpath=./h2-1.4.196.jar -jar microprofile-jpa-hollow-swarm.jar myApp.war
+----
+
+* YAML configuration files in your application that are named `project-*.yml` are not automatically applied.
+You must specify them manually, for example:
++
+[source,bash,options="nowrap"]
+----
+$ java -s project-myconfig.yml -jar microprofile-jpa-hollow-swarm.jar myApp.war
+----
+====
+

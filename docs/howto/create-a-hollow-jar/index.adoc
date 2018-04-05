@@ -43,4 +43,5 @@ $ java -jar ./target/myapp-hollow-swarm.jar ./target/myapp.war
 
 * xref:hollow-jar[]
 * xref:creating-an-uberjar[]
+* xref:hollow-jar-limitations[Limitations of using pre-built hollow JARs]
 
