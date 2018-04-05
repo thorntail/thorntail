@@ -89,7 +89,7 @@ base:
 
 
 vendor:
-  - name: "mscLoadedModules"
+  - name: "loadedModules"
     mbean: "jboss.modules:type=ModuleLoader,name=BootModuleLoader-2/LoadedModuleCount"
     description: "Number of loaded modules"
     unit: "none"
