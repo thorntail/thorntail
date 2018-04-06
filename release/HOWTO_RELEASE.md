@@ -5,35 +5,9 @@
 * Trigger a build of https://ci.wildfly-swarm.io/view/Release/job/wildfly-swarm-release/build?delay=0sec
     * Specifying release and next version (with -SNAPSHOT suffix)
 
-* Update next development version in `/boms/bom-certified/pom.xml` as it doesn't happen in the above command (Maybe add something to CI job to do this?).
+* Wait untill the build updates the master with the next development version and then update `/boms/bom-certified/pom.xml` with this version as well as it doesn't happen in the above command (Maybe add something to CI job to do this?).
 
-* Wait for release to be available in Maven Central before continuing with examples releases
-
-# JIRA Releasing
-
-* Go to https://issues.jboss.org/projects/SWARM?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=unreleased and select `...` under Actions for the row matching the release we are performing.
-
-* Select `Release` from the drop down.
-
-* Set the current date, which is the date of the release and then click `Release`.
-
-* Open https://issues.jboss.org/issues/?jql=project%20%3D%20SWARM%20AND%20status%20%3D%20Resolved%20AND%20fixVersion%20%3D%20EMPTY%20ORDER%20BY%20priority%20DESC%2C%20updated%20DESC to find all issues that have been resolved without a fixVersion set.
-
-* Select `Tools` from top right corner, then `all {x} issues` under `Bulk Change`.
-
-* Select all the issues and click `Next`.
-
-* Select `Edit Issues`, `Change Fix Version` set with `Replace all with` and choose our released version from above in drop down. Be sure to de-select `Send mail for this update` at the very bottom of the page before clicking `Next`.
-
-* Review the changes it will make and select `Confirm`. You will need to acknowledge the updates once they're complete.
-
-* Open https://issues.jboss.org/browse/SWARM-1409?jql=project%20%3D%20SWARM%20AND%20status%20%3D%20Resolved%20AND%20fixVersion%20%3D%202017.7.0%20ORDER%20BY%20priority%20DESC%2C%20updated%20DESC replacing the version that we're releasing in the query.
-
-* Once again we need to perform a `Bulk Update` of all the issues, which should now include those that we set the fixVersion on in the previous steps.
-
-* Insted of `Edit Issues` we choose `Transition` and select `Resolved -> Closed` as the type of transition.
-
-* Follow the remaining confirmation steps and then acknowledge changes.
+* Wait for release to be available in Maven Central before continuing with examples and JIRA releases
 
 # Tag the examples repository
 
@@ -70,6 +44,33 @@
         git commit -a -m 'Prepare for next development version'
 
         git push origin master --tags
+
+# JIRA Releasing
+
+* Go to https://issues.jboss.org/projects/SWARM?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=unreleased and select `...` under Actions for the row matching the release we are performing.
+
+* Select `Release` from the drop down.
+
+* Set the current date, which is the date of the release and then click `Release`.
+
+* Open https://issues.jboss.org/issues/?jql=project%20%3D%20SWARM%20AND%20status%20%3D%20Resolved%20AND%20fixVersion%20%3D%20EMPTY%20ORDER%20BY%20priority%20DESC%2C%20updated%20DESC to find all issues that have been resolved without a fixVersion set.
+
+* Select `Tools` from top right corner, then `all {x} issues` under `Bulk Change`.
+
+* Select all the issues and click `Next`.
+
+* Select `Edit Issues`, `Change Fix Version` set with `Replace all with` and choose our released version from above in drop down. Be sure to de-select `Send mail for this update` at the very bottom of the page before clicking `Next`.
+
+* Review the changes it will make and select `Confirm`. You will need to acknowledge the updates once they're complete.
+
+* Open https://issues.jboss.org/browse/SWARM-1409?jql=project%20%3D%20SWARM%20AND%20status%20%3D%20Resolved%20AND%20fixVersion%20%3D%202017.7.0%20ORDER%20BY%20priority%20DESC%2C%20updated%20DESC replacing the version that we're releasing in the query.
+
+* Once again we need to perform a `Bulk Update` of all the issues, which should now include those that we set the fixVersion on in the previous steps.
+
+* Insted of `Edit Issues` we choose `Transition` and select `Resolved -> Closed` as the type of transition.
+
+* Follow the remaining confirmation steps and then acknowledge changes.
+
 
 # Gather contributors:
 
