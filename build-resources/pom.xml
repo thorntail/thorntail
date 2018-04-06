@@ -11,12 +11,8 @@
 
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>build-resources</artifactId>
-  <version>2018.4.2</version>
+  <version>2018.5.0-SNAPSHOT</version>
 
   <name>WildFly Swarm Build Resources</name>
   <description>Resources that are necessary for building WildFly Swarm</description>
-
-  <scm>
-    <tag>2018.4.2</tag>
-  </scm>
 </project>

@@ -26,7 +26,7 @@
    <parent>
       <groupId>org.wildfly.swarm.testsuite</groupId>
       <artifactId>wildlfy-swarm-microprofile-tck-parent</artifactId>
-      <version>2018.4.2</version>
+      <version>2018.5.0-SNAPSHOT</version>
       <relativePath>../</relativePath>
    </parent>
 
