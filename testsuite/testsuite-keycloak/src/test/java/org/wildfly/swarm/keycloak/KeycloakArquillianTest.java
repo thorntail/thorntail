@@ -28,6 +28,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -76,6 +77,7 @@ public class KeycloakArquillianTest {
     }
 
     @Test
+    @RunAsClient
     public void testResourceIsSecured() throws Exception {
         // Check 401 is returned without the token
         Assert.assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(),
@@ -96,7 +98,7 @@ public class KeycloakArquillianTest {
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .get(String.class);
-        Assert.assertEquals("This resource is secured", serviceResponse);
+        Assert.assertEquals("Hi user1, this resource is secured", serviceResponse);
 
     }
 
