@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>teiid-components</artifactId>
-    <version>2018.5.0-SNAPSHOT</version>
+    <version>2018.4.2</version>
   </parent>
 
   <name>Teiid Amazon S3 Translator</name>
