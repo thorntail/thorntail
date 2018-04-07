@@ -27,7 +27,17 @@
     <swarm.fraction.stability>experimental</swarm.fraction.stability>
     <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
     <version.ozark>1.0.0-m03</version.ozark>
+    <version.mvc>1.0-pr</version.mvc>
   </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
 
   <dependencies>
     <dependency>
@@ -47,20 +57,20 @@
     <dependency>
       <groupId>javax.mvc</groupId>
       <artifactId>javax.mvc-api</artifactId>
-      <version>1.0-pr</version>
+      <version>${version.mvc}</version>
     </dependency>
 
     <dependency>
       <groupId>org.mvc-spec.ozark</groupId>
       <artifactId>ozark-core</artifactId>
       <version>${version.ozark}</version>
-      <scope>runtime</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mvc-spec.ozark</groupId>
       <artifactId>ozark-resteasy</artifactId>
       <version>${version.ozark}</version>
-      <scope>runtime</scope>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Meta SPI -->

@@ -783,6 +783,12 @@
 
       <dependency>
         <groupId>org.wildfly.swarm</groupId>
+        <artifactId>mvc</artifactId>
+        <version>2018.5.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
         <artifactId>naming</artifactId>
         <version>2018.5.0-SNAPSHOT</version>
       </dependency>
@@ -1289,6 +1295,7 @@
         <module>testsuite/testsuite-messaging-remote</module>
         <module>testsuite/testsuite-microprofile-openapi</module>
         <module>testsuite/testsuite-mod_cluster</module>
+        <module>testsuite/testsuite-mvc</module>
         <module>testsuite/testsuite-opentracing</module>
         <module>testsuite/testsuite-resource-adapters</module>
         <module>testsuite/testsuite-spring</module>
