@@ -15,13 +15,18 @@
  */
 package org.wildfly.swarm.arquillian.adapter.gradle;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.wildfly.swarm.arquillian.adapter.DependencyDeclarationFactory;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
+import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.internal.GradleFileSystemLayout;
+import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.DeclaredDependencies;
-
-import java.util.HashSet;
 
 /**
  * @author Heiko Braun
@@ -36,14 +41,29 @@ public class GradleDependencyDeclarationFactory implements DependencyDeclaration
 
         DeclaredDependencies declaredDependencies = gradleAdapter.parseDependencies(GradleDependencyAdapter.Configuration.TEST_RUNTIME);
 
-        // resolve to local files
-        resolvingHelper.resolveAll(new HashSet<>(declaredDependencies.getTransientDependencies()), false, false);
-
+        // Resolve to local files.
+        resolveDependencies(declaredDependencies.getRuntimeExplicitAndTransientDependencies(), resolvingHelper);
         return declaredDependencies;
     }
 
     @Override
     public boolean acceptsFsLayout(FileSystemLayout fsLayout) {
         return fsLayout instanceof GradleFileSystemLayout;
+    }
+
+    /**
+     * Resolve the given collection of ArtifactSpec references. This method attempts the resolution and ensures that the
+     * references are updated to be as complete as possible.
+     *
+     * @param collection the collection artifact specifications.
+     */
+    private static void resolveDependencies(Collection<ArtifactSpec> collection, ShrinkwrapArtifactResolvingHelper helper) {
+        // The Shrinkwrap resolving helper returns a new collection of artifacts and doesn't update the existing ones.
+        // Looks like the code contracts broke at some point in time. For now, let us just iterate through the collection twice.
+        Map<String, File> resolvedArtifactMap = helper.resolveAll(collection, false, true).stream()
+                .collect(Collectors.toMap(MavenArtifactDescriptor::mavenGav, s -> s.file));
+        collection.parallelStream().forEach(s -> {
+            resolvedArtifactMap.computeIfPresent(s.mavenGav(), (k, file) -> s.file = file);
+        });
     }
 }
