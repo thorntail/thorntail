@@ -35,28 +35,38 @@ public class DefaultCommand extends HystrixCommand<Object> {
      * @param ctx
      * @param fallback
      * @param operation
+     * @param retryContext
      */
-    protected DefaultCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback, FaultToleranceOperation operation) {
+    protected DefaultCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback, FaultToleranceOperation operation,
+            RetryContext retryContext) {
         super(setter);
         this.ctx = ctx;
         this.fallback = fallback;
         this.failure = null;
         this.operation = operation;
+        this.retryContext = retryContext;
     }
 
     @Override
     protected Object run() throws Exception {
-        try {
-            return ctx.proceed();
-        } catch (Throwable e) {
-            this.failure = e;
-            throw e;
+        while (true) {
+            try {
+                return ctx.proceed();
+            } catch (Throwable e) {
+                this.failure = e;
+                // If there is an async retry context try again
+                if (isAsyncRetry() && retryContext != null && retryContext.shouldRetry() && retryContext.nextRetry(e)) {
+                    continue;
+                }
+                throw e;
+            }
         }
     }
 
     @Override
     protected Object getFallback() {
-        if (failure != null && operation.hasCircuitBreaker() && !isFailureAssignableFromAnyFailureException()) {
+        if (failure != null && ((operation.hasCircuitBreaker() && !isFailureAssignableFromAnyFailureException())
+                || (isAsyncRetry() && fallback == null))) {
             // Command failed but the fallback should not be used
             throw new FailureNotHandledException(failure);
         }
@@ -80,6 +90,10 @@ public class DefaultCommand extends HystrixCommand<Object> {
         return false;
     }
 
+    private boolean isAsyncRetry() {
+        return operation.hasRetry() && operation.isAsync();
+    }
+
     private Throwable failure;
 
     private final FaultToleranceOperation operation;
@@ -87,5 +101,7 @@ public class DefaultCommand extends HystrixCommand<Object> {
     private final Supplier<Object> fallback;
 
     private final ExecutionContextWithInvocationContext ctx;
+
+    private final RetryContext retryContext;
 
 }

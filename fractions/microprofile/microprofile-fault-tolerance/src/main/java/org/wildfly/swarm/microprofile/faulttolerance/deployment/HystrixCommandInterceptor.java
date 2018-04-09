@@ -85,7 +85,8 @@ public class HystrixCommandInterceptor {
 
     @SuppressWarnings("unchecked")
     @Inject
-    public HystrixCommandInterceptor(@ConfigProperty(name = "MP_Fault_Tolerance_NonFallback_Enabled", defaultValue = "true") Boolean nonFallBackEnable,  @ConfigProperty(name = SYNC_CIRCUIT_BREAKER_KEY, defaultValue = "true") Boolean syncCircuitBreakerEnabled, BeanManager beanManager) {
+    public HystrixCommandInterceptor(@ConfigProperty(name = "MP_Fault_Tolerance_NonFallback_Enabled", defaultValue = "true") Boolean nonFallBackEnable,
+            @ConfigProperty(name = SYNC_CIRCUIT_BREAKER_KEY, defaultValue = "true") Boolean syncCircuitBreakerEnabled, BeanManager beanManager) {
         this.nonFallBackEnable = nonFallBackEnable;
         this.syncCircuitBreakerEnabled = syncCircuitBreakerEnabled;
         this.beanManager = beanManager;
@@ -113,7 +114,7 @@ public class HystrixCommandInterceptor {
         LOGGER.tracef("FT operation intercepted: %s", method);
 
         CommandMetadata metadata = commandMetadataMap.computeIfAbsent(method, CommandMetadata::new);
-        RetryContext retryContext =  nonFallBackEnable && metadata.operation.hasRetry() ? new RetryContext(metadata.operation.getRetry()) : null;
+        RetryContext retryContext = nonFallBackEnable && metadata.operation.hasRetry() ? new RetryContext(metadata.operation.getRetry()) : null;
         SynchronousCircuitBreaker syncCircuitBreaker = null;
 
         while (shouldRunCommand) {
@@ -123,10 +124,10 @@ public class HystrixCommandInterceptor {
                 syncCircuitBreaker = getSynchronousCircuitBreaker(metadata.commandKey, metadata.operation.getCircuitBreaker());
             }
             Supplier<Object> fallback = null;
-            if (retryContext == null || retryContext.isLastAttempt()) {
+            if (retryContext == null || retryContext.isLastAttempt() || (metadata.operation.isAsync() && metadata.operation.hasRetry())) {
                 fallback = metadata.getFallback(ctx);
             }
-            DefaultCommand command = new DefaultCommand(metadata.setter, ctx, fallback, metadata.operation);
+            DefaultCommand command = new DefaultCommand(metadata.setter, ctx, fallback, metadata.operation, retryContext);
 
             try {
                 if (metadata.operation.isAsync()) {
@@ -162,7 +163,7 @@ public class HystrixCommandInterceptor {
                     case TIMEOUT:
                         TimeoutException timeoutException = new TimeoutException(e);
                         if (retryContext != null && retryContext.shouldRetry()) {
-                            shouldRunCommand = shouldRetry(retryContext, timeoutException);
+                            shouldRunCommand = retryContext.nextRetry(timeoutException);
                             if (shouldRunCommand) {
                                 continue;
                             }
@@ -175,7 +176,7 @@ public class HystrixCommandInterceptor {
                     case REJECTED_SEMAPHORE_FALLBACK:
                         BulkheadException bulkheadException = new BulkheadException(e);
                         if (retryContext != null && retryContext.shouldRetry()) {
-                            shouldRunCommand = shouldRetry(retryContext, bulkheadException);
+                            shouldRunCommand = retryContext.nextRetry(bulkheadException);
                             if (shouldRunCommand) {
                                 continue;
                             }
@@ -183,7 +184,7 @@ public class HystrixCommandInterceptor {
                         throw bulkheadException;
                     case COMMAND_EXCEPTION:
                         if (retryContext != null && retryContext.shouldRetry()) {
-                            shouldRunCommand = shouldRetry(retryContext, getCause(e));
+                            shouldRunCommand = retryContext.nextRetry(getRetryCause(e));
                             continue;
                         }
                     default:
@@ -192,6 +193,14 @@ public class HystrixCommandInterceptor {
             }
         }
         return res;
+    }
+
+    private Throwable getRetryCause(HystrixRuntimeException e) {
+        if (e.getCause() instanceof Exception) {
+            // For some reason Hystrix also wraps errors
+            return e.getCause().getCause() instanceof Error ? e.getCause().getCause() : e.getCause();
+        }
+        return e;
     }
 
     private Exception getCause(HystrixRuntimeException e) {
@@ -240,8 +249,8 @@ public class HystrixCommandInterceptor {
                     .withCircuitBreakerRequestVolumeThreshold(operation.getCircuitBreaker().get(CircuitBreakerConfig.REQUEST_VOLUME_THRESHOLD))
                     .withCircuitBreakerErrorThresholdPercentage(
                             new Double((Double) operation.getCircuitBreaker().get(CircuitBreakerConfig.FAILURE_RATIO) * 100).intValue())
-                    .withCircuitBreakerSleepWindowInMilliseconds((int) Duration
-                            .of(operation.getCircuitBreaker().get(CircuitBreakerConfig.DELAY), operation.getCircuitBreaker().get(CircuitBreakerConfig.DELAY_UNIT)).toMillis());
+                    .withCircuitBreakerSleepWindowInMilliseconds((int) Duration.of(operation.getCircuitBreaker().get(CircuitBreakerConfig.DELAY),
+                            operation.getCircuitBreaker().get(CircuitBreakerConfig.DELAY_UNIT)).toMillis());
         } else {
             propertiesSetter.withCircuitBreakerEnabled(false);
         }
@@ -270,18 +279,6 @@ public class HystrixCommandInterceptor {
             }
         }
         return setter;
-    }
-
-    private boolean shouldRetry(RetryContext retryContext, Exception e) throws Exception {
-        // Decrement the retry count for this attempt
-        retryContext.doRetry();
-        // Check the exception type
-        if (retryContext.shouldRetryOn(e, System.nanoTime())) {
-            retryContext.delayIfNeeded();
-            return true;
-        } else {
-            throw e;
-        }
     }
 
     private final ConcurrentHashMap<String, HystrixCircuitBreaker> circuitBreakers;
@@ -412,31 +409,67 @@ public class HystrixCommandInterceptor {
 
         @Override
         public Object get() throws InterruptedException, ExecutionException {
-            return unwrap(null, null);
+            Future<Object> future;
+            try {
+                future = unwrapFuture(delegate.get());
+            } catch (ExecutionException e) {
+                throw unwrapExecutionException(e);
+            }
+            try {
+                return logResult(future, future.get());
+            } catch (ExecutionException e) {
+                // Rethrow if completed exceptionally
+                throw e;
+            } catch (Exception e) {
+                throw unableToUnwrap(future);
+            }
         }
 
         @Override
         public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, java.util.concurrent.TimeoutException {
-            return unwrap(timeout, unit);
+            Future<Object> future;
+            try {
+                future = unwrapFuture(delegate.get());
+            } catch (ExecutionException e) {
+                throw unwrapExecutionException(e);
+            }
+            try {
+                return logResult(future, future.get(timeout, unit));
+            } catch (ExecutionException e) {
+                // Rethrow if completed exceptionally
+                throw e;
+            } catch (Exception e) {
+                throw unableToUnwrap(future);
+            }
         }
 
         @SuppressWarnings("unchecked")
-        private Object unwrap(Long timeout, TimeUnit unit) throws InterruptedException, ExecutionException {
-            Object res = delegate.get();
-            // For async invocations we need to unwrap the result
-            if (res instanceof Future) {
-                try {
-                    Future<Object> future = (Future<Object>) res;
-                    LOGGER.tracef("Unwrapping async result from: %s", future);
-                    Object unwrapped = timeout != null ? future.get(timeout, unit) : future.get();
-                    LOGGER.tracef("Unwrapped aync result: %s", unwrapped);
-                    return unwrapped;
-                } catch (Exception e) {
-                    throw new IllegalStateException("Unable to get the result of: " + res);
-                }
+        private Future<Object> unwrapFuture(Object futureObject) {
+            if (futureObject instanceof Future) {
+                return (Future<Object>) futureObject;
             } else {
-                throw new IllegalStateException("A result of an @Asynchronous call must be Future: " + res);
+                throw new IllegalStateException("A result of an @Asynchronous call must be Future: " + futureObject);
             }
+        }
+
+        private ExecutionException unwrapExecutionException(ExecutionException e) throws ExecutionException {
+            if (e.getCause() instanceof HystrixRuntimeException) {
+                HystrixRuntimeException hystrixRuntimeException = (HystrixRuntimeException) e.getCause();
+                if (hystrixRuntimeException.getFallbackException() instanceof FailureNotHandledException) {
+                    // Rethrow the fallback exception
+                    throw new ExecutionException(hystrixRuntimeException.getFallbackException().getCause());
+                }
+            }
+            return e;
+        }
+
+        private IllegalStateException unableToUnwrap(Future<Object> future) {
+            return new IllegalStateException("Unable to get the result of: " + future);
+        }
+
+        private Object logResult(Future<Object> future, Object unwrapped) {
+            LOGGER.tracef("Unwrapped async result from %s: %s", future, unwrapped);
+            return unwrapped;
         }
 
     }
