@@ -49,6 +49,14 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @Configurable("swarm.microprofile.jwtauth.token.expGracePeriod")
     private Defaultable<Integer> expGracePeriodSecs = integer(60);
 
+    @AttributeDocumentation("The JWKS URI from which to load public keys (used if 'signerPublicKey' isn't defined).")
+    @Configurable("swarm.microprofile.jwtauth.token.jwksUri")
+    private String jwksUri;
+
+    @AttributeDocumentation("The interval at which the JWKS URI should be queried for keys (in minutes).")
+    @Configurable("swarm.microprofile.jwtauth.token.jwksRefreshInterval")
+    private Defaultable<Integer> jwksRefreshInterval = integer(60);
+
     @AttributeDocumentation("If a JAX-RS resource has no class-level security metadata, then if this property is set to `true` and at least one resource method has security metadata all other resource methods without security metadata have an implicit `@DenyAll`, otherwise resource methods without security metadata are not secured")
     @Configurable("swarm.microprofile.jwt.default-missing-method-permissions-deny-access")
     private Defaultable<Boolean> defaultMissingMethodPermissionsDenyAccess = bool(true);
@@ -75,6 +83,22 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
 
     public void setExpGracePeriodSecs(Defaultable<Integer> expGracePeriodSecs) {
         this.expGracePeriodSecs = expGracePeriodSecs;
+    }
+
+    public String getJwksUri() {
+        return jwksUri;
+    }
+
+    public void setJwksUri(String jwksUri) {
+        this.jwksUri = jwksUri;
+    }
+
+    public Defaultable<Integer> getJwksRefreshInterval() {
+        return jwksRefreshInterval;
+    }
+
+    public void setJwksRefreshInterval(Defaultable<Integer> jwksRefreshInterval) {
+        this.jwksRefreshInterval = jwksRefreshInterval;
     }
 
     public boolean isDefaultMissingMethodPermissionsDenyAccess() {

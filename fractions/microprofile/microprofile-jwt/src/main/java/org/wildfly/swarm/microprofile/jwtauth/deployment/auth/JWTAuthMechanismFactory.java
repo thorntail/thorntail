@@ -16,6 +16,9 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth.deployment.auth;
 
+import io.undertow.security.api.AuthenticationMechanism;
+import io.undertow.security.api.AuthenticationMechanismFactory;
+import io.undertow.server.handlers.form.FormParserFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,17 +27,12 @@ import java.net.URL;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
-
-import io.undertow.security.api.AuthenticationMechanism;
-import io.undertow.security.api.AuthenticationMechanismFactory;
-import io.undertow.server.handlers.form.FormParserFactory;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTAuthContextInfo;
 import org.jboss.logging.Logger;
+import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTAuthContextInfo;
 
 /**
  * An AuthenticationMechanismFactory for the MicroProfile JWT RBAC
@@ -42,7 +40,6 @@ import org.jboss.logging.Logger;
 @ApplicationScoped
 public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
     private static Logger log = Logger.getLogger(JWTAuthMechanismFactory.class);
-
 
     @PostConstruct
     public void init() {
@@ -73,7 +70,7 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
             contextInfo = contextInfoInstance.get();
             optContextInfo = Optional.of(contextInfo);
         } catch (Exception e) {
-            log.debugf(e,"Unable to select JWTAuthContextInfo provider");
+            log.debugf(e, "Unable to select JWTAuthContextInfo provider");
         }
 
         if (!optContextInfo.isPresent()) {
@@ -92,25 +89,52 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
                 }
                 issuedBy = issuedBy.trim();
             }
+
             String publicKeyPemEnc = properties.get("signerPubKey");
             if (publicKeyPemEnc == null) {
                 // Try the /META-INF/MP-JWT-SIGNER content
                 URL pkURL = loader.getResource("/META-INF/MP-JWT-SIGNER");
-                if (pkURL == null) {
-                    throw new IllegalStateException("No signerPubKey parameter was found");
+                if (pkURL != null) {
+                    publicKeyPemEnc = readURLContent(pkURL);
                 }
-                publicKeyPemEnc = readURLContent(pkURL);
             }
 
-            // Workaround the double decode issue; https://issues.jboss.org/browse/WFLY-9135
-            String publicKeyPem = publicKeyPemEnc.replace(' ', '+');
-            contextInfo.setIssuedBy(issuedBy);
-            try {
-                RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodePublicKey(publicKeyPem);
-                contextInfo.setSignerKey(pk);
-            } catch (Exception e) {
-                throw new IllegalStateException(e);
+            if (publicKeyPemEnc == null) { // signerPubKey and MP-JWT-Signer was empty, now trying for JWKS URI.
+                String jwksUri = properties.get("jwksUri");
+                if (jwksUri == null) {
+                    URL jwksUriURL = loader.getResource("/META-INF/MP-JWT-JWKS");
+                    if (jwksUriURL != null) {
+                        jwksUri = readURLContent(jwksUriURL);
+                    }
+                }
+                if (jwksUri == null) {
+                    throw new IllegalStateException("Neither a static key nor a JWKS URI was set.");
+                }
+                contextInfo.setJwksUri(jwksUri.trim());
+
+                String jwksRefreshInterval = properties.get("jwksRefreshInterval");
+                if (jwksRefreshInterval == null) {
+                    URL jwksRefreshIntervalURL = loader.getResource("/META-INF/MP-JWT-JWKS-REFRESH");
+                    if (jwksRefreshIntervalURL != null) {
+                        jwksRefreshInterval = readURLContent(jwksRefreshIntervalURL);
+                    }
+                }
+                if (jwksRefreshInterval == null) {
+                    throw new IllegalStateException("JWKS Refresh Interval should be set when JWKS URI is used.");
+                }
+                contextInfo.setJwksRefreshInterval(Integer.valueOf(jwksRefreshInterval.trim()));
+            } else { // PEM key was provided, now parse and set it.
+                // Workaround the double decode issue; https://issues.jboss.org/browse/WFLY-9135
+                String publicKeyPem = publicKeyPemEnc.replace(' ', '+');
+                contextInfo.setIssuedBy(issuedBy);
+                try {
+                    RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodePublicKey(publicKeyPem);
+                    contextInfo.setSignerKey(pk);
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
             }
+
         } else {
             contextInfo = optContextInfo.get();
         }
