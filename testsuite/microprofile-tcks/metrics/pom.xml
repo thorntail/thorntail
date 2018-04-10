@@ -38,16 +38,19 @@
       <dependency>
          <groupId>org.eclipse.microprofile.metrics</groupId>
          <artifactId>microprofile-metrics-api</artifactId>
+         <version>1.1.1-RC1</version>
       </dependency>
 
       <dependency>
          <groupId>org.eclipse.microprofile.metrics</groupId>
          <artifactId>microprofile-metrics-rest-tck</artifactId>
+         <version>1.1.1-RC1</version>
       </dependency>
 
       <dependency>
          <groupId>org.eclipse.microprofile.metrics</groupId>
          <artifactId>microprofile-metrics-api-tck</artifactId>
+         <version>1.1.1-RC1</version>
       </dependency>
 
       <dependency>
@@ -94,6 +97,13 @@
          </plugin>
       </plugins>
    </build>
+
+   <repositories>
+      <repository>
+         <id>sonatype-tmp-tck-1-1-1</id>
+         <url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1068</url>
+      </repository>
+   </repositories>
 
 </project>
 
