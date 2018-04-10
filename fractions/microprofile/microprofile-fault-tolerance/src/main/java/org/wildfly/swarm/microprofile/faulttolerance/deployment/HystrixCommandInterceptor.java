@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.security.PrivilegedActionException;
 import java.time.Duration;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import javax.annotation.Priority;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Unmanaged;
 import javax.inject.Inject;
@@ -36,6 +38,7 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
+import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
@@ -45,6 +48,7 @@ import org.eclipse.microprofile.faulttolerance.exceptions.CircuitBreakerOpenExce
 import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceException;
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.jboss.logging.Logger;
+import org.wildfly.swarm.microprofile.faulttolerance.MicroProfileFaultToleranceFraction;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.BulkheadConfig;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.CircuitBreakerConfig;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.FallbackConfig;
@@ -86,9 +90,10 @@ public class HystrixCommandInterceptor {
     @SuppressWarnings("unchecked")
     @Inject
     public HystrixCommandInterceptor(@ConfigProperty(name = "MP_Fault_Tolerance_NonFallback_Enabled", defaultValue = "true") Boolean nonFallBackEnable,
-            @ConfigProperty(name = SYNC_CIRCUIT_BREAKER_KEY, defaultValue = "true") Boolean syncCircuitBreakerEnabled, BeanManager beanManager) {
+            Config config, Instance<MicroProfileFaultToleranceFraction> fraction, BeanManager beanManager) {
         this.nonFallBackEnable = nonFallBackEnable;
-        this.syncCircuitBreakerEnabled = syncCircuitBreakerEnabled;
+        Optional<Boolean> mpSyncCircuitBreaker = config.getOptionalValue(SYNC_CIRCUIT_BREAKER_KEY, Boolean.class);
+        this.syncCircuitBreakerEnabled = mpSyncCircuitBreaker.orElse(fraction.isUnsatisfied() ? true : fraction.get().isSynchronousCircuitBreakerEnabled());
         this.beanManager = beanManager;
         this.extension = beanManager.getExtension(HystrixExtension.class);
         this.commandMetadataMap = new ConcurrentHashMap<>();

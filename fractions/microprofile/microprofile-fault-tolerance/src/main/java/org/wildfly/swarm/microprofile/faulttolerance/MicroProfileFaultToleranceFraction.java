@@ -16,7 +16,10 @@
 
 package org.wildfly.swarm.microprofile.faulttolerance;
 
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
+import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisposition;
 
@@ -28,4 +31,12 @@ public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfile
 
     public MicroProfileFaultToleranceFraction() {
     }
+
+    public boolean isSynchronousCircuitBreakerEnabled() {
+        return synchronousCircuitBreaker.get();
+    }
+
+    @AttributeDocumentation("Enable/disable synchronous circuit breaker functionality. If disabled, `CircuitBreaker#successThreshold()` of value greater than 1 is not supported. Moreover, circuit breaker does not necessarily transition from `CLOSED` to `OPEN` immediately when a fault tolerance operation completes. However, applications are encouraged to disable this feature on high-volume circuits.")
+    @Configurable("swarm.micro-profile-faulttolerance.synchronousCircuitBreaker")
+    private Defaultable<Boolean> synchronousCircuitBreaker = Defaultable.bool(true);
 }
