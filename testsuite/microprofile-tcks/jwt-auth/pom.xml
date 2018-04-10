@@ -129,6 +129,11 @@
                <dependenciesToScan>
                   <dependency>org.eclipse.microprofile.jwt:microprofile-jwt-auth-tck</dependency>
                </dependenciesToScan>
+               <systemPropertyVariables>
+                  <!-- Uncomment to debug arquillian test -->
+                  <!-- swarm.debug.port>8787</swarm.debug.port-->
+                  <!-- swarm.logging>FINEST</swarm.logging-->
+               </systemPropertyVariables>
             </configuration>
          </plugin>
       </plugins>

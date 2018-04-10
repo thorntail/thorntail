@@ -14,11 +14,10 @@
  *   limitations under the License.
  *
  */
-package org.eclipse.microprofile.jwt.roles;
+package org.eclipse.microprofile.jwt.roles.absent;
 
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -40,9 +39,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * See also <a href= "https://github.com/eclipse/microprofile-jwt-auth/issues/77">https://github.com/eclipse/microprofile-jwt-auth/issues/77</a>.
+ *
+ * @author Martin Kouba
  */
-public class RolesAllowedTest extends Arquillian {
+public class RolesAllowedAbsentTest extends Arquillian {
 
     /**
      * The test generated JWT token string
@@ -56,8 +56,8 @@ public class RolesAllowedTest extends Arquillian {
     private URL baseURL;
 
     @Deployment
-    public static WebArchive createDeployment() throws IOException {
-        return TestArchive.createBase(RolesAllowedTest.class).addClasses(RolesEndpointMethodLevel.class, RolesEndpointClassLevel.class);
+    public static WebArchive createDeployment() {
+        return TestArchive.createBase(RolesAllowedAbsentTest.class).addClasses(DenyAllClassLevel.class);
     }
 
     @BeforeClass
@@ -67,20 +67,17 @@ public class RolesAllowedTest extends Arquillian {
 
     @RunAsClient
     @Test
-    public void testRolesMethod() throws Exception {
-        String uri = baseURL.toExternalForm() + "/rolesMethod";
+    public void testDenyAllClass() throws Exception {
+        String uri = baseURL.toExternalForm() + "/denyAll";
         WebTarget echoEndpointTarget = ClientBuilder.newClient().target(uri).queryParam("input", "hello");
         Response response = echoEndpointTarget.request(TEXT_PLAIN).header(HttpHeaders.AUTHORIZATION, "Bearer " + token).get();
-        Assert.assertEquals(response.getStatus(), HttpURLConnection.HTTP_OK);
-        String reply = response.readEntity(String.class);
-        // Must return hello, user={token upn claim}
-        Assert.assertEquals(reply, "hello, user=jdoe@example.com");
+        Assert.assertEquals(response.getStatus(), HttpURLConnection.HTTP_FORBIDDEN);
     }
 
     @RunAsClient
     @Test
-    public void testRolesClass() throws Exception {
-        String uri = baseURL.toExternalForm() + "/rolesClass";
+    public void testPermitAllMethod() throws Exception {
+        String uri = baseURL.toExternalForm() + "/denyAll/permitAll";
         WebTarget echoEndpointTarget = ClientBuilder.newClient().target(uri).queryParam("input", "hello");
         Response response = echoEndpointTarget.request(TEXT_PLAIN).header(HttpHeaders.AUTHORIZATION, "Bearer " + token).get();
         Assert.assertEquals(response.getStatus(), HttpURLConnection.HTTP_OK);
