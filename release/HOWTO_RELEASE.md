@@ -74,31 +74,40 @@
 
 # Gather contributors:
 
-The script relies on the following repositories as peers to the core repository:
+Run the local wildfly-swarm/release/fetch-contributors.js with node.js, passing the previous and newly released versions:
+
+    node fetch-contributors.js 2017.1.1 2017.2.0
+
+By default the script relies on the following repositories as peers to the core repository:
 
 * `wildfly-swarm.io`
 * `wildfly-swarm-examples`
 
 If they have different names, simply pass the appropriate name as an argument
-to `fetch-contributors` after versions in the above order
-
-    node fetch-contributors.js 2017.1.1 2017.2.0
+to `fetch-contributors` after versions. For example, if `wildfly-swarm.io` was cloned to 'site'
+and `wildfly-swarm-examples` to 'examples' then run:
+    
     node fetch-contributors.js 2017.1.1 2017.2.0 site examples
 
 # Gather JIRA issues
 
-run the local fetch-notes.js with node.js, passing the version
+Run the local wildfly-swarm/release/fetch-notes.js with node.js, passing the version
 
     node fetch-notes.js 2017.2.0
 
 # Update website
 
+Go to the local `wildfly-swarm.io`.
+
 * Prepend the new version to VERSIONS array in `versions.js`
-* In `build.js` add redirects to generated docs site and update `/docs/HEAD` to point to new SNAPSHOT
+* In `build.js` add redirects to generated docs site at `docs.wildfly-swarm.io` and update `/docs/HEAD` to point to new SNAPSHOT
 * Update `src/documentation.adoc`, moving the previous release to the
   previous release section, and changing the current release pointers.
 
 # Blog it all
+
+Create wildfly-swarm.io/src/posts/announce-2017.2.0.adoc, replace 2017.2.0 with the new version.
+Copy the fetched contributors and change log into this document.
 
 # Update Che image
 
