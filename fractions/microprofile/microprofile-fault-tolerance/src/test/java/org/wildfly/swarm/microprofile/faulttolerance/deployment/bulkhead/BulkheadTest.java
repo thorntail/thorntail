@@ -33,7 +33,7 @@ public class BulkheadTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return TestArchive.createBase("BulkheadTest.war").addPackage(BulkheadTest.class.getPackage());
+        return TestArchive.createBase(BulkheadTest.class).addPackage(BulkheadTest.class.getPackage());
     }
 
     static final int QUEUE_SIZE = 3;

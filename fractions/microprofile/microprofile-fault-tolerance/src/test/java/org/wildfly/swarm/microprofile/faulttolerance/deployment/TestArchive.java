@@ -23,12 +23,22 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 public class TestArchive {
 
+    static final String SUFFIX = ".jar";
+
+    public static JavaArchive createBase(Class<?> testClass) {
+        return createBase(testClass.getSimpleName());
+    }
+
+    /**
+     *
+     * @param name Archive name without suffix
+     * @return the base archive
+     */
     public static JavaArchive createBase(String name) {
-        return ShrinkWrap.create(JavaArchive.class,name)
+        return ShrinkWrap.create(JavaArchive.class, name + SUFFIX)
                 .addClass(TestHystrixConcurrencyStrategy.class)
                 .addAsServiceProvider(Extension.class, HystrixExtension.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE,
-                "beans.xml");
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
 }

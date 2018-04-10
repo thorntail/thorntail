@@ -43,7 +43,7 @@ public class CommandInterceptorTest {
 
     @Deployment
     public static JavaArchive deploy() {
-        return TestArchive.createBase("CommandInterceptorTest.jar").addPackages(false, CommandInterceptorTest.class.getPackage());
+        return TestArchive.createBase(CommandInterceptorTest.class).addPackages(false, CommandInterceptorTest.class.getPackage());
     }
 
     @Inject

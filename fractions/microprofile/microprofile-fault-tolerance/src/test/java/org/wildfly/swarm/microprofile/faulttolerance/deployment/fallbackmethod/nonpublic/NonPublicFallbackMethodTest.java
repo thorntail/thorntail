@@ -16,19 +16,18 @@
 package org.wildfly.swarm.microprofile.faulttolerance.deployment.fallbackmethod.nonpublic;
 
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Collections;
 
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.TestArchive;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -39,7 +38,7 @@ public class NonPublicFallbackMethodTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return TestArchive.createBase("NonPublicFallbackMethodTest.jar")
+        return TestArchive.createBase(NonPublicFallbackMethodTest.class)
                 .addPackage(NonPublicFallbackMethodTest.class.getPackage());
     }
 
