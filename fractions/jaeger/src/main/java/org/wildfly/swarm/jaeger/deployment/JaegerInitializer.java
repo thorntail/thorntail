@@ -15,10 +15,6 @@
  */
 package org.wildfly.swarm.jaeger.deployment;
 
-import com.uber.jaeger.Configuration;
-import io.opentracing.util.GlobalTracer;
-import org.jboss.logging.Logger;
-
 import java.text.NumberFormat;
 import java.text.ParseException;
 
@@ -27,7 +23,22 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import static com.uber.jaeger.Configuration.*;
+import com.uber.jaeger.Configuration;
+import io.opentracing.util.GlobalTracer;
+import org.jboss.logging.Logger;
+
+import static com.uber.jaeger.Configuration.JAEGER_AGENT_HOST;
+import static com.uber.jaeger.Configuration.JAEGER_AGENT_PORT;
+import static com.uber.jaeger.Configuration.JAEGER_PROPAGATION;
+import static com.uber.jaeger.Configuration.JAEGER_REPORTER_FLUSH_INTERVAL;
+import static com.uber.jaeger.Configuration.JAEGER_REPORTER_LOG_SPANS;
+import static com.uber.jaeger.Configuration.JAEGER_REPORTER_MAX_QUEUE_SIZE;
+import static com.uber.jaeger.Configuration.JAEGER_SAMPLER_MANAGER_HOST_PORT;
+import static com.uber.jaeger.Configuration.JAEGER_SAMPLER_PARAM;
+import static com.uber.jaeger.Configuration.JAEGER_SAMPLER_TYPE;
+import static com.uber.jaeger.Configuration.JAEGER_SERVICE_NAME;
+import static com.uber.jaeger.Configuration.ReporterConfiguration;
+import static com.uber.jaeger.Configuration.SenderConfiguration;
 
 /**
  * @author Juraci Paixão Kröhling
@@ -47,19 +58,39 @@ public class JaegerInitializer implements ServletContextListener {
         }
 
         Configuration configuration = new Configuration(
-                getProperty(sc, JAEGER_SERVICE_NAME),
-                new Configuration.SamplerConfiguration(
-                        getProperty(sc, JAEGER_SAMPLER_TYPE),
-                        getPropertyAsNumber(sc, JAEGER_SAMPLER_PARAM),
-                        getProperty(sc, JAEGER_SAMPLER_MANAGER_HOST_PORT)),
-                new ReporterConfiguration(
-                        getPropertyAsBoolean(sc, JAEGER_REPORTER_LOG_SPANS),
-                        getProperty(sc, JAEGER_AGENT_HOST),
-                        getPropertyAsInt(sc, JAEGER_AGENT_PORT),
-                        getPropertyAsInt(sc, JAEGER_REPORTER_FLUSH_INTERVAL),
-                        getPropertyAsInt(sc, JAEGER_REPORTER_MAX_QUEUE_SIZE)
-                )
-        );
+                getProperty(sc, JAEGER_SERVICE_NAME))
+                .withSampler(
+                        new Configuration.SamplerConfiguration()
+                                .withType(
+                                        getProperty(sc, JAEGER_SAMPLER_TYPE))
+                                .withParam(
+                                        getPropertyAsNumber(sc, JAEGER_SAMPLER_PARAM))
+                                .withManagerHostPort(
+                                        getProperty(sc, JAEGER_SAMPLER_MANAGER_HOST_PORT)))
+                .withReporter(
+                        new ReporterConfiguration()
+                                .withLogSpans(
+                                        getPropertyAsBoolean(sc, JAEGER_REPORTER_LOG_SPANS))
+                                .withSender(
+                                        new SenderConfiguration()
+                                                .withAgentHost(
+                                                        getProperty(sc, JAEGER_AGENT_HOST))
+                                                .withAgentPort(
+                                                        getPropertyAsInt(sc, JAEGER_AGENT_PORT)))
+                                .withFlushInterval(
+                                        getPropertyAsInt(sc, JAEGER_REPORTER_FLUSH_INTERVAL))
+                                .withMaxQueueSize(
+                                        getPropertyAsInt(sc, JAEGER_REPORTER_MAX_QUEUE_SIZE)
+                                )
+                );
+
+        String enableB3HeaderPropagation = sc.getInitParameter("enableB3HeaderPropagation");
+        if (enableB3HeaderPropagation != null && Boolean.parseBoolean(enableB3HeaderPropagation)) {
+            logger.info("Enabling B3 Header Propagation for Jaeger");
+            System.setProperty(JAEGER_PROPAGATION, "B3");
+            configuration.withCodec(Configuration.CodecConfiguration.fromEnv());
+        }
+
         GlobalTracer.register(configuration.getTracer());
     }
 

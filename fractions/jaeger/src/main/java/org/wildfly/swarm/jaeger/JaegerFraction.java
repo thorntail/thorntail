@@ -37,6 +37,9 @@ public class JaegerFraction implements Fraction<JaegerFraction> {
     @AttributeDocumentation("The reporter's maximum queue size")
     private Defaultable<String> reporterMaxQueueSize = Defaultable.string(getDefault(JAEGER_REPORTER_MAX_QUEUE_SIZE));
 
+    @AttributeDocumentation("Whether to enable propagation of B3 headers in the configured Tracer. By default this is false.")
+    private Defaultable<Boolean> enableB3HeaderPropagation = Defaultable.bool(false);
+
     public String getServiceName() {
         return serviceName.get();
     }
@@ -71,6 +74,10 @@ public class JaegerFraction implements Fraction<JaegerFraction> {
 
     public String getReporterMaxQueueSize() {
         return reporterMaxQueueSize.get();
+    }
+
+    public Boolean isB3HeaderPropagationEnabled() {
+        return enableB3HeaderPropagation.get();
     }
 
     @Override
