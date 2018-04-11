@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -76,8 +77,6 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
     private final Archive archive;
 
     private final IndexView index;
-    // A map of the deployment classes scanned for security annotations
-    private HashSet<DotName> scannedClasses = new HashSet<>();
 
     @Inject
     private MicroProfileJWTAuthFraction fraction;
@@ -116,22 +115,25 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         }
 
         Iterable<DotName> httpMethods = collectHttpMethods();
+        Set<DotName> scannedClasses = new HashSet<>();
 
         // Process the @RolesAllowed, @PermitAll and @DenyAll annotations
-        Collection<AnnotationInstance> rolesAnnotations = index.getAnnotations(ROLES_ALLOWED);
-        for (AnnotationInstance annotation : rolesAnnotations) {
+        List<AnnotationInstance> securityAnnotations = new ArrayList<>();
+        securityAnnotations.addAll(index.getAnnotations(ROLES_ALLOWED));
+        securityAnnotations.addAll(index.getAnnotations(PERMIT_ALL));
+        securityAnnotations.addAll(index.getAnnotations(DENY_ALL));
+
+        for (AnnotationInstance annotation : securityAnnotations) {
             if (annotation.target().kind() == AnnotationTarget.Kind.CLASS) {
-                // Process the root resource
                 ClassInfo classInfo = annotation.target().asClass();
                 if (!scannedClasses.contains(classInfo.name())) {
-                    generateSecurityConstraints(webXml, classInfo, appPath, httpMethods);
+                    generateSecurityConstraints(webXml, classInfo, appPath, httpMethods, scannedClasses);
                 }
             } else if (annotation.target().kind() == AnnotationTarget.Kind.METHOD) {
-                // Process the containing root resource if it has not been already
                 MethodInfo methodInfo = annotation.target().asMethod();
                 ClassInfo classInfo = methodInfo.declaringClass();
                 if (!scannedClasses.contains(classInfo.name())) {
-                    generateSecurityConstraints(webXml, classInfo, appPath, httpMethods);
+                    generateSecurityConstraints(webXml, classInfo, appPath, httpMethods, scannedClasses);
                 }
             }
         }
@@ -159,7 +161,8 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
      * @param appPath - the @ApplicationPath if any
      * @param httpMethods
      */
-    private void generateSecurityConstraints(WebXmlAsset webXml, ClassInfo classInfo, String appPath, Iterable<DotName> httpMethods) {
+    private void generateSecurityConstraints(WebXmlAsset webXml, ClassInfo classInfo, String appPath, Iterable<DotName> httpMethods,
+            Set<DotName> scannedClasses) {
 
         List<MethodInfo> resourceMethods = getResourceMethods(classInfo, httpMethods);
         if (resourceMethods.isEmpty()) {
@@ -280,10 +283,13 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
 
     private String getUriPath(String subpath, String fullAppPath) {
         String uriPath;
-        if (!subpath.isEmpty() && subpath.charAt(0) == '/') {
-            uriPath = fullAppPath.toString() + subpath.substring(1);
+        if (subpath.isEmpty()) {
+            // Remove the trailing slash
+            uriPath = fullAppPath.substring(0, fullAppPath.length() - 1);
+        } else if (subpath.charAt(0) == '/') {
+            uriPath = fullAppPath + subpath.substring(1);
         } else {
-            uriPath = fullAppPath.toString() + subpath;
+            uriPath = fullAppPath + subpath;
         }
         // If this uri includes a path param, truncate and add a wildcard
         int pathParamStart = uriPath.indexOf('{');
