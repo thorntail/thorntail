@@ -27,6 +27,7 @@ public class JoseTest {
     public static Archive<?> createDeployment() throws Exception {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
         deployment.addResource(MyResource.class);
+        deployment.addResource(SecuredApplication.class);
         deployment.addAllDependencies();
         deployment.addAsResource("keystore.jks");
         deployment.addAsResource("project-defaults.yml");
