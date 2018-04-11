@@ -19,7 +19,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.inject.Inject;
@@ -52,7 +54,7 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
     public void process() throws IOException {
         InputStream keycloakJson = null;
         if (keycloakJsonPath != null) {
-            keycloakJson = getKeycloakJson(keycloakJsonPath);
+            keycloakJson = getKeycloakJsonFromCustomPath();
         }
         if (keycloakJson == null) {
             keycloakJson = getKeycloakJson();
@@ -66,13 +68,16 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
 
     }
 
-    private InputStream getKeycloakJson(String path) {
+    private InputStream getKeycloakJsonFromCustomPath() {
+        URI keycloakJsonUri = URI.create(keycloakJsonPath);
         try {
-            return Files.newInputStream(Paths.get(path));
+            Path path = keycloakJsonUri.getScheme() != null
+                ? Paths.get(keycloakJsonUri) : Paths.get(keycloakJsonPath);
+            return Files.newInputStream(path);
         } catch (IOException e) {
             LOG.warn(String.format(
                     "Unable to get keycloak.json from '%s', fall back to get from classpath: %s",
-                    path, e
+                    keycloakJsonPath, e
             ));
         }
 
