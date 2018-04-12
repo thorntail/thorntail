@@ -24,6 +24,7 @@ package org.wildfly.swarm.microprofile.config.fraction;
 
 import org.wildfly.swarm.config.MicroprofileConfig;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -34,6 +35,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 @WildFlyExtension(module = "org.wildfly.extension.microprofile.config")
 @MarshalDMR
 @DeploymentModule(name = "org.eclipse.microprofile.config.api")
+@Configurable("swarm.microprofile.config")
 public class MicroProfileConfigFraction extends MicroprofileConfig<MicroProfileConfigFraction> implements Fraction<MicroProfileConfigFraction> {
 
     public MicroProfileConfigFraction() {

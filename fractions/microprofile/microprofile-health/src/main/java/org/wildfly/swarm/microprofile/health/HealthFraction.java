@@ -15,11 +15,16 @@
  */
 package org.wildfly.swarm.microprofile.health;
 
-import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.Module;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 import java.util.Optional;
+
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
+import org.wildfly.swarm.spi.api.Defaultable;
+import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.Module;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
  * @author Heiko Braun
@@ -31,14 +36,17 @@ import java.util.Optional;
 @DeploymentModule(name = "org.eclipse.microprofile.health", services = Module.ServiceHandling.IMPORT, export = true)
 public class HealthFraction implements Fraction<HealthFraction> {
 
-    private Optional<String> securityRealm = Optional.empty();
+    @AttributeDocumentation("Security realm configuration")
+    @Configurable("swarm.microprofile.health.security-realm")
+    @Configurable("swarm.health.security-realm")
+    private Defaultable<String> securityRealm = string("");
 
     public HealthFraction securityRealm(String realmName) {
-        this.securityRealm = Optional.of(realmName);
+        this.securityRealm.set(realmName);
         return this;
     }
 
     public Optional<String> securityRealm() {
-        return this.securityRealm;
+        return securityRealm.explicit();
     }
 }
