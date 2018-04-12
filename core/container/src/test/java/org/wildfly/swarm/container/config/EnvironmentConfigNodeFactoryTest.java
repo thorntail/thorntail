@@ -49,11 +49,14 @@ public class EnvironmentConfigNodeFactoryTest {
         Map<String, String> env = new HashMap<String, String>() {{
             put("swarm.http.port", "8080");
             put("swarm.data-sources.ExampleDS.url", "jdbc:db");
+            put("SWARM_DATA_DASH_SOURCES_EXAMPLEDS_JNDI_DASH_NAME", "java:/jboss/datasources/example");
+            put("SWARM_DATA_UNDERSCORE_SOURCES_EXAMPLEDS_USER_DASH_NAME", "joe");
         }};
 
         ConfigNode node = EnvironmentConfigNodeFactory.load(env);
 
         assertThat(node.valueOf(ConfigKey.of("swarm", "http", "port"))).isEqualTo("8080");
         assertThat(node.valueOf(ConfigKey.of("swarm", "data-sources", "ExampleDS", "url"))).isEqualTo("jdbc:db");
+        assertThat(node.valueOf(ConfigKey.of("swarm", "data_sources", "ExampleDS", "user-name"))).isEqualTo("joe");
     }
 }
