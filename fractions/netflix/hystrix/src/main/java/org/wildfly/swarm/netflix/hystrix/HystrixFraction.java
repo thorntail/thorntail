@@ -15,18 +15,18 @@
  */
 package org.wildfly.swarm.netflix.hystrix;
 
+import static org.wildfly.swarm.netflix.hystrix.HystrixProperties.DEFAULT_STREAM_PATH;
+import static org.wildfly.swarm.spi.api.Defaultable.bool;
+import static org.wildfly.swarm.spi.api.Defaultable.integer;
+import static org.wildfly.swarm.spi.api.Defaultable.longInteger;
+import static org.wildfly.swarm.spi.api.Defaultable.string;
+
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
-
-import static org.wildfly.swarm.netflix.hystrix.HystrixProperties.DEFAULT_STREAM_PATH;
-import static org.wildfly.swarm.spi.api.Defaultable.bool;
-import static org.wildfly.swarm.spi.api.Defaultable.integer;
-import static org.wildfly.swarm.spi.api.Defaultable.longInteger;
-import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 /**
  * @author Ken Finnigan
@@ -73,6 +73,10 @@ public class HystrixFraction implements Fraction<HystrixFraction> {
     @AttributeDocumentation("The maximum number of requests allowed to a HystrixCommand.run() method when you are using ExecutionIsolationStrategy.SEMAPHORE")
     @Configurable("swarm.hystrix.command.default.execution.isolation.semaphore.maxConcurrentRequests")
     private Defaultable<Integer> semaphorMaxConcurrentRequests = integer(10);
+
+    @AttributeDocumentation("The maximum number of requests allowed to a HystrixCommand.getFallback() method when you are using ExecutionIsolationStrategy.SEMAPHORE")
+    @Configurable("swarm.hystrix.command.default.fallback.isolation.semaphore.maxConcurrentRequests")
+    private Defaultable<Integer> fallbackSemaphoreMaxConcurrentRequests = integer(10);
 
     @AttributeDocumentation("Determines whether a call to HystrixCommand.getFallback() will be attempted when failure or rejection occurs")
     @Configurable("swarm.hystrix.command.default.fallback.enabled")

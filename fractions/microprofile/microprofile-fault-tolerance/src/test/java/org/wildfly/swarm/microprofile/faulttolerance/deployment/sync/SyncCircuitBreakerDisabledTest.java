@@ -51,7 +51,7 @@ public class SyncCircuitBreakerDisabledTest {
 
     @Deployment
     public static JavaArchive createTestArchive() throws NoSuchMethodException, SecurityException {
-        return TestArchive.createBase("SyncCircuitBreakerDisabledTest.jar")
+        return TestArchive.createBase(SyncCircuitBreakerDisabledTest.class)
                 .addPackage(SyncCircuitBreakerDisabledTest.class.getPackage())
                 .addAsManifestResource(new StringAsset(HystrixCommandInterceptor.SYNC_CIRCUIT_BREAKER_KEY + "=false"), "microprofile-config.properties");
     }

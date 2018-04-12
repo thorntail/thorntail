@@ -35,7 +35,7 @@ public class AsynchronousMethodNotFutureTest {
     @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static JavaArchive createTestArchive() {
-        return TestArchive.createBase("AsynchronousMethodNotFutureTest.jar")
+        return TestArchive.createBase(AsynchronousMethodNotFutureTest.class)
                 .addPackage(AsynchronousMethodNotFutureTest.class.getPackage());
     }
 

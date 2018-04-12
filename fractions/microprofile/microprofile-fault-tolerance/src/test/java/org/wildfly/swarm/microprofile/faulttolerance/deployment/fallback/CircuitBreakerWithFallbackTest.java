@@ -33,7 +33,7 @@ public class CircuitBreakerWithFallbackTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return TestArchive.createBase("CircuitBreakerWithFallbackTest.war").addPackage(CircuitBreakerWithFallbackTest.class.getPackage());
+        return TestArchive.createBase(CircuitBreakerWithFallbackTest.class).addPackage(CircuitBreakerWithFallbackTest.class.getPackage());
     }
 
     @Test

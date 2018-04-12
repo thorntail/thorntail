@@ -34,7 +34,7 @@ public class CircuitBreakerFailOnTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return TestArchive.createBase("CircuitBreakerFailOnTest.war").addPackage(CircuitBreakerFailOnTest.class.getPackage());
+        return TestArchive.createBase(CircuitBreakerFailOnTest.class).addPackage(CircuitBreakerFailOnTest.class.getPackage());
     }
 
     @Test

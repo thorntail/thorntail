@@ -37,7 +37,7 @@ public class TimeoutTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return TestArchive.createBase("TimeoutTest.jar").addPackage(TimeoutTest.class.getPackage());
+        return TestArchive.createBase(TimeoutTest.class).addPackage(TimeoutTest.class.getPackage());
     }
 
     @Inject

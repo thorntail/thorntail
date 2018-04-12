@@ -15,13 +15,17 @@
  */
 package org.wildfly.swarm.microprofile.faulttolerance.deployment.config.extension;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.time.temporal.ChronoUnit;
 
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
@@ -30,11 +34,6 @@ import org.wildfly.swarm.microprofile.faulttolerance.deployment.FaultToleranceOp
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.TestArchive;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.FaultToleranceOperation;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.RetryConfig;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  *
@@ -45,7 +44,7 @@ public class ExtensionAnnotationTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return TestArchive.createBase("ExtensionAnnotationTest.jar")
+        return TestArchive.createBase(ExtensionAnnotationTest.class)
                 .addPackage(ExtensionAnnotationTest.class.getPackage())
                 .addClass(FaultToleranceOperations.class)
                 .addAsServiceProvider(Extension.class, CustomExtension.class);
