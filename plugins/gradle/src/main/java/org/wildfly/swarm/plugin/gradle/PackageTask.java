@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +31,11 @@ import java.util.stream.Collectors;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.PublishArtifactSet;
 import org.gradle.api.artifacts.ResolvedConfiguration;
 import org.gradle.api.artifacts.ResolvedDependency;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.ApplicationPluginConvention;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
@@ -177,6 +181,23 @@ public class PackageTask extends DefaultTask {
         }
 
         this.tool.build(getBaseName(), getOutputDirectory());
+
+        /* We expect a war task to be present before scanning for war files. */
+        final java.util.Optional<Task> task = project.getTasks().stream().filter(t -> "war".equals(t.getName())).findAny();
+        if (task.isPresent()) {
+            /* Look for all the war archives present */
+            final Set<File> warArchives = project.getConfigurations()
+                                                 .stream()
+                                                 .map(Configuration::getAllArtifacts)
+                                                 .map(PublishArtifactSet::getFiles)
+                                                 .map(FileCollection::getFiles)
+                                                 .flatMap(Collection::stream)
+                                                 .filter(f -> f.getName().endsWith(".war"))
+                                                 .collect(Collectors.toSet());
+            for (File warArchive : warArchives) {
+                tool.repackageWar(warArchive);
+            }
+        }
     }
 
     @Input
