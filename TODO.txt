@@ -15,7 +15,6 @@
   - Web Services ??
   - Hibernate Search
   - Infinispan
-  - Websocket (might be covered by undertow, but worth a test if nothing else)
   - Kafka clients
 - 'hollow' distributions for web/microprofile
 - Ability to take OpenAPI spec doc and "link" to endpoint code. Similar to how vert.x does it

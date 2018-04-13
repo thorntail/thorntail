@@ -95,6 +95,7 @@
     <module>opentracing-jaeger</module>
 
     <module>vertx</module>
+    <module>websockets</module>
 
     <module>keycloak</module>
     <module>proof</module>

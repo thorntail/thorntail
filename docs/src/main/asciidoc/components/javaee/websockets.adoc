@@ -1,0 +1,5 @@
+[#component-websockets]
+= WebSockets
+
+The WebSockets components brings in support for JSR-356 websocket client and server endpoints.
+

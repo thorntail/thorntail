@@ -5,6 +5,8 @@ import java.net.Inet6Address;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.SocketAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.annotation.PostConstruct;
@@ -144,6 +146,18 @@ public class UndertowProducer {
         }
 
         return primaryURL();
+    }
+
+    @Produces
+    @Primary
+    URI primaryURI() throws MalformedURLException, URISyntaxException {
+        return primaryURL().toURI();
+    }
+
+    @Produces
+    @Management
+    URI managementURI() throws MalformedURLException, URISyntaxException {
+        return managementURL().toURI();
     }
 
     void start(@Observes LifecycleEvent.Start event) {

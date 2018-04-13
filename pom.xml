@@ -74,6 +74,7 @@
     <version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
     <version.docker-maven-plugin>0.24.0</version.docker-maven-plugin>
     <version.asciidoctor-maven-plugin>1.5.6</version.asciidoctor-maven-plugin>
+    <version.asciidoctor-pdf>1.5.0-alpha.16</version.asciidoctor-pdf>
     <version.jandex-maven-plugin>1.0.5</version.jandex-maven-plugin>
 
     <version.jboss-logging-annotations>2.1.0.Final</version.jboss-logging-annotations>
@@ -149,6 +150,11 @@
             <artifactId>jboss-annotations-api_1.2_spec</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>io.undertow</groupId>
+        <artifactId>undertow-websockets-jsr</artifactId>
+        <version>${version.undertow}</version>
       </dependency>
       <dependency>
         <groupId>io.vertx</groupId>
@@ -479,6 +485,11 @@
         <artifactId>unimbus-vertx</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.unimbus</groupId>
+        <artifactId>unimbus-websockets</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
 
       <dependency>
         <groupId>org.jboss.unimbus</groupId>
@@ -679,6 +690,7 @@
     <module>security-keycloak</module>
     <module>servlet</module>
     <module>vertx</module>
+    <module>websockets</module>
 
     <module>devtools</module>
 
@@ -754,6 +766,13 @@
           <groupId>org.asciidoctor</groupId>
           <artifactId>asciidoctor-maven-plugin</artifactId>
           <version>${version.asciidoctor-maven-plugin}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.asciidoctor</groupId>
+              <artifactId>asciidoctorj-pdf</artifactId>
+              <version>${version.asciidoctor-pdf}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.jboss.unimbus</groupId>

@@ -29,7 +29,6 @@
             <version>${project.version}</version>
           </attributes>
           <doctype>book</doctype>
-          <backend>html5</backend>
           <sourceDocumentName>index.adoc</sourceDocumentName>
         </configuration>
         <executions>
@@ -39,6 +38,22 @@
             <goals>
               <goal>process-asciidoc</goal>
             </goals>
+            <configuration>
+              <backend>html5</backend>
+              <outputDirectory>${project.build.directory}/${artifactId}-html</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>output-pdf</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <backend>pdf</backend>
+              <outputDirectory>${project.build.directory}/temp</outputDirectory>
+              <outputFile>${project.build.directory}/${artifactId}.pdf</outputFile>
+            </configuration>
           </execution>
         </executions>
       </plugin>
