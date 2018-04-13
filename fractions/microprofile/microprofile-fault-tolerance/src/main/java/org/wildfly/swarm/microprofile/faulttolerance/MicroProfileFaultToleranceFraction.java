@@ -37,6 +37,6 @@ public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfile
     }
 
     @AttributeDocumentation("Enable/disable synchronous circuit breaker functionality. If disabled, `CircuitBreaker#successThreshold()` of value greater than 1 is not supported. Moreover, circuit breaker does not necessarily transition from `CLOSED` to `OPEN` immediately when a fault tolerance operation completes. However, applications are encouraged to disable this feature on high-volume circuits.")
-    @Configurable("swarm.micro-profile-faulttolerance.synchronousCircuitBreaker")
+    @Configurable("swarm.microprofile.fault-tolerance.synchronous-circuit-breaker")
     private Defaultable<Boolean> synchronousCircuitBreaker = Defaultable.bool(true);
 }

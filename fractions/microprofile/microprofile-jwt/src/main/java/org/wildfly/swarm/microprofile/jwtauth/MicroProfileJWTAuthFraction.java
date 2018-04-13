@@ -29,19 +29,22 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 /**
  * A fraction that adds support for the MicroProfile 1.0 JWT RBAC authentication and authorization spec.
  */
-@Configurable("swarm.microprofile.jwtauth")
+@Configurable("swarm.microprofile.jwt")
 @DeploymentModule(name = "org.wildfly.swarm.microprofile.jwtauth", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
 public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuthFraction> {
 
     @AttributeDocumentation("The URI of the JWT token issuer")
+    @Configurable("swarm.microprofile.jwt.token.issued-by")
     @Configurable("swarm.microprofile.jwtauth.token.issuedBy")
     private Defaultable<String> tokenIssuer = string("http://localhost");
 
     @AttributeDocumentation("The public key of the JWT token signer")
+    @Configurable("swarm.microprofile.jwt.token.signer-pub-key")
     @Configurable("swarm.microprofile.jwtauth.token.signerPubKey")
     private String publicKey;
 
     @AttributeDocumentation("The JWT token expiration grace period in seconds ")
+    @Configurable("swarm.microprofile.jwt.token.exp-grace-period")
     @Configurable("swarm.microprofile.jwtauth.token.expGracePeriod")
     private Defaultable<Integer> expGracePeriodSecs = integer(60);
 
