@@ -93,7 +93,11 @@ public class MultiStartMojo extends AbstractSwarmMojo {
             return;
         }
 
-        Artifact artifact = findArtifact(groupId, artifactId, "swarm");
+        String classifier = process.getChild("classifier").getValue();
+        Artifact artifact = findArtifact(groupId, artifactId, classifier);
+        if (artifact == null) {
+            artifact = findArtifact(groupId, artifactId, "swarm");
+        }
 
         if (artifact != null) {
             startArtifact(artifact, process);
