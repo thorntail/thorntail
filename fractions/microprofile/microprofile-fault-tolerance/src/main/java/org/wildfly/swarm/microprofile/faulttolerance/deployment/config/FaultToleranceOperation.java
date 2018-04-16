@@ -126,6 +126,10 @@ public class FaultToleranceOperation {
         return timeout != null;
     }
 
+    public Method getMethod() {
+        return method;
+    }
+
     public boolean isLegitimate() {
         return async || bulkhead != null || circuitBreaker != null || fallback != null || retry != null || timeout != null;
     }

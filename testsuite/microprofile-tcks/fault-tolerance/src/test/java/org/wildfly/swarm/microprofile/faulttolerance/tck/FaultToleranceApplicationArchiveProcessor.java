@@ -15,12 +15,12 @@
  */
 package org.wildfly.swarm.microprofile.faulttolerance.tck;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.container.ResourceContainer;
 
 /**
@@ -34,19 +34,11 @@ public class FaultToleranceApplicationArchiveProcessor implements ApplicationArc
     @Override
     public void process(Archive<?> applicationArchive, TestClass testClass) {
         if (!(applicationArchive instanceof ResourceContainer)) {
-            LOGGER.warning("Unable to add Hystrix config.properties - not a resource container: " + applicationArchive);
+            LOGGER.warning("Unable to add Hystrix-related project-defaults.yaml - not a resource container: " + applicationArchive);
             return;
         }
-        LOGGER.info("Adding customized Hystrix config.properties to " + applicationArchive);
         ResourceContainer<?> resourceContainer = (ResourceContainer<?>) applicationArchive;
-        resourceContainer.addAsResource(buildProperties(), "config.properties");
+        resourceContainer.addAsResource(new File("src/test/resources/project-defaults.yml"));
+        LOGGER.info("Added project-defaults.yaml to " + applicationArchive.toString(true));
     }
-
-    private StringAsset buildProperties() {
-        StringBuilder builder = new StringBuilder();
-        // Do not interrupt command execution when a timeout occurs - needed for bulkhead tests
-        builder.append("hystrix.command.default.execution.isolation.thread.interruptOnTimeout=false");
-        return new StringAsset(builder.toString());
-    }
-
 }

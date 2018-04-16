@@ -54,7 +54,7 @@ class DefaultHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy {
         int dynamicCoreSize = corePoolSize.get();
         int dynamicMaximumSize = maximumPoolSize.get();
 
-        LOGGER.debugf("Get thread pool executor [core: %s, max: %s]", dynamicCoreSize, dynamicMaximumSize);
+        LOGGER.debugf("Get thread pool executor for %s [core: %s, max: %s]", threadPoolKey.name(), dynamicCoreSize, dynamicMaximumSize);
 
         return new ThreadPoolExecutor(dynamicCoreSize, dynamicCoreSize > dynamicMaximumSize ? dynamicCoreSize : dynamicMaximumSize, keepAliveTime.get(), unit,
                 workQueue, threadFactory);
@@ -70,7 +70,7 @@ class DefaultHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy {
         int maxQueueSize = threadPoolProperties.maxQueueSize().get();
         BlockingQueue<Runnable> workQueue = getBlockingQueue(maxQueueSize);
 
-        LOGGER.debugf("Get thread pool executor [allowMaximumSizeToDivergeFromCoreSize: %s, core: %s, max: %s]", allowMaximumSizeToDivergeFromCoreSize,
+        LOGGER.debugf("Get thread pool executor for %s [allowMaximumSizeToDivergeFromCoreSize: %s, core: %s, max: %s]", threadPoolKey.name(), allowMaximumSizeToDivergeFromCoreSize,
                 dynamicCoreSize, dynamicMaximumSize);
 
         if (allowMaximumSizeToDivergeFromCoreSize) {

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile.faulttolerance.deployment.retry;
+package org.wildfly.swarm.microprofile.faulttolerance.deployment.retryonerror;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.wildfly.swarm.microprofile.faulttolerance.deployment.retry.HelloService.COUNTER;
+import static org.wildfly.swarm.microprofile.faulttolerance.deployment.retryonerror.HelloService.COUNTER;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -35,7 +35,7 @@ public class RetryOnErrorTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return TestArchive.createBase("RetryOnErrorTest.jar").addPackage(RetryOnErrorTest.class.getPackage());
+        return TestArchive.createBase(RetryOnErrorTest.class).addPackage(RetryOnErrorTest.class.getPackage());
     }
 
     @Test

@@ -22,7 +22,6 @@ import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
  * {@link CircuitBreaker#failOn()}.
  *
  * @author Martin Kouba
- * @see DefaultCommand
  */
 public class FailureNotHandledException extends RuntimeException {
 

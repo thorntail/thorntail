@@ -34,6 +34,7 @@
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Eclipse MicroProfile,MicroServices,Fault Tolerance</swarm.fraction.tags>
     <version.arquillian-weld-embedded>2.0.0.Beta5</version.arquillian-weld-embedded>
+    <version.awaitility>3.1.0</version.awaitility>
   </properties>
 
   <build>
@@ -43,6 +44,17 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <systemPropertyVariables>
+                  <java.util.logging.config.file>${project.build.testOutputDirectory}/logging.properties</java.util.logging.config.file>
+               </systemPropertyVariables>
+            </configuration>
+         </plugin>
+      </plugins>
   </build>
 
   <dependencies>
@@ -101,6 +113,12 @@
    <dependency>
      <groupId>org.slf4j</groupId>
      <artifactId>slf4j-simple</artifactId>
+   </dependency>
+   <dependency>
+     <groupId>org.awaitility</groupId>
+     <artifactId>awaitility</artifactId>
+     <version>${version.awaitility}</version>
+     <scope>test</scope>
    </dependency>
 
   </dependencies>
