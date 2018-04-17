@@ -56,8 +56,8 @@ public class JwksKeyWithFractionConfigTest {
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
         return new Swarm()
-                .withProperty("swarm.microprofile.jwtauth.token.jwksUri", "http://localhost:14145/jwks")
-                .withProperty("swarm.microprofile.jwtauth.token.issuedBy", "http://testsuite-jwt-issuer.io");
+                .withProperty("swarm.microprofile.jwt.token.jwks-uri", "http://localhost:14145/jwks")
+                .withProperty("swarm.microprofile.jwt.token.issued-by", "http://testsuite-jwt-issuer.io");
     }
 
     @Test

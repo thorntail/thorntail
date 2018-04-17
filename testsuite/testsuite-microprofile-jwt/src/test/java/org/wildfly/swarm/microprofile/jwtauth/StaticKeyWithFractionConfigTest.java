@@ -36,8 +36,8 @@ public class StaticKeyWithFractionConfigTest {
     public static Swarm newContainer() throws Exception {
         final KeyTool keyTool = KeyTool.newKeyTool(StaticKeyWithFractionConfigTest.class.getResource("/pkcs8_good_key.pem").toURI());
         return new Swarm()
-                .withProperty("swarm.microprofile.jwtauth.token.signerPubKey", keyTool.getPublicKeyPEM())
-                .withProperty("swarm.microprofile.jwtauth.token.issuedBy", "http://testsuite-jwt-issuer.io");
+                .withProperty("swarm.microprofile.jwt.token.signer-pub-key", keyTool.getPublicKeyPEM())
+                .withProperty("swarm.microprofile.jwt.token.issued-by", "http://testsuite-jwt-issuer.io");
     }
 
     @Test
