@@ -25,7 +25,6 @@
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Data</swarm.fraction.tags>
-    <swarm.fraction.internal>true</swarm.fraction.internal>	 
  </properties>
 
   <build>
