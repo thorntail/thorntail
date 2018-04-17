@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.file.Path;
 import java.util.Scanner;
 import java.util.Stack;
+import java.util.StringJoiner;
 
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
@@ -27,7 +28,8 @@ import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.DeclaredDependencies;
 
 /**
- * A very naive way to get access the gradle dependency information.
+ * Get the dependency details for a Gradle project. This adapter makes use of the IdeaProject definition that is provided by
+ * default with every Gradle installation in order to determine the target set of dependencies.
  *
  * @author Heiko Braun
  * @since 19/10/16
@@ -65,17 +67,25 @@ public class GradleDependencyAdapter {
     }
 
     public DeclaredDependencies parseDependencies(Configuration configuration) {
-        System.out.println(rootPath);
-
         GradleConnector connector = GradleConnector.newConnector()
                 .forProjectDirectory(rootPath.toFile());
         ProjectConnection connection = connector.connect();
         GradleProject project = connection.getModel(GradleProject.class);
+        String path = project.getPath(); // Get the Gradle project path for executing the dependencies section.
+        project = getProjectForDirectory(project, rootPath);
+        if (project != null) {
+            // Not sure if we would ever have a scenario where project is null. Even if it does happen, it would fall back to
+            // existing default behavior.
+            path = project.getPath();
+            if (!path.endsWith(":")) {
+                path = path + ":";
+            }
+        }
 
-
+        // Identify and resolve the dependencies for the given project.
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         connection.newBuild()
-                .withArguments("dependencies", "--configuration", configuration.literal)
+                .withArguments(path + "dependencies", "--configuration", configuration.literal)
                 .setStandardOutput(bout)
                 .run();
 
@@ -135,9 +145,27 @@ public class GradleDependencyAdapter {
             } else {
                 return line;
             }
-        } else {
-            throw new IllegalArgumentException("Unexpected input format");
+        } else if (2 == coords.length) {
+            // This could happen if the Gradle project is making use of the Gradle feature (in preview mode for 4.6+) that has
+            // improved support for BOMs.
+            // In this particular scenario, the dependency should look like the following,
+            // org.wildfly.swarm:jaxrs-multipart -> 2018.5.0-plankton-SNAPSHOT
+
+            StringJoiner joiner = new StringJoiner(":");
+            joiner.add(coords[0]);
+
+            // Extract artifact & version details.
+            String artifactId = coords[1];
+            int idx = artifactId.indexOf(VERSION_UP);
+            if (idx != -1) {
+                String version = artifactId.substring(idx + VERSION_UP.length()).trim();
+                artifactId = artifactId.substring(0, idx).trim();
+                joiner.add(artifactId).add(version);
+                return joiner.toString();
+            }
         }
+        // Raise an exception if we are unable to determine the dependency format.
+        throw new IllegalArgumentException("Unexpected dependency format: " + line);
     }
 
     private String parseLine(String line) {
@@ -147,6 +175,29 @@ public class GradleDependencyAdapter {
             line = line.substring(0, line.indexOf(SUFFIX));
         }
         return line;
+    }
+
+    /**
+     * Scan the project hierarchy (in case of a multi-module project) and return the project that matches the given path
+     * reference.
+     *
+     * @param project the Gradle project reference.
+     * @param path    the path to match against.
+     * @return the Gradle project reference whose path matches the given input path.
+     */
+    private static GradleProject getProjectForDirectory(GradleProject project, Path path) {
+        if (project != null) {
+            if (project.getProjectDirectory().toPath().equals(path)) {
+                return project;
+            }
+            for (GradleProject p : project.getChildren()) {
+                GradleProject searchResult = getProjectForDirectory(p, path);
+                if (searchResult != null) {
+                    return searchResult;
+                }
+            }
+        }
+        return null;
     }
 
     private static final String PREFIX = "--- ";
