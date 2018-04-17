@@ -82,6 +82,10 @@
                     <goal>start</goal>
                   </goals>
                   <configuration>
+                    <properties>
+                      <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+                      <swarm.bind.address>127.0.0.1</swarm.bind.address>
+                    </properties>
                     <stdoutFile>target/stdout.log</stdoutFile>
                     <stderrFile>target/stderr.log</stderrFile>
                   </configuration>

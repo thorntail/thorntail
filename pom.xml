@@ -1037,6 +1037,7 @@
     <module>fractions/wildfly/elytron</module>
     <module>fractions/wildfly/hibernate-validator</module>
     <module>fractions/wildfly/io</module>
+    <module>fractions/wildfly/infinispan</module>
     <module>fractions/wildfly/logging</module>
     <module>fractions/wildfly/jgroups</module>
     <module>fractions/wildfly/management</module>
@@ -1143,7 +1144,6 @@
 
         <module>fractions/wildfly/cli</module>
         <module>fractions/wildfly/hibernate-search</module>
-        <module>fractions/wildfly/infinispan</module>
         <module>fractions/wildfly/jdr</module>
 
         <module>fractions/wildfly/management-console</module>
