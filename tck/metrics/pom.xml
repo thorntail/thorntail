@@ -4,13 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus.tck</groupId>
-    <artifactId>unimbus-tck-parent</artifactId>
+    <groupId>io.thorntail.tck</groupId>
+    <artifactId>thorntail-tck-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>unimbus-tck-metrics</artifactId>
+  <artifactId>thorntail-tck-metrics</artifactId>
   <name>TCK: MicroProfile Metrics</name>
   
   <build>
@@ -33,13 +33,13 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-metrics</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-metrics</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-testing-arquillian</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-testing-arquillian</artifactId>
       <scope>test</scope>
     </dependency>
 

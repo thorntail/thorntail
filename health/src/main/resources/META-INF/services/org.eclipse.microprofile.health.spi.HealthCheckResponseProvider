@@ -1,1 +1,1 @@
-org.jboss.unimbus.health.impl.ResponseProvider
+io.thorntail.health.impl.ResponseProvider

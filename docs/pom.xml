@@ -4,12 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus</groupId>
-    <artifactId>unimbus-parent</artifactId>
+    <groupId>io.thorntail</groupId>
+    <artifactId>thorntail-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>unimbus-docs</artifactId>
+  <artifactId>thorntail-docs</artifactId>
   <name>Documentation</name>
   <packaging>pom</packaging>
 
@@ -23,9 +23,9 @@
           <attributes>
             <docinfo>shared</docinfo>
             <groupId>${project.groupId}</groupId>
-            <project_name>uNimbus</project_name>
-            <project_key>unimbus</project_key>
-            <PROJECT_ENV>UNIMBUS</PROJECT_ENV>
+            <project_name>Thorntail</project_name>
+            <project_key>thorntail</project_key>
+            <PROJECT_ENV>THORNTAIL</PROJECT_ENV>
             <version>${project.version}</version>
           </attributes>
           <doctype>book</doctype>

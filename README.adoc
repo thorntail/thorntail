@@ -2,17 +2,17 @@
 
 = µNimbus PoC
 
-.Install the unimbus-maven-plugin
+.Install the thorntail-maven-plugin
 
 Until it is published, you'll need to clone the repository and install it using Maven.
 
-    git clone git@github.com:bobmcwhirter/unimbus-plugins.git
+    git clone git@github.com:bobmcwhirter/thorntail-plugins.git
 
-    cd unimbus-plugins
+    cd thorntail-plugins
 
     mvn install
 
-.Build uNimbus-proper
+.Build Thorntail-proper
 
 The build assumes Docker is present in some cases for deeper integration tests.
 

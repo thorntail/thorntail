@@ -4,12 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus</groupId>
-    <artifactId>unimbus-parent</artifactId>
+    <groupId>io.thorntail</groupId>
+    <artifactId>thorntail-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>unimbus-testing-arquillian</artifactId>
+  <artifactId>thorntail-testing-arquillian</artifactId>
   <name>Testing: Arquillian</name>
 
   <dependencyManagement>
@@ -43,8 +43,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-core</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-core</artifactId>
     </dependency>
   </dependencies>
 

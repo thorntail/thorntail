@@ -1,1 +1,1 @@
-org.jboss.unimbus.security.impl.undertow.SimpleAuthServletExtension
+io.thorntail.security.impl.undertow.SimpleAuthServletExtension

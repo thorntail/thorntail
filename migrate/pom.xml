@@ -3,14 +3,14 @@
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
-    <groupId>org.jboss.unimbus</groupId>
-    <artifactId>unimbus-parent</artifactId>
+    <groupId>io.thorntail</groupId>
+    <artifactId>thorntail-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.jboss.unimbus.migrate</groupId>
-  <artifactId>unimbus-migrate</artifactId>
+  <groupId>io.thorntail.migrate</groupId>
+  <artifactId>thorntail-migrate</artifactId>
   <packaging>jar</packaging>
 
   <name>uNimbus Migration Tool</name>
@@ -23,8 +23,8 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-maven-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
         <configuration>
           <format>jar</format>
         </configuration>
@@ -41,8 +41,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-core</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>

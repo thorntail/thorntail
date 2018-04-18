@@ -4,28 +4,28 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus.testsuite</groupId>
-    <artifactId>unimbus-testsuite-parent</artifactId>
+    <groupId>io.thorntail.testsuite</groupId>
+    <artifactId>thorntail-testsuite-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>unimbus-testsuite-bean-validation</artifactId>
+  <artifactId>thorntail-testsuite-bean-validation</artifactId>
   <name>Testsuite: Bean Validation</name>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-maven-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-bean-validation</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-bean-validation</artifactId>
     </dependency>
   </dependencies>
 </project>

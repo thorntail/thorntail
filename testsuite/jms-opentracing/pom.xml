@@ -4,20 +4,20 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus.testsuite</groupId>
-    <artifactId>unimbus-testsuite-parent</artifactId>
+    <groupId>io.thorntail.testsuite</groupId>
+    <artifactId>thorntail-testsuite-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>unimbus-testsuite-jms-opentracing</artifactId>
+  <artifactId>thorntail-testsuite-jms-opentracing</artifactId>
   <name>Testsuite: JMS - OpenTracing</name>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-maven-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>io.fabric8</groupId>
@@ -54,17 +54,17 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-jms-artemis</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-jms-artemis</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-testutils-async</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-testutils-async</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-testutils-opentracing</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-testutils-opentracing</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -1,1 +1,1 @@
-org.jboss.unimbus.test.impl.EphemeralPortsConfigSourceProvider
+io.thorntail.test.impl.EphemeralPortsConfigSourceProvider

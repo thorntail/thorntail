@@ -4,13 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus</groupId>
-    <artifactId>unimbus-parent</artifactId>
+    <groupId>io.thorntail</groupId>
+    <artifactId>thorntail-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.jboss.unimbus.testsuite</groupId>
-  <artifactId>unimbus-testsuite-parent</artifactId>
+  <groupId>io.thorntail.testsuite</groupId>
+  <artifactId>thorntail-testsuite-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
   <name>Testsuite Parent</name>
@@ -19,8 +19,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-testing</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-testing</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

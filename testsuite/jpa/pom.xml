@@ -4,32 +4,32 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus.testsuite</groupId>
-    <artifactId>unimbus-testsuite-parent</artifactId>
+    <groupId>io.thorntail.testsuite</groupId>
+    <artifactId>thorntail-testsuite-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>unimbus-testsuite-jpa</artifactId>
+  <artifactId>thorntail-testsuite-jpa</artifactId>
   <name>Testsuite: JPA</name>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-maven-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-jpa</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-jpa</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-servlet</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-servlet</artifactId>
     </dependency>
 
     <dependency>

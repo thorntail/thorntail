@@ -4,36 +4,36 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus.testsuite</groupId>
-    <artifactId>unimbus-testsuite-parent</artifactId>
+    <groupId>io.thorntail.testsuite</groupId>
+    <artifactId>thorntail-testsuite-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>unimbus-testsuite-keycloak</artifactId>
+  <artifactId>thorntail-testsuite-keycloak</artifactId>
   <name>Testsuite: Keycloak</name>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-maven-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-security-keycloak</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-security-keycloak</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-jaxrs</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-jaxrs</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-health</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-health</artifactId>
     </dependency>
   </dependencies>
 </project>

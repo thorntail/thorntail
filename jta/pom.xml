@@ -4,18 +4,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus</groupId>
-    <artifactId>unimbus-parent</artifactId>
+    <groupId>io.thorntail</groupId>
+    <artifactId>thorntail-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>unimbus-jta</artifactId>
+  <artifactId>thorntail-jta</artifactId>
   <name>JTA</name>
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-core</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-core</artifactId>
     </dependency>
 
     <dependency>
@@ -29,8 +29,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-jndi</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-jndi</artifactId>
     </dependency>
 
     <dependency>

@@ -1,2 +1,2 @@
-org.jboss.unimbus.condition.ext.ConditionExtension
-org.jboss.unimbus.config.ext.ConfigExtension
+io.thorntail.condition.ext.ConditionExtension
+io.thorntail.config.ext.ConfigExtension

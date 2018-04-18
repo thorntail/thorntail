@@ -4,28 +4,28 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus.testsuite</groupId>
-    <artifactId>unimbus-testsuite-parent</artifactId>
+    <groupId>io.thorntail.testsuite</groupId>
+    <artifactId>thorntail-testsuite-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>unimbus-testsuite-websockets</artifactId>
+  <artifactId>thorntail-testsuite-websockets</artifactId>
   <name>Testsuite: WebSockets</name>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-maven-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-websockets</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-websockets</artifactId>
     </dependency>
   </dependencies>
 </project>

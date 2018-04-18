@@ -4,20 +4,20 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus.testsuite</groupId>
-    <artifactId>unimbus-testsuite-parent</artifactId>
+    <groupId>io.thorntail.testsuite</groupId>
+    <artifactId>thorntail-testsuite-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>unimbus-testsuite-opentracing-jaeger</artifactId>
+  <artifactId>thorntail-testsuite-opentracing-jaeger</artifactId>
   <name>Testsuite: OpenTracing - Jaeger</name>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-maven-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>io.fabric8</groupId>
@@ -81,20 +81,20 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-jpa</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-jpa</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-jaxrs</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-jaxrs</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-jms-artemis</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-jms-artemis</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-vertx</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-vertx</artifactId>
     </dependency>
 
     <dependency>
@@ -107,8 +107,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-testutils-opentracing-jaeger</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-testutils-opentracing-jaeger</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

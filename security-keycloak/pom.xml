@@ -4,23 +4,23 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.unimbus</groupId>
-    <artifactId>unimbus-parent</artifactId>
+    <groupId>io.thorntail</groupId>
+    <artifactId>thorntail-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>unimbus-security-keycloak</artifactId>
+  <artifactId>thorntail-security-keycloak</artifactId>
   <name>Security - Keycloak</name>
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-core</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-core</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-security</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-security</artifactId>
     </dependency>
 
     <dependency>
@@ -34,8 +34,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.unimbus</groupId>
-      <artifactId>unimbus-servlet</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-servlet</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>

@@ -3,11 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.jboss.unimbus</groupId>
-  <artifactId>unimbus-parent</artifactId>
+  <groupId>io.thorntail</groupId>
+  <artifactId>thorntail-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>uNimbus Parent</name>
+  <name>Thorntail Parent</name>
 
   <packaging>pom</packaging>
 
@@ -381,119 +381,119 @@
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-core</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-core</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-bean-validation</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-bean-validation</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-datasources</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-datasources</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-health</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-health</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-jaxrs</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-jaxrs</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-jca</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-jca</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-jdbc</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-jdbc</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-jndi</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-jndi</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-jms</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-jms</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-jms-artemis</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-jms-artemis</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-jpa</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-jpa</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-jsonp</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-jsonp</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-jta</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-jta</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-jwt-auth</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-jwt-auth</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-faulttolerance</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-faulttolerance</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-metrics</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-metrics</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-openapi</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-openapi</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-security</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-security</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-security-keycloak</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-security-keycloak</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-servlet</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-servlet</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-vertx</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-vertx</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-websockets</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-websockets</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-devtools</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-devtools</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
 
@@ -576,32 +576,32 @@
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-testing</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-testing</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-testing-arquillian</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-testing-arquillian</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-testutils-async</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-testutils-async</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-testutils-opentracing</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-testutils-opentracing</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.jboss.unimbus</groupId>
-        <artifactId>unimbus-testutils-opentracing-jaeger</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-testutils-opentracing-jaeger</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
 
@@ -775,8 +775,8 @@
           </dependencies>
         </plugin>
         <plugin>
-          <groupId>org.jboss.unimbus</groupId>
-          <artifactId>unimbus-maven-plugin</artifactId>
+          <groupId>io.thorntail</groupId>
+          <artifactId>thorntail-maven-plugin</artifactId>
           <version>1.0.0-SNAPSHOT</version>
           <configuration>
             <format>jar</format>
@@ -807,8 +807,8 @@
           <doclint>none</doclint>
           <outputDirectory>target/apidocs</outputDirectory>
           <reportOutputDirectory>target/apidocs</reportOutputDirectory>
-          <windowtitle>uNimbus Public API - ${project.version}</windowtitle>
-          <doctitle>uNimbus Public API - ${project.version}</doctitle>
+          <windowtitle>Thorntail Public API - ${project.version}</windowtitle>
+          <doctitle>Thorntail Public API - ${project.version}</doctitle>
         </configuration>
         <executions>
           <execution>
