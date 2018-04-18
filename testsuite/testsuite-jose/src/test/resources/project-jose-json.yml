@@ -1,0 +1,8 @@
+swarm:
+  jose:
+    keystore:
+      path: keystore.jks
+    signature:
+      format: JSON
+    encryption:
+      format: JSON  

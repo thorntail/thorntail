@@ -15,18 +15,7 @@
  */
 package org.wildfly.swarm.jose;
 
-public interface JoseProperties {
-
-    String DEFAULT_KEYSTORE_TYPE = "jks";
-    String DEFAULT_KEYSTORE_PATH = "application.keystore";
-    String DEFAULT_KEYSTORE_PASSWORD = "password";
-    String DEFAULT_KEY_PASSWORD = "password";
-    String DEFAULT_KEY_ALIAS = "server";
-
-    String DEFAULT_SIGNATURE_ALGORITHM = "RS256";
-    boolean DEFAULT_SIGNATURE_DATA_ENCODING = true;
-    String DEFAULT_KEY_ENCRYPTION_ALGORITHM = "RSA-OAEP";
-    String DEFAULT_CONTENT_ENCRYPTION_ALGORITHM = "A128GCM";
-
-    JoseFormat DEFAULT_JOSE_FORMAT = JoseFormat.COMPACT;
+public enum JoseFormat {
+    COMPACT,
+    JSON
 }

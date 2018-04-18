@@ -21,20 +21,12 @@
 
   <packaging>jar</packaging>
   
-  <properties>
-    <version.cxf>3.2.4</version.cxf>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jose</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-rs-security-jose</artifactId>
-      <version>${version.cxf}</version>
-    </dependency>
+
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>jaxrs</artifactId>
@@ -42,29 +34,29 @@
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jaxrs-jsonp</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>cdi</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jose-jwt</artifactId>
+      <version>${version.resteasy}</version>
+    </dependency>
 
     <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>2.7</version>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
       <artifactId>arquillian</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-client</artifactId>
       <scope>test</scope>
     </dependency>
 

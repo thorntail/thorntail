@@ -16,6 +16,7 @@
 package org.wildfly.swarm.jose;
 
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_CONTENT_ENCRYPTION_ALGORITHM;
+import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_JOSE_FORMAT;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEYSTORE_PASSWORD;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEYSTORE_PATH;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEYSTORE_TYPE;
@@ -23,6 +24,8 @@ import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEY_ALIAS;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEY_ENCRYPTION_ALGORITHM;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEY_PASSWORD;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_ALGORITHM;
+import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_DATA_ENCODING;
+import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
@@ -30,15 +33,10 @@ import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
-import org.wildfly.swarm.spi.api.annotations.DeploymentModules;
 
-@DeploymentModules({
-    @DeploymentModule(name = "org.wildfly.swarm.jose.provider"),
-    @DeploymentModule(name = "org.wildfly.swarm.jose",
-                      slot = "deployment",
-                      export = true,
-                      metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
-})
+@DeploymentModule(name = "org.wildfly.swarm.jose.provider")
+@DeploymentModule(name = "org.wildfly.swarm.jose", slot = "deployment",
+                  export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
 public class JoseFraction implements Fraction<JoseFraction> {
 
     public Jose getJoseInstance() {
@@ -99,6 +97,33 @@ public class JoseFraction implements Fraction<JoseFraction> {
         return this.signatureAlgorithm.get();
     }
 
+    public JoseFraction signatureDataEncoding(boolean encoding) {
+        signatureDataEncoding.set(encoding);
+        return this;
+    }
+
+    public boolean signatureDataEncoding() {
+        return this.signatureDataEncoding.get();
+    }
+
+    public JoseFraction signatureFormat(JoseFormat format) {
+        signatureFormat.set(format.name());
+        return this;
+    }
+
+    public JoseFormat signatureFormat() {
+        return JoseFormat.valueOf(this.signatureFormat.get());
+    }
+
+    public JoseFraction encryptionFormat(JoseFormat format) {
+        encryptionFormat.set(format.name());
+        return this;
+    }
+
+    public JoseFormat encryptionFormat() {
+        return JoseFormat.valueOf(this.encryptionFormat.get());
+    }
+
     public JoseFraction keyEncryptionAlgorithm(String algorithm) {
         keyEncryptionAlgorithm.set(algorithm);
         return this;
@@ -157,6 +182,27 @@ public class JoseFraction implements Fraction<JoseFraction> {
     @Configurable("swarm.jose.signature.algorithm")
     @AttributeDocumentation("Signature algorithm")
     private Defaultable<String> signatureAlgorithm = string(DEFAULT_SIGNATURE_ALGORITHM);
+
+    /**
+     * Signature Format.
+     */
+    @Configurable("swarm.jose.signature.data-encoding")
+    @AttributeDocumentation("Signature data encoding")
+    private Defaultable<Boolean> signatureDataEncoding = bool(DEFAULT_SIGNATURE_DATA_ENCODING);
+
+    /**
+     * Signature Format.
+     */
+    @Configurable("swarm.jose.signature.format")
+    @AttributeDocumentation("Signature format")
+    private Defaultable<String> signatureFormat = string(DEFAULT_JOSE_FORMAT.name());
+
+    /**
+     * Encryption Format.
+     */
+    @Configurable("swarm.jose.encryption.format")
+    @AttributeDocumentation("Encryption format")
+    private Defaultable<String> encryptionFormat = string(DEFAULT_JOSE_FORMAT.name());
 
     /**
      * Key Encryption algorithm.
