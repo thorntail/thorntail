@@ -1,0 +1,5 @@
+swarm:
+  microprofile:
+    jwtauth:
+      token:
+        signerPubKey: file:${project.basedir}/src/test/resources/keys/public-key.pem

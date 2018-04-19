@@ -17,6 +17,7 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth.runtime;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -36,6 +37,8 @@ import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.wildfly.swarm.microprofile.jwtauth.MicroProfileJWTAuthFraction;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
@@ -143,9 +146,21 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             log.debugf("Issuer: %s", fraction.getTokenIssuer().get());
             war.addAsManifestResource(new StringAsset(fraction.getTokenIssuer().get()), "MP-JWT-ISSUER");
         }
-        if (fraction.getPublicKey() != null) {
-            log.debugf("PublicKey: %s", fraction.getPublicKey());
-            war.addAsManifestResource(new StringAsset(fraction.getPublicKey()), "MP-JWT-SIGNER");
+
+        String publicKey = fraction.getPublicKey();
+        if (publicKey != null) {
+            log.debugf("PublicKey: %s", publicKey);
+
+            if (publicKey.startsWith("file:")) {
+                File fileRef = new File(publicKey.substring(5, publicKey.length()));
+                war.addAsManifestResource(new FileAsset(fileRef), "MP-JWT-SIGNER");
+            } else if (publicKey.startsWith("classpath:")) {
+                String cpref  = publicKey.substring(10, publicKey.length());
+                Node node = archive.get("WEB-INF/classes/" + cpref);
+                war.addAsManifestResource(node.getAsset(), "MP-JWT-SIGNER");
+            } else {
+                war.addAsManifestResource(new StringAsset(publicKey), "MP-JWT-SIGNER");
+            }
         }
         if (log.isTraceEnabled()) {
             log.trace("war: " + war.toString(true));

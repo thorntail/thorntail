@@ -39,7 +39,7 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @Configurable("swarm.microprofile.jwtauth.token.issuedBy")
     private Defaultable<String> tokenIssuer = string("http://localhost");
 
-    @AttributeDocumentation("The public key of the JWT token signer")
+    @AttributeDocumentation("The public key of the JWT token signer. Can be prefixed 'file:' or 'classpath:' for key assets, otherwise the key contents are expected")
     @Configurable("swarm.microprofile.jwt.token.signer-pub-key")
     @Configurable("swarm.microprofile.jwtauth.token.signerPubKey")
     private String publicKey;
