@@ -13,6 +13,8 @@ import org.wildfly.swarm.jose.Jose;
  *
  */
 @Path("/")
+@Produces("text/plain")
+@Consumes("text/plain")
 @ApplicationScoped
 public class MyResource {
 
@@ -20,18 +22,20 @@ public class MyResource {
     private Jose jose;
 
     @POST
-    @Produces("text/plain")
-    @Consumes("text/plain")
     @Path("sign")
     public String echoJws(String signedData) {
         return jose.sign(jose.verify(signedData));
     }
 
     @POST
-    @Produces("text/plain")
-    @Consumes("text/plain")
     @Path("encrypt")
     public String echoJwe(String encryptedData) {
         return jose.encrypt(jose.decrypt(encryptedData));
+    }
+
+    @POST
+    @Path("signAndEncrypt")
+    public String echoJwsJwe(String signedAndEncryptedData) {
+        return jose.encrypt(jose.sign(jose.verify(jose.decrypt(signedAndEncryptedData))));
     }
 }

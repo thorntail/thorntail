@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.rs.security.jose.common.JoseConstants;
+import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
 import org.apache.cxf.rs.security.jose.jwe.JweCompactConsumer;
 import org.apache.cxf.rs.security.jose.jwe.JweCompactProducer;
 import org.apache.cxf.rs.security.jose.jwe.JweDecryptionOutput;
@@ -62,7 +63,7 @@ public class DefaultJoseImpl implements Jose {
             headers.setPayloadEncodingStatus(false);
         }
         Properties props = prepareSignatureProperties();
-        headers.setAlgorithm(props.getProperty(JoseConstants.RSSEC_SIGNATURE_ALGORITHM));
+        headers.setSignatureAlgorithm(SignatureAlgorithm.getAlgorithm(fraction.signatureAlgorithm()));
         JwsSignatureProvider provider = JwsUtils.loadSignatureProvider(props, headers);
 
         return DEFAULT_JOSE_FORMAT == fraction.signatureFormat()
