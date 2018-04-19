@@ -6,9 +6,9 @@
 
 Until it is published, you'll need to clone the repository and install it using Maven.
 
-    git clone git@github.com:bobmcwhirter/thorntail-plugins.git
+    git clone git@github.com:bobmcwhirter/unimbus-plugins.git
 
-    cd thorntail-plugins
+    cd unimbus-plugins
 
     mvn install
 
