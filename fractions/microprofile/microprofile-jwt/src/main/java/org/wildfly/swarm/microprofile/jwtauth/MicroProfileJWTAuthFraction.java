@@ -17,6 +17,7 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth;
 
+import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.integer;
 import static org.wildfly.swarm.spi.api.Defaultable.string;
 
@@ -48,6 +49,9 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @Configurable("swarm.microprofile.jwtauth.token.expGracePeriod")
     private Defaultable<Integer> expGracePeriodSecs = integer(60);
 
+    @AttributeDocumentation("If a JAX-RS resource has no class-level security metadata, then if this property is set to `true` and at least one resource method has security metadata all other resource methods without security metadata have an implicit `@DenyAll`, otherwise resource methods without security metadata are not secured")
+    @Configurable("swarm.microprofile.jwt.default-missing-method-permissions-deny-access")
+    private Defaultable<Boolean> defaultMissingMethodPermissionsDenyAccess = bool(true);
 
     public Defaultable<String> getTokenIssuer() {
         return tokenIssuer;
@@ -72,4 +76,9 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     public void setExpGracePeriodSecs(Defaultable<Integer> expGracePeriodSecs) {
         this.expGracePeriodSecs = expGracePeriodSecs;
     }
+
+    public boolean isDefaultMissingMethodPermissionsDenyAccess() {
+        return defaultMissingMethodPermissionsDenyAccess.get();
+    }
+
 }
