@@ -61,6 +61,16 @@ public class JoseCompactTest {
     }
        
     @Test
+    public void testJwsJweCompact() throws Exception {
+        Jose jose = JoseLookup.lookup().get();
+        String signedAndEncryptedData = ClientBuilder.newClient().target("http://localhost:8080/signAndEncrypt")
+                                   .request(MediaType.TEXT_PLAIN)
+                                   .post(Entity.entity(jose.encrypt(jose.sign("Hello")), MediaType.TEXT_PLAIN),
+                                         String.class);
+        Assert.assertEquals("Hello", jose.verify(jose.decrypt(signedAndEncryptedData)));
+    }
+    
+    @Test
     public void testJweCompact() throws Exception {
         Jose jose = JoseLookup.lookup().get();
         String encryptedData = ClientBuilder.newClient().target("http://localhost:8080/encrypt")
