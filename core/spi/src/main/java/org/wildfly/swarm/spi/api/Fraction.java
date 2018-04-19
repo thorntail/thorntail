@@ -34,19 +34,30 @@ package org.wildfly.swarm.spi.api;
  */
 public interface Fraction<T extends Fraction> {
 
-    /** Apply whatever defaults are required if this fraction
-     * was not explicitly configured by a user.
+    /**
+     * Apply whatever defaults are required.
      *
      * @implNote The default implementation for this is a no-op.
      *
      * @return this fraction.
+     * @see Fraction#applyDefaults(boolean)
      */
     @SuppressWarnings("unchecked")
     default T applyDefaults() {
         return (T) this;
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * The container always calls this method, but the default implementation delegates to {@link #applyDefaults()}.
+     *
+     * <p>
+     * Unlike {@link #applyDefaults()} this method allows a fraction to customize the defaults depending on whether this fraction was explicitly configured by a
+     * user or not.
+     * </p>
+     *
+     * @param hasConfiguration
+     * @return this fraction
+     */
     default T applyDefaults(boolean hasConfiguration) {
         return applyDefaults();
     }
