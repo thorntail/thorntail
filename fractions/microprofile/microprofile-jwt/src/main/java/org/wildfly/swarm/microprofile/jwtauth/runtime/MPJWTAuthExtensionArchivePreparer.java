@@ -253,7 +253,10 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
                     } else if (classRolesAllowed != null) {
                         localRoles = classRolesAllowed.value().asStringArray();
                     }
-                    newConstraints.add(createSecurityConstraint(webXml, getUriPath(subpath, fullAppPath.toString()), localRoles));
+
+                    if (localRoles != null || (localRoles == null && (classDenyAll != null || fraction.isDefaultMissingMethodPermissionsDenyAccess()))) {
+                        newConstraints.add(createSecurityConstraint(webXml, getUriPath(subpath, fullAppPath.toString()), localRoles));
+                    }
                 }
             }
         }
