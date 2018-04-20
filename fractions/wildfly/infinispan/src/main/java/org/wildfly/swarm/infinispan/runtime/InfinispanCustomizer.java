@@ -106,6 +106,7 @@ public class InfinispanCustomizer implements Customizer {
             this.fraction.cacheContainer("ejb",
                     cc -> cc.defaultCache(DIST)
                             .alias("sfsb")
+                            .module("org.wildfly.clustering.ejb.infinispan")
                             .jgroupsTransport(t -> t.lockTimeout(60000L))
                             .distributedCache(DIST,
                                     c -> c.mode(Mode.ASYNC)
@@ -159,6 +160,7 @@ public class InfinispanCustomizer implements Customizer {
             this.fraction.cacheContainer("ejb",
                     cc -> cc.alias("sfsb")
                             .defaultCache(PASSIVATION)
+                            .module("org.wildfly.clustering.ejb.infinispan")
                             .localCache(PASSIVATION,
                                     c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
                                             .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
