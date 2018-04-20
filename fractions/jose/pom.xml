@@ -25,7 +25,7 @@
   <properties>
     <swarm.fraction.stability>experimental</swarm.fraction.stability>
     <swarm.fraction.tags>Signing,Encryption</swarm.fraction.tags>
-    <version.cxf>3.2.4</version.cxf>
+    <version.cxf>3.2.5-SNAPSHOT</version.cxf>
   </properties>
 
   <build>

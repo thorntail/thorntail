@@ -23,9 +23,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.cxf.common.util.StringUtils;
-import org.apache.cxf.message.ExchangeImpl;
-import org.apache.cxf.message.Message;
-import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.rs.security.jose.common.JoseConstants;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
 import org.apache.cxf.rs.security.jose.jwe.JweCompactConsumer;
@@ -68,7 +65,7 @@ public class DefaultJoseImpl implements Jose {
         Properties props = prepareSignatureProperties();
         headers.setSignatureAlgorithm(SignatureAlgorithm.getAlgorithm(fraction.signatureAlgorithm()));
         JwsSignatureProvider provider =
-            JwsUtils.loadSignatureProvider(prepareMessage(), props, headers);
+            JwsUtils.loadSignatureProvider(props, headers);
 
         return DEFAULT_JOSE_FORMAT == fraction.signatureFormat()
             ? signCompact(provider, headers, data) : signJson(provider, headers, data);
@@ -108,7 +105,7 @@ public class DefaultJoseImpl implements Jose {
         try {
             JwsCompactConsumer consumer = new JwsCompactConsumer(signedData);
             JwsSignatureVerifier verifier =
-                JwsUtils.loadSignatureVerifier(prepareMessage(), props, consumer.getJwsHeaders());
+                JwsUtils.loadSignatureVerifier(props, consumer.getJwsHeaders());
             if (!consumer.verifySignatureWith(verifier)) {
                 throw new JoseException("JWS Compact Signature Verification Failure");
             }
@@ -164,7 +161,7 @@ public class DefaultJoseImpl implements Jose {
             JweCompactProducer producer = new JweCompactProducer(headers, data);
             return producer.encryptWith(provider);
         } catch (Exception ex) {
-            throw new JoseException("JWE Compact Encryption Failure");
+            throw new JoseException("JWE Compact Encryption Failure", ex);
         }
     }
 
@@ -241,14 +238,5 @@ public class DefaultJoseImpl implements Jose {
         props.setProperty(JoseConstants.RSSEC_ENCRYPTION_KEY_ALGORITHM, fraction.keyEncryptionAlgorithm());
         props.setProperty(JoseConstants.RSSEC_ENCRYPTION_CONTENT_ALGORITHM, fraction.contentEncryptionAlgorithm());
         return props;
-    }
-
-    // TODO:
-    // If the key store is JWK (set) then CXF JwkUtils will NPE while trying to load it
-    // if the CXF Message is null; fix it to avoid passing an empty message
-    private Message prepareMessage() {
-        Message m = new MessageImpl();
-        m.setExchange(new ExchangeImpl());
-        return m;
     }
 }
