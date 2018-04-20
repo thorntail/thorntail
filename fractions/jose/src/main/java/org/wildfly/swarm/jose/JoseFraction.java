@@ -61,15 +61,6 @@ public class JoseFraction implements Fraction<JoseFraction> {
         return this.signatureKeyPassword.get();
     }
 
-    public JoseFraction encryptionKeyPassword(String password) {
-        this.encryptionKeyPassword.set(password);
-        return this;
-    }
-
-    public String encryptionKeyPassword() {
-        return this.encryptionKeyPassword.get();
-    }
-
     public JoseFraction keystoreType(String type) {
         this.keystoreType.set(type);
         return this;
@@ -94,15 +85,6 @@ public class JoseFraction implements Fraction<JoseFraction> {
     }
 
     public String signatureKeyAlias() {
-        return this.signatureKeyAlias.get();
-    }
-
-    public JoseFraction encryptionKeyAlias(String keyAlias) {
-        this.signatureKeyAlias.set(keyAlias);
-        return this;
-    }
-
-    public String encryptionKeyAlias() {
         return this.signatureKeyAlias.get();
     }
 
@@ -142,6 +124,24 @@ public class JoseFraction implements Fraction<JoseFraction> {
         return JoseFormat.valueOf(this.encryptionFormat.get());
     }
 
+    public JoseFraction encryptionKeyAlias(String keyAlias) {
+        this.encryptionKeyAlias.set(keyAlias);
+        return this;
+    }
+
+    public String encryptionKeyAlias() {
+        return this.encryptionKeyAlias.get();
+    }
+
+    public JoseFraction encryptionKeyPassword(String password) {
+        this.encryptionKeyPassword.set(password);
+        return this;
+    }
+
+    public String encryptionKeyPassword() {
+        return this.encryptionKeyPassword.get();
+    }
+
     public JoseFraction keyEncryptionAlgorithm(String algorithm) {
         keyEncryptionAlgorithm.set(algorithm);
         return this;
@@ -160,7 +160,7 @@ public class JoseFraction implements Fraction<JoseFraction> {
         return this.contentEncryptionAlgorithm.get();
     }
     /**
-     * Path to the keystore.
+     * Keystore type.
      */
     @Configurable("swarm.jose.keystore.type")
     @AttributeDocumentation("Keystore type")
@@ -225,14 +225,14 @@ public class JoseFraction implements Fraction<JoseFraction> {
     /**
      * Key Encryption algorithm.
      */
-    @Configurable("swarm.jose.encryption.keyalgorithm")
+    @Configurable("swarm.jose.encryption.keyAlgorithm")
     @AttributeDocumentation("Key Encryption algorithm")
     private Defaultable<String> keyEncryptionAlgorithm = string(DEFAULT_KEY_ENCRYPTION_ALGORITHM);
 
     /**
      * Content Encryption algorithm.
      */
-    @Configurable("swarm.jose.encryption.contentalgorithm")
+    @Configurable("swarm.jose.encryption.contentAlgorithm")
     @AttributeDocumentation("Content Encryption algorithm")
     private Defaultable<String> contentEncryptionAlgorithm = string(DEFAULT_CONTENT_ENCRYPTION_ALGORITHM);
 

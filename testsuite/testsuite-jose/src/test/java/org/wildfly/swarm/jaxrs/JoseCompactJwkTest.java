@@ -11,7 +11,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
@@ -48,15 +47,5 @@ public class JoseCompactJwkTest {
                                 .post(Entity.entity(jose.sign("Hello"), MediaType.TEXT_PLAIN),
                                       String.class);
         Assert.assertEquals("Hello", jose.verify(signedData));
-    }
-    @Test
-    @Ignore
-    public void testJweAesGcmCompact() throws Exception {
-        Jose jose = JoseLookup.lookup().get();
-        String encryptedData = ClientBuilder.newClient().target("http://localhost:8080/encrypt")
-                                   .request(MediaType.TEXT_PLAIN)
-                                   .post(Entity.entity(jose.encrypt("Hello"), MediaType.TEXT_PLAIN),
-                                         String.class);
-        Assert.assertEquals("Hello", jose.decrypt(encryptedData));
     }
 }
