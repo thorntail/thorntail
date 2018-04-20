@@ -23,6 +23,9 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.cxf.common.util.StringUtils;
+import org.apache.cxf.message.ExchangeImpl;
+import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.rs.security.jose.common.JoseConstants;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
 import org.apache.cxf.rs.security.jose.jwe.JweCompactConsumer;
@@ -64,7 +67,8 @@ public class DefaultJoseImpl implements Jose {
         }
         Properties props = prepareSignatureProperties();
         headers.setSignatureAlgorithm(SignatureAlgorithm.getAlgorithm(fraction.signatureAlgorithm()));
-        JwsSignatureProvider provider = JwsUtils.loadSignatureProvider(props, headers);
+        JwsSignatureProvider provider =
+            JwsUtils.loadSignatureProvider(prepareMessage(), props, headers);
 
         return DEFAULT_JOSE_FORMAT == fraction.signatureFormat()
             ? signCompact(provider, headers, data) : signJson(provider, headers, data);
@@ -103,7 +107,8 @@ public class DefaultJoseImpl implements Jose {
     private VerifiedData verifyCompact(Properties props, String signedData) {
         try {
             JwsCompactConsumer consumer = new JwsCompactConsumer(signedData);
-            JwsSignatureVerifier verifier = JwsUtils.loadSignatureVerifier(props, consumer.getJwsHeaders());
+            JwsSignatureVerifier verifier =
+                JwsUtils.loadSignatureVerifier(prepareMessage(), props, consumer.getJwsHeaders());
             if (!consumer.verifySignatureWith(verifier)) {
                 throw new JoseException("JWS Compact Signature Verification Failure");
             }
@@ -136,17 +141,6 @@ public class DefaultJoseImpl implements Jose {
         } catch (Exception ex) {
             throw new JoseException("JWS JSON Signature Verification Failure", ex);
         }
-    }
-
-    private Properties prepareSignatureProperties() {
-        Properties props = new Properties();
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_TYPE, fraction.keystoreType());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_FILE, fraction.keystorePath());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_PSWD, fraction.keystorePassword());
-        props.setProperty(JoseConstants.RSSEC_KEY_PSWD, fraction.keyPassword());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, fraction.keyAlias());
-        props.setProperty(JoseConstants.RSSEC_SIGNATURE_ALGORITHM, fraction.signatureAlgorithm());
-        return props;
     }
 
     @Override
@@ -226,15 +220,35 @@ public class DefaultJoseImpl implements Jose {
         }
     }
 
+    private Properties prepareSignatureProperties() {
+        Properties props = new Properties();
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_TYPE, fraction.keystoreType());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_FILE, fraction.keystorePath());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_PSWD, fraction.keystorePassword());
+        props.setProperty(JoseConstants.RSSEC_KEY_PSWD, fraction.signatureKeyPassword());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, fraction.signatureKeyAlias());
+        props.setProperty(JoseConstants.RSSEC_SIGNATURE_ALGORITHM, fraction.signatureAlgorithm());
+        return props;
+    }
+
     private Properties prepareEncryptionProperties() {
         Properties props = new Properties();
         props.setProperty(JoseConstants.RSSEC_KEY_STORE_TYPE, fraction.keystoreType());
         props.setProperty(JoseConstants.RSSEC_KEY_STORE_FILE, fraction.keystorePath());
         props.setProperty(JoseConstants.RSSEC_KEY_STORE_PSWD, fraction.keystorePassword());
-        props.setProperty(JoseConstants.RSSEC_KEY_PSWD, fraction.keyPassword());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, fraction.keyAlias());
+        props.setProperty(JoseConstants.RSSEC_KEY_PSWD, fraction.encryptionKeyPassword());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, fraction.encryptionKeyAlias());
         props.setProperty(JoseConstants.RSSEC_ENCRYPTION_KEY_ALGORITHM, fraction.keyEncryptionAlgorithm());
         props.setProperty(JoseConstants.RSSEC_ENCRYPTION_CONTENT_ALGORITHM, fraction.contentEncryptionAlgorithm());
         return props;
+    }
+
+    // TODO:
+    // If the key store is JWK (set) then CXF JwkUtils will NPE while trying to load it
+    // if the CXF Message is null; fix it to avoid passing an empty message
+    private Message prepareMessage() {
+        Message m = new MessageImpl();
+        m.setExchange(new ExchangeImpl());
+        return m;
     }
 }
