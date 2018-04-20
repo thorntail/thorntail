@@ -89,6 +89,7 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
                 }
                 issuedBy = issuedBy.trim();
             }
+            contextInfo.setIssuedBy(issuedBy);
 
             String publicKeyPemEnc = properties.get("signerPubKey");
             if (publicKeyPemEnc == null) {
@@ -126,7 +127,6 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
             } else { // PEM key was provided, now parse and set it.
                 // Workaround the double decode issue; https://issues.jboss.org/browse/WFLY-9135
                 String publicKeyPem = publicKeyPemEnc.replace(' ', '+');
-                contextInfo.setIssuedBy(issuedBy);
                 try {
                     RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodePublicKey(publicKeyPem);
                     contextInfo.setSignerKey(pk);

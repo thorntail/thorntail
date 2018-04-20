@@ -17,15 +17,14 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth;
 
-import static org.wildfly.swarm.spi.api.Defaultable.bool;
-import static org.wildfly.swarm.spi.api.Defaultable.integer;
-import static org.wildfly.swarm.spi.api.Defaultable.string;
-
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
+import static org.wildfly.swarm.spi.api.Defaultable.bool;
+import static org.wildfly.swarm.spi.api.Defaultable.integer;
+import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 /**
  * A fraction that adds support for the MicroProfile 1.0 JWT RBAC authentication and authorization spec.
