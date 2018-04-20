@@ -52,13 +52,22 @@ public class JoseFraction implements Fraction<JoseFraction> {
         return this.keystorePassword.get();
     }
 
-    public JoseFraction keyPassword(String password) {
-        this.keyPassword.set(password);
+    public JoseFraction signatureKeyPassword(String password) {
+        this.signatureKeyPassword.set(password);
         return this;
     }
 
-    public String keyPassword() {
-        return this.keyPassword.get();
+    public String signatureKeyPassword() {
+        return this.signatureKeyPassword.get();
+    }
+
+    public JoseFraction encryptionKeyPassword(String password) {
+        this.encryptionKeyPassword.set(password);
+        return this;
+    }
+
+    public String encryptionKeyPassword() {
+        return this.encryptionKeyPassword.get();
     }
 
     public JoseFraction keystoreType(String type) {
@@ -79,13 +88,22 @@ public class JoseFraction implements Fraction<JoseFraction> {
         return this.keystorePath.get();
     }
 
-    public JoseFraction keyAlias(String keyAlias) {
-        this.keyAlias.set(keyAlias);
+    public JoseFraction signatureKeyAlias(String keyAlias) {
+        this.signatureKeyAlias.set(keyAlias);
         return this;
     }
 
-    public String keyAlias() {
-        return this.keyAlias.get();
+    public String signatureKeyAlias() {
+        return this.signatureKeyAlias.get();
+    }
+
+    public JoseFraction encryptionKeyAlias(String keyAlias) {
+        this.signatureKeyAlias.set(keyAlias);
+        return this;
+    }
+
+    public String encryptionKeyAlias() {
+        return this.signatureKeyAlias.get();
     }
 
     public JoseFraction signatureAlgorithm(String algorithm) {
@@ -163,20 +181,6 @@ public class JoseFraction implements Fraction<JoseFraction> {
     private Defaultable<String> keystorePassword = string(DEFAULT_KEYSTORE_PASSWORD);
 
     /**
-     * Password for the key.
-     */
-    @Configurable("swarm.jose.key.password")
-    @AttributeDocumentation("Password to the private key")
-    private Defaultable<String> keyPassword = string(DEFAULT_KEY_PASSWORD);
-
-    /**
-     * Alias to the key entry in the keystore.
-     */
-    @Configurable("swarm.jose.key.alias")
-    @AttributeDocumentation("Alias to the key entry in the keystore")
-    private Defaultable<String> keyAlias = string(DEFAULT_KEY_ALIAS);
-
-    /**
      * Signature algorithm.
      */
     @Configurable("swarm.jose.signature.algorithm")
@@ -198,6 +202,20 @@ public class JoseFraction implements Fraction<JoseFraction> {
     private Defaultable<String> signatureFormat = string(DEFAULT_JOSE_FORMAT.name());
 
     /**
+     * Password for the signature key.
+     */
+    @Configurable("swarm.jose.signature.key.password")
+    @AttributeDocumentation("Password to the signature private key")
+    private Defaultable<String> signatureKeyPassword = string(DEFAULT_KEY_PASSWORD);
+
+    /**
+     * Alias to the signature key entry in the keystore.
+     */
+    @Configurable("swarm.jose.signature.key.alias")
+    @AttributeDocumentation("Alias to the signature key entry in the keystore")
+    private Defaultable<String> signatureKeyAlias = string(DEFAULT_KEY_ALIAS);
+
+    /**
      * Encryption Format.
      */
     @Configurable("swarm.jose.encryption.format")
@@ -217,4 +235,18 @@ public class JoseFraction implements Fraction<JoseFraction> {
     @Configurable("swarm.jose.encryption.contentalgorithm")
     @AttributeDocumentation("Content Encryption algorithm")
     private Defaultable<String> contentEncryptionAlgorithm = string(DEFAULT_CONTENT_ENCRYPTION_ALGORITHM);
+
+    /**
+     * Password for the encryption key.
+     */
+    @Configurable("swarm.jose.encryption.key.password")
+    @AttributeDocumentation("Password to the encryption private key")
+    private Defaultable<String> encryptionKeyPassword = string(DEFAULT_KEY_PASSWORD);
+
+    /**
+     * Alias to the encryption key entry in the keystore.
+     */
+    @Configurable("swarm.jose.encryption.key.alias")
+    @AttributeDocumentation("Alias to the encryption key entry in the keystore")
+    private Defaultable<String> encryptionKeyAlias = string(DEFAULT_KEY_ALIAS);
 }
