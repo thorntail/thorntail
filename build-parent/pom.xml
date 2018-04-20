@@ -22,7 +22,7 @@
   <description>Build Parent to bring in required dependencies</description>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>83</version.wildfly.swarm.fraction.plugin>
+    <version.wildfly.swarm.fraction.plugin>86</version.wildfly.swarm.fraction.plugin>
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
