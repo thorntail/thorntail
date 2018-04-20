@@ -32,13 +32,22 @@
          <class
             name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadSynchRetryTest">
             <methods>
+               <!-- https://github.com/eclipse/microprofile-fault-tolerance/issues/227 -->
+               <exclude name="testBulkheadQueReplacesDueToClassRetryFailures" />
+               <exclude name="testBulkheadRetryClassSynchronous55" />
                <exclude name="testBulkheadQueReplacesDueToClassRetryFailures" />
             </methods>
          </class>
          <class
             name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchRetryTest">
             <methods>
+               <!-- https://github.com/eclipse/microprofile-fault-tolerance/issues/232 -->
                <exclude name="testBulkheadMethodAsynchronousRetry55Trip" />
+               <!-- https://github.com/eclipse/microprofile-fault-tolerance/issues/250 -->
+               <exclude name="testBulkheadClassAsynchronous55RetryOverload"/>
+               <exclude name="testBulkheadMethodAsynchronous55RetryOverload"/>
+               <!-- https://github.com/eclipse/microprofile-fault-tolerance/issues/227 -->
+               <exclude name="testBulkheadMethodAsynchronousQueueing10"/>
             </methods>
          </class>
       </classes>

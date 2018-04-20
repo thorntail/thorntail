@@ -18,6 +18,8 @@ package org.wildfly.swarm.microprofile.faulttolerance.deployment;
 
 import static org.wildfly.swarm.microprofile.faulttolerance.deployment.config.CircuitBreakerConfig.FAIL_ON;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.function.Supplier;
 
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.FaultToleranceOperation;
@@ -26,8 +28,26 @@ import com.netflix.hystrix.HystrixCommand;
 
 /**
  * @author Antoine Sabot-Durand
+ * @author Martin Kouba
  */
-public class DefaultCommand extends HystrixCommand<Object> {
+public class SimpleCommand extends HystrixCommand<Object> {
+
+    public static String getCommandKey(Method method) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(method.getDeclaringClass().getName().replace(".", "_"));
+        builder.append("#");
+        builder.append(method.getName());
+        builder.append("(");
+        Type[] params = method.getGenericParameterTypes();
+        for (int j = 0; j < params.length; j++) {
+            builder.append(params[j].getTypeName());
+            if (j < (params.length - 1)) {
+                builder.append(',');
+            }
+        }
+        builder.append(")");
+        return builder.toString();
+    }
 
     /**
      *
@@ -35,38 +55,23 @@ public class DefaultCommand extends HystrixCommand<Object> {
      * @param ctx
      * @param fallback
      * @param operation
-     * @param retryContext
      */
-    protected DefaultCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback, FaultToleranceOperation operation,
-            RetryContext retryContext) {
+    protected SimpleCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback, FaultToleranceOperation operation) {
         super(setter);
         this.ctx = ctx;
         this.fallback = fallback;
-        this.failure = null;
         this.operation = operation;
-        this.retryContext = retryContext;
     }
 
     @Override
     protected Object run() throws Exception {
-        while (true) {
-            try {
-                return ctx.proceed();
-            } catch (Throwable e) {
-                this.failure = e;
-                // If there is an async retry context try again
-                if (isAsyncRetry() && retryContext != null && retryContext.shouldRetry() && retryContext.nextRetry(e)) {
-                    continue;
-                }
-                throw e;
-            }
-        }
+        return ctx.proceed();
     }
 
     @Override
     protected Object getFallback() {
-        if (failure != null && ((operation.hasCircuitBreaker() && !isFailureAssignableFromAnyFailureException())
-                || (isAsyncRetry() && fallback == null))) {
+        Throwable failure = getFailedExecutionException();
+        if (failure != null && operation.hasCircuitBreaker() && !isFailureAssignableFromAnyFailureException(failure)) {
             // Command failed but the fallback should not be used
             throw new FailureNotHandledException(failure);
         }
@@ -76,11 +81,7 @@ public class DefaultCommand extends HystrixCommand<Object> {
         return fallback.get();
     }
 
-    boolean hasFailure() {
-        return failure != null;
-    }
-
-    private boolean isFailureAssignableFromAnyFailureException() {
+    private boolean isFailureAssignableFromAnyFailureException(Throwable failure) {
         Class<?>[] exceptions = operation.getCircuitBreaker().<Class<?>[]>get(FAIL_ON);
         for (Class<?> exception : exceptions) {
             if (exception.isAssignableFrom(failure.getClass())) {
@@ -90,18 +91,10 @@ public class DefaultCommand extends HystrixCommand<Object> {
         return false;
     }
 
-    private boolean isAsyncRetry() {
-        return operation.hasRetry() && operation.isAsync();
-    }
-
-    private Throwable failure;
-
     private final FaultToleranceOperation operation;
 
     private final Supplier<Object> fallback;
 
     private final ExecutionContextWithInvocationContext ctx;
-
-    private final RetryContext retryContext;
 
 }

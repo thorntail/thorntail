@@ -35,6 +35,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.HystrixCommandInterceptor;
+import org.wildfly.swarm.microprofile.faulttolerance.deployment.SimpleCommand;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.TestArchive;
 
 import com.netflix.config.DynamicLongProperty;
@@ -85,7 +86,7 @@ public class SyncCircuitBreakerDisabledTest {
 
     private String getCommandKey() {
         try {
-            return ShakyServiceClient.class.getDeclaredMethod("ping").toGenericString();
+            return SimpleCommand.getCommandKey(ShakyServiceClient.class.getDeclaredMethod("ping"));
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException();
         }

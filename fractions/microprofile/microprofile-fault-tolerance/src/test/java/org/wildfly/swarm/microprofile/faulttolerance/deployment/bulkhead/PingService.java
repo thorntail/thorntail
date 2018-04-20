@@ -16,7 +16,9 @@
 package org.wildfly.swarm.microprofile.faulttolerance.deployment.bulkhead;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
@@ -25,8 +27,18 @@ public class PingService {
 
     @Asynchronous
     @Bulkhead(value = BulkheadTest.QUEUE_SIZE, waitingTaskQueue = BulkheadTest.QUEUE_SIZE)
-    public Future<String> ping() {
-        return CompletableFuture.completedFuture("pong");
+    public Future<String> ping(CountDownLatch startLatch, CountDownLatch endLatch) throws InterruptedException {
+        if (startLatch != null) {
+            startLatch.countDown();
+        }
+        if (endLatch != null) {
+            if (endLatch.await(1, TimeUnit.SECONDS)) {
+                return CompletableFuture.completedFuture("pong");
+            } else {
+                return CompletableFuture.completedFuture("timeout");
+            }
+        }
+        return CompletableFuture.completedFuture("null");
     }
 
 }

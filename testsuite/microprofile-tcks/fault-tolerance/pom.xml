@@ -95,9 +95,10 @@
                   <dependency>org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-tck</dependency>
                </dependenciesToScan>
                <systemProperties>
+                  <!-- Set the log level for FT  -->
                   <property>
-                     <name>java.util.logging.config.file</name>
-                     <value>${project.build.testOutputDirectory}/logging.properties</value>
+                     <name>swarm.logging.loggers.[org.wildfly.swarm.microprofile.faulttolerance].level</name>
+                     <value>INFO</value>
                   </property>
                   <!-- Uncomment to debug arquillian test -->
                   <!-- property>

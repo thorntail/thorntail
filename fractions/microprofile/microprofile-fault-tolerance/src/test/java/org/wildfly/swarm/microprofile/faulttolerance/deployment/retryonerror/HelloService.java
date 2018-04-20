@@ -1,4 +1,4 @@
-package org.wildfly.swarm.microprofile.faulttolerance.deployment.retry;
+package org.wildfly.swarm.microprofile.faulttolerance.deployment.retryonerror;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

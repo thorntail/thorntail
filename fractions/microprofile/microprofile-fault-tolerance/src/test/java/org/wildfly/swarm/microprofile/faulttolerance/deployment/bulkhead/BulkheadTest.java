@@ -15,11 +15,20 @@
  */
 package org.wildfly.swarm.microprofile.faulttolerance.deployment.bulkhead;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.microprofile.faulttolerance.exceptions.BulkheadException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.TestArchive;
@@ -38,16 +47,25 @@ public class BulkheadTest {
 
     static final int QUEUE_SIZE = 3;
 
-    @Test(expected = BulkheadException.class)
-    public void testWaitingQueue(PingService pingService) throws InterruptedException {
-        int loop = QUEUE_SIZE * 2 + 1;
-        for (int i = 1; i <= loop; i++) {
-            try {
-                pingService.ping();
-            } catch (BulkheadException e) {
-                Assert.assertEquals("BulkheadException thrown for " + i, loop, i);
-                throw e;
-            }
+    @Test
+    public void testWaitingQueue(PingService pingService) throws InterruptedException, ExecutionException {
+        int loop = QUEUE_SIZE * 2;
+        CountDownLatch startLatch = new CountDownLatch(loop);
+        CountDownLatch endLatch = new CountDownLatch(1);
+        List<Future<String>> futures = new ArrayList<>();
+        for (int i = 0; i < loop; i++) {
+            futures.add(pingService.ping(startLatch, endLatch));
+        }
+        startLatch.await(500, TimeUnit.MILLISECONDS);
+        // Next invocation should not make it due to BulkheadException
+        try {
+            pingService.ping(null, null).get();
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof BulkheadException);
+        }
+        endLatch.countDown();
+        for (int i = 0; i < loop; i++) {
+            assertEquals("pong", futures.get(i).get());
         }
     }
 
