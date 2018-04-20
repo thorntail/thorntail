@@ -16,6 +16,8 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth.deployment.auth.jaas;
 
+import java.security.Principal;
+import java.security.acl.Group;
 import java.util.Map;
 
 import javax.security.auth.Subject;
@@ -24,13 +26,13 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginException;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTCallerPrincipal;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTCallerPrincipalFactory;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.ParseException;
 import org.jboss.security.SimpleGroup;
 import org.jboss.security.SimplePrincipal;
 import org.jboss.security.auth.callback.SecurityAssociationCallback;
 import org.jboss.security.auth.spi.RoleMappingLoginModule;
+import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTCallerPrincipal;
+import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTCallerPrincipalFactory;
+import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.ParseException;
 
 /**
  *
@@ -97,5 +99,16 @@ public class JWTLoginModule extends RoleMappingLoginModule {
         JWTCallerPrincipalFactory factory = JWTCallerPrincipalFactory.instance();
         JWTCallerPrincipal callerPrincipal = factory.parse(jwtCredential.getBearerToken(), jwtCredential.getAuthContextInfo());
         return callerPrincipal;
+    }
+
+    @Override
+    protected Group[] getRoleSets() throws LoginException {
+        if (options.containsKey("rolesProperties")) {
+            return super.getRoleSets();
+        } else {
+            Principal group =  subject.getPrincipals().stream()
+                .filter(p -> p instanceof Group && "Roles".equals(p.getName())).findFirst().get();
+            return new Group[] {(Group)group};
+        }
     }
 }
