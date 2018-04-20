@@ -17,7 +17,7 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>microprofile-health</artifactId>
 
-  <name>Microprofile-Health</name>
+  <name>MicroProfile Health</name>
   <description>Health endpoints for your application</description>
 
   <packaging>jar</packaging>
