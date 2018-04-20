@@ -42,7 +42,13 @@ public class TransactionsFraction extends Transactions<TransactionsFraction> imp
     public TransactionsFraction applyDefaults() {
         this.socketBinding("txn-recovery-environment")
                 .statusSocketBinding("txn-status-manager")
-                .processIdUuid(true);
+                .processIdUuid(true)
+                .objectStorePath("tx-object-store")
+                .objectStoreRelativeTo("jboss.server.data.dir")
+                .logStore(log -> {
+                    log.exposeAllLogs(false);
+                    log.type("default");
+                });
         return this;
     }
 

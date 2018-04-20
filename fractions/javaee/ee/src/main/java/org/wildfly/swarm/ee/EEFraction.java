@@ -66,7 +66,7 @@ public class EEFraction extends EE<EEFraction> implements Fraction<EEFraction> {
         specDescriptorPropertyReplacement(false)
                 .contextService(new ContextService(DEFAULT_KEY)
                         .jndiName(CONCURRENCY_CONTEXT_DEFAULT)
-                        .useTransactionSetupProvider(false))
+                        .useTransactionSetupProvider(false)) // WildFly defaults to true, but that probably needs transactions
                 .managedThreadFactory(new ManagedThreadFactory(DEFAULT_KEY)
                         .jndiName(CONCURRENCY_FACTORY_DEFAULT)
                         .contextService(DEFAULT_KEY))
@@ -74,14 +74,11 @@ public class EEFraction extends EE<EEFraction> implements Fraction<EEFraction> {
                         .jndiName(CONCURRENCY_EXECUTOR_DEFAULT)
                         .contextService(DEFAULT_KEY)
                         .hungTaskThreshold(60000L)
-                        .coreThreads(5)
-                        .maxThreads(25)
                         .keepaliveTime(5000L))
                 .managedScheduledExecutorService(new ManagedScheduledExecutorService(DEFAULT_KEY)
                         .jndiName(CONCURRENCY_SCHEDULER_DEFAULT)
                         .contextService(DEFAULT_KEY)
                         .hungTaskThreshold(60000L)
-                        .coreThreads(5)
                         .keepaliveTime(3000L));
 
         defaultBindingsService((bindings) -> {

@@ -1,0 +1,4 @@
+= EJB Remote
+
+Enables remote EJB and remote naming.
+If the `messaging` fraction is present, enables remote messaging as well.

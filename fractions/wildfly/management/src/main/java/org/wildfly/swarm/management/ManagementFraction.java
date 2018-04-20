@@ -65,11 +65,11 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
             access.fileHandler(FILE_HANDLER, (handler) -> {
                 handler.formatter(JSON_FORMATTER);
                 handler.path(AUDIT_LOG_FILE);
-                handler.relativeTo("user.dir");
+                handler.relativeTo("user.dir"); // WildFly defaults to jboss.server.data.dir, but that's in /tmp for us
             });
             access.auditLogLogger((logger) -> {
                 logger.logBoot(true);
-                logger.logReadOnly(true);
+                logger.logReadOnly(false);
                 logger.enabled(false);
                 logger.handler(FILE_HANDLER);
             });
@@ -89,7 +89,7 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
     public ManagementFraction httpInterfaceManagementInterface(HTTPInterfaceManagementInterfaceConsumer consumer) {
         return super.httpInterfaceManagementInterface((iface) -> {
             iface.consoleEnabled(false);
-            iface.httpUpgrade("enabled", "true");
+            iface.httpUpgrade("enabled", true);
             iface.socketBinding("management-http");
             consumer.accept(iface);
         });

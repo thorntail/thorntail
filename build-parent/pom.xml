@@ -26,7 +26,7 @@
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
-    <version.wildfly.config-api>1.3.0</version.wildfly.config-api>
+    <version.wildfly.config-api>1.3.1</version.wildfly.config-api>
 
     <version.keycloak.config-api>1.3.1.Final</version.keycloak.config-api>
     <version.teiid.config-api>1.1.2.Final</version.teiid.config-api>
