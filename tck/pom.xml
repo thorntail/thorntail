@@ -25,5 +25,6 @@
     <module>metrics</module>
     <module>openapi</module>
     <module>opentracing</module>
+    <module>restclient</module>
   </modules>
 </project>

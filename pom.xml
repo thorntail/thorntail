@@ -59,6 +59,7 @@
     <version.mp-metrics>1.1</version.mp-metrics>
     <version.mp-openapi>1.0.1</version.mp-openapi>
     <version.mp-opentracing>1.0</version.mp-opentracing>
+    <version.mp-restclient>1.0.1</version.mp-restclient>
     <version.mp-jwt-auth>1.0</version.mp-jwt-auth>
 
     <version.arquillian-core>1.2.1.Final</version.arquillian-core>
@@ -375,6 +376,11 @@
         <version>${version.jackson}</version>
       </dependency>
       <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${version.jackson}</version> 
+      </dependency>
+      <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
         <artifactId>jackson-dataformat-yaml</artifactId>
         <version>${version.jackson}</version>
@@ -490,6 +496,11 @@
         <artifactId>thorntail-websockets</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
+      <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-restclient</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
 
       <dependency>
         <groupId>io.thorntail</groupId>
@@ -573,6 +584,16 @@
         <groupId>org.eclipse.microprofile.opentracing</groupId>
         <artifactId>microprofile-opentracing-tck</artifactId>
         <version>${version.mp-opentracing}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.microprofile.rest.client</groupId>
+        <artifactId>microprofile-rest-client-api</artifactId>
+        <version>${version.mp-restclient}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.microprofile.rest.client</groupId>
+        <artifactId>microprofile-rest-client-tck</artifactId>
+        <version>${version.mp-restclient}</version>
       </dependency>
 
       <dependency>
@@ -686,6 +707,7 @@
     <module>faulttolerance</module>
     <module>metrics</module>
     <module>openapi</module>
+    <module>restclient</module>
     <module>security</module>
     <module>security-keycloak</module>
     <module>servlet</module>
