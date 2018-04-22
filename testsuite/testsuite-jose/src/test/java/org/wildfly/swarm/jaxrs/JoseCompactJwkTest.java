@@ -48,4 +48,14 @@ public class JoseCompactJwkTest {
                                       String.class);
         Assert.assertEquals("Hello", jose.verify(signedData));
     }
+    
+    @Test
+    public void testJweDirectCompact() throws Exception {
+        Jose jose = JoseLookup.lookup().get();
+        String encryptedData = ClientBuilder.newClient().target("http://localhost:8080/encrypt")
+                                .request(MediaType.TEXT_PLAIN)
+                                .post(Entity.entity(jose.encrypt("Hello"), MediaType.TEXT_PLAIN),
+                                      String.class);
+        Assert.assertEquals("Hello", jose.decrypt(encryptedData));
+    }
 }
