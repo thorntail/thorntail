@@ -22,67 +22,67 @@ import java.util.Map;
  */
 public interface Jose {
     /**
-     * Sign the data.
+     * Sign the data in the JOSE JWS Compact or JSON (optional) format.
      * @param data the data to be signed
-     * @return the signed data in the JOSE JWS compact format
+     * @return the signed data in the JOSE JWS Compact format
      * @throws JoseException
      */
     String sign(String data) throws JoseException;
 
     /**
-     * Sign the data.
+     * Sign the data in the JOSE JWS Compact or JSON (optional) format.
      * @param metadata the data to be integrity-protected as JOSE JWS headers
      * @param data the data to be signed
-     * @return the signed data in the JOSE JWS compact format
+     * @return the signed data in the JOSE JWS Compact or JSON format
      * @throws JoseException
      */
     String sign(Map<String, Object> metadata, String data) throws JoseException;
 
     /**
-     * Verify the signed data.
-     * @param signedData the data in the JOSE JWS Compact format.
-     * @return verified data extracted from the JOSE JWS Compact payload
+     * Verify the signed data in the JOSE JWS compact or JSON (optional) format.
+     * @param signedData the signed data.
+     * @return verified data
      * @throws JoseException
      */
     String verify(String signedData) throws JoseException;
 
     /**
-     * Verify the signed data.
-     * @param signedData the data in the JOSE JWS Compact format.
-     * @return verified metadata and data extracted from the JOSE JWS Compact payload
+     * Verify the signed data in the JOSE JWS compact or JSON (optional) format.
+     * @param signedData the signed data.
+     * @return verified metadata and data
      * @throws JoseException
      */
     VerifiedData verification(String signedData) throws JoseException;
 
     /**
-     * Encrypt the data.
+     * Encrypt the data in the JOSE JWE compact or JSON (optional) format..
      * @param data the data to be encrypted
-     * @return the encrypted data in the JOSE JWE compact format
+     * @return the encrypted data
      * @throws JoseException
      */
     String encrypt(String data) throws JoseException;
 
     /**
-     * Encrypt the data.
-     * @param metadata the data to be integrity-protected as JOSE JWS headers
+     * Encrypt the data in the JOSE JWE compact or JSON (optional) format.
+     * @param metadata the data to be integrity-protected as JOSE JWE headers
      * @param data the data to be encrypted
-     * @return the encrypted data in the JOSE JWE compact format
+     * @return the encrypted data
      * @throws JoseException
      */
     String encrypt(Map<String, Object> metadata, String data) throws JoseException;
 
     /**
-     * Decrypt the encrypted data.
-     * @param encryptedData the data in the JOSE JWE Compact format.
-     * @return decrypted data extracted from the JOSE JWE Compact payload
+     * Decrypt the encrypted data in the JOSE JWE compact or JSON (optional) format.
+     * @param encryptedData the encrypted data
+     * @return decrypted data
      * @throws JoseException
      */
     String decrypt(String encryptedData) throws JoseException;
 
     /**
-     * Decrypt the encrypted data.
-     * @param encryptedData the data in the JOSE JWE Compact format.
-     * @return verified metadata and decrypted data extracted from the JOSE JWE Compact payload
+     * Decrypt the encrypted data in the JOSE JWE compact or JSON (optional) format.
+     * @param encryptedData the encrypted data.
+     * @return verified metadata and decrypted data
      * @throws JoseException
      */
     DecryptedData decryption(String encryptedData) throws JoseException;
