@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,9 +43,9 @@ import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
-import org.gradle.api.tasks.SourceSet;
 import org.wildfly.swarm.fractions.PropertiesUtil;
 import org.wildfly.swarm.spi.meta.SimpleLogger;
 import org.wildfly.swarm.tools.ArtifactSpec;
@@ -180,20 +180,20 @@ public class PackageTask extends DefaultTask {
             this.tool.bundleDependencies(bundleDependencies);
         }
 
-        this.tool.build(getBaseName(), getOutputDirectory());
+        this.tool.build(getOutputFile().getName(), getOutputDirectory());
 
         /* We expect a war task to be present before scanning for war files. */
         final java.util.Optional<Task> task = project.getTasks().stream().filter(t -> "war".equals(t.getName())).findAny();
         if (task.isPresent()) {
             /* Look for all the war archives present */
             final Set<File> warArchives = project.getConfigurations()
-                                                 .stream()
-                                                 .map(Configuration::getAllArtifacts)
-                                                 .map(PublishArtifactSet::getFiles)
-                                                 .map(FileCollection::getFiles)
-                                                 .flatMap(Collection::stream)
-                                                 .filter(f -> f.getName().endsWith(".war"))
-                                                 .collect(Collectors.toSet());
+                    .stream()
+                    .map(Configuration::getAllArtifacts)
+                    .map(PublishArtifactSet::getFiles)
+                    .map(FileCollection::getFiles)
+                    .flatMap(Collection::stream)
+                    .filter(f -> f.getName().endsWith(".war"))
+                    .collect(Collectors.toSet());
             for (File warArchive : warArchives) {
                 tool.repackageWar(warArchive);
             }

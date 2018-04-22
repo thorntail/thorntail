@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -75,6 +75,21 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
     public Set<ArtifactSpec> resolveAll(final Collection<ArtifactSpec> specs, boolean transitive, boolean defaultExcludes) throws Exception {
         if (specs.isEmpty()) {
             return Collections.emptySet();
+        }
+
+        // If we do not need to resolve transitively, then just check if the artifacts have a file associated or not.
+        // If missing, then fetch the artifacts from the dependency resolver.
+        if (!transitive) {
+            Set<ArtifactSpec> needResolution = specs.stream().filter(a -> a.file == null).collect(Collectors.toSet());
+            needResolution.forEach(this::resolve);
+
+            // Defensive check to see if the resolution behavior was changed inadvertently.
+            // Ensure that all the artifacts have a file identified as part of the resolution.
+            Set<ArtifactSpec> set = needResolution.stream().filter(a -> a.file == null).collect(Collectors.toSet());
+            if (!set.isEmpty()) {
+                throw new IllegalStateException("Internal Tooling Error: Looks like all artifacts were not resolved: " + set);
+            }
+            return specs instanceof Set ? (Set<ArtifactSpec>) specs : new HashSet<>(specs);
         }
 
         return doResolve(specs, transitive)
