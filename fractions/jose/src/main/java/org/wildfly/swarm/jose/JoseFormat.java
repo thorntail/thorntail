@@ -16,6 +16,12 @@
 package org.wildfly.swarm.jose;
 
 public enum JoseFormat {
+    /**
+     * JOSE Compact representation
+     */
     COMPACT,
+    /**
+     * JOSE JOSE representation: supporting this format is optional
+     */
     JSON
 }
