@@ -7,3 +7,7 @@ swarm:
       key:
         alias: HMacKey
       algorithm: HS256
+    encryption:
+      key:
+        alias: AesGcmKey
+      keyAlgorithm: dir
