@@ -1,6 +1,6 @@
 package org.wildfly.swarm.jaxrs;
 
-import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -9,7 +9,6 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.resteasy.jose.Base64Url;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
@@ -48,9 +47,9 @@ public class JoseCompactTest {
         String[] jwsParts = JoseLookup.lookup().get().sign("Hello").split("\\.");
         Assert.assertEquals(3, jwsParts.length);
         String encodedContent = jwsParts[1];
-        Assert.assertEquals("Hello", new String(Base64Url.decode(encodedContent), StandardCharsets.UTF_8));
-        String newEncodedContent = Base64Url.encode("HellO".getBytes(StandardCharsets.UTF_8));
-        Assert.assertEquals("HellO", new String(Base64Url.decode(newEncodedContent), StandardCharsets.UTF_8));
+        Assert.assertEquals("Hello", new String(Base64.getUrlDecoder().decode(encodedContent)));
+        String newEncodedContent = new String(Base64.getUrlEncoder().encode("HellO".getBytes()));
+        Assert.assertEquals("HellO", new String(Base64.getUrlDecoder().decode(newEncodedContent)));
         // Headers + content + signature
         String newJws = jwsParts[0] + "." + newEncodedContent + "." + jwsParts[2];  
         Assert.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), 

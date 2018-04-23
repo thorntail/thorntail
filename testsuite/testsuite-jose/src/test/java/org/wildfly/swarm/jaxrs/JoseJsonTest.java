@@ -2,7 +2,7 @@ package org.wildfly.swarm.jaxrs;
 
 import java.io.StringReader;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.resteasy.jose.Base64Url;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
@@ -62,7 +61,7 @@ public class JoseJsonTest {
         Assert.assertNotNull(jwsJson.get("protected"));
         Assert.assertNotNull(jwsJson.get("signature"));
         String encodedPayload = jwsJson.getString("payload");
-        Assert.assertEquals("Hello", new String(Base64Url.decode(encodedPayload), StandardCharsets.UTF_8));
+        Assert.assertEquals("Hello", new String(Base64.getUrlDecoder().decode(encodedPayload)));
     }
     
     @Test
