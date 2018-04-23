@@ -94,6 +94,8 @@
 
     <module>opentracing-jaeger</module>
 
+    <module>openapi</module>
+
     <module>vertx</module>
     <module>websockets</module>
 
