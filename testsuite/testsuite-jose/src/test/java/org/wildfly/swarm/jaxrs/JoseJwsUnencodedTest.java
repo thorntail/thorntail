@@ -1,7 +1,6 @@
 package org.wildfly.swarm.jaxrs;
 
 import java.io.StringReader;
-import java.net.URL;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -17,8 +16,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.jose.Jose;
 import org.wildfly.swarm.jose.JoseLookup;
 
@@ -33,14 +30,8 @@ public class JoseJwsUnencodedTest {
         deployment.addResource(JoseExceptionMapper.class); 
         deployment.addAllDependencies();
         deployment.addAsResource("keystore.jks");
-        deployment.addAsResource("project-jws-unencoded.yml");
+        deployment.addAsResource("project-jws-unencoded.yml", "project-defaults.yml");
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        URL projectYml = JoseJwsUnencodedTest.class.getResource("/project-jws-unencoded.yml");
-        return new Swarm("-s" + projectYml.toURI().toString());
     }
     
     @Test
