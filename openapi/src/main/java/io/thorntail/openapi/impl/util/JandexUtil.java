@@ -392,7 +392,7 @@ public class JandexUtil {
         }
         for (short i = 0; i < methodParams.size(); i++) {
             if (JandexUtil.getParameterAnnotations(method, i).isEmpty()) {
-                return methodParams.get(i).asClassType();
+                return methodParams.get(i);
             }
         }
         return null;
