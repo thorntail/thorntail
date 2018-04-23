@@ -22,6 +22,7 @@ import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
@@ -55,21 +56,31 @@ public abstract class AbstractRolesAllowedTest {
     @RunAsClient
     @Test
     public void testRolesAllowed() throws Exception {
-        String uri = "http://localhost:8080/mpjwt/rolesClass";
-        WebTarget target = ClientBuilder.newClient().target(uri).queryParam("input", "hello");
-        String response = target.request(MediaType.TEXT_PLAIN)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + createToken("Echoer")).get(String.class);
-        Assert.assertEquals(response, "hello, user=jdoe@example.com");
+        Client client = ClientBuilder.newClient();
+        try {
+            WebTarget target = client.target("http://localhost:8080/mpjwt/rolesClass").queryParam("input", "hello");
+            String response = target.request(MediaType.TEXT_PLAIN)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + createToken("Echoer")).get(String.class);
+            Assert.assertEquals(response, "hello, user=jdoe@example.com");
+        } finally {
+            // in case Client impl is not auto-closeable
+            client.close();
+        }
     }
     
     @RunAsClient
     @Test
     public void testRolesNotAllowed() throws Exception {
-        String uri = "http://localhost:8080/mpjwt/rolesClass";
-        WebTarget target = ClientBuilder.newClient().target(uri).queryParam("input", "hello");
-        Response resp = target.request(MediaType.TEXT_PLAIN)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + createToken("Echoer2")).get();
-        Assert.assertEquals(Response.Status.FORBIDDEN, resp.getStatusInfo());
+        Client client = ClientBuilder.newClient();
+        try {
+            WebTarget target = client.target("http://localhost:8080/mpjwt/rolesClass").queryParam("input", "hello");
+            Response resp = target.request(MediaType.TEXT_PLAIN)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + createToken("Echoer2")).get();
+            Assert.assertEquals(Response.Status.FORBIDDEN, resp.getStatusInfo());
+        }  finally {
+            // in case Client impl is not auto-closeable
+            client.close();
+        } 
     }
     
     private static String createToken(String groupName) throws Exception {
