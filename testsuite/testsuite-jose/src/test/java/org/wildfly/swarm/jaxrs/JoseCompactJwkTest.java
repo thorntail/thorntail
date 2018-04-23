@@ -1,7 +1,5 @@
 package org.wildfly.swarm.jaxrs;
 
-import java.net.URL;
-
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
@@ -13,8 +11,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.jose.Jose;
 import org.wildfly.swarm.jose.JoseLookup;
 
@@ -29,16 +25,10 @@ public class JoseCompactJwkTest {
         deployment.addResource(JoseExceptionMapper.class); 
         deployment.addAllDependencies();
         deployment.addAsResource("jwk.keys");
-        deployment.addAsResource("project-jwk-store.yml");
+        deployment.addAsResource("project-jwk-store.yml", "project-defaults.yml");
         return deployment;
     }
     
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        URL projectYml = JoseCompactJwkTest.class.getResource("/project-jwk-store.yml");
-        return new Swarm("-s" + projectYml.toURI().toString());
-    }
-
     @Test
     public void testJwsHmacCompact() throws Exception {
         Jose jose = JoseLookup.lookup().get();

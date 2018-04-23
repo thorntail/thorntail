@@ -191,8 +191,7 @@ public class JoseFraction implements Fraction<JoseFraction> {
      * Signature Format.
      */
     @Configurable("swarm.jose.signature.data-encoding")
-    @AttributeDocumentation("JWS data encoding mode, true - base64url (default), false - clear text."
-        + " Support for the clear text is optional")
+    @AttributeDocumentation("JWS data encoding mode, true - base64url (default), false - clear text")
     private Defaultable<Boolean> signatureDataEncoding = bool(DEFAULT_SIGNATURE_DATA_ENCODING);
 
     /**
