@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<module xmlns="urn:jboss:module:1.5" name="org.mvcspec.ozark">
+  <resources>
+    <artifact name="javax.mvc:javax.mvc-api:${version.mvc}"/>
+    <artifact name="org.mvc-spec.ozark:ozark-core:${version.ozark}"/>
+    <artifact name="org.mvc-spec.ozark:ozark-resteasy:${version.ozark}"/>
+  </resources>
+  <dependencies>
+    <module name="javax.servlet.api"/>
+    <module name="javax.ws.rs.api"/>
+    <module name="javax.enterprise.api"/>
+    <module name="javax.annotation.api"/>
+    <module name="javax.validation.api"/>
+    <module name="org.jboss.weld.core"/>
+    <module name="org.jboss.weld.spi"/>
+  </dependencies>
+</module>
