@@ -17,7 +17,7 @@
  * limitations under the License.
  *
  */
-package org.wildfly.swarm.microprofile.jwtauth;
+package org.wildfly.swarm.microprofile.jwtauth.roles;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;

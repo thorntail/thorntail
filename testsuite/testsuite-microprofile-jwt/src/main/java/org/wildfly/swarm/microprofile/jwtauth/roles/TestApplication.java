@@ -1,4 +1,4 @@
-package org.wildfly.swarm.microprofile.jwtauth;
+package org.wildfly.swarm.microprofile.jwtauth.roles;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.ApplicationPath;

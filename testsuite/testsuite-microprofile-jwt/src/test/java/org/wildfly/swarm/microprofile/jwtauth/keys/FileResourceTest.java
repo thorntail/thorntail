@@ -1,4 +1,4 @@
-package org.wildfly.swarm.jwt.test;
+package org.wildfly.swarm.microprofile.jwtauth.keys;
 
 /**
  * Copyright 2017 Red Hat, Inc, and individual contributors.
@@ -17,7 +17,6 @@ package org.wildfly.swarm.jwt.test;
  */
 
 import java.io.File;
-import java.net.URL;
 
 import org.apache.http.client.fluent.Request;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -25,14 +24,13 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.jwt.ResourceLoadingServlet;
-import org.wildfly.swarm.undertow.WARArchive;
-
-import static org.fest.assertions.Assertions.assertThat;
+import org.wildfly.swarm.jaxrs.JAXRSArchive;
+import org.wildfly.swarm.microprofile.jwtauth.roles.KeyLoadingService;
+import org.wildfly.swarm.microprofile.jwtauth.roles.TestApplication;
 
 /**
  * @author Heiko Braun
@@ -42,14 +40,11 @@ public class FileResourceTest {
 
 
     @Deployment
-    public static Archive createDeployment() throws Exception {
-        WARArchive deployment = ShrinkWrap.create(WARArchive.class, "pubkey.war");
-        deployment.addClass(ResourceLoadingServlet.class);
-
-        URL url = Thread.currentThread().getContextClassLoader().getResource("file-resource.yaml");
-        assertThat(url).isNotNull();
-        File projectDefaults = new File(url.toURI());
-        deployment.addAsResource(projectDefaults, "/project-defaults.yml");
+    public static Archive<?> createDeployment() throws Exception {
+        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "pubkey.war");
+        deployment.addResource(TestApplication.class);
+        deployment.addResource(KeyLoadingService.class);
+        deployment.addAsResource(new ClassLoaderAsset("file-resource.yaml"), "/project-defaults.yml");
         return deployment;
     }
 
@@ -60,8 +55,8 @@ public class FileResourceTest {
         String fileName = "./src/test/resources/keys/public-key.pem";
         File pubKeyFile = new File(fileName);
 
-        String result = Request.Get("http://localhost:8080/signer-key").execute().returnContent().asString();
-        Assert.assertEquals((Long)pubKeyFile.length(), Long.valueOf(result));
+        String result = Request.Get("http://localhost:8080/mpjwt/signer-key").execute().returnContent().asString();
+        Assert.assertEquals(pubKeyFile.length(), result.length());
     }
 
 

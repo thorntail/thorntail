@@ -14,13 +14,10 @@
  *   limitations under the License.
  *
  */
-package org.wildfly.swarm.microprofile.jwtauth;
+package org.wildfly.swarm.microprofile.jwtauth.roles;
 
 import java.io.InputStream;
-import java.security.KeyFactory;
 import java.security.PrivateKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Base64;
 
 import org.apache.http.client.fluent.Request;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -35,6 +32,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
+import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.KeyUtils;
+import org.wildfly.swarm.microprofile.jwtauth.roles.RolesEndpointClassLevel;
+import org.wildfly.swarm.microprofile.jwtauth.roles.TestApplication;
 
 @RunWith(Arquillian.class)
 public abstract class AbstractRolesAllowedTest {
@@ -43,7 +43,7 @@ public abstract class AbstractRolesAllowedTest {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
         deployment.addResource(RolesEndpointClassLevel.class);
         deployment.addResource(TestApplication.class);
-        deployment.addAsManifestResource(new ClassLoaderAsset("publicKey.pem"), "/MP-JWT-SIGNER");
+        deployment.addAsManifestResource(new ClassLoaderAsset("keys/public-key.pem"), "/MP-JWT-SIGNER");
         return deployment;
     }
     
@@ -80,20 +80,9 @@ public abstract class AbstractRolesAllowedTest {
         return jws.getCompactSerialization();
     }
     private static PrivateKey getPrivateKey() throws Exception {
-        InputStream is = AbstractRolesAllowedTest.class.getResourceAsStream("/privateKey.pem");
-        String pemEncoded = removeBeginEnd(new String(IOUtil.asByteArray(is)));
-        byte[] pkcs8EncodedBytes = Base64.getDecoder().decode(pemEncoded);
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pkcs8EncodedBytes);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
-        PrivateKey privKey = kf.generatePrivate(keySpec);
-        return privKey;
+        InputStream is = AbstractRolesAllowedTest.class.getResourceAsStream("/keys/private-key.pem");
+        return KeyUtils.decodePrivateKey(new String(IOUtil.asByteArray(is)));
     }
-    private static String removeBeginEnd(String pem) {
-        pem = pem.replaceAll("-----BEGIN (.*)-----", "");
-        pem = pem.replaceAll("-----END (.*)----", "");
-        pem = pem.replaceAll("\r\n", "");
-        pem = pem.replaceAll("\n", "");
-        return pem.trim();
-    }
+    
 
 }

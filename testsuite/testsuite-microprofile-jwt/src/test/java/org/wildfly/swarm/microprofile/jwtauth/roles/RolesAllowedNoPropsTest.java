@@ -14,17 +14,17 @@
  *   limitations under the License.
  *
  */
-package org.wildfly.swarm.microprofile.jwtauth;
+package org.wildfly.swarm.microprofile.jwtauth.roles;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 
-public class RolesAllowedEmptyPropsTest extends AbstractRolesAllowedTest {
+public class RolesAllowedNoPropsTest extends AbstractRolesAllowedTest {
 
     @Deployment
     public static Archive<?> createDeployment() throws Exception {
-        return initDeployment()
-            .addAsResource("project-defaults.yml")
-            .addAsResource("emptyRoles.properties");
+        return initDeployment().addAsResource("project-no-roles-props.yml", "project-defaults.yml");
     }
+    
+
 }
