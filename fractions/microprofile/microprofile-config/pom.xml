@@ -16,7 +16,7 @@
 
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>microprofile-config</artifactId>
-    <name>Eclipse MicroProfile Config</name>
+    <name>MicroProfile Config</name>
     <description>WildFly: Swarm Fraction for Eclipse MicroProfile Config</description>
 
     <packaging>jar</packaging>
