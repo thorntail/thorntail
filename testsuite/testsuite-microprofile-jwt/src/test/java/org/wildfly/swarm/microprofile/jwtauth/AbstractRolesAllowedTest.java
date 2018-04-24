@@ -22,13 +22,7 @@ import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import org.apache.http.client.fluent.Request;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -56,31 +50,19 @@ public abstract class AbstractRolesAllowedTest {
     @RunAsClient
     @Test
     public void testRolesAllowed() throws Exception {
-        Client client = ClientBuilder.newClient();
-        try {
-            WebTarget target = client.target("http://localhost:8080/mpjwt/rolesClass").queryParam("input", "hello");
-            String response = target.request(MediaType.TEXT_PLAIN)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + createToken("Echoer")).get(String.class);
-            Assert.assertEquals(response, "hello, user=jdoe@example.com");
-        } finally {
-            // in case Client impl is not auto-closeable
-            client.close();
-        }
+        String response = Request.Get("http://localhost:8080/mpjwt/rolesClass")
+            .setHeader("Authorization", "Bearer " + createToken("Echoer"))
+            .execute().returnContent().asString();
+        Assert.assertEquals(response, "Hello jdoe@example.com");
     }
     
     @RunAsClient
     @Test
     public void testRolesNotAllowed() throws Exception {
-        Client client = ClientBuilder.newClient();
-        try {
-            WebTarget target = client.target("http://localhost:8080/mpjwt/rolesClass").queryParam("input", "hello");
-            Response resp = target.request(MediaType.TEXT_PLAIN)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + createToken("Echoer2")).get();
-            Assert.assertEquals(Response.Status.FORBIDDEN, resp.getStatusInfo());
-        }  finally {
-            // in case Client impl is not auto-closeable
-            client.close();
-        } 
+        Assert.assertEquals(403, 
+            Request.Get("http://localhost:8080/mpjwt/rolesClass")
+                .setHeader("Authorization", "Bearer " + createToken("Echoer2"))
+                .execute().returnResponse().getStatusLine().getStatusCode()); 
     }
     
     private static String createToken(String groupName) throws Exception {

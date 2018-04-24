@@ -22,7 +22,6 @@ package org.wildfly.swarm.microprofile.jwtauth;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 
@@ -31,8 +30,8 @@ import javax.ws.rs.core.SecurityContext;
 public class RolesEndpointClassLevel {
 
     @GET
-    public String echo(@Context SecurityContext sec, @QueryParam("input") String input) {
-        return input + ", user=" + sec.getUserPrincipal().getName();
+    public String echo(@Context SecurityContext sec) {
+        return "Hello " + sec.getUserPrincipal().getName();
     }
 
 }
