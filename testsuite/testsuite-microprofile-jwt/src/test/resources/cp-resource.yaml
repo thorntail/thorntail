@@ -1,0 +1,5 @@
+swarm:
+  microprofile:
+    jwtauth:
+      token:
+        signerPubKey: classpath:public-key.pem
