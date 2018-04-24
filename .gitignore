@@ -11,3 +11,5 @@ tmp
 *.classpath
 *.settings
 *.index
+ObjectStore
+PutObjectStoreDirHere
