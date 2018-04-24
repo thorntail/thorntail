@@ -17,6 +17,8 @@ package org.wildfly.swarm.microprofile.jwtauth.keys;
  */
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import org.apache.http.client.fluent.Request;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -28,9 +30,9 @@ import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.microprofile.jwtauth.roles.KeyLoadingService;
 import org.wildfly.swarm.microprofile.jwtauth.roles.TestApplication;
+import org.wildfly.swarm.undertow.WARArchive;
 
 /**
  * @author Heiko Braun
@@ -41,9 +43,9 @@ public class ClasspathResourceTest {
     @Deployment
     public static Archive<?> createDeployment() throws Exception {
 
-        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "pubkey.war");
-        deployment.addResource(TestApplication.class);
-        deployment.addResource(KeyLoadingService.class);
+        WARArchive deployment = ShrinkWrap.create(WARArchive.class, "pubkey.war");
+        deployment.addClass(TestApplication.class);
+        deployment.addClass(KeyLoadingService.class);
         deployment.addAsResource(new ClassLoaderAsset("keys/public-key.pem"), "/public-key.pem");
         deployment.addAsResource(new ClassLoaderAsset("cp-resource.yaml"), "/project-defaults.yml");
 
@@ -55,8 +57,9 @@ public class ClasspathResourceTest {
     public void verifyPubKeyLoading() throws Exception {
         String fileName = "./src/test/resources/keys/public-key.pem";
         File pubKeyFile = new File(fileName);
+        String pubKeyFromFile = new String(Files.readAllBytes(pubKeyFile.toPath()), StandardCharsets.UTF_8);
         
         String result = Request.Get("http://localhost:8080/mpjwt/signer-key").execute().returnContent().asString();
-        Assert.assertEquals(pubKeyFile.length(), result.length());
+        Assert.assertEquals(pubKeyFromFile, result);
     }
 }

@@ -31,18 +31,16 @@ import org.jose4j.jwt.JwtClaims;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.KeyUtils;
-import org.wildfly.swarm.microprofile.jwtauth.roles.RolesEndpointClassLevel;
-import org.wildfly.swarm.microprofile.jwtauth.roles.TestApplication;
+import org.wildfly.swarm.undertow.WARArchive;
 
 @RunWith(Arquillian.class)
 public abstract class AbstractRolesAllowedTest {
 
-    protected static JAXRSArchive initDeployment() throws Exception {
-        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
-        deployment.addResource(RolesEndpointClassLevel.class);
-        deployment.addResource(TestApplication.class);
+    protected static WARArchive initDeployment() throws Exception {
+        WARArchive deployment = ShrinkWrap.create(WARArchive.class);
+        deployment.addClass(RolesEndpointClassLevel.class);
+        deployment.addClass(TestApplication.class);
         deployment.addAsManifestResource(new ClassLoaderAsset("keys/public-key.pem"), "/MP-JWT-SIGNER");
         return deployment;
     }
