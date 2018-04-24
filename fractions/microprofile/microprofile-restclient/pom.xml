@@ -17,7 +17,7 @@
   <groupId>org.wildfly.swarm</groupId>
   <artifactId>microprofile-restclient</artifactId>
 
-  <name>Microprofile Rest Client</name>
+  <name>MicroProfile Rest Client</name>
 
   <packaging>jar</packaging>
 
