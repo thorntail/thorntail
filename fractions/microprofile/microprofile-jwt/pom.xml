@@ -16,7 +16,7 @@
 
   <artifactId>microprofile-jwt</artifactId>
 
-  <name>MicroProfile JWT RBAC Auth Fraction</name>
+  <name>MicroProfile JWT RBAC Auth</name>
   <description>An implementation of the MP-JWT authentication and authorization</description>
 
   <packaging>jar</packaging>
