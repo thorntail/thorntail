@@ -16,7 +16,7 @@
 
   <artifactId>microprofile-openapi</artifactId>
 
-  <name>MicroProfile OpenAPI Fraction</name>
+  <name>MicroProfile OpenAPI</name>
   <description>An implementation of the MP-OpenAPI specification first introduced in MP 1.3</description>
 
   <packaging>jar</packaging>
