@@ -52,6 +52,7 @@ public class JaegerInstaller implements DeploymentProcessor {
             setContextParamIfNotNull(webXml, JAEGER_REPORTER_LOG_SPANS, fraction.getReporterLogSpans());
             setContextParamIfNotNull(webXml, JAEGER_AGENT_HOST, fraction.getAgentHost());
             setContextParamIfNotNull(webXml, JAEGER_AGENT_PORT, fraction.getAgentPort());
+            setContextParamIfNotNull(webXml, JAEGER_ENDPOINT, fraction.getRemoteReporterHttpEndpoint());
             setContextParamIfNotNull(webXml, JAEGER_REPORTER_FLUSH_INTERVAL, fraction.getReporterFlushInterval());
             setContextParamIfNotNull(webXml, JAEGER_REPORTER_MAX_QUEUE_SIZE, fraction.getReporterMaxQueueSize());
             webXml.setContextParam("skipOpenTracingResolver", "true");

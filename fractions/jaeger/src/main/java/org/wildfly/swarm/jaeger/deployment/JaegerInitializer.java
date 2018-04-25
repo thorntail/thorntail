@@ -29,6 +29,7 @@ import org.jboss.logging.Logger;
 
 import static com.uber.jaeger.Configuration.JAEGER_AGENT_HOST;
 import static com.uber.jaeger.Configuration.JAEGER_AGENT_PORT;
+import static com.uber.jaeger.Configuration.JAEGER_ENDPOINT;
 import static com.uber.jaeger.Configuration.JAEGER_PROPAGATION;
 import static com.uber.jaeger.Configuration.JAEGER_REPORTER_FLUSH_INTERVAL;
 import static com.uber.jaeger.Configuration.JAEGER_REPORTER_LOG_SPANS;
@@ -83,6 +84,13 @@ public class JaegerInitializer implements ServletContextListener {
                                         getPropertyAsInt(sc, JAEGER_REPORTER_MAX_QUEUE_SIZE)
                                 )
                 );
+
+        String remoteEndpoint = getProperty(sc, JAEGER_ENDPOINT);
+        if (remoteEndpoint != null && remoteEndpoint.trim().length() > 0) {
+            configuration.getReporter()
+                    .withSender(new SenderConfiguration()
+                                        .withEndpoint(remoteEndpoint));
+        }
 
         String enableB3HeaderPropagation = sc.getInitParameter("enableB3HeaderPropagation");
         if (enableB3HeaderPropagation != null && Boolean.parseBoolean(enableB3HeaderPropagation)) {
