@@ -1,0 +1,10 @@
+swarm:
+  deployment:
+    test.war:
+      web:
+        login-config:
+          auth-method: KEYCLOAK
+        security-constraints:
+          - url-pattern: /secured
+            methods: [GET]
+            roles: [admin]

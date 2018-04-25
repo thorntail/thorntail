@@ -15,11 +15,7 @@
  */
 package org.wildfly.swarm.keycloak;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.net.URL;
-import java.util.UUID;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -47,28 +43,24 @@ public class KeycloakArquillianTest {
 
     @Deployment
     public static Archive<?> createDeployment() throws Exception {
-        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
+        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "test.war");
         deployment.addResource(SecuredApplication.class);
         deployment.addResource(SecuredResource.class);
         deployment.addAsResource("wildfly-swarm-keycloak-example-realm.json");
         deployment.addAsResource("keycloak.json");
+        deployment.addAsResource("project-defaults.yml");
         return deployment;
     }
 
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
-        String warName = getWarName();
-        File file = File.createTempFile("project-defaults", ".yaml");
-        file.deleteOnExit();
-        createSwarmConfiguration(file, warName);
-
-        URL keyCloakJsonUrl = KeycloakArquillianTest.class.getResource("/keycloak.json");
-        System.setProperty("swarm.keycloak.json.path", keyCloakJsonUrl.toURI().toString());
         URL migrationRealmUrl = KeycloakArquillianTest.class.getResource("/wildfly-swarm-keycloak-example-realm.json");
         System.setProperty("keycloak.migration.file", migrationRealmUrl.toURI().getPath());
         System.setProperty("keycloak.migration.provider", "singleFile");
         System.setProperty("keycloak.migration.action", "import");
-        return new Swarm("-s" + file.toURI().toString());
+        
+        URL keyCloakJsonUrl = KeycloakArquillianTest.class.getResource("/keycloak.json");
+        return new Swarm().withProperty("swarm.keycloak.json.path", keyCloakJsonUrl.toURI().toString());
     }
 
     @Test
@@ -100,39 +92,5 @@ public class KeycloakArquillianTest {
     private String getAccessTokenFromResponse(String response) {
         String tokenStart = response.substring("{\"access_token\":\"".length());
         return tokenStart.substring(0, tokenStart.indexOf("\""));
-    }
-
-    private static String getWarName() throws Exception {
-        // Arquillian creates a war using a "wfswarm" + UUID + ".war" format.
-        
-        String webInfPath = KeycloakArquillianTest.class.getResource("/WEB-INF/").toURI().toString();
-        String warPath = webInfPath.substring(0, webInfPath.length() - "/WEB-INF/".length());
-        String warName = warPath.substring(warPath.lastIndexOf('/') + 1);
-        warName = warName.substring("wfswarm".length());
-        return warName.substring(0, UUID.randomUUID().toString().length()) + ".war";
-    }
-    
-    private static void createSwarmConfiguration(File file, String warName) throws Exception {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write("swarm:");
-            writer.newLine();
-            writer.write("  deployment:");
-            writer.newLine();
-            writer.write("    " + warName + ":");
-            writer.newLine();
-            writer.write("      web:");
-            writer.newLine();
-            writer.write("        login-config:");
-            writer.newLine();
-            writer.write("          auth-method: KEYCLOAK");
-            writer.newLine();
-            writer.write("        security-constraints:");
-            writer.newLine();
-            writer.write("          - url-pattern: /secured");
-            writer.newLine();
-            writer.write("            methods: [GET]");
-            writer.newLine();
-            writer.write("            roles: [admin]");
-        }
     }
 }
