@@ -16,17 +16,25 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth.deployment.principal;
 
+import java.io.IOException;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.jose4j.jwk.HttpsJwks;
+import org.jose4j.jwk.JsonWebKey;
+import org.jose4j.lang.JoseException;
 
 /**
  * The public key and expected issuer needed to validate a token.
  */
 public class JWTAuthContextInfo {
     private RSAPublicKey signerKey;
-
     private String issuedBy;
-
     private int expGracePeriodSecs = 60;
+    private String jwksUri;
+    private Integer jwksRefreshInterval;
+    private HttpsJwks httpsJwks;
 
     public JWTAuthContextInfo() {
     }
@@ -40,10 +48,36 @@ public class JWTAuthContextInfo {
         this.signerKey = orig.signerKey;
         this.issuedBy = orig.issuedBy;
         this.expGracePeriodSecs = orig.expGracePeriodSecs;
+        this.jwksUri = orig.jwksUri;
+        this.jwksRefreshInterval = orig.jwksRefreshInterval;
     }
 
     public RSAPublicKey getSignerKey() {
         return signerKey;
+    }
+
+    public List<JsonWebKey> loadJsonWebKeys() {
+        synchronized (this) {
+            if (jwksUri == null) {
+                return Collections.emptyList();
+            }
+
+            if (httpsJwks == null) {
+                httpsJwks = new HttpsJwks(jwksUri);
+                httpsJwks.setDefaultCacheDuration(jwksRefreshInterval.longValue() * 60L);
+            }
+        }
+
+        try {
+            return httpsJwks.getJsonWebKeys().stream()
+                    .filter(jsonWebKey -> "sig".equals(jsonWebKey.getUse())) // only signing keys are relevant
+                    .filter(jsonWebKey -> "RS256".equals(jsonWebKey.getAlgorithm())) // MP-JWT dictates RS256 only
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new IllegalStateException(String.format("Unable to fetch JWKS from %s.", jwksUri), e);
+        } catch (JoseException e) {
+            throw new IllegalStateException(String.format("Unable to parse JWKS from %s.", jwksUri), e);
+        }
     }
 
     public void setSignerKey(RSAPublicKey signerKey) {
@@ -64,5 +98,21 @@ public class JWTAuthContextInfo {
 
     public void setExpGracePeriodSecs(int expGracePeriodSecs) {
         this.expGracePeriodSecs = expGracePeriodSecs;
+    }
+
+    public String getJwksUri() {
+        return jwksUri;
+    }
+
+    public void setJwksUri(String jwksUri) {
+        this.jwksUri = jwksUri;
+    }
+
+    public Integer getJwksRefreshInterval() {
+        return jwksRefreshInterval;
+    }
+
+    public void setJwksRefreshInterval(Integer jwksRefreshInterval) {
+        this.jwksRefreshInterval = jwksRefreshInterval;
     }
 }

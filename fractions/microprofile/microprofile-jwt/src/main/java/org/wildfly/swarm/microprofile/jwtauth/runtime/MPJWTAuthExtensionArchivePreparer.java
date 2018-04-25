@@ -162,6 +162,15 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
                 war.addAsManifestResource(new StringAsset(publicKey), "MP-JWT-SIGNER");
             }
         }
+        if (fraction.getJwksUri() != null) {
+            log.debugf("JwksUri: %s", fraction.getJwksUri());
+            war.addAsManifestResource(new StringAsset(fraction.getJwksUri()), "MP-JWT-JWKS");
+            war.addAsManifestResource(new StringAsset(fraction.getJwksRefreshInterval().get().toString()), "MP-JWT-JWKS-REFRESH");
+
+            if (fraction.getPublicKey() != null) { // warn that both JWKS and signing key is present
+                log.warn("The 'signer-pub-key' and 'jwks-uri' configuration options are mutually exclusive, the 'jwks-uri' will be ignored.");
+            }
+        }
         if (log.isTraceEnabled()) {
             log.trace("war: " + war.toString(true));
         }

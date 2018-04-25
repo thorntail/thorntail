@@ -20,31 +20,37 @@ package org.wildfly.swarm.microprofile.jwtauth.deployment.auth.config;
 
 import java.security.interfaces.RSAPublicKey;
 import java.util.Optional;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.DeploymentException;
 import javax.inject.Inject;
-
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.KeyUtils;
 import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTAuthContextInfo;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  *
  */
 @Dependent
 public class JWTAuthContextInfoProvider {
+    private static final String NONE = "NONE";
+
     @Inject
-    @ConfigProperty(name = "mpjwt.signerPublicKey")
+    @ConfigProperty(name = "mpjwt.signerPublicKey", defaultValue = NONE)
     private Optional<String> publicKeyPemEnc;
     @Inject
-    @ConfigProperty(name = "mpjwt.issuedBy", defaultValue = "NONE")
+    @ConfigProperty(name = "mpjwt.issuedBy", defaultValue = NONE)
     private String issuedBy;
     @Inject
     @ConfigProperty(name = "mpjwt.expGracePeriodSecs", defaultValue = "60")
     private Optional<Integer> expGracePeriodSecs;
+    @Inject
+    @ConfigProperty(name = "mpjwt.jwksUri", defaultValue = NONE)
+    private Optional<String> jwksUri;
+    @Inject
+    @ConfigProperty(name = "mpjwt.jwksRefreshInterval", defaultValue = "60")
+    private Optional<Integer> jwksRefreshInterval;
 
     @PostConstruct
     void init() {
@@ -52,24 +58,39 @@ public class JWTAuthContextInfoProvider {
 
     @Produces
     Optional<JWTAuthContextInfo> getOptionalContextInfo() {
-        if (!publicKeyPemEnc.isPresent()) {
+        /*
+        FIXME Due to a bug in MP-Config (https://github.com/wildfly-extras/wildfly-microprofile-config/issues/43) we need to set all
+        values to "NONE" as Optional Strings are populated with a ConfigProperty.defaultValue if they are absent. Fix this when MP-Config
+        is repaired.
+         */
+        if (NONE.equals(publicKeyPemEnc.get()) && NONE.equals(jwksUri.get())) {
             return Optional.empty();
         }
         JWTAuthContextInfo contextInfo = new JWTAuthContextInfo();
-        try {
-            RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodePublicKey(publicKeyPemEnc.get());
-            contextInfo.setSignerKey(pk);
-        } catch (Exception e) {
-            throw new DeploymentException(e);
+        if (publicKeyPemEnc.isPresent() && !NONE.equals(publicKeyPemEnc.get())) {
+            try {
+                RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodePublicKey(publicKeyPemEnc.get());
+                contextInfo.setSignerKey(pk);
+            } catch (Exception e) {
+                throw new DeploymentException(e);
+            }
         }
-        if (issuedBy != null && !issuedBy.equals("NONE")) {
+        if (issuedBy != null && !issuedBy.equals(NONE)) {
             contextInfo.setIssuedBy(issuedBy);
         }
         if (expGracePeriodSecs.isPresent()) {
             contextInfo.setExpGracePeriodSecs(expGracePeriodSecs.get());
         }
+        if (jwksUri.isPresent() && !NONE.equals(jwksUri.get())) {
+            contextInfo.setJwksUri(jwksUri.get());
+        }
+        if (jwksRefreshInterval.isPresent()) {
+            contextInfo.setJwksRefreshInterval(jwksRefreshInterval.get());
+        }
+
         return Optional.of(contextInfo);
     }
+
     @Produces
     JWTAuthContextInfo getContextInfo() {
         return getOptionalContextInfo().get();

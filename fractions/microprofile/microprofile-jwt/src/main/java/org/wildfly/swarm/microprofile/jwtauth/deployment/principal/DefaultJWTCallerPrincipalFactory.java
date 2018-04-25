@@ -18,6 +18,7 @@ package org.wildfly.swarm.microprofile.jwtauth.deployment.principal;
 
 import org.eclipse.microprofile.jwt.Claims;
 import org.jose4j.jwa.AlgorithmConstraints;
+import org.jose4j.jwk.JsonWebKey;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -26,6 +27,8 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
+import org.jose4j.keys.resolvers.JwksVerificationKeyResolver;
+import java.util.List;
 
 /**
  * A default implementation of the abstract JWTCallerPrincipalFactory that uses the Keycloak token parsing classes.
@@ -40,7 +43,7 @@ public class DefaultJWTCallerPrincipalFactory extends JWTCallerPrincipalFactory 
 
     @Override
     public JWTCallerPrincipal parse(final String token, final JWTAuthContextInfo authContextInfo) throws ParseException {
-        JWTCallerPrincipal principal = null;
+        JWTCallerPrincipal principal;
 
         try {
             JwtConsumerBuilder builder = new JwtConsumerBuilder()
@@ -48,10 +51,17 @@ public class DefaultJWTCallerPrincipalFactory extends JWTCallerPrincipalFactory 
                     .setRequireSubject()
                     .setSkipDefaultAudienceValidation()
                     .setExpectedIssuer(authContextInfo.getIssuedBy())
-                    .setVerificationKey(authContextInfo.getSignerKey())
                     .setJwsAlgorithmConstraints(
                             new AlgorithmConstraints(AlgorithmConstraints.ConstraintType.WHITELIST,
                                     AlgorithmIdentifiers.RSA_USING_SHA256));
+
+            if (authContextInfo.getSignerKey() != null) {
+                builder.setVerificationKey(authContextInfo.getSignerKey());
+            } else {
+                final List<JsonWebKey> jsonWebKeys = authContextInfo.loadJsonWebKeys();
+                builder.setVerificationKeyResolver(new JwksVerificationKeyResolver(jsonWebKeys));
+            }
+
             if (authContextInfo.getExpGracePeriodSecs() > 0) {
                 builder.setAllowedClockSkewInSeconds(authContextInfo.getExpGracePeriodSecs());
             } else {
