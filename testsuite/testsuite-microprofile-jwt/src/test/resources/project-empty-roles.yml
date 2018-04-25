@@ -2,7 +2,7 @@ swarm:
   microprofile:
     jwtauth:
       token:
-        signerPubKey: classpath:public-key.pem
+        issuedBy: "https://server.example.com"
   security:
     security-domains:
       testSuiteRealm:
