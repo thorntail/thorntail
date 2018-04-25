@@ -38,6 +38,11 @@ include::howto/enabling-logging/index.adoc[leveloffset=+3]
 include::howto/logging-to-a-file/index.adoc[leveloffset=+3]
 
 
+ifdef::product[]
+include::howto/ejb-remote-security/index.adoc[leveloffset=+2]
+endif::[]
+
+
 ifndef::product[]
 
 ## Advanced
