@@ -39,21 +39,22 @@ import java.util.stream.Collectors;
  * Date: 4/24/18
  */
 @DeploymentScoped
+@SuppressWarnings("rawtypes")
 public class MicroProfileConfigDeploymentProcessor implements DeploymentProcessor {
     private static final String CONFIG_SOURCE_SERVICES = "META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource";
     private static Logger log = Logger.getLogger(MicroProfileConfigDeploymentProcessor.class);
 
-    private final Archive<?> archive;
+    private final Archive archive;
     private final ConfigView configView;
 
     @Inject
-    public MicroProfileConfigDeploymentProcessor(Archive<?> archive, ConfigView configView) {
+    public MicroProfileConfigDeploymentProcessor(Archive archive, ConfigView configView) {
         this.archive = archive;
         this.configView = configView;
     }
 
     @Override
-    public void process() throws Exception {
+    public void process() {
         CompositeKey key = new CompositeKey("swarm", "microprofile", "config", "config-sources");
 
         List<String> configSourceClasses = readConfigSourceClasses(key);

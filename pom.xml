@@ -288,6 +288,12 @@
         <version>${version.mockito}</version>
       </dependency>
       <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>3.0.7</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${version.junit}</version>
@@ -1225,6 +1231,7 @@
         <module>testsuite/testsuite-jpa-postgresql</module>
         <module>testsuite/testsuite-jsf</module>
         <module>testsuite/testsuite-jsp</module>
+        <module>testsuite/testsuite-microprofile-config</module>
         <module>testsuite/testsuite-microprofile-jwt</module>
         <module>testsuite/testsuite-keycloak</module>
         <module>testsuite/testsuite-local-dependencies</module>

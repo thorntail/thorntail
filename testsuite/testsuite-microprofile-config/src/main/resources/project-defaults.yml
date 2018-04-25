@@ -1,0 +1,6 @@
+swarm:
+   microprofile:
+      config:
+         config-sources:
+            default:
+               attribute-class: org.wildfly.swarm.microprofile.config.test.YamlDefinedConfigSource
