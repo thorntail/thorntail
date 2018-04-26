@@ -8,7 +8,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 import java.util.Optional;
 
-import static com.uber.jaeger.Configuration.*;
+import static io.jaegertracing.Configuration.*;
 
 /**
  * @author Juraci Paixão Kröhling

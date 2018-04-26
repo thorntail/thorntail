@@ -23,23 +23,23 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import com.uber.jaeger.Configuration;
+import io.jaegertracing.Configuration;
 import io.opentracing.util.GlobalTracer;
 import org.jboss.logging.Logger;
 
-import static com.uber.jaeger.Configuration.JAEGER_AGENT_HOST;
-import static com.uber.jaeger.Configuration.JAEGER_AGENT_PORT;
-import static com.uber.jaeger.Configuration.JAEGER_ENDPOINT;
-import static com.uber.jaeger.Configuration.JAEGER_PROPAGATION;
-import static com.uber.jaeger.Configuration.JAEGER_REPORTER_FLUSH_INTERVAL;
-import static com.uber.jaeger.Configuration.JAEGER_REPORTER_LOG_SPANS;
-import static com.uber.jaeger.Configuration.JAEGER_REPORTER_MAX_QUEUE_SIZE;
-import static com.uber.jaeger.Configuration.JAEGER_SAMPLER_MANAGER_HOST_PORT;
-import static com.uber.jaeger.Configuration.JAEGER_SAMPLER_PARAM;
-import static com.uber.jaeger.Configuration.JAEGER_SAMPLER_TYPE;
-import static com.uber.jaeger.Configuration.JAEGER_SERVICE_NAME;
-import static com.uber.jaeger.Configuration.ReporterConfiguration;
-import static com.uber.jaeger.Configuration.SenderConfiguration;
+import static io.jaegertracing.Configuration.JAEGER_AGENT_HOST;
+import static io.jaegertracing.Configuration.JAEGER_AGENT_PORT;
+import static io.jaegertracing.Configuration.JAEGER_ENDPOINT;
+import static io.jaegertracing.Configuration.JAEGER_PROPAGATION;
+import static io.jaegertracing.Configuration.JAEGER_REPORTER_FLUSH_INTERVAL;
+import static io.jaegertracing.Configuration.JAEGER_REPORTER_LOG_SPANS;
+import static io.jaegertracing.Configuration.JAEGER_REPORTER_MAX_QUEUE_SIZE;
+import static io.jaegertracing.Configuration.JAEGER_SAMPLER_MANAGER_HOST_PORT;
+import static io.jaegertracing.Configuration.JAEGER_SAMPLER_PARAM;
+import static io.jaegertracing.Configuration.JAEGER_SAMPLER_TYPE;
+import static io.jaegertracing.Configuration.JAEGER_SERVICE_NAME;
+import static io.jaegertracing.Configuration.ReporterConfiguration;
+import static io.jaegertracing.Configuration.SenderConfiguration;
 
 /**
  * @author Juraci Paixão Kröhling

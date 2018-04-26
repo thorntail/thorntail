@@ -84,7 +84,7 @@
     <!-- OpenTracing related versions -->
     <version.opentracing.tracerresolver>0.1.4</version.opentracing.tracerresolver>
     <version.opentracing.servlet>0.1.0</version.opentracing.servlet>
-    <version.jaeger>0.26.0</version.jaeger>
+    <version.jaeger>0.27.0</version.jaeger>
     <version.jaeger.apache.thrift>0.9.2</version.jaeger.apache.thrift>
     <version.jaeger.apache.httpclient>4.2.5</version.jaeger.apache.httpclient>
     <version.jaeger.commons.logging>1.1.1</version.jaeger.commons.logging>

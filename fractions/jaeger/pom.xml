@@ -70,12 +70,12 @@
     </dependency>
 
     <dependency>
-      <groupId>com.uber.jaeger</groupId>
+      <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-core</artifactId>
       <version>${version.jaeger}</version>
     </dependency>
     <dependency>
-      <groupId>com.uber.jaeger</groupId>
+      <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-tracerresolver</artifactId>
       <version>${version.jaeger}</version>
     </dependency>

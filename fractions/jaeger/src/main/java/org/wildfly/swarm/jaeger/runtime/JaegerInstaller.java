@@ -11,7 +11,7 @@ import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import static com.uber.jaeger.Configuration.*;
+import static io.jaegertracing.Configuration.*;
 
 /**
  * @author Juraci Paixão Kröhling
