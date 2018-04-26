@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.undertow.internal;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -25,8 +26,13 @@ import java.nio.file.attribute.BasicFileAttributes;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
+import org.wildfly.swarm.internal.ExplodedApplicationArtifactLocator;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.spi.api.DefaultDeploymentFactory;
 import org.wildfly.swarm.spi.api.DependenciesContainer;
@@ -39,12 +45,14 @@ import org.wildfly.swarm.undertow.WARArchive;
 @ApplicationScoped
 public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
 
+    public static final ArchivePath MARKER_PATH = ArchivePaths.create("META-INF/" + DefaultWarDeploymentFactory.class.getName());
+
     public static WARArchive archiveFromCurrentApp() throws Exception {
         final WARArchive archive = ShrinkWrap.create(WARArchive.class, determineName());
         final DefaultDeploymentFactory factory = new DefaultWarDeploymentFactory();
         factory.setup(archive);
         //archive.addModule("org.wildfly.swarm.undertow", "runtime");
-
+        archive.add(EmptyAsset.INSTANCE, MARKER_PATH);
         return archive;
     }
 
@@ -58,6 +66,7 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
         return "war";
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public Archive create() throws Exception {
         return archiveFromCurrentApp().staticContent();
@@ -100,6 +109,17 @@ public class DefaultWarDeploymentFactory extends DefaultDeploymentFactory {
         archive.addAllDependencies();
 
         return success;
+    }
+
+    @Override
+    protected boolean setupUsingAppArtifact(Archive<?> archive) throws IOException {
+        File exploded = ExplodedApplicationArtifactLocator.get();
+        if (exploded != null && exploded.canRead()) {
+            // Use exploded deployment from tmp dir
+            archive.as(ExplodedImporter.class).importDirectory(exploded);
+            return true;
+        }
+        return super.setupUsingAppArtifact(archive);
     }
 
     private void addFilesToArchive(final Path files, final DependenciesContainer<?> archive) throws Exception {

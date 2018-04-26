@@ -140,8 +140,11 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
         File tmpDir = TempFileManager.INSTANCE.newTempDirectory(name, ext);
 
-        //Explode jar due to some issues in Windows on stopping (JarFiles cannot be deleted)
+        // Explode jar due to some issues in Windows on stopping (JarFiles cannot be deleted)
         BootstrapUtil.explodeJar(jarFile, tmpDir.getAbsolutePath());
+
+        // SWARM-1473: exploded app artifact is also used to back ShrinkWrap archive used by deployment processors
+        TempFileManager.INSTANCE.setExplodedApplicationArtifact(tmpDir);
 
         jarFile.close();
         tmp.delete();
