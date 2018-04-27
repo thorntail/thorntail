@@ -2,4 +2,9 @@
   <resources>
     <artifact name="org.apache.thrift:libthrift:${version.jaeger.apache.thrift}"/>
   </resources>
+
+  <dependencies>
+    <module name="org.slf4j"/>
+    <module name="org.apache.httpcomponents"/>
+  </dependencies>
 </module>

@@ -23,7 +23,7 @@
   <packaging>jar</packaging>
 
   <properties>
-    <swarm.fraction.stability>experimental</swarm.fraction.stability>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Jaeger, OpenTracing, Tracing, Monitoring</swarm.fraction.tags>
   </properties>
 
@@ -70,12 +70,12 @@
     </dependency>
 
     <dependency>
-      <groupId>com.uber.jaeger</groupId>
+      <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-core</artifactId>
       <version>${version.jaeger}</version>
     </dependency>
     <dependency>
-      <groupId>com.uber.jaeger</groupId>
+      <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-tracerresolver</artifactId>
       <version>${version.jaeger}</version>
     </dependency>

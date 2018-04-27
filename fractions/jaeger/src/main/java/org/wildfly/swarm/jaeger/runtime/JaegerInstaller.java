@@ -11,7 +11,7 @@ import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import static com.uber.jaeger.Configuration.*;
+import static io.jaegertracing.Configuration.*;
 
 /**
  * @author Juraci Paixão Kröhling
@@ -52,9 +52,14 @@ public class JaegerInstaller implements DeploymentProcessor {
             setContextParamIfNotNull(webXml, JAEGER_REPORTER_LOG_SPANS, fraction.getReporterLogSpans());
             setContextParamIfNotNull(webXml, JAEGER_AGENT_HOST, fraction.getAgentHost());
             setContextParamIfNotNull(webXml, JAEGER_AGENT_PORT, fraction.getAgentPort());
+            setContextParamIfNotNull(webXml, JAEGER_ENDPOINT, fraction.getRemoteReporterHttpEndpoint());
             setContextParamIfNotNull(webXml, JAEGER_REPORTER_FLUSH_INTERVAL, fraction.getReporterFlushInterval());
             setContextParamIfNotNull(webXml, JAEGER_REPORTER_MAX_QUEUE_SIZE, fraction.getReporterMaxQueueSize());
             webXml.setContextParam("skipOpenTracingResolver", "true");
+
+            if (fraction.isB3HeaderPropagationEnabled()) {
+                webXml.setContextParam("enableB3HeaderPropagation", "true");
+            }
         }
     }
 

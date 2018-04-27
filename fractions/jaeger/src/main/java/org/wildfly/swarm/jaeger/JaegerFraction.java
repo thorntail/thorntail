@@ -8,7 +8,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 import java.util.Optional;
 
-import static com.uber.jaeger.Configuration.*;
+import static io.jaegertracing.Configuration.*;
 
 /**
  * @author Juraci Paixão Kröhling
@@ -36,6 +36,12 @@ public class JaegerFraction implements Fraction<JaegerFraction> {
     private Defaultable<String> reporterFlushInterval = Defaultable.string(getDefault(JAEGER_REPORTER_FLUSH_INTERVAL));
     @AttributeDocumentation("The reporter's maximum queue size")
     private Defaultable<String> reporterMaxQueueSize = Defaultable.string(getDefault(JAEGER_REPORTER_MAX_QUEUE_SIZE));
+
+    @AttributeDocumentation("Whether to enable propagation of B3 headers in the configured Tracer. By default this is false.")
+    private Defaultable<Boolean> enableB3HeaderPropagation = Defaultable.bool(false);
+
+    @AttributeDocumentation("Remote Reporter HTTP endpoint for Jaeger collector, such as http://jaeger-collector.istio-system:14268/api/traces")
+    private Defaultable<String> remoteReporterHttpEndpoint = Defaultable.string(getDefault(JAEGER_ENDPOINT));
 
     public String getServiceName() {
         return serviceName.get();
@@ -71,6 +77,14 @@ public class JaegerFraction implements Fraction<JaegerFraction> {
 
     public String getReporterMaxQueueSize() {
         return reporterMaxQueueSize.get();
+    }
+
+    public Boolean isB3HeaderPropagationEnabled() {
+        return enableB3HeaderPropagation.get();
+    }
+
+    public String getRemoteReporterHttpEndpoint() {
+        return remoteReporterHttpEndpoint.get();
     }
 
     @Override
