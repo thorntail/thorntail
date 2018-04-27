@@ -65,7 +65,7 @@ public abstract class AbstractRolesAllowedTest {
     
     private static String createToken(String groupName) throws Exception {
         JwtClaims claims = new JwtClaims();
-        claims.setIssuer("https://server.example.com");
+        claims.setIssuer("http://testsuite-jwt-issuer.io");
         claims.setSubject("24400320");
         claims.setStringListClaim("groups", groupName);
         claims.setClaim("upn", "jdoe@example.com");
