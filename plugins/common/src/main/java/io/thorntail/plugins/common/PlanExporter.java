@@ -46,7 +46,7 @@ public class PlanExporter {
                 }
 
                 JarArchiveEntry jarFileEntry = new JarArchiveEntry(jarPath(path));
-                jarFileEntry.setUnixMode( getMode( entry.getPermissions() ));
+                jarFileEntry.setUnixMode(getMode(entry.getPermissions()));
                 jar.putArchiveEntry(jarFileEntry);
                 copy(entry.openStream(), jar);
                 jar.closeArchiveEntry();
@@ -89,7 +89,7 @@ public class PlanExporter {
             }
         }
 
-        if ( mode == 0 ) {
+        if (mode == 0) {
             mode = 0444;
         }
 
@@ -113,18 +113,18 @@ public class PlanExporter {
 
     static void exportDirectory(Plan plan, Path destination) throws IOException, NoSuchAlgorithmException {
 
-        System.err.println( "plan ---> " + plan.getEntries().size() + " // " + plan.getEntries());
+        System.err.println("plan ---> " + plan.getEntries().size() + " // " + plan.getEntries());
         Files.createDirectories(destination);
 
         for (Entry entry : plan) {
-            System.err.println( "export: " + entry.getPath());
+            System.err.println("export: " + entry.getPath());
             Path dest = destination.resolve(entry.getPath());
-            if ( Files.exists(dest)) {
+            if (Files.exists(dest)) {
                 // Same filename
                 byte[] destHash = Run.hashOf(dest);
                 byte[] srcHash = Run.hashOf(entry.openStream());
                 if (Arrays.equals(destHash, srcHash)) {
-                    System.err.println( "skip: " + entry );
+                    System.err.println("skip: " + entry);
                     // Same hash
                     //return;
                     continue;
@@ -133,11 +133,17 @@ public class PlanExporter {
             Files.createDirectories(dest.getParent());
             Files.copy(entry.openStream(), dest, StandardCopyOption.REPLACE_EXISTING);
             if (!entry.getPermissions().isEmpty()) {
-                Files.setPosixFilePermissions(dest, entry.getPermissions());
+                if (!isWindows()) {
+                    Files.setPosixFilePermissions(dest, entry.getPermissions());
+                }
             }
 
-            Files.setLastModifiedTime( dest, entry.getLastModifiedTime() );
+            Files.setLastModifiedTime(dest, entry.getLastModifiedTime());
         }
+    }
+
+    private static boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().contains("windows");
     }
 
 }
