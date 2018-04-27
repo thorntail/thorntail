@@ -2,7 +2,7 @@ swarm:
   microprofile:
     jwtauth:
       token:
-        issuedBy: "https://server.example.com"
+        issuedBy: "http://testsuite-jwt-issuer.io"
   security:
     security-domains:
       testSuiteRealm:
