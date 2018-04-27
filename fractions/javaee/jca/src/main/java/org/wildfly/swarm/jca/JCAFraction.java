@@ -45,13 +45,13 @@ public class JCAFraction extends JCA<JCAFraction> implements Fraction<JCAFractio
 
     public JCAFraction applyDefaults() {
         Map<Object, Object> keepAlive = new HashMap<>();
-        keepAlive.put("time", "10");
+        keepAlive.put("time", 10L);
         keepAlive.put("unit", "SECONDS");
 
         archiveValidation(new ArchiveValidation()
                                   .enabled(true)
                                   .failOnError(true)
-                                  .failOnWarn(true))
+                                  .failOnWarn(false))
                 .beanValidation(new BeanValidation()
                                         .enabled(true))
                 .workmanager(new Workmanager(DEFAULT)

@@ -46,6 +46,11 @@
     </dependency>
     <dependency>
       <groupId>org.wildfly.swarm</groupId>
+      <artifactId>messaging</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
       <artifactId>remoting</artifactId>
     </dependency>
     <dependency>

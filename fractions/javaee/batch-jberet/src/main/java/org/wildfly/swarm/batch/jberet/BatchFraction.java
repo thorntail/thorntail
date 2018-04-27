@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
-import org.wildfly.common.cpu.ProcessorInfo;
 import org.wildfly.swarm.config.BatchJBeret;
 import org.wildfly.swarm.config.batch.jberet.InMemoryJobRepository;
 import org.wildfly.swarm.config.batch.jberet.JDBCJobRepository;
@@ -73,9 +72,9 @@ public class BatchFraction extends BatchJBeret<BatchFraction> implements Fractio
 
         // Default thread-pool
         final ThreadPool<?> threadPool = new ThreadPool<>(DEFAULT_THREAD_POOL_NAME);
-        threadPool.maxThreads(ProcessorInfo.availableProcessors())
-                .keepaliveTime("time", "30")
-                .keepaliveTime("unit", "seconds");
+        threadPool.maxThreads(10)
+                .keepaliveTime("time", 30L)
+                .keepaliveTime("unit", "SECONDS");
 
         return inMemoryJobRepository(jobRepository)
                 .defaultJobRepository(jobRepository.getKey())
