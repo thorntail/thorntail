@@ -160,10 +160,13 @@ public class PackageMojo extends AbstractSwarmMojo {
                     }
                 });
 
-        this.additionalFractions.stream()
-                .map(f -> FractionDescriptor.fromGav(FractionList.get(), f))
-                .map(ArtifactSpec::fromFractionDescriptor)
-                .forEach(tool::fraction);
+        this.fractions.forEach(f -> {
+            if (f.startsWith(EXCLUDE_PREFIX)) {
+                tool.excludeFraction(ArtifactSpec.fromFractionDescriptor(FractionDescriptor.fromGav(FractionList.get(), f.substring(1))));
+            } else {
+                tool.fraction(ArtifactSpec.fromFractionDescriptor(FractionDescriptor.fromGav(FractionList.get(), f)));
+            }
+        });
 
         Map<ArtifactSpec, Set<ArtifactSpec>> buckets = createBuckets(this.project.getArtifacts(), this.project.getDependencies());
 

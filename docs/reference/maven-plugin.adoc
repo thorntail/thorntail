@@ -137,13 +137,32 @@ fractions::
 A list of extra fractions to include when auto-detection is used. It is useful for fractions that cannot be detected or user-provided fractions.
 
 The format of specifying a fraction can be:
-* `group:name:version`
-* `name:version`
-* `name`
+* `group:artifact:version`
+* `artifact:version`
+* `artifact`
 
 If no group is provided, `org.wildfly.swarm` is assumed.
 
 If no version is provided, the version is taken from the WildFly Swarm BOM for the version of the plugin you are using.
+
+If the value starts with the character `!` a corresponding auto-detected fraction is not installed (unless it's a dependency of any other fraction).
+In the following example the Undertow fraction is not installed even if your application references a class from the `javax.servlet` package:
+
+[source,xml]
+----
+<plugin>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-plugin</artifactId>
+  <version>${version.wildfly-swarm}</version>
+  <executions>
+    <configuration>
+     <fractions>
+       <fraction>!undertow</fraction>
+     </fractions>
+    <configuration/>
+  </executions>
+</plugin>
+----
 
 [cols="1,2a"]
 |===

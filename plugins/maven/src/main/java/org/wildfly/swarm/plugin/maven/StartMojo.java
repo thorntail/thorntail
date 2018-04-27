@@ -245,7 +245,7 @@ public class StartMojo extends AbstractSwarmMojo {
                 .map(d -> String.format("%s:%s", d.getGroupId(), d.getArtifactId()))
                 .collect(Collectors.toSet());
 
-        final Set<FractionDescriptor> fractions;
+        final Set<FractionDescriptor> detectedFractions;
         final FractionUsageAnalyzer analyzer = new FractionUsageAnalyzer(FractionList.get()).source(source);
         if (scanDeps) {
             existingDeps.forEach(d -> analyzer.source(d.getFile()));
@@ -253,24 +253,30 @@ public class StartMojo extends AbstractSwarmMojo {
         final Predicate<FractionDescriptor> notExistingDep =
                 d -> !existingDepGASet.contains(String.format("%s:%s", d.getGroupId(), d.getArtifactId()));
         try {
-            fractions = analyzer.detectNeededFractions().stream()
+            detectedFractions = analyzer.detectNeededFractions().stream()
                     .filter(notExistingDep)
                     .collect(Collectors.toSet());
         } catch (IOException e) {
             throw new MojoFailureException("failed to scan for fractions", e);
         }
 
-        getLog().info("Detected fractions: " + String.join(", ", fractions.stream()
+        getLog().info("Detected fractions: " + String.join(", ", detectedFractions.stream()
                 .map(FractionDescriptor::av)
                 .sorted()
                 .collect(Collectors.toList())));
 
-        fractions.addAll(this.additionalFractions.stream()
-                                 .map(f -> FractionDescriptor.fromGav(FractionList.get(), f))
-                                 .collect(Collectors.toSet()));
+        this.fractions.forEach(f -> {
+            if (f.startsWith(EXCLUDE_PREFIX)) {
+                FractionDescriptor descriptor = FractionDescriptor.fromGav(FractionList.get(), f.substring(1));
+                getLog().info("Excluding detected fraction:" + descriptor);
+                detectedFractions.remove(descriptor);
+            } else {
+                detectedFractions.add(FractionDescriptor.fromGav(FractionList.get(), f));
+            }
+        });
 
-        final Set<FractionDescriptor> allFractions = new HashSet<>(fractions);
-        allFractions.addAll(fractions.stream()
+        final Set<FractionDescriptor> allFractions = new HashSet<>(detectedFractions);
+        allFractions.addAll(detectedFractions.stream()
                                     .flatMap(f -> f.getDependencies().stream())
                                     .filter(notExistingDep)
                                     .collect(Collectors.toSet()));
