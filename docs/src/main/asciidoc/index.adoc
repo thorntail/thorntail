@@ -10,9 +10,9 @@ v{version}
 
 {project_name} is the next generation of WildFly Swarm.
 
-# Introduction
+//# Introduction
 
-include::design/lessons-learned.adoc[leveloffset=+1]
+//include::design/lessons-learned.adoc[leveloffset=+1]
 
 # Concepts
 

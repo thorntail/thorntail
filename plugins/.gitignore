@@ -1,0 +1,8 @@
+target
+*.iml
+.idea
+.java-version
+*.DS_Store
+*.swp
+log
+dependency-reduced-pom.xml

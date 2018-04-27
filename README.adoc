@@ -1,18 +1,8 @@
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
-= µNimbus PoC
+= Thorntail PoC
 
-.Install the thorntail-maven-plugin
-
-Until it is published, you'll need to clone the repository and install it using Maven.
-
-    git clone git@github.com:bobmcwhirter/unimbus-plugins.git
-
-    cd unimbus-plugins
-
-    mvn install
-
-.Build Thorntail-proper
+.Build 
 
 The build assumes Docker is present in some cases for deeper integration tests.
 
@@ -29,9 +19,7 @@ To include them, simply add `-Ptck` to any `mvn` invocation:
 
 .Enjoy the documentation
 
-    open docs/target/generated-docs/index.html
+    open docs/target/thorntail-docs-html/index.html
 
-.Enjoy some sparse JavaDoc
+    open docs/target/thorntail-docs.pdf
 
-    mvn javadoc:aggregate
-    open target/apidocs/index.html
