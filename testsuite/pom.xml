@@ -59,6 +59,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>build-resources</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
@@ -82,6 +89,47 @@
             <phase>verify</phase>
             <goals>
               <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.4.1</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>wildfly-swarm-enforcer-pattern-size</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <phase>verify</phase>
+            <configuration>
+              <rules>
+                <patternSizeRule implementation="org.wildfly.swarm.plugin.enforcer.patternsize.RequireFilePatternSize">
+                  <requiredFilePatterns>
+                    <requiredFilePattern>
+                      <maxSize>0</maxSize>
+                      <recursive>false</recursive>
+                      <directory>${project.build.directory}</directory>
+                      <pattern>wfswarm\S+[0-9]{5,}.\S{5,}</pattern>
+                    </requiredFilePattern>
+                    <requiredFilePattern>
+                      <maxSize>0</maxSize>
+                      <recursive>false</recursive>
+                      <directory>${java.io.tmpdir}</directory>
+                      <pattern>wfswarm\S+[0-9]{5,}.\S{5,}</pattern>
+                    </requiredFilePattern>
+                  </requiredFilePatterns>
+                </patternSizeRule>
+              </rules>
+            </configuration>
+            <goals>
+              <goal>enforce</goal>
             </goals>
           </execution>
         </executions>
@@ -153,6 +201,11 @@
       <artifactId>graphene-webdriver</artifactId>
       <version>${version.org.arquillian.graphene}</version>
       <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>build-resources</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

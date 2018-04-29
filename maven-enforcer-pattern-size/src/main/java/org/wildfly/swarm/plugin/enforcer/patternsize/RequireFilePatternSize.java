@@ -34,9 +34,7 @@ import org.apache.maven.enforcer.rule.api.EnforcerRuleException;
 import org.apache.maven.enforcer.rule.api.EnforcerRuleHelper;
 
 /**
- *
  * @author Juan Gonzalez
- *
  */
 public class RequireFilePatternSize implements EnforcerRule {
 
@@ -68,19 +66,19 @@ public class RequireFilePatternSize implements EnforcerRule {
 
         if (Files.isDirectory(directoryFile.toPath())) {
             Files.walkFileTree(directoryFile.toPath(), EnumSet.of(FileVisitOption.FOLLOW_LINKS),
-                requiredFilePattern.isRecursive() ? Integer.MAX_VALUE : 1,
-                        new SimpleFileVisitor<Path>() {
-                        @Override
-                        public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) throws IOException {
-                             Matcher matcher = pattern.matcher(filePath.getFileName().toString());
-                             if (matcher.matches()) {
-                                 File file = filePath.toFile();
-                                 matchedFiles.add(file);
-                             }
+                               requiredFilePattern.isRecursive() ? Integer.MAX_VALUE : 1,
+                               new SimpleFileVisitor<Path>() {
+                                   @Override
+                                   public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) throws IOException {
+                                       Matcher matcher = pattern.matcher(filePath.getFileName().toString());
+                                       if (matcher.matches()) {
+                                           File file = filePath.toFile();
+                                           matchedFiles.add(file);
+                                       }
 
-                            return super.visitFile(filePath, attrs);
-                        }
-             });
+                                       return super.visitFile(filePath, attrs);
+                                   }
+                               });
         }
 
         List<RequiredFilePatternFailure> failures = new ArrayList<RequiredFilePatternFailure>();
@@ -103,14 +101,14 @@ public class RequireFilePatternSize implements EnforcerRule {
         List<RequiredFilePatternFailure> failures = new ArrayList<RequiredFilePatternFailure>();
 
         if (requiredFilePatterns.length > 0) {
-            for (RequiredFilePattern requiredFilePattern: requiredFilePatterns) {
+            for (RequiredFilePattern requiredFilePattern : requiredFilePatterns) {
                 if (requiredFilePattern == null) {
                     failures.add(new RequiredFilePatternFailure(requiredFilePattern, "File pattern is empty"));
                 }
 
                 List<RequiredFilePatternFailure> failure = null;
 
-                try{
+                try {
                     failure = checkFilePattern(requiredFilePattern);
                 } catch (IOException e) {
                     failures.add(new RequiredFilePatternFailure(requiredFilePattern, "Error while traversing files"));
@@ -120,7 +118,7 @@ public class RequireFilePatternSize implements EnforcerRule {
                     failures.addAll(failure);
                 }
             }
-        }  else {
+        } else {
             throw new EnforcerRuleException("The file pattern list is empty.");
         }
 
