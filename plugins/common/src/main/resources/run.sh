@@ -26,19 +26,6 @@ if [ ! -d $APP_DIR ]; then
   fi
 fi
 
-#FAKEREPLACE=$LIB_DIR/fakereplace*.jar
-
-#if [ -f $FAKEREPLACE ]; then
-  #FAKEREPLACE=$(ls -1 $FAKEREPLACE)
-  #mkdir -p $ROOT_DIR/devtools
-  #mv $FAKEREPLACE $ROOT_DIR/devtools/fakereplace.jar
-#fi
-
-#if [ -f $ROOT_DIR/devtools/fakereplace.jar ]; then
-  #export FAKEREPLACE=$ROOT_DIR/devtools/fakereplace.jar
-  #echo "found fakereplace $FAKEREPLACE"
-#fi
-
 CLASSPATH=$(join ':' $LIB_DIR/*.jar $APP_CP)
 
 # Setup the JVM

@@ -3,7 +3,6 @@ package io.thorntail.plugins.common;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermission;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.stream.Stream;
@@ -54,12 +53,12 @@ public class CommonPlanFactory {
 
         Path bin = Paths.get("bin");
 
-        Entry entry = new ClasspathEntry(bin.resolve("run.sh"), "run.sh");
+        Entry runSh = new ClasspathEntry(bin.resolve("run.sh"), "run.sh");
         if (mainClass != null) {
-            entry = entry.filter("MAIN_CLASS", mainClass);
+            runSh = runSh.filter("MAIN_CLASS", mainClass);
         }
 
-        entry = entry.withPermissions(OWNER_EXECUTE,
+        runSh = runSh.withPermissions(OWNER_EXECUTE,
                                       OWNER_READ,
                                       OWNER_WRITE,
                                       GROUP_EXECUTE,
@@ -67,7 +66,15 @@ public class CommonPlanFactory {
                                       OTHERS_EXECUTE,
                                       OTHERS_READ);
 
-        plan.add(entry);
+        plan.add(runSh);
+
+        Entry runBat = new ClasspathEntry(bin.resolve("run.bat"), "run.bat");
+        if (mainClass != null) {
+            runBat = runBat.filter("MAIN_CLASS", mainClass);
+        }
+
+        plan.add(runBat);
+
         return plan;
     }
 
