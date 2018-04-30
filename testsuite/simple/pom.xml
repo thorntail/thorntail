@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.thorntail.testsuite</groupId>
+    <artifactId>thorntail-testsuite-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>thorntail-testsuite-simple</artifactId>
+  <name>Simple Testsuite Parent</name>
+
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>bean-validation</module>
+    <module>config</module>
+    <module>jaxrs</module>
+    <module>jaxrs-jsonp</module>
+    <module>jpa</module>
+    <module>jpa-jta</module>
+    <module>jpa-opentracing</module>
+    <module>keycloak</module>
+    <module>openapi</module>
+    <module>proof</module>
+    <module>servlet</module>
+    <module>servlet-static</module>
+    <module>vertx</module>
+    <module>websockets</module>
+  </modules>
+
+</project>

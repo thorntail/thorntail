@@ -39,6 +39,7 @@
     <module>plugins</module>
     <module>bom</module>
     <module>core</module>
+    <module>testsuite</module>
     <module>docs</module>
 
     <module>howto/getting-started</module>

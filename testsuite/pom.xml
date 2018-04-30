@@ -3,12 +3,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>io.thorntail</groupId>
-    <artifactId>thorntail-core-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-  </parent>
-
   <groupId>io.thorntail.testsuite</groupId>
   <artifactId>thorntail-testsuite-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
@@ -16,6 +10,26 @@
   <name>Testsuite Parent</name>
 
   <packaging>pom</packaging>
+
+  <properties>
+    <version.maven-compiler-plugin>3.7.0</version.maven-compiler-plugin>
+    <version.docker-maven-plugin>0.24.0</version.docker-maven-plugin>
+    <version.maven-failsafe-plugin>2.20.1</version.maven-failsafe-plugin>
+    <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
+    <version.java>8</version.java>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-bom</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -27,6 +41,32 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${version.maven-compiler-plugin}</version>
+        <configuration>
+          <source>${version.java}</source>
+          <target>${version.java}</target>
+          <showWarnings>true</showWarnings>
+          <showDeprecation>true</showDeprecation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <configuration>
+          <format>jar</format>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>package</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
@@ -83,33 +123,37 @@
         </configuration>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.maven-failsafe-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${version.maven-deploy-plugin}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <modules>
-    <module>config</module>
-    <module>bean-validation</module>
-    <module>servlet</module>
-    <module>servlet-static</module>
-    <module>jaxrs</module>
-    <module>jaxrs-jsonp</module>
-    <module>jms</module>
-    <module>jms-opentracing</module>
-
-    <module>jpa</module>
-    <module>jpa-jta</module>
-    <module>jpa-opentracing</module>
-
-    <module>opentracing-jaeger</module>
-
-    <module>openapi</module>
-
-    <module>vertx</module>
-    <module>websockets</module>
-
-    <module>keycloak</module>
-    <module>proof</module>
-
-    <module>docker-thin-layers</module>
-    <module>docker-fabric8</module>
+    <module>simple</module>
   </modules>
+
+  <profiles>
+     <profile>
+       <id>docker</id>
+       <activation>
+         <property>
+           <name>!skipDocker</name>
+         </property>
+       </activation>
+       <modules>
+         <module>docker</module>
+       </modules>
+     </profile>
+  </profiles>
 </project>

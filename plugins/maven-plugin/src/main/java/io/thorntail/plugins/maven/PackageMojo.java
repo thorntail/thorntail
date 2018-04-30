@@ -37,6 +37,11 @@ import static io.thorntail.plugins.maven.MavenPlanFactory.dependencies;
 public class PackageMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if ( ! this.project.getPackaging().equals("jar")) {
+            getLog().info("Skipping " + this.project.getArtifactId() + " as packaging is not jar");
+            return;
+        }
+        
         getLog().info("Processing: " + this.finalName);
         validateMode();
         validateFormat();

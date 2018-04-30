@@ -45,7 +45,6 @@
     <version.maven-javadoc-plugin>3.0.0</version.maven-javadoc-plugin>
     <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
     <version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
-    <version.docker-maven-plugin>0.24.0</version.docker-maven-plugin>
     <version.asciidoctor-maven-plugin>1.5.6</version.asciidoctor-maven-plugin>
     <version.asciidoctor-pdf>1.5.0-alpha.16</version.asciidoctor-pdf>
     <version.jandex-maven-plugin>1.0.5</version.jandex-maven-plugin>
@@ -128,8 +127,6 @@
     <module>testutils-opentracing</module>
     <module>testutils-opentracing-jaeger</module>
 
-    <module>testsuite</module>
-
     <module>migrate</module>
   </modules>
 
@@ -191,21 +188,6 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>${version.build-helper-maven-plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>io.thorntail</groupId>
-          <artifactId>thorntail-maven-plugin</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
-          <configuration>
-            <format>jar</format>
-          </configuration>
-          <executions>
-            <execution>
-              <goals>
-                <goal>package</goal>
-              </goals>
-            </execution>
-          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
