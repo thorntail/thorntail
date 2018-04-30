@@ -36,73 +36,20 @@
   </distributionManagement>
 
   <properties>
-    <version.weld>3.0.3.Final</version.weld>
-    <version.snakeyaml>1.19</version.snakeyaml>
-
-    <version.arjuna>5.7.1.Final</version.arjuna>
-    <version.hibernate>5.2.12.Final</version.hibernate>
-    <version.hibernate-validator>6.0.8.Final</version.hibernate-validator>
-    <version.ironjacamar>1.4.7.Final</version.ironjacamar>
-    <version.keycloak>3.4.3.Final</version.keycloak>
-    <version.resteasy>3.1.4.Final</version.resteasy>
-    <version.undertow>1.4.21.Final</version.undertow>
-    <version.activemq>2.4.0</version.activemq>
-    <version.jms-spec>1.0.2.Final</version.jms-spec>
-    <version.ejb-spec>1.0.1.Final</version.ejb-spec>
-    <version.jaxrs-spec>1.0.1.Final</version.jaxrs-spec>
-    <version.jandex>2.0.3.Final</version.jandex>
-
-    <version.opentracing>0.30.0</version.opentracing>
-    <version.opentracing-jaxrs>0.0.12</version.opentracing-jaxrs>
-    <version.opentracing-tracerresolver>0.1.4</version.opentracing-tracerresolver>
-    <version.jaeger>0.21.0</version.jaeger>
-
-    <version.jose4j>0.6.0</version.jose4j>
-
-    <version.hystrix>1.5.12</version.hystrix>
-    <version.hdrHistogram>2.1.9</version.hdrHistogram>
-
-    <version.jboss-transaction-spi>7.6.0.Final</version.jboss-transaction-spi>
-    <version.vertx>3.5.1</version.vertx>
-    <version.jboss-threads>2.1.1.Final</version.jboss-threads>
-
-    <version.javax-transaction>1.0.1.Final</version.javax-transaction>
-    <version.javax-json>1.1.2</version.javax-json>
-    <version.glassfish-json>1.1.2</version.glassfish-json>
-    <version.glassfish-el>3.0.1-b10</version.glassfish-el>
-
-    <version.h2>1.4.187</version.h2>
-    <version.mysql>5.1.39</version.mysql>
-
-    <version.jackson>2.9.4</version.jackson>
-    <version.fakereplace>1.0.0.Alpha6</version.fakereplace>
-
-    <version.mp-config>1.2.1</version.mp-config>
-    <version.mp-fault-tolerance>1.0</version.mp-fault-tolerance>
-    <version.mp-health>1.0</version.mp-health>
-    <version.mp-metrics>1.1</version.mp-metrics>
-    <version.mp-openapi>1.0.1</version.mp-openapi>
-    <version.mp-opentracing>1.0</version.mp-opentracing>
-    <version.mp-restclient>1.0.1</version.mp-restclient>
-    <version.mp-jwt-auth>1.0</version.mp-jwt-auth>
-
-    <version.arquillian-core>1.2.1.Final</version.arquillian-core>
-    <version.fest-assert>1.4</version.fest-assert>
-    <version.junit>4.12</version.junit>
-    <version.testng>6.9.9</version.testng>
-    <version.rest-assured>3.0.6</version.rest-assured>
+    <version.jboss-logging-annotations>2.1.0.Final</version.jboss-logging-annotations>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <version.maven-compiler-plugin>3.7.0</version.maven-compiler-plugin>
     <version.maven-failsafe-plugin>2.20.1</version.maven-failsafe-plugin>
     <version.maven-surefire-plugin>2.19.1</version.maven-surefire-plugin>
     <version.maven-javadoc-plugin>3.0.0</version.maven-javadoc-plugin>
+    <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
     <version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
     <version.docker-maven-plugin>0.24.0</version.docker-maven-plugin>
+    <version.asciidoctor-maven-plugin>1.5.6</version.asciidoctor-maven-plugin>
+    <version.asciidoctor-pdf>1.5.0-alpha.16</version.asciidoctor-pdf>
     <version.jandex-maven-plugin>1.0.5</version.jandex-maven-plugin>
 
-    <version.jboss-logging-annotations>2.1.0.Final</version.jboss-logging-annotations>
-
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.java>8</version.java>
   </properties>
 
@@ -204,6 +151,11 @@
     </resources>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${version.maven-deploy-plugin}</version>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>

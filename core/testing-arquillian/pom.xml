@@ -12,17 +12,18 @@
   <artifactId>thorntail-testing-arquillian</artifactId>
   <name>Testing: Arquillian</name>
 
+<!--
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
           <artifactId>arquillian-bom</artifactId>
-          <version>${version.arquillian-core}</version>
           <type>pom</type>
           <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
+-->
 
   <dependencies>
     <dependency>
