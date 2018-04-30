@@ -53,11 +53,13 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
     @Override
     public void process() throws IOException {
         InputStream keycloakJson = null;
+        URI keycloakJsonUri = null;
         if (keycloakJsonPath != null) {
-            keycloakJson = getKeycloakJsonFromCustomPath();
+            keycloakJsonUri = URI.create(keycloakJsonPath);
+            keycloakJson = getKeycloakJsonFromCustomPath(keycloakJsonUri);
         }
         if (keycloakJson == null) {
-            keycloakJson = getKeycloakJson();
+            keycloakJson = getKeycloakJson(keycloakJsonUri);
         }
 
         if (keycloakJson != null) {
@@ -68,8 +70,10 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
 
     }
 
-    private InputStream getKeycloakJsonFromCustomPath() {
-        URI keycloakJsonUri = URI.create(keycloakJsonPath);
+    private InputStream getKeycloakJsonFromCustomPath(URI keycloakJsonUri) {
+        if ("classpath".equals(keycloakJsonUri.getScheme())) {
+            return null;
+        }
         try {
             Path path = keycloakJsonUri.getScheme() != null
                 ? Paths.get(keycloakJsonUri) : Paths.get(keycloakJsonPath);
@@ -84,21 +88,25 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
         return null;
     }
 
-    private InputStream getKeycloakJson() {
-        InputStream keycloakJson = Thread.currentThread().getContextClassLoader().getResourceAsStream("keycloak.json");
+    private InputStream getKeycloakJson(URI keycloakJsonUri) {
+        final String resourceName = keycloakJsonUri != null && "classpath".equals(keycloakJsonUri.getScheme())
+            ? keycloakJsonUri.getSchemeSpecificPart() : "keycloak.json";
+        InputStream keycloakJson = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
         if (keycloakJson == null) {
 
             String appArtifact = System.getProperty(BootstrapProperties.APP_ARTIFACT);
 
             if (appArtifact != null) {
                 try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {
-                    Archive tmpArchive = ShrinkWrap.create(JARArchive.class);
+                    Archive<?> tmpArchive = ShrinkWrap.create(JARArchive.class);
                     tmpArchive.as(ZipImporter.class).importFrom(in);
-                    Node jsonNode = tmpArchive.get("keycloak.json");
+                    Node jsonNode = tmpArchive.get(resourceName);
                     if (jsonNode == null) {
-                        jsonNode = tmpArchive.get("WEB-INF/keycloak.json");
+                        jsonNode = getKeycloakJsonNodeFromWebInf(tmpArchive, resourceName, true);
                     }
-
+                    if (jsonNode == null) {
+                        jsonNode = getKeycloakJsonNodeFromWebInf(tmpArchive, resourceName, false);
+                    }
                     if (jsonNode != null && jsonNode.getAsset() != null) {
                         keycloakJson = jsonNode.getAsset().openStream();
                     }
@@ -108,6 +116,18 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
             }
         }
         return keycloakJson;
+    }
+
+    private static Node getKeycloakJsonNodeFromWebInf(Archive<?> tmpArchive, String resourceName, boolean useForwardSlash) {
+        String webInfPath = useForwardSlash ? "/WEB-INF" : "WEB-INF";
+        if (!resourceName.startsWith("/")) {
+            resourceName = "/" + resourceName;
+        }
+        Node jsonNode = tmpArchive.get(webInfPath + resourceName);
+        if (jsonNode == null) {
+            jsonNode = tmpArchive.get(webInfPath + "/classes" + resourceName);
+        }
+        return jsonNode;
     }
 
     private Asset createAsset(InputStream in) throws IOException {
@@ -123,7 +143,7 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
         return new ByteArrayAsset(str.toString().getBytes());
     }
 
-    private final Archive archive;
+    private final Archive<?> archive;
 
     @AttributeDocumentation("Path to keycloak.json configuration")
     @Configurable("swarm.keycloak.json.path")
