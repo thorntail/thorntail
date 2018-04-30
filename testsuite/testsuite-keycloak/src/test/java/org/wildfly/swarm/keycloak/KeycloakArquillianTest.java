@@ -59,8 +59,7 @@ public class KeycloakArquillianTest {
         System.setProperty("keycloak.migration.provider", "singleFile");
         System.setProperty("keycloak.migration.action", "import");
         
-        URL keyCloakJsonUrl = KeycloakArquillianTest.class.getResource("/keycloak.json");
-        return new Swarm().withProperty("swarm.keycloak.json.path", keyCloakJsonUrl.toURI().toString());
+        return new Swarm();
     }
 
     @Test
