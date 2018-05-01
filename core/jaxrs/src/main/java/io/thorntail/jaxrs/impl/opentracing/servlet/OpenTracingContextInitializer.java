@@ -12,7 +12,6 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import io.opentracing.Tracer;
-import io.opentracing.contrib.jaxrs2.server.SpanFinishingFilter;
 
 /**
  * @author Pavel Loffay
@@ -25,7 +24,7 @@ public class OpenTracingContextInitializer implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         ServletContext servletContext = servletContextEvent.getServletContext();
         FilterRegistration.Dynamic filterRegistration = servletContext
-                .addFilter("tracingFilter", new SpanFinishingFilter(tracer));
+                .addFilter("tracingFilter", new BetterSpanFinishingFilter(tracer));
         filterRegistration.setAsyncSupported(true);
         filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
     }

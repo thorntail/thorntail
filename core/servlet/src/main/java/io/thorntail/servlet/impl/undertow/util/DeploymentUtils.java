@@ -11,6 +11,7 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletContextListener;
 
 import io.thorntail.servlet.HttpConstraintMetaData;
+import io.thorntail.servlet.impl.ServletMessages;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.FilterInfo;

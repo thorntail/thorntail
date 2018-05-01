@@ -25,6 +25,7 @@ import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.UndertowMessages;
 import io.undertow.server.HttpHandler;
+import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.ExceptionHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.resource.ResourceHandler;
@@ -80,14 +81,13 @@ public class UndertowProducer {
         }
     }
 
-    private HttpHandler wrapForErrorLogging(HttpHandler next) {
-        return exchange -> {
-            try {
-                next.handleRequest(exchange);
-            } catch (Throwable t) {
-                ServletMessages.MESSAGES.requestException( exchange.getRequestURL(), t);
-            }
-        };
+    private ExceptionHandler wrapForErrorLogging(HttpHandler next) {
+        return Handlers.exceptionHandler(next)
+                .addExceptionHandler(Throwable.class, (exchange) -> {
+                    Throwable t = exchange.getAttachment(ExceptionHandler.THROWABLE);
+                    ServletMessages.MESSAGES.requestException(exchange.getRequestURL(), t);
+                    exchange.setStatusCode(500);
+                });
     }
 
     private HttpHandler wrapForStaticResources(HttpHandler next) {
