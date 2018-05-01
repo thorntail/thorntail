@@ -10,9 +10,15 @@ v{version}
 
 {project_name} is the next generation of WildFly Swarm.
 
-//# Introduction
+This is {backend}
 
-//include::design/lessons-learned.adoc[leveloffset=+1]
+ifeval::["{backend}" != "pdf"]
+This documentation also available link:{project_key}-docs-{version}.pdf[in PDF format].
+endif::[]
+
+# Introduction
+
+include::design/lessons-learned.adoc[leveloffset=+1]
 
 # Concepts
 
