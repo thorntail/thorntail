@@ -8,6 +8,7 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -20,8 +21,11 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
 import io.thorntail.Thorntail;
+import io.undertow.Handlers;
 import io.undertow.Undertow;
+import io.undertow.UndertowMessages;
 import io.undertow.server.HttpHandler;
+import io.undertow.server.handlers.ExceptionHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.resource.ResourceHandler;
 import io.undertow.util.Methods;
@@ -43,7 +47,11 @@ public class UndertowProducer {
         if (this.selector.isUnified()) {
             Undertow.Builder builder = Undertow.builder();
             builder.setWorker(this.xnioWorker);
-            builder.setHandler(wrapForStaticResources(this.primaryRoot));
+            builder.setHandler(
+                    wrapForErrorLogging(
+                            wrapForStaticResources(this.primaryRoot)
+                    )
+            );
             Undertow undertow = configure(builder, new AnnotationLiteral<Primary>() {
             });
             this.primaryUndertow = undertow;
@@ -52,18 +60,34 @@ public class UndertowProducer {
             if (this.selector.isPrimaryEnabled()) {
                 Undertow.Builder builder = Undertow.builder();
                 builder.setWorker(this.xnioWorker);
-                builder.setHandler(wrapForStaticResources(this.primaryRoot));
+                builder.setHandler(
+                        wrapForErrorLogging(
+                                wrapForStaticResources(this.primaryRoot)
+                        ));
                 this.primaryUndertow = configure(builder, new AnnotationLiteral<Primary>() {
                 });
             }
             if (this.selector.isManagementEnabled()) {
                 Undertow.Builder builder = Undertow.builder();
                 builder.setWorker(this.xnioWorker);
-                builder.setHandler(this.managementRoot);
+                builder.setHandler(
+                        wrapForErrorLogging(
+                                this.managementRoot)
+                );
                 this.managementUndertow = configure(builder, new AnnotationLiteral<Management>() {
                 });
             }
         }
+    }
+
+    private HttpHandler wrapForErrorLogging(HttpHandler next) {
+        return exchange -> {
+            try {
+                next.handleRequest(exchange);
+            } catch (Throwable t) {
+                ServletMessages.MESSAGES.requestException( exchange.getRequestURL(), t);
+            }
+        };
     }
 
     private HttpHandler wrapForStaticResources(HttpHandler next) {

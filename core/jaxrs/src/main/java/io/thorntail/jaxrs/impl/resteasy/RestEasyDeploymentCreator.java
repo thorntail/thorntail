@@ -71,9 +71,9 @@ public class RestEasyDeploymentCreator {
 
         ResteasyDeployment deployment = new ResteasyDeployment();
         deployment.setInjectorFactoryClass(CdiInjectorFactory.class.getName());
-        //deployment.setApplication(application);
         deployment.setScannedResourceClasses( extension.getResources().stream().map(e->e.getName()).collect(Collectors.toList()));
         deployment.setScannedProviderClasses( extension.getProviders().stream().map(e->e.getName()).collect(Collectors.toList()));
+
         DeploymentMetaData meta = createServletDeployment(deployment, application);
         meta.setContextPath(contextPath);
         return meta;

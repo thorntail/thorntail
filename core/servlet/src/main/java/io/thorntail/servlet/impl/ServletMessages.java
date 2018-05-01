@@ -2,6 +2,7 @@ package io.thorntail.servlet.impl;
 
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger;
+import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
@@ -26,5 +27,10 @@ public interface ServletMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 2 + OFFSET, value = "%-10s: deployment %24s: %s")
     void deployment(String type, String name, String contextPath);
+
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 10 + OFFSET, value = "An error occurred while handling request: %s")
+    void requestException(String url, @Cause Throwable t);
+
 
 }

@@ -41,7 +41,7 @@ public class PackageMojo extends AbstractMojo {
             getLog().info("Skipping " + this.project.getArtifactId() + " as packaging is not jar");
             return;
         }
-        
+
         getLog().info("Processing: " + this.finalName);
         validateMode();
         validateFormat();

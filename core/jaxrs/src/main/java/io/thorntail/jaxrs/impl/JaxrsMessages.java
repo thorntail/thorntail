@@ -2,6 +2,7 @@ package io.thorntail.jaxrs.impl;
 
 import org.jboss.logging.BasicLogger;
 import org.jboss.logging.Logger;
+import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
@@ -20,4 +21,8 @@ public interface JaxrsMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 1 + OFFSET, value = "Deployment created for %s")
     void deploymentCreated(String deploymentName);
+
+    @LogMessage(level = Logger.Level.ERROR)
+    @Message(id = 10 + OFFSET, value = "An error occurred while handling request")
+    void requestException(@Cause Throwable t);
 }
