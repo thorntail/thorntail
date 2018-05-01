@@ -94,6 +94,23 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>publish-scm</goal>
+            </goals>
+            <phase>deploy</phase>
+            <configuration>
+              <pubScmUrl>scm:git:git@github.com:thorntail/docs.thorntail.io.git</pubScmUrl>
+              <dryRun>false</dryRun>
+              <skipDeletedFiles>true</skipDeletedFiles>
+              <content>${project.build.directory}/docs/</content>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
