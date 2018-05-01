@@ -37,19 +37,37 @@ public interface Jose {
 
     /**
      * Verify the signed data in the JWS compact or JSON (optional) format.
-     * @param signedData the signed data.
+     * @param jws the JWS sequence.
      * @return verified data
      * @throws JoseException
      */
-    String verify(String signedData) throws JoseException;
+    String verify(String jws) throws JoseException;
 
     /**
      * Verify the signed data in the JWS compact or JSON (optional) format.
-     * @param signedData the signed data.
+     * @param jws the JWS sequence.
      * @return verified data and metadata
      * @throws JoseException
      */
-    VerificationOutput verification(String signedData) throws JoseException;
+    VerificationOutput verification(String jws) throws JoseException;
+
+    /**
+     * Verify the signed and detached data in the JWS compact or JSON (optional) format.
+     * @param jws the JWS sequence.
+     * @param detachedData the signed and detached data.
+     * @return verified data
+     * @throws JoseException
+     */
+    String verifyDetached(String jws, String detachedData) throws JoseException;
+
+    /**
+     * Verify the signed and detached data in the JWS compact or JSON (optional) format.
+     * @param jws the JWS sequence.
+     * @param detachedData the signed and detached data.
+     * @return verified data and metadata
+     * @throws JoseException
+     */
+    VerificationOutput verificationDetached(String jws, String detachedData) throws JoseException;
 
     /**
      * Encrypt the data in the JWE compact or JSON (optional) format..
@@ -69,17 +87,17 @@ public interface Jose {
 
     /**
      * Decrypt the encrypted data in the JWE compact or JSON (optional) format.
-     * @param encryptedData the encrypted data
+     * @param jwe the JWE sequence.
      * @return decrypted data
      * @throws JoseException
      */
-    String decrypt(String encryptedData) throws JoseException;
+    String decrypt(String jwe) throws JoseException;
 
     /**
      * Decrypt the encrypted data in the JWE compact or JSON (optional) format.
-     * @param encryptedData the encrypted data.
+     * @param jwe the JWE sequence.
      * @return decrypted data and verified metadata
      * @throws JoseException
      */
-    DecryptionOutput decryption(String encryptedData) throws JoseException;
+    DecryptionOutput decryption(String jwe) throws JoseException;
 }
