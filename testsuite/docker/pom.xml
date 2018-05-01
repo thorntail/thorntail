@@ -9,7 +9,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>thorntail-testsuite-docker</artifactId>
+  <artifactId>thorntail-testsuite-docker-parent</artifactId>
   <name>Docker Testsuite Parent</name>
 
   <packaging>pom</packaging>

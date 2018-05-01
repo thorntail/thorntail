@@ -9,7 +9,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>thorntail-testsuite-simple</artifactId>
+  <artifactId>thorntail-testsuite-simple-parent</artifactId>
   <name>Simple Testsuite Parent</name>
 
   <packaging>pom</packaging>
