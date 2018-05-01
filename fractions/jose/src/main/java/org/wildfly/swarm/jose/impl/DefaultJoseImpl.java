@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jose;
+package org.wildfly.swarm.jose.impl;
 
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_JOSE_FORMAT;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.cxf.common.util.StringUtils;
@@ -43,6 +41,13 @@ import org.apache.cxf.rs.security.jose.jws.JwsJsonSignatureEntry;
 import org.apache.cxf.rs.security.jose.jws.JwsSignatureProvider;
 import org.apache.cxf.rs.security.jose.jws.JwsSignatureVerifier;
 import org.apache.cxf.rs.security.jose.jws.JwsUtils;
+import org.wildfly.swarm.jose.DecryptionOutput;
+import org.wildfly.swarm.jose.EncryptionInput;
+import org.wildfly.swarm.jose.Jose;
+import org.wildfly.swarm.jose.JoseException;
+import org.wildfly.swarm.jose.JoseFraction;
+import org.wildfly.swarm.jose.SignatureInput;
+import org.wildfly.swarm.jose.VerificationOutput;
 
 public class DefaultJoseImpl implements Jose {
     private JoseFraction fraction;
@@ -52,13 +57,13 @@ public class DefaultJoseImpl implements Jose {
 
     @Override
     public String sign(String data) {
-        return sign(Collections.emptyMap(), data);
+        return sign(new SignatureInput(data));
     }
 
     @Override
-    public String sign(Map<String, Object> metadata, String data) {
+    public String sign(SignatureInput input) {
         JwsHeaders headers = new JwsHeaders();
-        headers.asMap().putAll(metadata);
+        headers.asMap().putAll(input.getMetadata());
         if (!fraction.signatureDataEncoding()) {
             headers.setPayloadEncodingStatus(false);
         }
@@ -68,12 +73,12 @@ public class DefaultJoseImpl implements Jose {
             JwsUtils.loadSignatureProvider(props, headers);
 
         return DEFAULT_JOSE_FORMAT == fraction.signatureFormat()
-            ? signCompact(provider, headers, data) : signJson(provider, headers, data);
+            ? signCompact(provider, headers, input.getData()) : signJson(provider, headers, input.getData());
     }
 
     private String signCompact(JwsSignatureProvider provider, JwsHeaders headers, String data) {
         try {
-            JwsCompactProducer producer = new JwsCompactProducer(headers, data);
+            JwsCompactProducer producer = new JwsCompactProducer(headers, data, fraction.signatureDataDetached());
             return producer.signWith(provider);
         } catch (Exception ex) {
             throw new JoseException("JWS Compact Signature Creation Failure", ex);
@@ -95,13 +100,13 @@ public class DefaultJoseImpl implements Jose {
     }
 
     @Override
-    public VerifiedData verification(String signedData) throws JoseException {
+    public VerificationOutput verification(String signedData) throws JoseException {
         Properties props = prepareSignatureProperties();
         return DEFAULT_JOSE_FORMAT == fraction.signatureFormat()
             ? verifyCompact(props, signedData) : verifyJson(props, signedData);
     }
 
-    private VerifiedData verifyCompact(Properties props, String signedData) {
+    private VerificationOutput verifyCompact(Properties props, String signedData) {
         try {
             JwsCompactConsumer consumer = new JwsCompactConsumer(signedData);
             JwsSignatureVerifier verifier =
@@ -109,7 +114,7 @@ public class DefaultJoseImpl implements Jose {
             if (!consumer.verifySignatureWith(verifier)) {
                 throw new JoseException("JWS Compact Signature Verification Failure");
             }
-            return new VerifiedData(consumer.getJwsHeaders().asMap(),
+            return new VerificationOutput(consumer.getJwsHeaders().asMap(),
                                     consumer.getDecodedJwsPayload());
         } catch (JoseException ex) {
             throw ex;
@@ -118,7 +123,7 @@ public class DefaultJoseImpl implements Jose {
         }
     }
 
-    private VerifiedData verifyJson(Properties props, String signedData) {
+    private VerificationOutput verifyJson(Properties props, String signedData) {
         try {
             JwsJsonConsumer consumer = new JwsJsonConsumer(signedData);
             List<JwsJsonSignatureEntry> entries = consumer.getSignatureEntries();
@@ -131,7 +136,7 @@ public class DefaultJoseImpl implements Jose {
             if (!entry.verifySignatureWith(verifier)) {
                 throw new JoseException("JWS JSON Signature Verification Failure");
             }
-            return new VerifiedData(entry.getProtectedHeader().asMap(),
+            return new VerificationOutput(entry.getProtectedHeader().asMap(),
                                     consumer.getDecodedJwsPayload());
         } catch (JoseException ex) {
             throw ex;
@@ -142,18 +147,18 @@ public class DefaultJoseImpl implements Jose {
 
     @Override
     public String encrypt(String data) {
-        return encrypt(Collections.emptyMap(), data);
+        return encrypt(new EncryptionInput(data));
     }
 
     @Override
-    public String encrypt(Map<String, Object> metadata, String data) {
+    public String encrypt(EncryptionInput input) {
         JweHeaders headers = new JweHeaders();
-        headers.asMap().putAll(metadata);
+        headers.asMap().putAll(input.getMetadata());
         Properties props = prepareEncryptionProperties();
         JweEncryptionProvider provider = JweUtils.loadEncryptionProvider(props, headers);
 
         return DEFAULT_JOSE_FORMAT == fraction.encryptionFormat()
-                ? encryptCompact(provider, headers, data) : encryptJson(provider, headers, data);
+                ? encryptCompact(provider, headers, input.getData()) : encryptJson(provider, headers, input.getData());
     }
 
     private String encryptCompact(JweEncryptionProvider provider, JweHeaders headers, String data) {
@@ -180,26 +185,26 @@ public class DefaultJoseImpl implements Jose {
     }
 
     @Override
-    public DecryptedData decryption(String encryptedData) throws JoseException {
+    public DecryptionOutput decryption(String encryptedData) throws JoseException {
         Properties props = prepareEncryptionProperties();
 
         return DEFAULT_JOSE_FORMAT == fraction.signatureFormat()
                 ? decryptCompact(props, encryptedData) : decryptJson(props, encryptedData);
     }
 
-    private DecryptedData decryptCompact(Properties props, String encryptedData) {
+    private DecryptionOutput decryptCompact(Properties props, String encryptedData) {
         try {
             JweCompactConsumer consumer = new JweCompactConsumer(encryptedData);
             JweDecryptionProvider decryptor = JweUtils.loadDecryptionProvider(props, consumer.getJweHeaders());
             String decryptedData = consumer.getDecryptedContentText(decryptor);
-            return new DecryptedData(consumer.getJweHeaders().asMap(),
+            return new DecryptionOutput(consumer.getJweHeaders().asMap(),
                                      decryptedData);
         } catch (Exception ex) {
             throw new JoseException("JWE Compact Decryption Failure");
         }
     }
 
-    private DecryptedData decryptJson(Properties props, String encryptedData) {
+    private DecryptionOutput decryptJson(Properties props, String encryptedData) {
         try {
             JweJsonConsumer consumer = new JweJsonConsumer(encryptedData);
             if (consumer.getRecipients().size() > 1) {
@@ -208,7 +213,7 @@ public class DefaultJoseImpl implements Jose {
             }
             JweDecryptionProvider decryptor = JweUtils.loadDecryptionProvider(props, consumer.getProtectedHeader());
             JweDecryptionOutput output = consumer.decryptWith(decryptor);
-            return new DecryptedData(consumer.getProtectedHeader().asMap(),
+            return new DecryptionOutput(consumer.getProtectedHeader().asMap(),
                                      output.getContentText());
         } catch (JoseException ex) {
             throw ex;

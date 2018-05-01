@@ -18,13 +18,13 @@ package org.wildfly.swarm.jose;
 import java.util.Collections;
 import java.util.Map;
 
-public class DecryptedData {
+public class VerificationOutput {
     private Map<String, Object> metadata;
     private String data;
-    public DecryptedData(String data) {
+    public VerificationOutput(String data) {
         this(Collections.emptyMap(), data);
     }
-    public DecryptedData(Map<String, Object> metadata, String data) {
+    public VerificationOutput(Map<String, Object> metadata, String data) {
         this.metadata = metadata;
         this.data = data;
     }

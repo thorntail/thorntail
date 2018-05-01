@@ -25,10 +25,13 @@ import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEY_ENCRYPTION_ALGOR
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEY_PASSWORD;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_ALGORITHM;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_DATA_ENCODING;
+import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_DATA_DETACHED;
+
 import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
+import org.wildfly.swarm.jose.impl.DefaultJoseImpl;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -97,6 +100,11 @@ public class JoseFraction implements Fraction<JoseFraction> {
         return this.signatureAlgorithm.get();
     }
 
+    public JoseFraction signatureFormat(JoseFormat format) {
+        signatureFormat.set(format.name());
+        return this;
+    }
+
     public JoseFraction signatureDataEncoding(boolean encoding) {
         signatureDataEncoding.set(encoding);
         return this;
@@ -106,9 +114,13 @@ public class JoseFraction implements Fraction<JoseFraction> {
         return this.signatureDataEncoding.get();
     }
 
-    public JoseFraction signatureFormat(JoseFormat format) {
-        signatureFormat.set(format.name());
+    public JoseFraction signatureDataDetached(boolean detached) {
+        signatureDataDetached.set(detached);
         return this;
+    }
+
+    public boolean signatureDataDetached() {
+        return this.signatureDataDetached.get();
     }
 
     public JoseFormat signatureFormat() {
@@ -190,16 +202,23 @@ public class JoseFraction implements Fraction<JoseFraction> {
     /**
      * Signature Format.
      */
+    @Configurable("swarm.jose.signature.format")
+    @AttributeDocumentation("Compact or JSON JWS format, support for JSON is optional")
+    private Defaultable<String> signatureFormat = string(DEFAULT_JOSE_FORMAT.name());
+
+    /**
+     * Signature Data Encoding.
+     */
     @Configurable("swarm.jose.signature.data-encoding")
     @AttributeDocumentation("JWS data encoding mode, true - base64url (default), false - clear text")
     private Defaultable<Boolean> signatureDataEncoding = bool(DEFAULT_SIGNATURE_DATA_ENCODING);
 
     /**
-     * Signature Format.
+     * Signature Detached Data.
      */
-    @Configurable("swarm.jose.signature.format")
-    @AttributeDocumentation("Compact or JSON JWS format, support for JSON is optional")
-    private Defaultable<String> signatureFormat = string(DEFAULT_JOSE_FORMAT.name());
+    @Configurable("swarm.jose.signature.data-detached")
+    @AttributeDocumentation("JWS data detached mode, true - the data is in the JWS payload (default), false - outside")
+    private Defaultable<Boolean> signatureDataDetached = bool(DEFAULT_SIGNATURE_DATA_DETACHED);
 
     /**
      * Password for the signature key.

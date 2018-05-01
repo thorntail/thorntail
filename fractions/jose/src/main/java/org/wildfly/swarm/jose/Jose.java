@@ -15,31 +15,28 @@
  */
 package org.wildfly.swarm.jose;
 
-import java.util.Map;
-
 /**
  * Supports the protection of data with JOSE Signature and Encryption algorithms
  */
 public interface Jose {
     /**
-     * Sign the data in the JOSE JWS Compact or JSON (optional) format.
+     * Sign the data in the JWS Compact or JSON (optional) format.
      * @param data the data to be signed
-     * @return the signed data in the JOSE JWS Compact format
+     * @return the signed data in the JWS Compact or JSON format
      * @throws JoseException
      */
     String sign(String data) throws JoseException;
 
     /**
-     * Sign the data in the JOSE JWS Compact or JSON (optional) format.
-     * @param metadata the data to be integrity-protected as JOSE JWS headers
-     * @param data the data to be signed
-     * @return the signed data in the JOSE JWS Compact or JSON format
+     * Sign the data in the JWS Compact or JSON (optional) format.
+     * @param input the data and optional JWS headers which have to be integrity-protected
+     * @return the signed data in the JWS Compact or JSON format
      * @throws JoseException
      */
-    String sign(Map<String, Object> metadata, String data) throws JoseException;
+    String sign(SignatureInput input) throws JoseException;
 
     /**
-     * Verify the signed data in the JOSE JWS compact or JSON (optional) format.
+     * Verify the signed data in the JWS compact or JSON (optional) format.
      * @param signedData the signed data.
      * @return verified data
      * @throws JoseException
@@ -47,15 +44,15 @@ public interface Jose {
     String verify(String signedData) throws JoseException;
 
     /**
-     * Verify the signed data in the JOSE JWS compact or JSON (optional) format.
+     * Verify the signed data in the JWS compact or JSON (optional) format.
      * @param signedData the signed data.
-     * @return verified metadata and data
+     * @return verified data and metadata
      * @throws JoseException
      */
-    VerifiedData verification(String signedData) throws JoseException;
+    VerificationOutput verification(String signedData) throws JoseException;
 
     /**
-     * Encrypt the data in the JOSE JWE compact or JSON (optional) format..
+     * Encrypt the data in the JWE compact or JSON (optional) format..
      * @param data the data to be encrypted
      * @return the encrypted data
      * @throws JoseException
@@ -63,16 +60,15 @@ public interface Jose {
     String encrypt(String data) throws JoseException;
 
     /**
-     * Encrypt the data in the JOSE JWE compact or JSON (optional) format.
-     * @param metadata the data to be integrity-protected as JOSE JWE headers
-     * @param data the data to be encrypted
+     * Encrypt the data in the JWE compact or JSON (optional) format.
+     * @param input the data and optional metadata which have to be encrypted and integrity-protected
      * @return the encrypted data
      * @throws JoseException
      */
-    String encrypt(Map<String, Object> metadata, String data) throws JoseException;
+    String encrypt(EncryptionInput input) throws JoseException;
 
     /**
-     * Decrypt the encrypted data in the JOSE JWE compact or JSON (optional) format.
+     * Decrypt the encrypted data in the JWE compact or JSON (optional) format.
      * @param encryptedData the encrypted data
      * @return decrypted data
      * @throws JoseException
@@ -80,10 +76,10 @@ public interface Jose {
     String decrypt(String encryptedData) throws JoseException;
 
     /**
-     * Decrypt the encrypted data in the JOSE JWE compact or JSON (optional) format.
+     * Decrypt the encrypted data in the JWE compact or JSON (optional) format.
      * @param encryptedData the encrypted data.
-     * @return verified metadata and decrypted data
+     * @return decrypted data and verified metadata
      * @throws JoseException
      */
-    DecryptedData decryption(String encryptedData) throws JoseException;
+    DecryptionOutput decryption(String encryptedData) throws JoseException;
 }
