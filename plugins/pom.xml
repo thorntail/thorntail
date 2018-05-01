@@ -10,7 +10,7 @@
   <parent>
     <groupId>io.thorntail</groupId>
     <artifactId>thorntail-root</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
   </parent>
 
   <groupId>io.thorntail</groupId>
@@ -56,7 +56,7 @@
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>thorntail-plugins-common</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

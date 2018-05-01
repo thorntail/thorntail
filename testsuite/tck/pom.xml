@@ -6,12 +6,12 @@
   <parent>
     <groupId>io.thorntail.testsuite</groupId>
     <artifactId>thorntail-testsuite-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
   </parent>
 
   <groupId>io.thorntail.tck</groupId>
   <artifactId>thorntail-tck-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
 
   <name>TCK Parent</name>
 

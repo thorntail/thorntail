@@ -5,7 +5,7 @@
 
   <groupId>io.thorntail</groupId>
   <artifactId>thorntail-howto-getting-started</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
 
   <name>Thorntail HowTo - Getting Started</name>
 
@@ -38,7 +38,7 @@
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>thorntail-bom</artifactId>
-        <version>${project.version}</version>
+        <version>4.0.0-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
