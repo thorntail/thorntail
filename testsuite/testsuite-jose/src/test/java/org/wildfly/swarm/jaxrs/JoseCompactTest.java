@@ -28,7 +28,7 @@ public class JoseCompactTest {
         deployment.addResource(JoseExceptionMapper.class); 
         deployment.addAllDependencies();
         deployment.addAsResource("keystore.jks");
-        deployment.addAsResource("project-defaults.yml");
+        deployment.addAsResource("project-jose-compact.yml", "project-defaults.yml");
         return deployment;
     }
 
