@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.wildfly.swarm</groupId>
     <artifactId>camel-components</artifactId>
-    <version>2018.5.0</version>
+    <version>2018.6.0-SNAPSHOT</version>
   </parent>
 
   <name>Camel Component :: Bean-validator</name>
