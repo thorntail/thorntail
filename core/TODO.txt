@@ -1,7 +1,6 @@
 . High priority
 
 - test keycloak integration using docker
-- Some type of BOM to bring the bits together. Stick to 1 for now
 - Switch to using https://github.com/agroal/agroal for datasources instead of Ironjacamar
 - Pieces to implement:
   - JAX-RS Validation (may not be anything for this in the new world)
