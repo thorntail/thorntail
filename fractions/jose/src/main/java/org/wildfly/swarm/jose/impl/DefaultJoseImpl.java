@@ -115,7 +115,8 @@ public class DefaultJoseImpl implements Jose {
     @Override
     public VerificationOutput verificationDetached(String jws, String detachedData) throws JoseException {
         Properties props = prepareSignatureProperties();
-        return verifyCompact(props, jws, Base64UrlUtility.encode(detachedData));
+        return verifyCompact(props, jws,
+            fraction.signatureDataEncoding() ? Base64UrlUtility.encode(detachedData) : detachedData);
     }
 
     private VerificationOutput verifyCompact(Properties props, String jws, String detached) {
