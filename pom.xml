@@ -1057,6 +1057,8 @@
 
     <module>fractions/opentracing</module>
 
+    <module>fractions/jaeger</module>
+
     <module>fractions/cdi-extensions/cdi-config</module>
 
     <module>standalone-servers</module>
@@ -1136,7 +1138,6 @@
         <module>fractions/drools-server</module>
         <module>fractions/fluentd</module>
         <module>fractions/flyway</module>
-        <module>fractions/jaeger</module>
         <module>fractions/javafx</module>
         <module>fractions/jolokia</module>
         <module>fractions/logstash</module>
