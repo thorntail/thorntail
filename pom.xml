@@ -1006,16 +1006,13 @@
     <module>client-apis/health-api</module>
 
     <module>fractions/javaee/bean-validation</module>
-    <module>fractions/javaee/batch-jberet</module>
 
     <module>fractions/javaee/cdi</module>
     <module>fractions/javaee/connector</module>
     <module>fractions/javaee/datasources</module>
     <module>fractions/javaee/ee</module>
     <module>fractions/javaee/ejb</module>
-    <module>fractions/javaee/ejb-remote</module>
 
-    <module>fractions/javaee/full</module>
     <module>fractions/javaee/jaxrs</module>
     <module>fractions/javaee/jaxrs-cdi</module>
     <module>fractions/javaee/jaxrs-jaxb</module>
@@ -1027,15 +1024,11 @@
     <module>fractions/javaee/jpa</module>
     <module>fractions/javaee/jsf</module>
     <module>fractions/javaee/jsonp</module>
-    <module>fractions/javaee/mail</module>
-    <module>fractions/javaee/messaging</module>
     <module>fractions/javaee/naming</module>
     <module>fractions/javaee/remoting</module>
-    <module>fractions/javaee/resource-adapters</module>
     <module>fractions/javaee/transactions</module>
     <module>fractions/javaee/undertow</module>
     <module>fractions/javaee/web</module>
-    <module>fractions/javaee/webservices</module>
 
     <!-- required by MP 1.2 FT, but only hystrix. See the netflix pom.xml for further details -->
     <module>fractions/netflix</module>
@@ -1043,9 +1036,7 @@
     <module>fractions/wildfly/elytron</module>
     <module>fractions/wildfly/hibernate-validator</module>
     <module>fractions/wildfly/io</module>
-    <module>fractions/wildfly/infinispan</module>
     <module>fractions/wildfly/logging</module>
-    <module>fractions/wildfly/jgroups</module>
     <module>fractions/wildfly/management</module>
     <module>fractions/wildfly/msc</module>
     <module>fractions/wildfly/request-controller</module>
@@ -1069,7 +1060,6 @@
     <module>fractions/cdi-extensions/cdi-config</module>
 
     <module>standalone-servers</module>
-    <module>standalone-servers/full</module>
     <module>standalone-servers/microprofile</module>
     <module>standalone-servers/web</module>
   </modules>
@@ -1125,6 +1115,17 @@
         <module>fractions/javaee/jpa-eclipselink</module>
         <module>fractions/javaee/mvc</module>
 
+        <!-- Java EE Full -->
+        <module>fractions/javaee/batch-jberet</module>
+        <module>fractions/javaee/ejb-remote</module>
+        <module>fractions/javaee/full</module>
+        <module>fractions/javaee/mail</module>
+        <module>fractions/javaee/messaging</module>
+        <module>fractions/javaee/resource-adapters</module>
+        <module>fractions/javaee/webservices</module>
+
+        <module>fractions/wildfly/infinispan</module>
+        <module>fractions/wildfly/jgroups</module>
 
         <!-- MP 1.3 -->
         <module>client-apis/microprofile-restclient</module>
@@ -1169,6 +1170,7 @@
         <module>standalone-servers/keycloak</module>
         <module>standalone-servers/management-console</module>
         <module>standalone-servers/swagger-ui</module>
+        <module>standalone-servers/full</module>
         <module>standalone-servers/microprofile-jpa</module>
 
         <module>boms</module>
