@@ -15,9 +15,14 @@ The WildFly Swarm Maven plugin is used like any other Maven plugin, that is thro
   <version>${version.wildfly-swarm}</version>
   <executions>
     ...
-    <configuration>
-      ...
-    <configuration/>
+    <execution>
+      <goals>
+        ...
+      </goals>
+      <configuration>
+        ...
+      </configuration>
+    </execution>
   </executions>
 </plugin>
 ----
@@ -155,11 +160,16 @@ In the following example the Undertow fraction is not installed even if your app
   <artifactId>wildfly-swarm-plugin</artifactId>
   <version>${version.wildfly-swarm}</version>
   <executions>
-    <configuration>
-     <fractions>
-       <fraction>!undertow</fraction>
-     </fractions>
-    <configuration/>
+    <execution>
+      <goals>
+        <goal>package</goal>
+      </goals>
+      <configuration>
+       <fractions>
+         <fraction>!undertow</fraction>
+       </fractions>
+      </configuration>
+    </execution>
   </executions>
 </plugin>
 ----
