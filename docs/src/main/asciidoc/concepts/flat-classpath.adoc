@@ -2,3 +2,7 @@
 = Flat Classpath
 
 While Java application servers previously have had the ability to support multiple disparate applications, when building microservices, a runtime need only support a single application, or service.
+With a microservices architecture, significantly fewer resources and capabilities may be required for each service.
+Freely mixing service and application implementations becomes significantly less problematic and certainly less cumbersome.
+
+That being said, the Java Platform Module System (JPMS) may become beneficial in the future after further adoption by other upstream projects.

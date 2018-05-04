@@ -10,8 +10,6 @@ v{version}
 
 {project_name} is the next generation of WildFly Swarm.
 
-This is {backend}
-
 ifeval::["{backend}" != "pdf"]
 This documentation also available link:{project_key}-docs-{version}.pdf[in PDF format].
 endif::[]

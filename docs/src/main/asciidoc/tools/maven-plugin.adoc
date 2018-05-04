@@ -15,15 +15,18 @@ The behavior of this goal is controlled by the plugin configuration, described b
 <plugin>
   <groupId>{groupId}</groupId>
   <artifactId>{project_key}-maven-plugin</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>{version}</version>
   <configuration>
-    <!-- configuration -->
+    <!-- global configuration -->
   </configuration>
   <executions>
     <execution>
       <goals>
         <goal>package</goal>
       </goals>
+      <configuration>
+        <!-- execution-specific configuration -->
+      </configuration>
     </execution>
   </executions>
 </plugin>
@@ -115,6 +118,12 @@ Directory containing platform-specific scripts to execute the application.
 A Unix-compatible shell script for launching the application.
 If the distribution was built as a `thin` distribution, the application archive must be provided in one of two ways:
 * As an argument to the `run.sh` command.
+* By placing it within the `app/` directory.
+
+`bin/run.bat`::
+A Windows-compatible batch script for launching the application.
+If the distribution was built as a `thin` distribution, the application archive must be provided in one of two ways:
+* As an argument to the `run.bat` command.
 * By placing it within the `app/` directory.
 
 `app/`::

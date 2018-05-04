@@ -15,13 +15,13 @@ To use the `TestRunner`, you must include the `testing` artifact with `<scope>te
 </dependency>
 ----
 
-.Use the `UNimbusRunner`
+.Use the `ThorntailRunner``
 
-Write your JUnit test as usual, but include a class-level annotation of `@RunWith(UNimbusRunner.class)`
+Write your JUnit test as usual, but include a class-level annotation of `@RunWith(ThorntailRunner.class)`
 
 [source,java]
 ----
-@RunWith(UNimbusRunner.class)
+@RunWith(ThorntailRunner.class)
 public class MyTest {
   // tests go here 
 }
@@ -35,7 +35,7 @@ The entirety of your application will be booted and available.
 
 [source,java]
 ----
-@RunWith(UNimbusRunner.class)
+@RunWith(ThorntailRunner.class)
 public class MyTest {
 
   public void testSomething() throws Exception {

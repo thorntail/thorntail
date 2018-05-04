@@ -34,7 +34,7 @@ Additionally, to specify the components you wish to be tested, you must provide 
 public class MyTest {
 
   @Deployment
-  public static JavaArchive() {
+  public static JavaArchive myDeployment() {
     JavaArchive archive = ShrinkWrap.create(JavaArchive.class);
     // set up archive
     return archive;

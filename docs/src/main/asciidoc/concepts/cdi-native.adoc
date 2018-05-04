@@ -2,4 +2,5 @@
 = CDI-native
 
 {project_name} is built from the from ground-up to be CDI-native.
+Building applications of any notable size benefit from the usage of a dependency-injection framework.
 

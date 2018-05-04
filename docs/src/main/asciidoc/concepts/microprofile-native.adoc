@@ -2,4 +2,6 @@
 = MicroProfile-native
 
 {project_name} is built from the from ground-up to be MicroProfile-native.
+MicroProfile addresses many of the needs and requirements of microservices-centric applications.
+Instead of bolting MicroProfile facilities on, {project_name} natively supports the various MicroProfile specifications directly.
 
