@@ -28,6 +28,7 @@ import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.keys.resolvers.JwksVerificationKeyResolver;
+
 import java.util.List;
 
 /**
@@ -57,6 +58,8 @@ public class DefaultJWTCallerPrincipalFactory extends JWTCallerPrincipalFactory 
 
             if (authContextInfo.getSignerKey() != null) {
                 builder.setVerificationKey(authContextInfo.getSignerKey());
+            } else if (authContextInfo.isFollowMpJwt11Rules()) {
+                builder.setVerificationKeyResolver(new KeyLocationResolver(authContextInfo.getJwksUri()));
             } else {
                 final List<JsonWebKey> jsonWebKeys = authContextInfo.loadJsonWebKeys();
                 builder.setVerificationKeyResolver(new JwksVerificationKeyResolver(jsonWebKeys));

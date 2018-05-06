@@ -20,22 +20,35 @@ package org.wildfly.swarm.microprofile.jwtauth.deployment.auth.config;
 
 import java.security.interfaces.RSAPublicKey;
 import java.util.Optional;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.DeploymentException;
 import javax.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.KeyUtils;
 import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTAuthContextInfo;
 
 /**
- *
+ * A CDI provider for the JWTAuthContextInfo that obtains the necessary information from
+ * MP config properties.
  */
 @Dependent
 public class JWTAuthContextInfoProvider {
     private static final String NONE = "NONE";
+    private static final Logger log = Logger.getLogger(JWTAuthContextInfoProvider.class);
 
+    // The MP-JWT spec defined configuration properties
+    @Inject
+    @ConfigProperty(name = "mp.jwt.verify.publickey", defaultValue = NONE)
+    private Optional<String> mpJwtublicKey;
+    @Inject
+    @ConfigProperty(name = "mp.jwt.verify.issuer", defaultValue = NONE)
+    private String mpJwtIssuer;
+    @Inject
+    @ConfigProperty(name = "mp.jwt.verify.publickey.location", defaultValue = NONE)
+    private Optional<String> mpJwtLocation;
+    // Swarm fraction defined properties
     @Inject
     @ConfigProperty(name = "mpjwt.signerPublicKey", defaultValue = NONE)
     private Optional<String> publicKeyPemEnc;
@@ -52,22 +65,42 @@ public class JWTAuthContextInfoProvider {
     @ConfigProperty(name = "mpjwt.jwksRefreshInterval", defaultValue = "60")
     private Optional<Integer> jwksRefreshInterval;
 
-    @PostConstruct
-    void init() {
-    }
-
     @Produces
     Optional<JWTAuthContextInfo> getOptionalContextInfo() {
+        // Log the config values
+        log.debugf("init, mpJwtublicKey=%s, mpJwtIssuer=%s, mpJwtLocation=%s",
+                   mpJwtublicKey.orElse("missing"), mpJwtIssuer, mpJwtLocation.orElse("missing"));
+        log.debugf("init, publicKeyPemEnc=%s, issuedBy=%s, expGracePeriodSecs=%d, jwksRefreshInterval=%d",
+                   publicKeyPemEnc.orElse("missing"), issuedBy, expGracePeriodSecs.get(), jwksRefreshInterval.get());
+
         /*
         FIXME Due to a bug in MP-Config (https://github.com/wildfly-extras/wildfly-microprofile-config/issues/43) we need to set all
         values to "NONE" as Optional Strings are populated with a ConfigProperty.defaultValue if they are absent. Fix this when MP-Config
         is repaired.
          */
-        if (NONE.equals(publicKeyPemEnc.get()) && NONE.equals(jwksUri.get())) {
+        if (NONE.equals(publicKeyPemEnc.get()) && NONE.equals(jwksUri.get()) && NONE.equals(mpJwtublicKey.get()) && NONE.equals(mpJwtLocation.get())) {
             return Optional.empty();
         }
         JWTAuthContextInfo contextInfo = new JWTAuthContextInfo();
-        if (publicKeyPemEnc.isPresent() && !NONE.equals(publicKeyPemEnc.get())) {
+        // Look to MP-JWT values first
+        if (mpJwtublicKey.isPresent() && !NONE.equals(mpJwtublicKey.get())) {
+            // Need to decode what this is...
+            try {
+                RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodeJWKSPublicKey(mpJwtublicKey.get());
+                contextInfo.setSignerKey(pk);
+                log.debugf("mpJwtublicKey parsed as JWK(S)");
+            } catch (Exception e) {
+                // Try as PEM key value
+                log.debugf("mpJwtublicKey failed as JWK(S), %s", e.getMessage());
+                try {
+                    RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodePublicKey(mpJwtublicKey.get());
+                    contextInfo.setSignerKey(pk);
+                    log.debugf("mpJwtublicKey parsed as PEM");
+                } catch (Exception e1) {
+                    throw new DeploymentException(e1);
+                }
+            }
+        } else if (publicKeyPemEnc.isPresent() && !NONE.equals(publicKeyPemEnc.get())) {
             try {
                 RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodePublicKey(publicKeyPemEnc.get());
                 contextInfo.setSignerKey(pk);
@@ -75,13 +108,20 @@ public class JWTAuthContextInfoProvider {
                 throw new DeploymentException(e);
             }
         }
-        if (issuedBy != null && !issuedBy.equals(NONE)) {
+
+        if (mpJwtIssuer != null && !mpJwtIssuer.equals(NONE)) {
+            contextInfo.setIssuedBy(mpJwtIssuer);
+        } else if (issuedBy != null && !issuedBy.equals(NONE)) {
             contextInfo.setIssuedBy(issuedBy);
         }
         if (expGracePeriodSecs.isPresent()) {
             contextInfo.setExpGracePeriodSecs(expGracePeriodSecs.get());
         }
-        if (jwksUri.isPresent() && !NONE.equals(jwksUri.get())) {
+        // The MP-JWT location can be a PEM, JWK or JWKS
+        if (mpJwtLocation.isPresent() && !NONE.equals(mpJwtLocation.get())) {
+            contextInfo.setJwksUri(mpJwtLocation.get());
+            contextInfo.setFollowMpJwt11Rules(true);
+        } else if (jwksUri.isPresent() && !NONE.equals(jwksUri.get())) {
             contextInfo.setJwksUri(jwksUri.get());
         }
         if (jwksRefreshInterval.isPresent()) {
