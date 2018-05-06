@@ -35,6 +35,7 @@ public class JWTAuthContextInfo {
     private String jwksUri;
     private Integer jwksRefreshInterval;
     private HttpsJwks httpsJwks;
+    private boolean followMpJwt11Rules;
 
     public JWTAuthContextInfo() {
     }
@@ -114,5 +115,18 @@ public class JWTAuthContextInfo {
 
     public void setJwksRefreshInterval(Integer jwksRefreshInterval) {
         this.jwksRefreshInterval = jwksRefreshInterval;
+    }
+
+    /**
+     * Is the {@linkplain #jwksUri} a location that follows the MP-JWT 1.1 rules for the mp.jwt.verify.publickey.location
+     * property? These rules allow for any URL type to one of PEM, JWK or JWKS contents.
+     * @return true if jwksUri was set from the mp.jwt.verify.publickey.location, false otherwise
+     */
+    public boolean isFollowMpJwt11Rules() {
+        return followMpJwt11Rules;
+    }
+
+    public void setFollowMpJwt11Rules(boolean followMpJwt11Rules) {
+        this.followMpJwt11Rules = followMpJwt11Rules;
     }
 }
