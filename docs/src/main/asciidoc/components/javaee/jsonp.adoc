@@ -1,5 +1,15 @@
 [#component-json-p]
 = JSON-P
 
-The `:json-p` component does blah.
+The JSON-P component provides access to the JSON-P API.
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-jsonp</artifactId>
+</dependency>
+----
 

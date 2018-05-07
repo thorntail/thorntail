@@ -3,6 +3,16 @@
 
 The JPA component provides support for JPA `EntityManager` and `@PersistenceContext` resources.
 
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-jpa</artifactId>
+</dependency>
+----
+
 .Configuration
 
 `jpa._PersistenceUnitId_.trace`::

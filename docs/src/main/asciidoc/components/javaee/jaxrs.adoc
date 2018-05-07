@@ -1,5 +1,18 @@
 [#component-jaxrs]
 = JAX-RS
 
-The `:jaxrs` component does blah.
+The JAX-RS component provides support for the JAX-RS specification.
+The application will be scanned for an `Application` component annotated with `@ApplicationPath`.
+If the discovered application does not provide a list of resources, they will be automatically scanned and added to the application.
 
+JSON-P and the POJO-to-JSON Jackson provider are implicitly available to JAX-RS applications.
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-jaxrs</artifactId>
+</dependency>
+----

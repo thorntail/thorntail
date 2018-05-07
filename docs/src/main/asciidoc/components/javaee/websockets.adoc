@@ -3,3 +3,13 @@
 
 The WebSockets components brings in support for JSR-356 websocket client and server endpoints.
 
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-websockets</artifactId>
+</dependency>
+----
+

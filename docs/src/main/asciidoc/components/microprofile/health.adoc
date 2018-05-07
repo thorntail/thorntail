@@ -1,5 +1,19 @@
 [#component-health]
 = Health
 
-The `:health` component does blah.
+The Health component provides support for the MicroProfile Health API.
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-health</artifactId>
+</dependency>
+----
+
+.Related Information
+
+* https://microprofile.io/project/eclipse/microprofile-health[MicroProfile Health Spec]
 

@@ -34,7 +34,7 @@ include::tools/devtools.adoc[leveloffset=+1]
 
 # Components
 
-include::components/core.adoc[leveloffset=+1]
+include::components/kernel.adoc[leveloffset=+1]
 
 ## Java EE
 

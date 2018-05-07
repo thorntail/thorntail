@@ -1,5 +1,14 @@
 [#component-jta]
 = JTA
 
-The `:jta` component does blah.
+The JTA component provides access to a _TransactionManager_ and the JTA API.
 
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-jta</artifactId>
+</dependency>
+----

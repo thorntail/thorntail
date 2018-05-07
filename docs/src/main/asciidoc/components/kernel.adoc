@@ -1,5 +1,5 @@
-[#component-core]
-= Core
+[#component-Kernel]
+= Kernel
 
 .Maven Coordinates
 
@@ -10,7 +10,7 @@ It's Maven coordinates are:
 ----
 <dependency>
   <groupId>{groupId}</groupId>
-  <artifactId>{project_key}-core</artifactId>
+  <artifactId>{project_key}-kernel</artifactId>
 </dependency>
 ----
 
@@ -21,7 +21,7 @@ Produces a `Dependent` scoped `ThreadFactory` for utilizing `Thread` instances.
 
 `IndexProducer`::
 Produces an `Application` scoped `IndexView` representing the jandex'd files of the Deployment,
-read from `META-INF/unimbus.idx` which is created by the plugin.
+read from `META-INF/{project_key}.idx` which is created by the plugin.
 If not found, it produces an empty `IndexView` instance.
 
 == Configuration
@@ -145,3 +145,7 @@ Will result in a string literal of `${foo}` without interpolation, removing the 
 
 `foo\,bar`::
 Will result in a string literal of `foo\,bar` without removal of the escape character.
+
+.Related Information
+
+* https://microprofile.io/project/eclipse/microprofile-config/spec/src/main/asciidoc/microprofile-config-spec.asciidoc[MicroProfile Configuration Spec]
