@@ -2,7 +2,7 @@
 [#enabling-logging_{context}]
 = Enabling logging
 
-Each WildFly Swarm fraction is dependent on the Logging fraction, which means that if you use any WildFly Swarm fraction in your application, logging is automatically enabled on the `INFO` level and higher.
+Each {Thorntail} fraction is dependent on the Logging fraction, which means that if you use any {Thorntail} fraction in your application, logging is automatically enabled on the `INFO` level and higher.
 If you want to enable logging explicitly, add the Logging fraction to the POM file of your application.
 
 .Prerequisites

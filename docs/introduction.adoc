@@ -1,6 +1,6 @@
 
-WildFly Swarm is a framework based on the popular {WildFly} Java application server to enable the creation of small, standalone microservice-based applications.
-WildFly Swarm is capable of producing so-called _just enough app-server_ to support each component of your system.
+{Thorntail} is a framework based on the popular {WildFly} Java application server to enable the creation of small, standalone microservice-based applications.
+{Thorntail} is capable of producing so-called _just enough app-server_ to support each component of your system.
 
-For more information, see the WildFly Swarm link:http://wildfly-swarm.io/[home page].
+For more information, see the {Thorntail} link:http://wildfly-swarm.io/[home page].
 

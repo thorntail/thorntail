@@ -2,7 +2,7 @@
 [id='writing-an-application-from-scratch_{context}']
 = Creating an application from scratch
 
-Creating a simple WildFly Swarm{ndash}based application with a REST endpoint from scratch.
+Creating a simple {Thorntail}{ndash}based application with a REST endpoint from scratch.
 
 [discrete]
 == Prerequisites
@@ -68,9 +68,9 @@ $ mvn wildfly-swarm:run
 
 Accessing the `http://localhost:8080/rest/hello` URL in your browser should return the following message:
 
-[source]
+[source,subs="attributes+"]
 ----
-Hello from WildFly Swarm!
+Hello from {Thorntail}!
 ----
 
 After finishing the procedure, there should be a directory on your hard drive with the following contents:

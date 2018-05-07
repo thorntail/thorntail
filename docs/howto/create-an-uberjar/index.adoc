@@ -2,7 +2,7 @@
 = Creating an Uberjar
 
 One method of packaging an application for execution
-with WildFly Swarm is as an _uberjar_. 
+with {Thorntail} is as an _uberjar_. 
 
 .Prerequisites
 

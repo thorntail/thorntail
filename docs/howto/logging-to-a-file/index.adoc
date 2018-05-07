@@ -5,7 +5,7 @@
 In addition to the console logging, you can save the logs of your application in a file.
 Typically, deployments use rotating logs to save disk space.
 
-In WildFly Swarm, logging is configured using system properties.
+In {Thorntail}, logging is configured using system properties.
 Even though it is possible to use the `-Dproperty=value` syntax when launching your application, it is strongly recommended to configure file logging using the YAML profile files.
 
 .Prerequisites
@@ -60,7 +60,7 @@ periodic-rotating-file-handlers:
 
 Here, a new handler named `FILE` is created, logging events of the `INFO` level and higher.
 It logs in the `target` directory, and each log file is named `MY_APP_NAME.log` with the suffix `.yyyy-MM-dd`.
-WildFly Swarm automatically parses the log rotation period from the suffix, so ensure you use a format compatible with the `java.text.SimpleDateFormat` class.
+{Thorntail} automatically parses the log rotation period from the suffix, so ensure you use a format compatible with the `java.text.SimpleDateFormat` class.
 --
 
 . Configure the root logger.

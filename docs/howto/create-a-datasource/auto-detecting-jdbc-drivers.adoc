@@ -1,11 +1,11 @@
 [#auto-detecting-jdbc-drivers]
 = Auto-detecting JDBC drivers
 
-WildFly Swarm has the capability to detect, install, and register
+{Thorntail} has the capability to detect, install, and register
 a variety of JDBC drivers based on their inclusion as a dependency
 to your application.
 
-The drivers that WildFly Swarm auto-detects include:
+The drivers that {Thorntail} auto-detects include:
 
 * H2
 * MySQL

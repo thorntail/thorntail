@@ -3,8 +3,8 @@
 
 Using Arquillian, you have the capability of injecting unit tests into a
 running application. This allows you to verify your application is behaving
-correctly. There is an adapter for WildFly Swarm that makes Arquillian-based
-testing work well with WildFly Swarm{ndash}based applications.
+correctly. There is an adapter for {Thorntail} that makes Arquillian-based
+testing work well with {Thorntail}{ndash}based applications.
 
 .Prerequisites
 
@@ -12,7 +12,7 @@ testing work well with WildFly Swarm{ndash}based applications.
 
 .Procedure
 
-. Include the WildFly Swarm BOM as described in xref:using-a-bom[]:
+. Include the {Thorntail} BOM as described in xref:using-a-bom[]:
 +
 [source,xml]
 ----
@@ -41,8 +41,8 @@ ifdef::product[]
 </project>
 ----
 
-The reason is that the WildFly Swarm productized rutime artifact BOM imports the EAP runtime artifacts BOM (`org.jboss.bom:eap-runtime-artifacts`), which excludes the `commons-logging` artifact from the `org.apache.httpcomponents:httpclient` and `org.apache.james:apache-mime4j` artifacts.
-As a result, when running tests in a Maven project that imports the WildFly Swarm productized runtime artifact BOM, neither the Apache HTTP Client nor any other artifact that depends on it (for example, the JAX-RS Client) works.
+The reason is that the {Thorntail} productized rutime artifact BOM imports the EAP runtime artifacts BOM (`org.jboss.bom:eap-runtime-artifacts`), which excludes the `commons-logging` artifact from the `org.apache.httpcomponents:httpclient` and `org.apache.james:apache-mime4j` artifacts.
+As a result, when running tests in a Maven project that imports the {Thorntail} productized runtime artifact BOM, neither the Apache HTTP Client nor any other artifact that depends on it (for example, the JAX-RS Client) works.
 --
 endif::[]
 
@@ -68,7 +68,7 @@ include::src/main/resources/project-defaults.yml[]
 
 . Create a test class.
 +
-NOTE: Creating an Arquillian test before WildFly Swarm existed usually involved
+NOTE: Creating an Arquillian test before {Thorntail} existed usually involved
 programatically creating `Archive` due to the fact that applications
 were larger, and the aim was to test a single component in isolation.
 +
@@ -97,7 +97,7 @@ include::src/test/java/org/wildfly/swarm/howto/incontainer/InContainerTest.java[
 ----
 
 Using the `@DefaultDeployment` annotation provided by Arquillian integration
-with WildFly Swarm means you should _not_ use the Arquillian `@Deployment`
+with {Thorntail} means you should _not_ use the Arquillian `@Deployment`
 annotation on static methods that return an `Archive`.
 
 The `@DefaultDeployment` annotation inspects the package of the test:
