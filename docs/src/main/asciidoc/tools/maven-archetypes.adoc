@@ -1,0 +1,32 @@
+[#maven-archetypes]
+= Maven Archetypes
+
+Maven archetypes are provided to make it quick to get started with new {project_name} projects.
+
+== JAX-RS
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}.archetypes</groupId>
+  <artifactId>{project_key}-jaxrs-archetype</artifactId>
+</dependency>
+----
+
+.Create a new project
+
+[source,shell,subs="verbatim,attributes"]
+----
+mvn archetype:generate \
+    -DarchetypeGroupId={groupId}.archetypes \
+    -DarchetypeArtifactId={project_key}-jaxrs-archetype \
+    -DarchetypeVersion={version} \
+    -DgroupId=com.mycorp \
+    -DartifactId=my-app \
+    -Dversion=1.0-SNAPSHOT
+----
+
+Your project will be created in the `my-app/` directory, and contain stubs to get your started.
+These stubs include a JUnit-based test, along with appropriate configuration of your `pom.xml`.
