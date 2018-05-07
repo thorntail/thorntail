@@ -43,6 +43,8 @@ Produces an executable build that includes all dependencies and your application
 .thin
 Produces an executable build that includes all dependencies but _not_ your application artifact.
 
+_Mode_ is an independent concept from _format_, described below.
+
 [source,xml]
 ----
 <configuration>
@@ -54,6 +56,7 @@ Produces an executable build that includes all dependencies but _not_ your appli
 
 The plugin can produce three different types of executable distributions: _jar_, _dir_, and _zip_, with _jar_ being the default.
 The format is selected by a `<format>...</format>` block within the plugin configuration, or by the `{project_key}.format` property.
+These contents of any of these formats is still defined by the _mode_, described above.
 
 .jar
 Produces a fat jar (or _überjar_) containing the cotnents defined by the _mode_ above.
