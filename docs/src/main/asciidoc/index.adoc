@@ -11,22 +11,29 @@ v{version}
 
 image::thorntail-logo.png[]
 
-{project_name} is the next generation of WildFly Swarm.
+.About
 
+_{project_name}_ is the new name of _WildFly Swarm_. 
+This documentation applies to the _proof of concept_ for v4.x of the project.
+
+.Other Formats
 ifeval::["{backend}" != "pdf"]
 This documentation also available link:{project_key}-docs-{version}.pdf[in PDF format].
+endif::[]
+ifeval::["{backend}" == "pdf"]
+This documentation also available https://docs.thorntail.io/{version}/[as HTML].
 endif::[]
 
 # Introduction
 
 include::design/lessons-learned.adoc[leveloffset=+1]
 
-# Concepts
+## Concepts
 
-include::concepts/microservice.adoc[leveloffset=+1]
-include::concepts/cdi-native.adoc[leveloffset=+1]
-include::concepts/microprofile-native.adoc[leveloffset=+1]
-include::concepts/flat-classpath.adoc[leveloffset=+1]
+include::concepts/microservice.adoc[leveloffset=+2]
+include::concepts/cdi-native.adoc[leveloffset=+2]
+include::concepts/microprofile-native.adoc[leveloffset=+2]
+include::concepts/flat-classpath.adoc[leveloffset=+2]
 
 # Tools
 

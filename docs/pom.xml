@@ -67,6 +67,7 @@
           </attributes>
           <doctype>book</doctype>
           <sourceDocumentName>index.adoc</sourceDocumentName>
+          <sourceHighlighter>coderay</sourceHighlighter>
         </configuration>
         <executions>
           <execution>
@@ -90,6 +91,10 @@
               <backend>pdf</backend>
               <outputDirectory>${project.build.directory}/temp</outputDirectory>
               <outputFile>${project.build.directory}/docs/${project.version}/${project.artifactId}-${project.version}.pdf</outputFile>
+              <attributes>
+                <pdf-stylesdir>${project.basedir}/src/theme</pdf-stylesdir>
+                <pdf-style>thorntail</pdf-style>
+              </attributes>
             </configuration>
           </execution>
         </executions>
