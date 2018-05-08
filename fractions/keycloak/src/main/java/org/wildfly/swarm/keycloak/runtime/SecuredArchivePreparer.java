@@ -217,8 +217,8 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
     @Configurable("swarm.keycloak.json.path")
     String keycloakJsonPath;
 
-    @AttributeDocumentation("Keycloak multitenancy configuration")
-    @Configurable("swarm.keycloak.multitenancy")
+    @AttributeDocumentation("Keycloak multitenancy paths configuration")
+    @Configurable("swarm.keycloak.multitenancy.paths")
     Map<String, String> keycloakMultitenancy;
 
 }

@@ -10,4 +10,5 @@ swarm:
             roles: [admin]
   keycloak:
     multitenancy:
-      /secured: keycloakTenant.json
+      paths:
+        /secured: keycloakTenant.json
