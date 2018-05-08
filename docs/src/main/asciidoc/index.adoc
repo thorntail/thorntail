@@ -72,6 +72,12 @@ include::components/other/vertx.adoc[leveloffset=+2]
 
 # Guides
 
+include::guides/build-from-source.adoc[leveloffset=+1]
 include::guides/container-layers.adoc[leveloffset=+1]
 include::guides/container-fabric8.adoc[leveloffset=+1]
 include::guides/log4j.adoc[leveloffset=+1]
+
+# Appendix
+
+include::license.adoc[leveloffset=+1]
+

@@ -1,0 +1,60 @@
+[#build-from-source]
+= Build {project_name} from Source
+
+The source of {project_name} is available on https://github.com/thorntail/thorntail[GitHub].
+
+.Clone from GitHub
+
+[source,shell]
+----
+git clone https://github.com/thorntail/thorntail.git
+----
+
+.Build
+
+The default build assumes `docker` is available on your system. 
+
+----
+mvn install
+----
+
+.Build without Docker
+
+To skip any tests that assume `docker` is available, use the `-DskipDocker` option.
+
+----
+mvn install -DskipDocker
+----
+
+.Build and run the MicroProfile TCKs
+
+Since the MicroProfile TCKs take a fair amount of time to execute, they are excluded by default.
+To enable them, use the `-Ptck` option to enable the TCK profile.
+
+----
+mvn install -Ptck
+----
+
+.Source Repository Layout
+
+From the root of the repository, the code is grouped into a few large categories:
+
+`core/`::
+Contains the core `kernel` and other components consumed by user applications.
+
+`bom/`::
+The _Bill of Materials_ `pom.xml` use for version management by both {project_name} itself and user applications.
+
+`plugins/`::
+Maven (and in the future, Gradle) plugins which assist in packaging of {project_name}-based projects.
+
+`testsuite/`::
+Tests (both those that use `docker` and simple ones that do not) and MicroProfile TCKs.
+
+`archetypes/`::
+Maven archetype projects to assist in the creation of new user applications.
+
+`docs/`::
+AsciiDoc-based documentation.
+
+
