@@ -3,10 +3,13 @@
 :sectnums:
 :sectanchors:
 :source-highlighter: coderay
+:nofooter:
 
 = {project_name} Documentation
 The {project_name} Team
 v{version}
+
+image::thorntail-logo.png[]
 
 {project_name} is the next generation of WildFly Swarm.
 
@@ -35,6 +38,7 @@ include::tools/devtools.adoc[leveloffset=+1]
 
 # Components
 
+include::components/bom-maven.adoc[leveloffset=+1]
 include::components/kernel.adoc[leveloffset=+1]
 
 ## Java EE
@@ -70,3 +74,4 @@ include::components/other/vertx.adoc[leveloffset=+2]
 
 include::guides/container-layers.adoc[leveloffset=+1]
 include::guides/container-fabric8.adoc[leveloffset=+1]
+include::guides/log4j.adoc[leveloffset=+1]

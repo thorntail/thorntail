@@ -1,4 +1,4 @@
-[#component-Kernel]
+[#component-kernel]
 = Kernel
 
 .Maven Coordinates

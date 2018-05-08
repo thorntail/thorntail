@@ -1,18 +1,19 @@
 [#using-log4j]
 = Using log4j
 
-== Problem
+.Problem
 While {project_name} does not use http://logging.apache.org/log4j/1.2/manual.html[log4j] directly, some of the libraries in your application may use it.
 If you do not configure log4j in your application, all logging output, including
 output from {project_name} will get swallowed, preventing you from seeing your logs.
 
-== Solutions
+.Solutions
 The recommended solution is to specify the path to your log4j.properties file as a *log4j.configuration* system
 property. In your parameters to your JVM you would specify it like this:
 
-....
+[source,shell]
+----
 java -Dlog4j.configuration=log4j.properties
-....
+----
 
 Please note, when using this method you can use any name you want for your properties file.
 

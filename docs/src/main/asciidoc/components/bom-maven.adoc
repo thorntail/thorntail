@@ -1,0 +1,23 @@
+[#bom-maven]
+= Using the BOM with Maven
+
+.Use the BOM
+
+All components and dependencies of {project_name} are version-managed in a _Bill of Materials_ (BOM).
+Within your `pom.xml` you would `import` this BOM within a `<dependencyManagement>` stanza.
+This allows you to reference any {project_name} component or verified version of a dependency without having to specify the `<version>` of each.
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>{groupId}</groupId>
+      <artifactId>{project_key}-bom</artifactId>
+      <version>{version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+----
