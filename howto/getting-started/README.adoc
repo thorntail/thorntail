@@ -1,7 +1,7 @@
 == Welcome to Thorntail
 
 Greetings and welcome to Thorntail, the Java framework that combines the Eclipse Microprofile with your favorite Java libraries for a simple yet powerful development experience. 
-Thorntail assumes one "application" per Thorntail instance. There is a https://docs.thorntail.io/4.0.0-SNAPSHOT/#flat-classpath[classpath], to add a Java library you just add it to your Maven pom.xml and you are good to go.
+Thorntail assumes one "application" per Thorntail instance. There is a https://docs.thorntail.io/4.0.0-SNAPSHOT/#flat-classpath[flat classpath], to add a Java library you just add it to your Maven pom.xml and you are good to go.
 
 === If you are coming from an Application Server background
 
