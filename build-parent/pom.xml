@@ -107,7 +107,7 @@
     <version.microprofile-metrics>1.1</version.microprofile-metrics>
     <version.microprofile.restclient>1.0</version.microprofile.restclient>
     <version.microprofile-openapi>1.0.1</version.microprofile-openapi>
-    <version.microprofile-opentracing>1.1-SNAPSHOT</version.microprofile-opentracing>
+    <version.microprofile-opentracing>1.1-RC1</version.microprofile-opentracing>
     <!-- MP Config implementation -->
     <version.wildfly-microprofile-config>1.2.1</version.wildfly-microprofile-config>
 

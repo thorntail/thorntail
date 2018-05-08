@@ -977,6 +977,11 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <!-- TODO REMOVE, only for testing MP-OT RC1 -->
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1076</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
