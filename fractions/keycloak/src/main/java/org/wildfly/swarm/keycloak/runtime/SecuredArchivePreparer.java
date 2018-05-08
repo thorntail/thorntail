@@ -19,26 +19,33 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.jboss.logging.Logger;
+import org.jboss.modules.Module;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.keycloak.adapters.KeycloakDeployment;
+import org.keycloak.adapters.KeycloakDeploymentBuilder;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
+import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
 @DeploymentScoped
 public class SecuredArchivePreparer implements DeploymentProcessor {
@@ -52,45 +59,60 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
 
     @Override
     public void process() throws IOException {
+        // Prepare the client adapter configuration.
+        prepareKeycloakJsonAsset();
+        // Prepare the multitenancy configuration.
+        prepareKeycloakMultitenancy();
+    }
+
+    private void prepareKeycloakJsonAsset() throws IOException {
         InputStream keycloakJson = null;
-        URI keycloakJsonUri = null;
+        // Load the configuration from the disk or archive if the custom path value is set.
+        // Otherwise try to load a default "keycloak.json" resource from the archive.
         if (keycloakJsonPath != null) {
-            keycloakJsonUri = URI.create(keycloakJsonPath);
-            keycloakJson = getKeycloakJsonFromCustomPath(keycloakJsonUri);
-        }
-        if (keycloakJson == null) {
-            keycloakJson = getKeycloakJson(keycloakJsonUri);
+            keycloakJson = getKeycloakJsonStream(keycloakJsonPath);
+        } else {
+            keycloakJson = getKeycloakJsonFromClasspath("keycloak.json");
         }
 
         if (keycloakJson != null) {
-            archive.add(createAsset(keycloakJson), "WEB-INF/keycloak.json");
-        } else {
-            // not adding it.
+            archive.add(createKeycloakJsonAsset(keycloakJson), "WEB-INF/keycloak.json");
         }
-
     }
 
-    private InputStream getKeycloakJsonFromCustomPath(URI keycloakJsonUri) {
+    private static InputStream getKeycloakJsonStream(String keycloakJsonPathValue) {
+        InputStream keycloakJson = null;
+        URI keycloakJsonUri = URI.create(keycloakJsonPathValue);
         if ("classpath".equals(keycloakJsonUri.getScheme())) {
-            return null;
+            keycloakJson = getKeycloakJsonFromClasspath(keycloakJsonUri.getSchemeSpecificPart());
+        } else {
+            keycloakJson = getKeycloakJsonFromCustomPath(keycloakJsonUri);
+            // Try to get from the classpath if the scheme is null.
+            if (keycloakJson == null && keycloakJsonUri.getScheme() == null) {
+                keycloakJson = getKeycloakJsonFromClasspath(keycloakJsonUri.toString());
+            }
         }
+        if (keycloakJson == null) {
+            LOG.warn(String.format(
+                "Unable to get Keycloak configuration from '%s'", keycloakJsonUri.toString()
+            ));
+        }
+        return keycloakJson;
+    }
+
+    private static InputStream getKeycloakJsonFromCustomPath(URI keycloakJsonUri) {
         try {
             Path path = keycloakJsonUri.getScheme() != null
-                ? Paths.get(keycloakJsonUri) : Paths.get(keycloakJsonPath);
+                ? Paths.get(keycloakJsonUri) : Paths.get(keycloakJsonUri.toString());
             return Files.newInputStream(path);
         } catch (IOException e) {
-            LOG.warn(String.format(
-                    "Unable to get keycloak.json from '%s', fall back to get from classpath: %s",
-                    keycloakJsonPath, e
-            ));
+            // retry from the classpath if the scheme is null
         }
 
         return null;
     }
 
-    private InputStream getKeycloakJson(URI keycloakJsonUri) {
-        final String resourceName = keycloakJsonUri != null && "classpath".equals(keycloakJsonUri.getScheme())
-            ? keycloakJsonUri.getSchemeSpecificPart() : "keycloak.json";
+    private static InputStream getKeycloakJsonFromClasspath(String resourceName) {
         InputStream keycloakJson = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName);
         if (keycloakJson == null) {
 
@@ -130,7 +152,7 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
         return jsonNode;
     }
 
-    private Asset createAsset(InputStream in) throws IOException {
+    private Asset createKeycloakJsonAsset(InputStream in) throws IOException {
         StringBuilder str = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 
@@ -143,10 +165,60 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
         return new ByteArrayAsset(str.toString().getBytes());
     }
 
+    private void prepareKeycloakMultitenancy() throws IOException {
+        if (keycloakMultitenancy != null && !keycloakMultitenancy.isEmpty()) {
+            // Prepare a relative paths to KC deployments map.
+            Map<String, KeycloakDeployment> deployments = new HashMap<String, KeycloakDeployment>();
+            for (Map.Entry<String, String> entry : keycloakMultitenancy.entrySet()) {
+                InputStream is = getKeycloakJsonStream(entry.getValue());
+                if (is == null) {
+                    LOG.warn(String.format(
+                        "Unable to support the multitenancy due to the '%s' being not available", entry.getValue()
+                    ));
+                } else {
+                    deployments.put(entry.getKey(), KeycloakDeploymentBuilder.build(is));
+                }
+            }
+            try {
+                // Statically initialize KeycloakAdapterConfigResolver
+                Module module = Module.getBootModuleLoader().loadModule("org.wildfly.swarm.keycloak:deployment");
+                final String resolverClassName = "org.wildfly.swarm.keycloak.deployment.KeycloakAdapterConfigResolver";
+                Class<?> resolverClass = module.getClassLoader().loadClass(resolverClassName);
+                Method setDeployments = resolverClass.getDeclaredMethod("setDeployments", Map.class);
+                setDeployments.invoke(null, deployments);
+
+                // Set "keycloak.config.resolver" context parameter
+                WebXmlAsset webXmlAsset = null;
+                Node node = archive.as(JARArchive.class).get("WEB-INF/web.xml");
+                if (node == null) {
+                    webXmlAsset = new WebXmlAsset();
+                    archive.as(JARArchive.class).add(webXmlAsset);
+                } else {
+                    Asset asset = node.getAsset();
+                    if (!(asset instanceof WebXmlAsset)) {
+                        webXmlAsset = new WebXmlAsset(asset.openStream());
+                        archive.as(JARArchive.class).add(webXmlAsset);
+                    } else {
+                        webXmlAsset = (WebXmlAsset) asset;
+                    }
+                }
+                webXmlAsset.setContextParam("keycloak.config.resolver", resolverClassName);
+            } catch (Throwable e) {
+                LOG.warn(String.format(
+                        "KeycloakAdapterConfigResolver can not be set up, multitenancy will not be supported", e
+                    ));
+            }
+        }
+    }
+
     private final Archive<?> archive;
 
-    @AttributeDocumentation("Path to keycloak.json configuration")
+    @AttributeDocumentation("Path to Keycloak adapter configuration")
     @Configurable("swarm.keycloak.json.path")
     String keycloakJsonPath;
+
+    @AttributeDocumentation("Keycloak multitenancy configuration")
+    @Configurable("swarm.keycloak.multitenancy")
+    Map<String, String> keycloakMultitenancy;
 
 }

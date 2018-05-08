@@ -39,7 +39,7 @@ import org.wildfly.swarm.jaxrs.JAXRSArchive;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class KeycloakArquillianTest {
+public class KeycloakMultitenancyTest {
 
     @Deployment
     public static Archive<?> createDeployment() throws Exception {
@@ -47,14 +47,14 @@ public class KeycloakArquillianTest {
         deployment.addResource(SecuredApplication.class);
         deployment.addResource(SecuredResource.class);
         deployment.addAsResource("wildfly-swarm-keycloak-example-realm.json");
-        deployment.addAsResource("keycloak.json");
-        deployment.addAsResource("project-default-kc-json.yml", "project-defaults.yml");
+        deployment.addAsResource("keycloak.json", "keycloakTenant.json");
+        deployment.addAsResource("project-multitenancy.yml", "project-defaults.yml");
         return deployment;
     }
 
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
-        URL migrationRealmUrl = KeycloakArquillianTest.class.getResource("/wildfly-swarm-keycloak-example-realm.json");
+        URL migrationRealmUrl = KeycloakMultitenancyTest.class.getResource("/wildfly-swarm-keycloak-example-realm.json");
         System.setProperty("keycloak.migration.file", migrationRealmUrl.toURI().getPath());
         System.setProperty("keycloak.migration.provider", "singleFile");
         System.setProperty("keycloak.migration.action", "import");

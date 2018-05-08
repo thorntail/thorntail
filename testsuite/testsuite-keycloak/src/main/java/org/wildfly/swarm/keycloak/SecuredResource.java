@@ -12,7 +12,6 @@ public class SecuredResource {
     @GET
     @Produces("text/plain")
     public String get() {
-        // This can also be done in the ContainerResponseFilter
         return "Hi " + KeycloakSecurityContextAssociation.get().getToken().getPreferredUsername()
             +  ", this resource is secured";
     }
