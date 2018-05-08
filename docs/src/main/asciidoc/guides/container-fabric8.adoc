@@ -25,7 +25,7 @@ A single `<image>` block will be necessary.
           </assembly>
           <env>
             <JAVA_APP_DIR>/maven</JAVA_APP_DIR>
-            <JAVA_MAIN_CLASS>org.jboss.unimbus.UNimbus</JAVA_MAIN_CLASS>
+            <JAVA_MAIN_CLASS>io.thorntail.Thorntail</JAVA_MAIN_CLASS>
           </env>
         </build>
       </image>
@@ -45,7 +45,7 @@ The `run-java.sh` script is the default command of this image, and is configured
 
 The `JAVA_APP_DIR` environment variable simply points to the `/maven` directory within the image, to define where the application's `.jar` files were installed.
 
-The `JAVA_MAIN_CLASS` environment variable should be defined either to your own `main(...)` class, or the default `org.jboss.unimbus.UNimbus` class.
+The `JAVA_MAIN_CLASS` environment variable should be defined either to your own `main(...)` class, or the default `io.thorntail.Thorntail` class.
 
 .Building the Image
 

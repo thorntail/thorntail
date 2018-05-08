@@ -4,6 +4,13 @@
 [quote]
 Don't cling to a mistake just because you spent a lot of time making it.
 
+[sidebar]
+--
+We've spent a couple of years building and living with the current Thorntail (née WildFly Swarm) codebase.
+Over this time, we've learned a few things from our own experiences and those of our community.
+These are their stories.
+--
+
 .Mangling artifacts is dangerous
 
 When you mangle and repackage a user's artifacts and dependencies, it can many times go awry.

@@ -126,7 +126,7 @@ Once again, use the Fabric8 `docker-maven-plugin` to create another image, this 
         <build>
           <from>myapp/base</from>
           <assembly>
-            <name>unimbus/app</name>
+            <name>thorntail/app</name>
             <descriptorRef>artifact</descriptorRef>
           </assembly>
         </build>
