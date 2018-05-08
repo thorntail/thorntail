@@ -1,9 +1,6 @@
 [#lessons-learned]
 = Lessons Learned
 
-[quote]
-Don't cling to a mistake just because you spent a lot of time making it.
-
 [sidebar]
 --
 We've spent a couple of years building and living with the current Thorntail (née WildFly Swarm) codebase.
