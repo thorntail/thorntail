@@ -168,7 +168,7 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
     private void prepareKeycloakMultitenancy() throws IOException {
         if (keycloakMultitenancy != null && !keycloakMultitenancy.isEmpty()) {
             // Prepare a relative paths to KC deployments map.
-            Map<String, KeycloakDeployment> deployments = new HashMap<String, KeycloakDeployment>();
+            Map<String, KeycloakDeployment> deployments = new HashMap<>();
             for (Map.Entry<String, String> entry : keycloakMultitenancy.entrySet()) {
                 InputStream is = getKeycloakJsonStream(entry.getValue());
                 if (is == null) {
