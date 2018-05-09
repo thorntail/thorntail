@@ -3,13 +3,16 @@ package io.thorntail.runner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -17,8 +20,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.sun.nio.file.SensitivityWatchEventModifier;
-import io.thorntail.impl.CoreMessages;
 import io.thorntail.DevMode;
+import io.thorntail.impl.CoreMessages;
 
 /**
  * Created by bob on 4/3/18.
@@ -56,9 +59,13 @@ public class RestartRunner extends AbstractForkedRunner {
         pathsToWatch().forEach(p -> {
             try {
                 if (finalSensitiveAvailable) {
-                    p.register(watchService, new WatchEvent.Kind[]{StandardWatchEventKinds.ENTRY_MODIFY}, SensitivityWatchEventModifier.HIGH);
+                    watch(p, (path) -> {
+                        path.register(watchService, new WatchEvent.Kind[]{StandardWatchEventKinds.ENTRY_MODIFY}, SensitivityWatchEventModifier.HIGH);
+                    });
                 } else {
-                    p.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+                    watch(p, (path) -> {
+                        path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+                    });
                 }
                 CoreMessages.MESSAGES.watchingDirectory(p.toString());
             } catch (IOException e) {
@@ -67,24 +74,40 @@ public class RestartRunner extends AbstractForkedRunner {
         });
 
         new Thread(() -> {
+            long lastChange = 0;
+            Process process = null;
             while (true) {
                 try {
-                    CoreMessages.MESSAGES.launchingChildProcess();
-                    Process process = builder.start();
-                    WatchKey key = watchService.take();
-                    for (WatchEvent<?> watchEvent : key.pollEvents()) {
-                        watchEvent.count();
+                    if (process == null) {
+                        CoreMessages.MESSAGES.launchingChildProcess();
+                        process = builder.start();
                     }
+                    WatchKey key = watchService.poll(500, TimeUnit.MILLISECONDS);
+                    if (key == null) {
+                        if (lastChange == 0) {
+                            continue;
+                        }
+                        if (System.currentTimeMillis() - lastChange > 500) {
+                            CoreMessages.MESSAGES.destroyingChildProcess();
+                            process.destroy();
+                            if (!process.waitFor(5, TimeUnit.SECONDS)) {
+                                CoreMessages.MESSAGES.destroyingChildProcessForcibly();
+                                process.destroyForcibly();
+                            }
+                            if (!process.waitFor(5, TimeUnit.SECONDS)) {
+                                CoreMessages.MESSAGES.childProcessDidNotExit();
+                                break;
+                            }
+                            process = null;
+                            lastChange = 0;
+                        }
+                        continue;
+                    }
+                    lastChange = System.currentTimeMillis();
                     CoreMessages.MESSAGES.changeDetected(key.watchable().toString());
-                    CoreMessages.MESSAGES.destroyingChildProcess();
-                    process.destroy();
-                    if (!process.waitFor(5, TimeUnit.SECONDS)) {
-                        CoreMessages.MESSAGES.destroyingChildProcessForcibly();
-                        process.destroyForcibly();
-                    }
-                    if (!process.waitFor(5, TimeUnit.SECONDS)) {
-                        CoreMessages.MESSAGES.childProcessDidNotExit();
-                        break;
+                    int totalEvents = 0;
+                    for (WatchEvent<?> watchEvent : key.pollEvents()) {
+                        totalEvents += watchEvent.count();
                     }
                     key.reset();
                 } catch (InterruptedException e) {
@@ -96,6 +119,23 @@ public class RestartRunner extends AbstractForkedRunner {
 
         }).start();
     }
+
+    static interface PathConsumer {
+        void accept(Path p) throws IOException;
+
+    }
+
+    void watch(Path root, PathConsumer consumer) throws IOException {
+        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                System.err.println("watch: " + dir);
+                consumer.accept(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    }
+
 
     private static List<Path> pathsToWatch() {
         return Arrays.asList(System.getProperty(JAVA_CLASS_PATH_PROPERTY_NAME).split(File.pathSeparator)).stream()
