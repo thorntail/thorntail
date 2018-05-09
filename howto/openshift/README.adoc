@@ -2,34 +2,45 @@
 
 This builds upon the link:../getting-started/[Getting Started] HOWTO.
 
-.Launch Minishift
+== Download and start Minishift.
 
-Download and start Minishift.
+Minishift is the handy way to easily run OpenShift on your local machine.
 
 ----
 minishift start --vm-driver virtualbox
 ----
 
-.Configure your Environment
+== Configure your Environment
+
+The following will make the `oc` command-line tool available on your path.
+It will also cause your local Docker tooling to use the internal OpenShift Docker image repository.
 
 ----
 eval $(minishift oc-env)
 eval $(minishift docker-env)
 ----
 
-.Do a build
+== Do a build
+
+The build uses the `fabric8-docker-plugin` to build and push an image to the internal OpenShift image repository.
+
+The image is tagged `latest` and `4.0.0-SNAPSHOT`.
 
 ----
 mvn install
 ----
 
-.Deploy to OpenShift
+== Deploy to OpenShift
+
+Creat a new application using the image name and the `4.0.0-SNAPSHOT` tag.
 
 ----
 oc new-app thorntail/myapp:4.0.0-SNAPSHOT
 ----
 
-.Expose your application
+== Expose your application
+
+Open port `8080` so you can access it.
 
 ----
 oc expose svc/myapp
