@@ -17,6 +17,7 @@ package org.wildfly.swarm.keycloak;
 
 import java.net.URL;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
@@ -64,28 +65,51 @@ public class KeycloakMultitenancyTest {
 
     @Test
     @RunAsClient
-    public void testResourceIsSecured() throws Exception {
-        // Check 401 is returned without the token
-        Assert.assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(),
-           ClientBuilder.newClient().target("http://localhost:8080/secured").request().get().getStatus());
+    public void testAccessResourceWithoutToken() throws Exception {
+        Client client = ClientBuilder.newClient();
+        try {
+            Assert.assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(),
+                client.target("http://localhost:8080/secured").request().get().getStatus());
+        } finally {
+            client.close();
+        }
+    }
+    
+    @Test
+    @RunAsClient
+    public void testAccessResourceWithToken() throws Exception {
         
-        final String tokenUri = 
-            "http://localhost:8080/auth/realms/wildfly-swarm-keycloak-example/protocol/openid-connect/token";
-        String response = 
-            ClientBuilder.newClient().target(tokenUri).request()
-                .post(Entity.form(
-                        new Form().param("grant_type", "password").param("client_id", "curl")
-                                  .param("username", "user1").param("password", "password1")),
-                        String.class);
-        String accessToken = getAccessTokenFromResponse(response);
+        String accessToken = getAccessToken();
         
-        String serviceResponse = 
-            ClientBuilder.newClient().target("http://localhost:8080/secured")
-                .request()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .get(String.class);
-        Assert.assertEquals("Hi user1, this resource is secured", serviceResponse);
+        Client client = ClientBuilder.newClient();
+        try {
+            String serviceResponse = 
+                client .target("http://localhost:8080/secured")
+                    .request()
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                    .get(String.class);
+            Assert.assertEquals("Hi user1, this resource is secured", serviceResponse);
+        } finally {
+            client.close();
+        }
 
+    }
+
+    private String getAccessToken() {
+        Client client = ClientBuilder.newClient();
+        try {
+            final String tokenUri = 
+                    "http://localhost:8080/auth/realms/wildfly-swarm-keycloak-example/protocol/openid-connect/token";
+            String response = 
+                client.target(tokenUri).request()
+                    .post(Entity.form(
+                            new Form().param("grant_type", "password").param("client_id", "curl")
+                                      .param("username", "user1").param("password", "password1")),
+                            String.class);
+            return getAccessTokenFromResponse(response);
+        } finally {
+            client.close();
+        }
     }
 
     private String getAccessTokenFromResponse(String response) {
