@@ -43,9 +43,7 @@
     <module>archetypes</module>
     <module>docs</module>
 
-    <module>howto/getting-started</module>
-    <module>howto/openshift</module>
-    <module>howto/devtools</module>
+    <module>howto</module>
   </modules>
 
 </project>
