@@ -30,7 +30,9 @@ By setting the `THORNTAIL_DEV_MODE` environment variable to `restart`, when you 
 . The debug port will be opened
 . The application will watch for changes to the compiled `target/classes/` directory and completely _restart_ when changes are noticed.
 
-    THORNTAIL_DEV_MODE=restart ./target/thorntail-howto-devtools-4.0.0-SNAPSHOT-bin/bin/run.sh
+----
+THORNTAIL_DEV_MODE=restart ./target/thorntail-howto-devtools-4.0.0-SNAPSHOT-bin/bin/run.sh
+----
 
 .Make a change
 
@@ -57,7 +59,9 @@ By setting the `THORNTAIL_DEV_MODE` environment variable to `reload`, when you e
 . The debug port will be opened
 . The application will watch for changes to the compiled `target/classes/` directory and completely _reload_ when changes are noticed.
 
-    THORNTAIL_DEV_MODE=restart ./target/thorntail-howto-devtools-4.0.0-SNAPSHOT-bin/bin/run.sh
+----
+THORNTAIL_DEV_MODE=restart ./target/thorntail-howto-devtools-4.0.0-SNAPSHOT-bin/bin/run.sh
+----
 
 .Make a change
 
