@@ -8,7 +8,7 @@
   <version>4.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>My Thorntail App</name>
+  <name>HOWTO: devtools</name>
 
   <dependencyManagement>
     <dependencies>
