@@ -1,0 +1,37 @@
+= HOWTO OpenShift
+
+This builds upon the link:../getting-started/[Getting Started] HOWTO.
+
+.Launch Minishift
+
+Download and start Minishift.
+
+----
+minishift start --vm-driver virtualbox
+----
+
+.Configure your Environment
+
+----
+eval $(minishift oc-env)
+eval $(minishift docker-env)
+----
+
+.Do a build
+
+----
+mvn install
+----
+
+.Deploy to OpenShift
+
+----
+oc new-app thorntail/myapp:4.0.0-SNAPSHOT
+----
+
+.Expose your application
+
+----
+oc expose svc/myapp
+----
+
