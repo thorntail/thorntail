@@ -2,7 +2,7 @@
 
 == The Project
 
-This project was generated using the JAX-RS Maven archetype.
+This project was generated using the JAX-RS https://docs.thorntail.io/4.0.0-SNAPSHOT/#maven-archetypes[Maven archetype].
 
 The `pom.xml` was then edited to include the `thorntail-devtools` dependency:
 
