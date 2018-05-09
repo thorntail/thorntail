@@ -20,17 +20,20 @@ import java.util.Map;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.KeycloakDeployment;
 import org.keycloak.adapters.OIDCHttpFacade;
-
+/**
+ * KeyCloak Configuration Resolver which is loaded by KeyCloak. It has to be
+ * statically initialized during the archive preparation (runtime) stage.
+ */
 public class KeycloakAdapterConfigResolver implements KeycloakConfigResolver {
 
-    private static Map<String, KeycloakDeployment> deployments;
-    public static void setDeployments(Map<String, KeycloakDeployment> map) {
-        deployments = map;
+    private static Map<String, KeycloakDeployment> pathDeployments;
+    public static void setPathDeployments(Map<String, KeycloakDeployment> map) {
+        pathDeployments = map;
     }
 
     @Override
     public KeycloakDeployment resolve(OIDCHttpFacade.Request request) {
         String path = request.getRelativePath();
-        return deployments.get(path);
+        return pathDeployments.get(path);
     }
 }

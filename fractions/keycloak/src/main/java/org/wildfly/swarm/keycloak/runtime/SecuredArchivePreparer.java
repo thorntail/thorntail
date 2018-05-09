@@ -166,28 +166,29 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
     }
 
     private void prepareKeycloakMultitenancy() throws IOException {
-        if (keycloakMultitenancy != null && !keycloakMultitenancy.isEmpty()) {
-            // Prepare a relative paths to KC deployments map.
-            Map<String, KeycloakDeployment> deployments = new HashMap<>();
-            for (Map.Entry<String, String> entry : keycloakMultitenancy.entrySet()) {
+        if (keycloakMultitenancyPaths != null && !keycloakMultitenancyPaths.isEmpty()) {
+            // Prepare a relative paths to KC path deployments map.
+            Map<String, KeycloakDeployment> pathDeployments = new HashMap<>();
+            for (Map.Entry<String, String> entry : keycloakMultitenancyPaths.entrySet()) {
                 InputStream is = getKeycloakJsonStream(entry.getValue());
                 if (is == null) {
                     LOG.warn(String.format(
                         "Unable to support the multitenancy due to the '%s' being not available", entry.getValue()
                     ));
                 } else {
-                    deployments.put(entry.getKey(), KeycloakDeploymentBuilder.build(is));
+                    pathDeployments.put(entry.getKey(), KeycloakDeploymentBuilder.build(is));
                 }
             }
             try {
-                // Statically initialize KeycloakAdapterConfigResolver
+                // Statically initialize KeycloakAdapterConfigResolver given that
+                // KeyCloak can only load it as opposed to accepting the prepared instance.
                 Module module = Module.getBootModuleLoader().loadModule("org.wildfly.swarm.keycloak:deployment");
                 final String resolverClassName = "org.wildfly.swarm.keycloak.deployment.KeycloakAdapterConfigResolver";
                 Class<?> resolverClass = module.getClassLoader().loadClass(resolverClassName);
-                Method setDeployments = resolverClass.getDeclaredMethod("setDeployments", Map.class);
-                setDeployments.invoke(null, deployments);
+                Method setPathDeployments = resolverClass.getDeclaredMethod("setPathDeployments", Map.class);
+                setPathDeployments.invoke(null, pathDeployments);
 
-                // Set "keycloak.config.resolver" context parameter
+                // Set "keycloak.config.resolver" context parameter for KC be able to load it
                 WebXmlAsset webXmlAsset = null;
                 Node node = archive.as(JARArchive.class).get("WEB-INF/web.xml");
                 if (node == null) {
@@ -219,6 +220,6 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
 
     @AttributeDocumentation("Keycloak multitenancy paths configuration")
     @Configurable("swarm.keycloak.multitenancy.paths")
-    Map<String, String> keycloakMultitenancy;
+    Map<String, String> keycloakMultitenancyPaths;
 
 }
