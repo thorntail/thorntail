@@ -1,0 +1,76 @@
+= HOWTO use `thorntail-devtools`
+
+== The Project
+
+This project was generated using the JAX-RS Maven archetype.
+
+The `pom.xml` was then edited to include the `thorntail-devtools` dependency:
+
+----
+<dependency>
+  <groupId>io.thorntail</groupId>
+  <artifactId>thorntail-devtools</artifactId>
+</dependency>
+----
+
+== Build
+
+    mvn package
+
+== Run Normally
+
+Run using the `run.sh` script to execute _without_ the benefits of the devtools.
+
+    ./target/thorntail-howto-devtools-4.0.0-SNAPSHOT-bin/bin/run.sh
+
+== Run in Restart Mode
+
+By setting the `THORNTAIL_DEV_MODE` environment variable to `restart`, when you execute your application, two things will occur:
+
+. The debug port will be opened
+. The application will watch for changes to the compiled `target/classes/` directory and completely _restart_ when changes are noticed.
+
+    THORNTAIL_DEV_MODE=restart ./target/thorntail-howto-devtools-4.0.0-SNAPSHOT-bin/bin/run.sh
+
+.Make a change
+
+Edit the `MyResource.java` class and either re-compile in your IDE (if it compiles to `target/classes/`) or open a new terminal window and type `mvn compile`
+
+You should notice output on the console similar to this:
+
+----
+INFO  : Wed May 09 10:53:35 EDT 2018 [io.thorntail.core] THORN-000059: Change detected in '/Users/bob/repos/thorntail/howto/devtools/target/thorntail-howto-devtools-4.0.0-SNAPSHOT-bin/../classes/io'
+INFO  : Wed May 09 10:53:35 EDT 2018 [io.thorntail.core] THORN-000059: Change detected in '/Users/bob/repos/thorntail/howto/devtools/target/thorntail-howto-devtools-4.0.0-SNAPSHOT-bin/../classes/io/thorntail'
+INFO  : Wed May 09 10:53:35 EDT 2018 [io.thorntail.core] THORN-000059: Change detected in '/Users/bob/repos/thorntail/howto/devtools/target/thorntail-howto-devtools-4.0.0-SNAPSHOT-bin/../classes/META-INF'
+INFO  : Wed May 09 10:53:35 EDT 2018 [io.thorntail.core] THORN-000054: Destroying child process
+Weld SE container 66b787f1-c0ff-400a-aa8b-968b09d1ec43 shut down by shutdown hook
+INFO  : Wed May 09 10:53:36 EDT 2018 [io.thorntail.core] THORN-000056: Launching child process
+...
+----
+
+Type `control-C` to stop the program.
+
+== Run in Reload Mode
+
+By setting the `THORNTAIL_DEV_MODE` environment variable to `reload`, when you execute your application, two things will occur:
+
+. The debug port will be opened
+. The application will watch for changes to the compiled `target/classes/` directory and completely _reload_ when changes are noticed.
+
+    THORNTAIL_DEV_MODE=restart ./target/thorntail-howto-devtools-4.0.0-SNAPSHOT-bin/bin/run.sh
+
+.Make a change
+
+
+Edit the `MyResource.java` class and either re-compile in your IDE (if it compiles to `target/classes/`) or open a new terminal window and type `mvn compile`
+
+You should notice output on the console similar to this:
+
+----
+INFO  : Wed May 09 10:56:48 EDT 2018 [io.thorntail.core] THORN-000999: Thorntail started in 2.544s
+[org.fakereplace.core.MainTransformer] INFO Fakereplace is replacing class io/thorntail/MyResource
+Running Integration
+[org.fakereplace.core.MainTransformer] INFO Fakereplace is replacing class io/thorntail/MyResource$Proxy$_$$_WeldClientProxy
+----
+
+Type `control-C` to stop the program.

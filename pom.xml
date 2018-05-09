@@ -44,6 +44,7 @@
     <module>docs</module>
 
     <module>howto/getting-started</module>
+    <module>howto/devtools</module>
   </modules>
 
 </project>
