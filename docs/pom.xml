@@ -81,6 +81,7 @@
             <version>${project.version}</version>
             <product>${swarm.product.build}</product>
             <WildFly>WildFly</WildFly>
+            <Thorntail>WildFly Swarm</Thorntail>
           </attributes>
           <doctype>book</doctype>
           <backend>html5</backend>

@@ -6,8 +6,8 @@
 
 :ndash: &#x2013;
 
-= WildFly Swarm Documentation
-The WildFly Swarm Team
+= {Thorntail} Documentation
+The {Thorntail} Team
 v{version}
 
 include::introduction.adoc[]

@@ -1,9 +1,9 @@
 [#using-a-bom]
 = Using a BOM
 
-To explicitly specify the WildFly Swarm
+To explicitly specify the {Thorntail}
 fractions your application uses, instead of relying
-on auto-detection, WildFly Swarm includes a set of
+on auto-detection, {Thorntail} includes a set of
 BOMs (bill of materials) which you can use instead of
 having to track and update Maven artifact versions
 in several places.
@@ -11,7 +11,7 @@ in several places.
 ifndef::product[]
 == Different types of BOMs
 
-WildFly Swarm is described as _just enough app-server,_
+{Thorntail} is described as _just enough app-server,_
 which means it comprises of multiple pieces.  Your application
 includes only the pieces it needs.
 
@@ -55,7 +55,7 @@ endif::[]
 . Include a `bom` artifact in your `pom.xml`.
 +
 --
-Tracking the current version of WildFly Swarm through a property in your
+Tracking the current version of {Thorntail} through a property in your
 `pom.xml` is recommended.
 
 [source,xml,subs="+attributes"]
@@ -105,20 +105,20 @@ endif::[]
 By including the BOMs of your choice in the `<dependencyManagement>` section,
 you have:
 
-* Provided version-management for any WildFly Swarm artifacts you
+* Provided version-management for any {Thorntail} artifacts you
 subsequently *choose* to use.
 * Provided support to your IDE for auto-completing known artifacts
 when you edit your the `pom.xml` file of your application.
 --
 
-. Include WildFly Swarm dependencies.
+. Include {Thorntail} dependencies.
 +
 --
-Even though you imported the WildFly Swarm BOMs in the `<dependencyManagement>`
-section, your application still has no dependencies on WildFly Swarm
+Even though you imported the {Thorntail} BOMs in the `<dependencyManagement>`
+section, your application still has no dependencies on {Thorntail}
 artifacts.
 
-To include WildFly Swarm artifact dependencies based on the capabilities your
+To include {Thorntail} artifact dependencies based on the capabilities your
 application, enter the relevant artifacts as `<dependency>` elements:
 
 NOTE: You do not have to specify the version of the artifacts because the BOM
@@ -140,10 +140,10 @@ for example `undertow`.
 
 One shortcoming of importing a Maven BOM import is that it does not
 handle the configuration on the level of `<pluginManagement>`. When you use the
-WildFly Swarm Maven Plugin, you must specify the version of the plugin to use.
+{Thorntail} Maven Plugin, you must specify the version of the plugin to use.
 
 Thanks to the property you use in your `pom.xml` file, you can easily ensure
-that your plugin usage matches the release of WildFly Swarm that you are
+that your plugin usage matches the release of {Thorntail} that you are
 targeting with the BOM import.
 
 [source,xml]

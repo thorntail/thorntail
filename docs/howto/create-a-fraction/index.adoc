@@ -2,14 +2,14 @@
 
 ## Introduction
 
-The composable pieces of WildFly Swarm are called _fractions_. Each fraction
+The composable pieces of {Thorntail} are called _fractions_. Each fraction
 starts with a single Maven-addressable artifact which may transitively bring
 in others.
 
 ## The `pom.xml`
 
 It is useful to set at least a pair of properties, specifying the version
-of the WildFly Swarm SPI and fraction-plugin being used:
+of the {Thorntail} SPI and fraction-plugin being used:
 
 [source,xml,subs=+attributes]
 ----
@@ -19,7 +19,7 @@ of the WildFly Swarm SPI and fraction-plugin being used:
 </properties>
 ----
 
-You can include all of the primary bits of WildFly Swarm using the
+You can include all of the primary bits of {Thorntail} using the
 `bom-all` artifact in a `<dependencyManagement>` import. Additionally,
 you'll need two more dependencies added in order to write CDI components
 to configure the server.
@@ -311,9 +311,9 @@ the relevant CDI components.
 [[auto-detection]]
 ### Auto-detection
 
-An important point of WildFly Swarm is the capability of the plugin
+An important point of {Thorntail} is the capability of the plugin
 to autodetect that a fraction is required.  Currently this is only supported
-by fractions that are part of the core WildFly Swarm distribution. In
+by fractions that are part of the core {Thorntail} distribution. In
 the event that your fraction is merged into core, you will want to possibly
 also support auto-detection.
 

@@ -1,7 +1,7 @@
 [#creating-a-hollow-jar]
 = Creating a hollow JAR
 
-The xref:hollow-jar[hollow JAR] is one method of packaging an application for execution with WildFly Swarm.
+The xref:hollow-jar[hollow JAR] is one method of packaging an application for execution with {Thorntail}.
 
 .Prerequisites
 

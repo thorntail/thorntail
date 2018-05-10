@@ -6,7 +6,7 @@ Provides support for container-managed database connections.
 
 If your application includes the appropriate vendor JDBC
 library in its normal dependencies, these drivers will be detected
-and installed by WildFly Swarm without any additional effort.
+and installed by {Thorntail} without any additional effort.
 
 The list of detectable drivers and their `driver-name` which
 may be used when defining a datasource is as follows:
