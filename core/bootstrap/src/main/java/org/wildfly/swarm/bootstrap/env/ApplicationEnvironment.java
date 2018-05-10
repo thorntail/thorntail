@@ -288,17 +288,17 @@ public class ApplicationEnvironment {
 
         if (dependencyTree.isPresent()) {
 
-            Set<MavenArtifactDescriptor> applicationDependencies = new HashSet<>();
+            Set<String> applicationDependencies = new HashSet<>();
             Set<MavenArtifactDescriptor> keep = new HashSet<>(dependencyTree.get().getDirectDeps());
             keep.removeAll(fractionDependencies);
 
 
             for (MavenArtifactDescriptor dep : keep) {
                 // the dep itself
-                applicationDependencies.add(dep);
+                applicationDependencies.add(dep.mavenGav());
 
                 // it's transient dependencies
-                applicationDependencies.addAll(dependencyTree.get().getTransientDeps(dep));
+                applicationDependencies.addAll(dependencyTree.get().getTransientDeps(dep).stream().map(t -> t.mavenGav()).collect(Collectors.toList()));
             }
 
             this.removeableDependencies.removeAll(applicationDependencies);
