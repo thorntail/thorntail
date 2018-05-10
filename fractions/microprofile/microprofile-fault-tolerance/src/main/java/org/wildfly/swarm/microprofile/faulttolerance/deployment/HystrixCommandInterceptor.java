@@ -51,6 +51,8 @@ import org.eclipse.microprofile.faulttolerance.exceptions.CircuitBreakerOpenExce
 import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceException;
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.jboss.logging.Logger;
+import org.jboss.weld.context.RequestContext;
+import org.jboss.weld.context.unbound.Unbound;
 import org.wildfly.swarm.microprofile.faulttolerance.MicroProfileFaultToleranceFraction;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.BulkheadConfig;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.CircuitBreakerConfig;
@@ -106,13 +108,14 @@ public class HystrixCommandInterceptor {
     @SuppressWarnings("unchecked")
     @Inject
     public HystrixCommandInterceptor(@ConfigProperty(name = "MP_Fault_Tolerance_NonFallback_Enabled", defaultValue = "true") Boolean nonFallBackEnable,
-            Config config, Instance<MicroProfileFaultToleranceFraction> fraction, BeanManager beanManager) {
+            Config config, Instance<MicroProfileFaultToleranceFraction> fraction, BeanManager beanManager, @Unbound RequestContext requestContext) {
         this.nonFallBackEnable = nonFallBackEnable;
         Optional<Boolean> mpSyncCircuitBreaker = config.getOptionalValue(SYNC_CIRCUIT_BREAKER_KEY, Boolean.class);
         this.syncCircuitBreakerEnabled = mpSyncCircuitBreaker.orElse(fraction.isUnsatisfied() ? true : fraction.get().isSynchronousCircuitBreakerEnabled());
         this.beanManager = beanManager;
         this.extension = beanManager.getExtension(HystrixExtension.class);
         this.commandMetadataMap = new ConcurrentHashMap<>();
+        this.requestContext = requestContext;
         // WORKAROUND: Hystrix does not allow to use custom HystrixCircuitBreaker impl
         // See also https://github.com/Netflix/Hystrix/issues/9
         try {
@@ -134,18 +137,20 @@ public class HystrixCommandInterceptor {
         CommandMetadata metadata = commandMetadataMap.computeIfAbsent(method, CommandMetadata::new);
         RetryContext retryContext = nonFallBackEnable && metadata.operation.hasRetry() ? new RetryContext(metadata.operation.getRetry()) : null;
         SynchronousCircuitBreaker syncCircuitBreaker = getSynchronousCircuitBreaker(metadata);
-        Function<Supplier<Object>, SimpleCommand> commandFactory = (fallback) -> new SimpleCommand(metadata.setter, ctx, fallback, metadata.operation);
+        Function<Supplier<Object>, SimpleCommand> commandFactory = (fallback) -> new SimpleCommand(metadata.setter, ctx, fallback, metadata.operation,
+                metadata.operation.isAsync() ? requestContext : null);
 
         if (metadata.operation.isAsync()) {
             LOGGER.debugf("Queue up command for async execution: %s", metadata.operation);
-            return new AsyncFuture(CompositeCommand.createAndQueue(() -> executeCommand(commandFactory, retryContext, metadata, ctx, syncCircuitBreaker), metadata.operation));
+            return new AsyncFuture(
+                    CompositeCommand.createAndQueue(() -> executeCommand(commandFactory, retryContext, metadata, ctx, syncCircuitBreaker), metadata.operation));
         } else {
             LOGGER.debugf("Sync execution: %s]", metadata.operation);
             return executeCommand(commandFactory, retryContext, metadata, ctx, syncCircuitBreaker);
         }
     }
 
-    private static Object executeCommand(Function<Supplier<Object>, SimpleCommand> commandFactory, RetryContext retryContext, CommandMetadata metadata,
+    private Object executeCommand(Function<Supplier<Object>, SimpleCommand> commandFactory, RetryContext retryContext, CommandMetadata metadata,
             ExecutionContextWithInvocationContext ctx, SynchronousCircuitBreaker syncCircuitBreaker) throws Exception {
         while (true) {
             if (retryContext != null) {
@@ -324,6 +329,8 @@ public class HystrixCommandInterceptor {
     private final BeanManager beanManager;
 
     private final HystrixExtension extension;
+
+    private final RequestContext requestContext;
 
     private class CommandMetadata {
 

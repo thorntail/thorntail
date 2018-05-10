@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.function.Supplier;
 
+import org.jboss.weld.context.RequestContext;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.FaultToleranceOperation;
 
 import com.netflix.hystrix.HystrixCommand;
@@ -55,17 +56,29 @@ public class SimpleCommand extends HystrixCommand<Object> {
      * @param ctx
      * @param fallback
      * @param operation
+     * @param requestContext
      */
-    protected SimpleCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback, FaultToleranceOperation operation) {
+    protected SimpleCommand(Setter setter, ExecutionContextWithInvocationContext ctx, Supplier<Object> fallback, FaultToleranceOperation operation,
+            RequestContext requestContext) {
         super(setter);
         this.ctx = ctx;
         this.fallback = fallback;
         this.operation = operation;
+        this.requestContext = requestContext;
     }
 
     @Override
     protected Object run() throws Exception {
-        return ctx.proceed();
+        if (requestContext == null) {
+            return ctx.proceed();
+        }
+        try {
+            requestContext.activate();
+            return ctx.proceed();
+        } finally {
+            requestContext.invalidate();
+            requestContext.deactivate();
+        }
     }
 
     @Override
@@ -96,5 +109,7 @@ public class SimpleCommand extends HystrixCommand<Object> {
     private final Supplier<Object> fallback;
 
     private final ExecutionContextWithInvocationContext ctx;
+
+    private final RequestContext requestContext;
 
 }

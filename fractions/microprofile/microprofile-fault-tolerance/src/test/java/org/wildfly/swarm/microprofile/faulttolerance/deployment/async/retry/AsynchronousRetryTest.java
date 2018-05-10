@@ -40,7 +40,7 @@ public class AsynchronousRetryTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return TestArchive.createBase("AsynchronousRetryTest.jar").addPackage(AsynchronousRetryTest.class.getPackage());
+        return TestArchive.createBase(AsynchronousRetryTest.class).addPackage(AsynchronousRetryTest.class.getPackage());
     }
 
     @Test
