@@ -12,7 +12,6 @@ To gain the ability to hot reload classes into an running executable, an additio
 <dependency>
   <groupId>{groupId}</groupId>
   <artifactId>{project_key}-devtools</artifactId>
-  <scope>test</scope>
 </dependency>
 ----
 
