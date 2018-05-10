@@ -9,9 +9,11 @@ This example will use a local Docker installation.
 
 == Download and install `s2i`
 
-Down the `s2i` package:
+Download the `s2i` package:
 
 https://github.com/openshift/source-to-image/releases
+
+Explode it an ensure it's added to your `$PATH`.
 
 == Configure your Environment
 
