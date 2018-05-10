@@ -19,6 +19,7 @@
   <modules>
     <module>getting-started</module>
     <module>openshift</module>
+    <module>openshift-s2i</module>
     <module>devtools</module>
   </modules>
 </project>

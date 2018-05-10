@@ -1,0 +1,50 @@
+= HOWTO OpenShift s2i (Source-to-Image)
+
+This builds upon the link:../getting-started/[Getting Started] HOWTO.
+
+== Ensure you have Docker running locally
+
+The OpenShift s2i process is a way of creating Linux containers. 
+This example will use a local Docker installation.
+
+== Download and install `s2i`
+
+Down the `s2i` package:
+
+https://github.com/openshift/source-to-image/releases
+
+== Configure your Environment
+
+Execute an s2i build from within your Maven project.
+
+----
+s2i build . thorntail/s2i-thorntail sample-app
+----
+
+This will use the `thorntail/s2i-thorntail` builder image.
+During the build:
+
+. Your source will be copied into the image
+. A Maven build will be performed
+
+== Verify your new container image has been created.
+
+Use the `docker images` command to determine that both the s2i builder image and your newly build `sample-app` image has been created.
+
+----
+melvin:openshift-s2i bob$ docker images
+REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
+sample-app                latest              bef7bc27f11a        3 minutes ago       575MB
+thorntail/s2i-thorntail   latest              b72c972e68cb        13 minutes ago      479MB
+----
+
+== Run your image
+
+----
+docker run -p 8080:8080 sample-app
+----
+
+== Access your application
+
+http://localhost:8080/
+

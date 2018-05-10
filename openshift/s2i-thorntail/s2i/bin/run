@@ -1,0 +1,14 @@
+#!/bin/bash -e
+#
+# S2I run script for the 'thorntail' image.
+# The run script executes the server that runs your application.
+#
+# For more information see the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+#exec asdf -p 8080
+#export JAVA_APP_DIR=/opt/app
+#export JAVA_LIB_DIR=/opt/app/lib
+#exec /deployments/run-java.sh
+exec /opt/app/bin/run.sh
