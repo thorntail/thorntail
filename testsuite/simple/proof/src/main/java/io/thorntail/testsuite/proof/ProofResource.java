@@ -1,6 +1,7 @@
 package io.thorntail.testsuite.proof;
 
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -35,4 +36,7 @@ public class ProofResource {
     @Inject
     @ConfigProperty(name="web.primary.port")
     int port;
+
+    @Inject
+    ExecutorService executorService;
 }
