@@ -30,7 +30,21 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Repeatable(MultipleRequiredClassPresent.class)
+@Repeatable(RequiredClassPresent.List.class)
 public @interface RequiredClassPresent {
     String value();
+
+    /**
+     * Holder for repeatable annotation {@link RequiredClassPresent}
+     *
+     * @author Ken Finnigan
+     * @author Bob McWhirter
+     *
+     * @see RequiredClassPresent
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+    @interface List {
+        RequiredClassPresent[] value();
+    }
 }

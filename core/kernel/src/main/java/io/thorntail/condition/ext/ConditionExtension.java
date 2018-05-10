@@ -9,21 +9,19 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
 
 import io.thorntail.condition.annotation.RequiredClassPresent;
-import io.thorntail.condition.annotation.MultipleRequiredClassNotPresent;
-import io.thorntail.condition.annotation.MultipleRequiredClassPresent;
 import io.thorntail.condition.annotation.RequiredClassNotPresent;
 
 public class ConditionExtension implements Extension {
 
-    public <T> void ifClassPresent(@WithAnnotations({MultipleRequiredClassPresent.class, RequiredClassPresent.class}) @Observes ProcessAnnotatedType<T> event) {
+    public <T> void ifClassPresent(@WithAnnotations({RequiredClassPresent.List.class, RequiredClassPresent.class}) @Observes ProcessAnnotatedType<T> event) {
         boolean allowed = true;
 
         AnnotatedType<?> type = event.getAnnotatedType();
 
-        if (type.isAnnotationPresent(MultipleRequiredClassPresent.class)) {
-            Set<MultipleRequiredClassPresent> annos = type.getAnnotations(MultipleRequiredClassPresent.class);
+        if (type.isAnnotationPresent(RequiredClassPresent.List.class)) {
+            Set<RequiredClassPresent.List> annos = type.getAnnotations(RequiredClassPresent.List.class);
 
-            for (MultipleRequiredClassPresent mrcp : annos) {
+            for (RequiredClassPresent.List mrcp : annos) {
                 for (RequiredClassPresent each : mrcp.value()) {
                     String className = each.value();
                     try {
@@ -53,14 +51,14 @@ public class ConditionExtension implements Extension {
         }
     }
 
-    public <T> void ifClassNotPresent(@WithAnnotations({MultipleRequiredClassNotPresent.class, RequiredClassNotPresent.class}) @Observes ProcessAnnotatedType<T> event) {
+    public <T> void ifClassNotPresent(@WithAnnotations({RequiredClassNotPresent.List.class, RequiredClassNotPresent.class}) @Observes ProcessAnnotatedType<T> event) {
         boolean allowed = true;
 
         AnnotatedType<?> type = event.getAnnotatedType();
-        if (type.isAnnotationPresent(MultipleRequiredClassNotPresent.class)) {
-            Set<MultipleRequiredClassNotPresent> annos = type.getAnnotations(MultipleRequiredClassNotPresent.class);
+        if (type.isAnnotationPresent(RequiredClassNotPresent.List.class)) {
+            Set<RequiredClassNotPresent.List> annos = type.getAnnotations(RequiredClassNotPresent.List.class);
 
-            for (MultipleRequiredClassNotPresent mrcnp : annos) {
+            for (RequiredClassNotPresent.List mrcnp : annos) {
                 for (RequiredClassNotPresent each : mrcnp.value()) {
                     String className = each.value();
                     try {

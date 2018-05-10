@@ -32,8 +32,22 @@ import javax.enterprise.util.Nonbinding;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@Repeatable(MultipleRequiredClassNotPresent.class)
+@Repeatable(RequiredClassNotPresent.List.class)
 public @interface RequiredClassNotPresent {
     @Nonbinding
     String value() default "";
+
+    /**
+     * Holder for repeatable annotation {@link RequiredClassNotPresent}
+     *
+     * @author Ken Finnigan
+     * @author Bob McWhirter
+     *
+     * @see RequiredClassNotPresent
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+    @interface List {
+        RequiredClassNotPresent[] value();
+    }
 }
