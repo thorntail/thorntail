@@ -1,7 +1,7 @@
 package io.thorntail.concurrency.impl;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
@@ -16,6 +16,6 @@ public class ExecutorServiceProducer {
     @Produces
     @Dependent
     ExecutorService createExecutor() {
-        return Executors.newCachedThreadPool();
+        return ForkJoinPool.commonPool();
     }
 }
