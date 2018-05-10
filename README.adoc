@@ -1,8 +1,10 @@
-[![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
-= Thorntail PoC
+image:https://img.shields.io/github/license/thorntail/thorntail.svg["License", link="http://www.apache.org/licenses/LICENSE-2.0"] 
 
-.Build 
+Thorntail PoC
+=============
+
+== Build 
 
 The build assumes Docker is present in some cases for deeper integration tests.
 
@@ -10,14 +12,14 @@ You may skip all tests (and its Docker usage) using `-DskipTests`
 
     mvn clean && mvn install
 
-.Build while running the various TCKs
+== Build while running the various TCKs
 
 By default the MicroProfile TCKs are _not_ included in the build.
 To include them, simply add `-Ptck` to any `mvn` invocation:
 
     mvn clean -Ptck && mvn install -Ptck
 
-.Enjoy the documentation
+== Enjoy the documentation
 
     open docs/target/thorntail-docs-html/index.html
 
