@@ -24,14 +24,13 @@ import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEY_ALIAS;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEY_ENCRYPTION_ALGORITHM;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEY_PASSWORD;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_ALGORITHM;
-import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_DATA_ENCODING;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_DATA_DETACHED;
-
+import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_DATA_ENCODING;
 import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
-import org.wildfly.swarm.jose.impl.DefaultJoseImpl;
+import org.wildfly.swarm.jose.impl.JoseFactory;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -43,7 +42,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 public class JoseFraction implements Fraction<JoseFraction> {
 
     public Jose getJoseInstance() {
-        return new DefaultJoseImpl(this);
+        return JoseFactory.getJose(this);
     }
 
     public JoseFraction keystorePassword(String password) {
