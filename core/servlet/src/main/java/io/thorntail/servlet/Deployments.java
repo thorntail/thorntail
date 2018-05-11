@@ -26,9 +26,9 @@ public class Deployments implements Iterable<DeploymentMetaData> {
 
     @PostConstruct
     void configureList() {
-        this.injectedDeployments.stream()
-                .filter(Objects::nonNull)
-                .forEach(this::addDeployment);
+        for (DeploymentMetaData deployment : this.injectedDeployments) {
+            addDeployment(deployment);
+        }
     }
 
     @Override
