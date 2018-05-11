@@ -17,6 +17,7 @@ package org.wildfly.swarm.keycloak;
 
 import java.net.URL;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
@@ -39,7 +40,7 @@ import org.wildfly.swarm.jaxrs.JAXRSArchive;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-public class KeycloakArquillianTest {
+public class KeycloakMultitenancyTest {
 
     @Deployment
     public static Archive<?> createDeployment() throws Exception {
@@ -47,14 +48,14 @@ public class KeycloakArquillianTest {
         deployment.addResource(SecuredApplication.class);
         deployment.addResource(SecuredResource.class);
         deployment.addAsResource("wildfly-swarm-keycloak-example-realm.json");
-        deployment.addAsResource("keycloak.json");
-        deployment.addAsResource("project-default-kc-json.yml", "project-defaults.yml");
+        deployment.addAsResource("keycloak.json", "keycloakTenant.json");
+        deployment.addAsResource("project-multitenancy.yml", "project-defaults.yml");
         return deployment;
     }
 
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
-        URL migrationRealmUrl = KeycloakArquillianTest.class.getResource("/wildfly-swarm-keycloak-example-realm.json");
+        URL migrationRealmUrl = KeycloakMultitenancyTest.class.getResource("/wildfly-swarm-keycloak-example-realm.json");
         System.setProperty("keycloak.migration.file", migrationRealmUrl.toURI().getPath());
         System.setProperty("keycloak.migration.provider", "singleFile");
         System.setProperty("keycloak.migration.action", "import");
@@ -64,28 +65,51 @@ public class KeycloakArquillianTest {
 
     @Test
     @RunAsClient
-    public void testResourceIsSecured() throws Exception {
-        // Check 401 is returned without the token
-        Assert.assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(),
-           ClientBuilder.newClient().target("http://localhost:8080/secured").request().get().getStatus());
+    public void testAccessResourceWithoutToken() throws Exception {
+        Client client = ClientBuilder.newClient();
+        try {
+            Assert.assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(),
+                client.target("http://localhost:8080/secured").request().get().getStatus());
+        } finally {
+            client.close();
+        }
+    }
+    
+    @Test
+    @RunAsClient
+    public void testAccessResourceWithToken() throws Exception {
         
-        final String tokenUri = 
-            "http://localhost:8080/auth/realms/wildfly-swarm-keycloak-example/protocol/openid-connect/token";
-        String response = 
-            ClientBuilder.newClient().target(tokenUri).request()
-                .post(Entity.form(
-                        new Form().param("grant_type", "password").param("client_id", "curl")
-                                  .param("username", "user1").param("password", "password1")),
-                        String.class);
-        String accessToken = getAccessTokenFromResponse(response);
+        String accessToken = getAccessToken();
         
-        String serviceResponse = 
-            ClientBuilder.newClient().target("http://localhost:8080/secured")
-                .request()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .get(String.class);
-        Assert.assertEquals("Hi user1, this resource is secured", serviceResponse);
+        Client client = ClientBuilder.newClient();
+        try {
+            String serviceResponse = 
+                client .target("http://localhost:8080/secured")
+                    .request()
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                    .get(String.class);
+            Assert.assertEquals("Hi user1, this resource is secured", serviceResponse);
+        } finally {
+            client.close();
+        }
 
+    }
+
+    private String getAccessToken() {
+        Client client = ClientBuilder.newClient();
+        try {
+            final String tokenUri = 
+                    "http://localhost:8080/auth/realms/wildfly-swarm-keycloak-example/protocol/openid-connect/token";
+            String response = 
+                client.target(tokenUri).request()
+                    .post(Entity.form(
+                            new Form().param("grant_type", "password").param("client_id", "curl")
+                                      .param("username", "user1").param("password", "password1")),
+                            String.class);
+            return getAccessTokenFromResponse(response);
+        } finally {
+            client.close();
+        }
     }
 
     private String getAccessTokenFromResponse(String response) {
