@@ -60,6 +60,22 @@ public class ConfigSources {
     public static List<ConfigSource> application(ClassLoader classLoader) {
         List<ConfigSource> list = new ArrayList<>();
 
+        List<Path> configLocations = ConfigLocation.getConfigLocations();
+
+        for (Path location : configLocations) {
+            if (Files.isDirectory(location)) {
+                try {
+                    list.addAll(FilesystemConfigSourceLoader.of(location,
+                                                                APPLICATION_ORDINAL,
+                                                                "application.properties",
+                                                                "application.yaml",
+                                                                "application.yml"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
         try {
             list.addAll(ClasspathConfigSourceLoader.of(classLoader,
                                                        APPLICATION_ORDINAL,

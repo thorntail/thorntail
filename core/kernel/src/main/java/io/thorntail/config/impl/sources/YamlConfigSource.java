@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.thorntail.impl.CoreMessages;
+import io.thorntail.impl.KernelMessages;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -20,7 +20,7 @@ public class YamlConfigSource extends MapConfigSource {
         try {
             Class.forName("org.yaml.snakeyaml.Yaml");
         } catch (ClassNotFoundException e) {
-            CoreMessages.MESSAGES.unableToProcessYaml(url.toExternalForm());
+            KernelMessages.MESSAGES.unableToProcessYaml(url.toExternalForm());
             return null;
         }
         Yaml yaml = new Yaml();

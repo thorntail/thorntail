@@ -21,22 +21,26 @@ public class DevMode {
     public static final String DEBUG = "DEBUG";
 
     public static boolean isDevMode() {
-        String devMode = System.getenv(ENVIRONMENT_VAR_NAME);
+        String devMode = getValue();
         return (devMode != null && (!devMode.trim().equals("")));
     }
 
     public static boolean isRestart() {
-        String devMode = System.getenv(ENVIRONMENT_VAR_NAME);
+        String devMode = getValue();
         return (devMode != null && devMode.equalsIgnoreCase(RESTART));
     }
 
     public static boolean isReload() {
-        String devMode = System.getenv(ENVIRONMENT_VAR_NAME);
+        String devMode = getValue();
         return (devMode != null && devMode.equalsIgnoreCase(RELOAD));
     }
 
     public static boolean isDebug() {
-        String devMode = System.getenv(ENVIRONMENT_VAR_NAME);
+        String devMode = getValue();
         return (devMode != null && devMode.equalsIgnoreCase(DEBUG));
+    }
+
+    public static String getValue() {
+        return System.getenv(ENVIRONMENT_VAR_NAME);
     }
 }

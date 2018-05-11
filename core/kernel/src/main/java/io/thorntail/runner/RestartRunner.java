@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import com.sun.nio.file.SensitivityWatchEventModifier;
 import io.thorntail.DevMode;
-import io.thorntail.impl.CoreMessages;
+import io.thorntail.impl.KernelMessages;
 
 /**
  * Created by bob on 4/3/18.
@@ -32,8 +32,8 @@ public class RestartRunner extends AbstractForkedRunner {
 
     @Override
     public void run() throws Exception {
-        CoreMessages.MESSAGES.usingDevMode(DevMode.RESTART);
-        CoreMessages.MESSAGES.restartEnabled();
+        KernelMessages.MESSAGES.usingDevMode(DevMode.RESTART);
+        KernelMessages.MESSAGES.restartEnabled();
 
         ProcessBuilder builder = new ProcessBuilder();
 
@@ -49,7 +49,7 @@ public class RestartRunner extends AbstractForkedRunner {
         try {
             Class.forName("com.sun.nio.file.SensitivityWatchEventModifier");
             sensitiveAvailable = true;
-            CoreMessages.MESSAGES.highSensitiveFileWatching();
+            KernelMessages.MESSAGES.highSensitiveFileWatching();
         } catch (ClassNotFoundException e) {
             // ignore
         }
@@ -67,7 +67,7 @@ public class RestartRunner extends AbstractForkedRunner {
                         path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
                     });
                 }
-                CoreMessages.MESSAGES.watchingDirectory(p.toString());
+                KernelMessages.MESSAGES.watchingDirectory(p.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -79,7 +79,7 @@ public class RestartRunner extends AbstractForkedRunner {
             while (true) {
                 try {
                     if (process == null) {
-                        CoreMessages.MESSAGES.launchingChildProcess();
+                        KernelMessages.MESSAGES.launchingChildProcess();
                         process = builder.start();
                     }
                     WatchKey key = watchService.poll(500, TimeUnit.MILLISECONDS);
@@ -88,14 +88,14 @@ public class RestartRunner extends AbstractForkedRunner {
                             continue;
                         }
                         if (System.currentTimeMillis() - lastChange > 500) {
-                            CoreMessages.MESSAGES.destroyingChildProcess();
+                            KernelMessages.MESSAGES.destroyingChildProcess();
                             process.destroy();
                             if (!process.waitFor(5, TimeUnit.SECONDS)) {
-                                CoreMessages.MESSAGES.destroyingChildProcessForcibly();
+                                KernelMessages.MESSAGES.destroyingChildProcessForcibly();
                                 process.destroyForcibly();
                             }
                             if (!process.waitFor(5, TimeUnit.SECONDS)) {
-                                CoreMessages.MESSAGES.childProcessDidNotExit();
+                                KernelMessages.MESSAGES.childProcessDidNotExit();
                                 break;
                             }
                             process = null;
@@ -104,7 +104,7 @@ public class RestartRunner extends AbstractForkedRunner {
                         continue;
                     }
                     lastChange = System.currentTimeMillis();
-                    CoreMessages.MESSAGES.changeDetected(key.watchable().toString());
+                    KernelMessages.MESSAGES.changeDetected(key.watchable().toString());
                     int totalEvents = 0;
                     for (WatchEvent<?> watchEvent : key.pollEvents()) {
                         totalEvents += watchEvent.count();

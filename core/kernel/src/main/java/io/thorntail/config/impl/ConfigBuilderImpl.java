@@ -24,6 +24,7 @@ import io.thorntail.config.impl.converters.fallback.EnumValueOfConverter;
 import io.thorntail.config.impl.converters.fallback.StaticParseConverter;
 import io.thorntail.config.impl.converters.fallback.StaticValueOfConverter;
 import io.thorntail.config.impl.converters.fallback.StringConstructorConverter;
+import io.thorntail.impl.KernelMessages;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -91,6 +92,11 @@ class ConfigBuilderImpl implements ConfigBuilder {
 
             this.sources.addAll(ConfigSources.frameworkDefaults(this.classLoader));
             this.sources.addAll(ConfigSources.microprofileConfig(Thread.currentThread().getContextClassLoader()));
+
+            ConfigLocation.getConfigLocations().forEach(e->{
+                KernelMessages.MESSAGES.configLocation(e.toString());
+            });
+
             this.sources.addAll(ConfigSources.application(this.classLoader));
             this.sources.addAll(ConfigSources.applicationProfiles(this.classLoader));
         }

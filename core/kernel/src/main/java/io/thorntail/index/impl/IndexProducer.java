@@ -9,11 +9,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import io.thorntail.impl.KernelMessages;
 import org.jboss.jandex.CompositeIndex;
 import org.jboss.jandex.IndexReader;
 import org.jboss.jandex.IndexView;
 import io.thorntail.Thorntail;
-import io.thorntail.impl.CoreMessages;
 
 /**
  * @author Ken Finnigan
@@ -33,15 +33,15 @@ public class IndexProducer {
         if (indexUrl != null) {
             // Load Index
             try (InputStream indexStream = indexUrl.openStream()) {
-                CoreMessages.MESSAGES.loadIndex(indexUrl.getPath());
+                KernelMessages.MESSAGES.loadIndex(indexUrl.getPath());
                 return new IndexReader(indexStream).read();
             } catch (IOException ioe) {
-                CoreMessages.MESSAGES.loadingIndexFileFailed(indexUrl.getPath(), ioe);
+                KernelMessages.MESSAGES.loadingIndexFileFailed(indexUrl.getPath(), ioe);
             }
         }
 
         // Return empty index
-        CoreMessages.MESSAGES.indexNotFound(INDEX_LOCATION);
+        KernelMessages.MESSAGES.indexNotFound(INDEX_LOCATION);
         return CompositeIndex.create(Collections.EMPTY_LIST);
     }
 }

@@ -4,7 +4,7 @@ package io.thorntail.logging.impl;
  * @author Ken Finnigan
  */
 public interface MessageOffsets {
-    int CORE_OFFSET = 0;
+    int KERNEL_OFFSET = 0;
 
     int SERVLET_OFFSET = 1000;
     int JAXRS_OFFSET = 2000;

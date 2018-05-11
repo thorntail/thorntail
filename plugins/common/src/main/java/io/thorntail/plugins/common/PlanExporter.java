@@ -113,20 +113,16 @@ public class PlanExporter {
 
     static void exportDirectory(Plan plan, Path destination) throws IOException, NoSuchAlgorithmException {
 
-        System.err.println("plan ---> " + plan.getEntries().size() + " // " + plan.getEntries());
         Files.createDirectories(destination);
 
         for (Entry entry : plan) {
-            System.err.println("export: " + entry.getPath());
             Path dest = destination.resolve(entry.getPath());
             if (Files.exists(dest)) {
                 // Same filename
                 byte[] destHash = Run.hashOf(dest);
                 byte[] srcHash = Run.hashOf(entry.openStream());
                 if (Arrays.equals(destHash, srcHash)) {
-                    System.err.println("skip: " + entry);
                     // Same hash
-                    //return;
                     continue;
                 }
             }

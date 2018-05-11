@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import io.thorntail.impl.CoreMessages;
+import io.thorntail.impl.KernelMessages;
 
 /**
  * Created by bob on 4/3/18.
@@ -81,7 +81,7 @@ public abstract class AbstractForkedRunner implements Runner {
     }
 
     protected String debug() {
-        CoreMessages.MESSAGES.debugPort(8000);
+        KernelMessages.MESSAGES.debugPort(8000);
         return "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000";
     }
 }

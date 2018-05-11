@@ -21,6 +21,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import io.thorntail.plugins.common.PlanExporter;
 
+import static io.thorntail.plugins.common.CommonPlanFactory.*;
 import static io.thorntail.plugins.maven.MavenPlanFactory.application;
 import static io.thorntail.plugins.maven.MavenPlanFactory.dependencies;
 
@@ -37,7 +38,7 @@ import static io.thorntail.plugins.maven.MavenPlanFactory.dependencies;
 public class PackageMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if ( ! this.project.getPackaging().equals("jar")) {
+        if (!this.project.getPackaging().equals("jar")) {
             getLog().info("Skipping " + this.project.getArtifactId() + " as packaging is not jar");
             return;
         }
@@ -81,7 +82,7 @@ public class PackageMojo extends AbstractMojo {
                     this.classifier,
                     new DefaultArtifactHandler(this.format)
             );
-            artifact.setFile( getDestination().toFile() );
+            artifact.setFile(getDestination().toFile());
             this.project.addAttachedArtifact(artifact);
         }
     }
@@ -99,8 +100,8 @@ public class PackageMojo extends AbstractMojo {
 
     private void createBasePlans() {
         this.dependenciesPlan = MavenPlanFactory.dependencies(this.project);
-        this.dirPlan = CommonPlanFactory.scripts(this.dependenciesPlan, this.mainClass);
-        this.jarPlan = CommonPlanFactory.manifest(CommonPlanFactory.bootClass(this.dependenciesPlan), this.mainClass);
+        this.dirPlan = confDir(scripts(this.dependenciesPlan, this.mainClass));
+        this.jarPlan = manifest(bootClass(this.dependenciesPlan), this.mainClass);
     }
 
     private void validateMode() throws MojoExecutionException {
@@ -179,7 +180,7 @@ public class PackageMojo extends AbstractMojo {
     @Parameter(defaultValue = "true", property = "thorntail.attach")
     protected boolean attach;
 
-    @Parameter(alias = "thorntail.mainClass")
+    @Parameter(property = "thorntail.mainClass")
     protected String mainClass;
 
     private Path workDir;

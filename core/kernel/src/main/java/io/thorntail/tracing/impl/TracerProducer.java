@@ -15,7 +15,7 @@ import io.opentracing.Tracer;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.util.GlobalTracer;
 import io.thorntail.events.LifecycleEvent;
-import io.thorntail.impl.CoreMessages;
+import io.thorntail.impl.KernelMessages;
 
 /**
  * @author Pavol Loffay
@@ -36,11 +36,11 @@ public class TracerProducer {
         }
         INSTANCE = TracerResolver.resolveTracer();
         if (INSTANCE == null) {
-            CoreMessages.MESSAGES.noValidTracer();
+            KernelMessages.MESSAGES.noValidTracer();
             INSTANCE = NoopTracerFactory.create();
         }
 
-        CoreMessages.MESSAGES.registeredTracer(INSTANCE.getClass().getName());
+        KernelMessages.MESSAGES.registeredTracer(INSTANCE.getClass().getName());
         GlobalTracer.register(INSTANCE);
     }
 

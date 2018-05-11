@@ -30,7 +30,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import io.thorntail.events.LifecycleEvent;
-import io.thorntail.impl.CoreMessages;
+import io.thorntail.impl.KernelMessages;
 import io.thorntail.logging.impl.jdk.DefaultConsoleFormatter;
 import io.thorntail.runner.DebugRunner;
 import io.thorntail.runner.DirectRunner;
@@ -171,9 +171,9 @@ public class Thorntail {
 
         bootstrapLogging();
 
-        CoreMessages.MESSAGES.versionInfo(VERSION);
+        KernelMessages.MESSAGES.versionInfo(VERSION);
 
-        CoreMessages.MESSAGES.starting();
+        KernelMessages.MESSAGES.starting();
         long startTick = System.currentTimeMillis();
         long curTick = startTick;
 
@@ -222,7 +222,7 @@ public class Thorntail {
         curTick = markTiming("after start", curTick);
 
         long endTick = System.currentTimeMillis();
-        CoreMessages.MESSAGES.started(format(endTick - startTick));
+        KernelMessages.MESSAGES.started(format(endTick - startTick));
 
         return this;
     }
@@ -230,7 +230,7 @@ public class Thorntail {
 
     private long markTiming(String phase, long startTick) {
         long curTick = System.currentTimeMillis();
-        CoreMessages.MESSAGES.timing(phase, format(curTick - startTick));
+        KernelMessages.MESSAGES.timing(phase, format(curTick - startTick));
         return curTick;
     }
 
@@ -238,10 +238,10 @@ public class Thorntail {
      * Stop the container.
      */
     public void stop() {
-        CoreMessages.MESSAGES.stopping();
+        KernelMessages.MESSAGES.stopping();
         ConfigProviderResolver.instance().releaseConfig(ConfigProvider.getConfig());
         this.container.shutdown();
-        CoreMessages.MESSAGES.stopped();
+        KernelMessages.MESSAGES.stopped();
     }
 
     private static String format(long ms) {

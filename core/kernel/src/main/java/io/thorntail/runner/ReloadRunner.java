@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.thorntail.DevMode;
-import io.thorntail.impl.CoreMessages;
+import io.thorntail.impl.KernelMessages;
 
 /**
  * Created by bob on 4/3/18.
@@ -19,11 +19,11 @@ public class ReloadRunner extends AbstractForkedRunner {
     @Override
     public void run() throws Exception {
         if (!isEnabled()) {
-            CoreMessages.MESSAGES.reloadRequestedButUnavailable();
+            KernelMessages.MESSAGES.reloadRequestedButUnavailable();
             new RestartRunner().run();
         } else {
-            CoreMessages.MESSAGES.usingDevMode(DevMode.RELOAD);
-            CoreMessages.MESSAGES.reloadEnabled();
+            KernelMessages.MESSAGES.usingDevMode(DevMode.RELOAD);
+            KernelMessages.MESSAGES.reloadEnabled();
             ProcessBuilder builder = new ProcessBuilder();
             builder.environment().remove(DevMode.ENVIRONMENT_VAR_NAME);
             builder.command(command());

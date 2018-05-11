@@ -46,6 +46,15 @@ public class CommonPlanFactory {
         return plan;
     }
 
+    public static Plan confDir(Plan parent) {
+
+        Plan plan = new Plan(parent);
+
+        Path conf = Paths.get( "conf");
+        plan.add(new ClasspathEntry(conf.resolve("README.txt"), "conf/README.txt"));
+        return plan;
+    }
+
     public static Plan scripts(Plan parent, String mainClass) {
         Plan plan = new Plan(parent);
 

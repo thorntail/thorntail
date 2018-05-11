@@ -18,14 +18,24 @@ import static io.thorntail.Info.NAME;
  * Created by bob on 1/19/18.
  */
 @MessageLogger(projectCode = CODE, length = 6)
-public interface CoreMessages extends BasicLogger {
-    CoreMessages MESSAGES = Logger.getMessageLogger(CoreMessages.class, LoggingUtil.loggerCategory("core"));
+public interface KernelMessages extends BasicLogger {
+    KernelMessages MESSAGES = Logger.getMessageLogger(KernelMessages.class, LoggingUtil.loggerCategory("kernel"));
 
-    int OFFSET = MessageOffsets.CORE_OFFSET;
+    int OFFSET = MessageOffsets.KERNEL_OFFSET;
 
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 1 + OFFSET, value = NAME + " - version %s")
     void versionInfo(String version);
+
+    // --
+
+    @LogMessage(level = Logger.Level.WARN)
+    @Message(id = 2 + OFFSET, value = "Unable to process YAML configuration %s. Add snakeyaml to your dependencies to enable")
+    void unableToProcessYaml(String url);
+
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 3 + OFFSET, value = "Configuration location: %s")
+    void configLocation(String path);
 
     // --
 
@@ -45,11 +55,7 @@ public interface CoreMessages extends BasicLogger {
     @Message(id = 13 + OFFSET, value = "phase [%s] completed in %s")
     void timing(String phase, String time);
 
-    // --
 
-    @LogMessage(level = Logger.Level.WARN)
-    @Message(id = 20 + OFFSET, value = "Unable to process YAML configuration %s. Add snakeyaml to your dependencies to enable")
-    void unableToProcessYaml(String url);
 
     // --
 
@@ -125,6 +131,9 @@ public interface CoreMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 61 + OFFSET, value = "Class reloading enabled")
     void reloadEnabled();
+
+    // --
+
 
 
     // --
