@@ -39,6 +39,10 @@ public class JoseJwsCompactUnencodedTest {
                                 .post(Entity.entity(jose.sign("Hello"), MediaType.TEXT_PLAIN));
         String jws = r.readEntity(String.class);
         Assert.assertEquals("Hello", jose.verifyDetached(jws, r.getHeaderString("DetachedData")));
+        
+        String[] parts = jws.split("\\.");
+        Assert.assertEquals(3, parts.length);
+        Assert.assertTrue(parts[1].isEmpty());
     }
        
 }
