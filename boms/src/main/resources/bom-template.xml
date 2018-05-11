@@ -50,7 +50,6 @@
     <version.shrinkwrap>${version.org.jboss.shrinkwrap}</version.shrinkwrap>
     <version.shrinkwrap-descriptors>${version.org.jboss.shrinkwrap.descriptors}</version.shrinkwrap-descriptors>
     <version.wildfly-swarm>${project.version}</version.wildfly-swarm>
-    <version.wildfly-config-api-runtime>${version.wildfly.config-api}</version.wildfly-config-api-runtime>
   </properties>
 
   <dependencyManagement>
@@ -59,11 +58,6 @@
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>spi</artifactId>
         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>config-api-runtime</artifactId>
-        <version>${version.wildfly-config-api-runtime}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.shrinkwrap</groupId>
