@@ -40,6 +40,7 @@ public class JoseCompactTest {
                                 .post(Entity.entity(jose.sign("Hello"), MediaType.TEXT_PLAIN),
                                       String.class);
         Assert.assertEquals("Hello", jose.verify(signedData));
+        Assert.assertEquals(3, signedData.split("\\.").length);
     }
     
     @Test
@@ -66,7 +67,11 @@ public class JoseCompactTest {
                                    .request(MediaType.TEXT_PLAIN)
                                    .post(Entity.entity(jose.encrypt(jose.sign("Hello")), MediaType.TEXT_PLAIN),
                                          String.class);
-        Assert.assertEquals("Hello", jose.verify(jose.decrypt(signedAndEncryptedData)));
+        String signedData = jose.decrypt(signedAndEncryptedData);
+        Assert.assertEquals("Hello", jose.verify(signedData));
+        
+        Assert.assertEquals(3, signedData.split("\\.").length);
+        Assert.assertEquals(5, signedAndEncryptedData.split("\\.").length);
     }
     
     @Test
@@ -77,6 +82,7 @@ public class JoseCompactTest {
                                    .post(Entity.entity(jose.encrypt("Hello"), MediaType.TEXT_PLAIN),
                                          String.class);
         Assert.assertEquals("Hello", jose.decrypt(encryptedData));
+        Assert.assertEquals(5, encryptedData.split("\\.").length);
     }
     
     @Test
