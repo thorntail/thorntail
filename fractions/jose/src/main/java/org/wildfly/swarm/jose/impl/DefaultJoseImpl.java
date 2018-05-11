@@ -89,7 +89,8 @@ public class DefaultJoseImpl implements Jose {
     private String signJson(JwsSignatureProvider provider, JwsHeaders headers, String data) {
         try {
             JwsJsonProducer producer = new JwsJsonProducer(data, true);
-            return producer.signWith(provider, headers);
+            producer.signWith(provider, headers);
+            return producer.getJwsJsonSignedDocument(fraction.signatureDataDetached());
         } catch (Exception ex) {
             throw new JoseException("JWS JOSE Signature Creation Failure", ex);
         }
@@ -102,9 +103,7 @@ public class DefaultJoseImpl implements Jose {
 
     @Override
     public VerificationOutput verification(String jws) throws JoseException {
-        Properties props = prepareSignatureProperties();
-        return DEFAULT_JOSE_FORMAT == fraction.signatureFormat()
-            ? verifyCompact(props, jws, null) : verifyJson(props, jws);
+        return getVerificationOutput(jws, null);
     }
 
     @Override
@@ -114,14 +113,21 @@ public class DefaultJoseImpl implements Jose {
 
     @Override
     public VerificationOutput verificationDetached(String jws, String detachedData) throws JoseException {
-        Properties props = prepareSignatureProperties();
-        return verifyCompact(props, jws,
-            fraction.signatureDataEncoding() ? Base64UrlUtility.encode(detachedData) : detachedData);
+        if (fraction.signatureDataEncoding()) {
+            detachedData = Base64UrlUtility.encode(detachedData);
+        }
+        return getVerificationOutput(jws, detachedData);
     }
 
-    private VerificationOutput verifyCompact(Properties props, String jws, String detached) {
+    private VerificationOutput getVerificationOutput(String jws, String detachedData) throws JoseException {
+        Properties props = prepareSignatureProperties();
+        return DEFAULT_JOSE_FORMAT == fraction.signatureFormat()
+                ? verifyCompact(props, jws, detachedData) : verifyJson(props, jws, detachedData);
+    }
+
+    private VerificationOutput verifyCompact(Properties props, String jws, String detachedData) {
         try {
-            JwsCompactConsumer consumer = new JwsCompactConsumer(jws, detached);
+            JwsCompactConsumer consumer = new JwsCompactConsumer(jws, detachedData);
             JwsSignatureVerifier verifier =
                 JwsUtils.loadSignatureVerifier(props, consumer.getJwsHeaders());
             if (!consumer.verifySignatureWith(verifier)) {
@@ -136,9 +142,9 @@ public class DefaultJoseImpl implements Jose {
         }
     }
 
-    private VerificationOutput verifyJson(Properties props, String jws) {
+    private VerificationOutput verifyJson(Properties props, String jws, String detachedData) {
         try {
-            JwsJsonConsumer consumer = new JwsJsonConsumer(jws);
+            JwsJsonConsumer consumer = new JwsJsonConsumer(jws, detachedData);
             List<JwsJsonSignatureEntry> entries = consumer.getSignatureEntries();
             if (entries.size() > 1) {
                 throw new JoseException("JWS JSON Signature Verification Failure:"
