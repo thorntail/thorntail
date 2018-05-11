@@ -18,6 +18,8 @@ public class DevMode {
 
     public static final String RELOAD = "RELOAD";
 
+    public static final String DEBUG = "DEBUG";
+
     public static boolean isDevMode() {
         String devMode = System.getenv(ENVIRONMENT_VAR_NAME);
         return (devMode != null && (!devMode.trim().equals("")));
@@ -31,5 +33,10 @@ public class DevMode {
     public static boolean isReload() {
         String devMode = System.getenv(ENVIRONMENT_VAR_NAME);
         return (devMode != null && devMode.equalsIgnoreCase(RELOAD));
+    }
+
+    public static boolean isDebug() {
+        String devMode = System.getenv(ENVIRONMENT_VAR_NAME);
+        return (devMode != null && devMode.equalsIgnoreCase(DEBUG));
     }
 }

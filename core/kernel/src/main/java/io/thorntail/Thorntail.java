@@ -32,6 +32,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import io.thorntail.events.LifecycleEvent;
 import io.thorntail.impl.CoreMessages;
 import io.thorntail.logging.impl.jdk.DefaultConsoleFormatter;
+import io.thorntail.runner.DebugRunner;
 import io.thorntail.runner.DirectRunner;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
@@ -55,7 +56,7 @@ import static io.thorntail.Info.VERSION;
 public class Thorntail {
 
     public static class Main {
-        public static void main(String...args) throws Exception {
+        public static void main(String... args) throws Exception {
             Thorntail.run();
         }
 
@@ -80,12 +81,15 @@ public class Thorntail {
      * @param configClass The configuration class.
      */
     public static void run(Class<?> configClass) throws Exception {
-        if ( DevMode.isRestart()) {
+        if (DevMode.isRestart()) {
             bootstrapLogging();
             new RestartRunner().run();
-        } else if ( DevMode.isReload() ) {
+        } else if (DevMode.isReload()) {
             bootstrapLogging();
             new ReloadRunner().run();
+        } else if (DevMode.isDebug()) {
+            bootstrapLogging();
+            new DebugRunner().run();
         } else {
             new DirectRunner(configClass).run();
         }
