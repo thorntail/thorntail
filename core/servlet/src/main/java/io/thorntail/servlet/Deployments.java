@@ -28,7 +28,7 @@ public class Deployments implements Iterable<DeploymentMetaData> {
     void configureList() {
         this.injectedDeployments.stream()
                 .filter(Objects::nonNull)
-                .forEach(this.deployments::add);
+                .forEach(this::addDeployment);
     }
 
     @Override
