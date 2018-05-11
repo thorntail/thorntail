@@ -27,6 +27,9 @@ Upon noticing changes, the process will be terminated and restarted, causing the
 Capbility only available if the above `{project_key}-devtools` dependency is added to the project.
 It will watch for changes to the contents of the classpath (only `.class` files, not packaged `.jar` files) and attempt to load and redefine the classes within the running process.
 
+`debug`::
+Capbility always included in the core, which only enables remote debug mode for the JVM.
+
 .Using `restart` mode
 
 Restart works primarily with directory layouts. 
@@ -38,7 +41,7 @@ Start the process with the environment variable set to `restart`
 $ {PROJECT_ENV}_DEV_MODE=restart ./target/myapp-bin/bin/run.sh
 ----
 
-The rebuilt your project as appropriate
+Then rebuild your project as appropriate
 
 [source,shell]
 ----
@@ -67,3 +70,13 @@ $ mvn compile
 
 Additionally, the same behavior is available if you execute your `main()` directly from your IDE with the environment variable set appropriately.
 Triggering a recompilation from within your IDE should also cause hot reloading of your classes within the running process.
+
+.Using `debug` mode
+
+This mode simply enables the remote JVM debug protocol on port `8000`.
+
+[source,shell,subs="verbatim,attributes"]
+----
+$ {PROJECT_ENV}_DEV_MODE=debug ./target/myapp-bin/bin/run.sh
+----
+
