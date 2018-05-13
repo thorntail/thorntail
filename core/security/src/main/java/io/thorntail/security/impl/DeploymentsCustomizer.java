@@ -7,17 +7,17 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import io.thorntail.servlet.HttpConstraintMetaData;
-import io.thorntail.servlet.ServletSecurityMetaData;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import io.thorntail.condition.annotation.RequiredClassPresent;
 import io.thorntail.events.LifecycleEvent;
 import io.thorntail.servlet.DeploymentMetaData;
 import io.thorntail.servlet.Deployments;
 import io.thorntail.servlet.EmptyRoleSemantic;
+import io.thorntail.servlet.HttpConstraintMetaData;
 import io.thorntail.servlet.SecurityConstraintMetaData;
 import io.thorntail.servlet.ServletMetaData;
+import io.thorntail.servlet.ServletSecurityMetaData;
 import io.thorntail.servlet.WebResourceCollectionMetaData;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import static io.thorntail.Info.ROOT_PACKAGE;
 
@@ -29,7 +29,9 @@ import static io.thorntail.Info.ROOT_PACKAGE;
 public class DeploymentsCustomizer {
 
     void customize(@Observes @Priority(1) LifecycleEvent.Initialize event) {
-        this.deployments.stream().forEach(this::customize);
+        for (DeploymentMetaData metaData : this.deployments) {
+            customize(metaData);
+        }
     }
 
     void customize(DeploymentMetaData deployment) {

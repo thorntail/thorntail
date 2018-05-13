@@ -18,7 +18,9 @@ import io.thorntail.servlet.Deployments;
 @ApplicationScoped
 public class ServletContextListenerCustomizer {
     void customize(@Observes @Priority(1) LifecycleEvent.Initialize event) {
-        this.deployments.stream().forEach(this::customize);
+        for (DeploymentMetaData deploymentMetaData : this.deployments) {
+            customize(deploymentMetaData);
+        }
     }
 
     private void customize(DeploymentMetaData deployment) {
