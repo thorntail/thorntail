@@ -30,7 +30,7 @@ import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
-import org.wildfly.swarm.jose.impl.JoseFactory;
+import org.wildfly.swarm.jose.provider.JoseFactory;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -42,7 +42,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 public class JoseFraction implements Fraction<JoseFraction> {
 
     public Jose getJoseInstance() {
-        return JoseFactory.getJose(this);
+        return JoseFactory.instance().getJose(this);
     }
 
     public JoseFraction keystorePassword(String password) {

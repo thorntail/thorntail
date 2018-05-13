@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jose.impl;
+package org.wildfly.swarm.jose.provider;
 
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_JOSE_FORMAT;
 

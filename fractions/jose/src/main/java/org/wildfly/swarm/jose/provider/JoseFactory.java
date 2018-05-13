@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.jose.impl;
+package org.wildfly.swarm.jose.provider;
 
 import org.wildfly.swarm.jose.Jose;
 import org.wildfly.swarm.jose.JoseFraction;
 
 public abstract class JoseFactory {
 
-    public static Jose getJose(JoseFraction fraction) {
-        return new DefaultJoseImpl(fraction);
+    public static JoseFactory instance() {
+        return new DefaultJoseFactory();
     }
+
+    public abstract Jose getJose(JoseFraction fraction);
 }
