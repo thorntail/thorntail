@@ -12,9 +12,11 @@ import org.jboss.weld.injection.spi.ResourceReferenceFactory;
 /**
  * @author Ken Finnigan
  */
-public class EntityManagerFactoryResourceProvider implements ResourceReferenceFactory<EntityManagerFactory> {
+public class EntityManagerFactoryResourceProvider implements ResourceReferenceFactory<EntityManagerFactory>, ResourceReference<EntityManagerFactory> {
 
     private final String unitName;
+    
+    private EntityManagerFactory entityManagerFactory;
 
     private final Map<String, String> properties;
 
@@ -29,24 +31,20 @@ public class EntityManagerFactoryResourceProvider implements ResourceReferenceFa
 
     @Override
     public ResourceReference<EntityManagerFactory> createResource() {
-        return new ResourceReference<EntityManagerFactory>() {
-            private EntityManagerFactory entityManagerFactory;
+        return this;
+    }
 
-            @Override
-            public EntityManagerFactory getInstance() {
-                if (null == entityManagerFactory) {
-                    entityManagerFactory = Persistence.createEntityManagerFactory(unitName, properties);
-                }
+    @Override
+    public EntityManagerFactory getInstance() {
+        if (null == entityManagerFactory) {
+            entityManagerFactory = Persistence.createEntityManagerFactory(unitName, properties);
+        }
 
-                return entityManagerFactory;
-            }
+        return entityManagerFactory;
+    }
 
-            @Override
-            public void release() {
-                if (null != entityManagerFactory) {
-                    entityManagerFactory.close();
-                }
-            }
-        };
+    @Override
+    public void release() {
+        //EntityManagerFactory must be a singleton for compliance with JSR-338
     }
 }

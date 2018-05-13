@@ -20,6 +20,7 @@
     <module>jaxrs</module>
     <module>jaxrs-jsonp</module>
     <module>jpa</module>
+    <module>jpa-contracts</module>
     <module>jpa-jta</module>
     <module>jpa-opentracing</module>
     <module>keycloak</module>

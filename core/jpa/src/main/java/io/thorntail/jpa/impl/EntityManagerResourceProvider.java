@@ -37,10 +37,10 @@ public class EntityManagerResourceProvider implements ResourceReferenceFactory<E
             @Override
             public EntityManager getInstance() {
                 if (null == entityManager && null == entityManagerFactory) {
-                    entityManagerFactory =
-                            new EntityManagerFactoryResourceProvider(unitName)
-                                    .createResource()
-                                    .getInstance();
+                        entityManagerFactory =
+                            JpaServices.getEntityManagerFactory(unitName)
+                                .createResource()
+                                .getInstance();
                 }
 
                 if (null == entityManager) {

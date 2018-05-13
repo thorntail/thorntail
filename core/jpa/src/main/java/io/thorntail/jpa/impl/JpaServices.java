@@ -26,10 +26,10 @@ public class JpaServices implements JpaInjectionServices {
 
     private String emptyScopeDefaultName;
 
-    private Map<String, ResourceReferenceFactory<EntityManagerFactory>> emfs = new ConcurrentHashMap<>();
+    private static Map<String, ResourceReferenceFactory<EntityManagerFactory>> emfs = new ConcurrentHashMap<>();
 
-    private Map<String, ResourceReferenceFactory<EntityManager>> ems = new ConcurrentHashMap<>();
-
+    private static Map<String, ResourceReferenceFactory<EntityManager>> ems = new ConcurrentHashMap<>();
+    
     @Override
     public ResourceReferenceFactory<EntityManager> registerPersistenceContextInjectionPoint(InjectionPoint injectionPoint) {
         final PersistenceContext context = getResourceAnnotated(injectionPoint).getAnnotation(PersistenceContext.class);
@@ -66,6 +66,10 @@ public class JpaServices implements JpaInjectionServices {
         }
 
         String scopedPuName = getScopedPuName(context.unitName());
+        return getEntityManagerFactory(scopedPuName);
+    }
+
+    public static ResourceReferenceFactory<EntityManagerFactory> getEntityManagerFactory(String scopedPuName) {
         JpaMessages.MESSAGES.createFactoryForPersistence(PersistenceUnit.class, scopedPuName);
 
         if (!emfs.containsKey(scopedPuName)) {
@@ -87,7 +91,10 @@ public class JpaServices implements JpaInjectionServices {
 
     @Override
     public void cleanup() {
-
+        for(ResourceReferenceFactory<EntityManagerFactory> rrf : emfs.values()){
+            rrf.createResource().getInstance().close();
+        }
+        emfs.clear();
     }
 
     private static Annotated getResourceAnnotated(InjectionPoint injectionPoint) {
