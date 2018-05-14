@@ -1,5 +1,5 @@
-/**
- * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
+/*
+ * Copyright 2018 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,28 @@
  */
 package org.wildfly.swarm.microprofile.restclient;
 
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver;
+import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Created by hbraun on 22.01.18.
- */
-public class BuilderResolver extends RestClientBuilderResolver {
-    @Override
-    public RestClientBuilder newBuilder() {
-        return new RestClientBuilderImpl();
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class Counter {
+
+    private volatile int max = Integer.MAX_VALUE;
+
+    private final AtomicInteger count = new AtomicInteger(0);
+
+    public boolean incrementAndTest() {
+        return count.incrementAndGet() >= max;
     }
+
+    int getCount() {
+        return count.get();
+    }
+
+    public void reset(int max) {
+        this.max = max;
+        count.set(0);
+    }
+
 }

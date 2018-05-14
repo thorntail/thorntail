@@ -1,5 +1,5 @@
-/**
- * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
+/*
+ * Copyright 2018 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile.restclient;
+package org.wildfly.swarm.microprofile.restclient.ft;
 
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 
-/**
- * Created by hbraun on 22.01.18.
- */
-public class BuilderResolver extends RestClientBuilderResolver {
-    @Override
-    public RestClientBuilder newBuilder() {
-        return new RestClientBuilderImpl();
-    }
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+
+// Circuit should be open after 2 requests
+@CircuitBreaker(requestVolumeThreshold = 2)
+@Path("/v1")
+public interface HelloClientClassLevelCircuitBreaker {
+
+    @GET
+    @Path("/hello")
+    String helloCircuitBreaker();
+
 }

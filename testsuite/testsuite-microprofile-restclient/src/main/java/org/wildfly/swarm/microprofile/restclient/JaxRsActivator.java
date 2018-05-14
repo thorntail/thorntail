@@ -1,5 +1,5 @@
-/**
- * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
+/*
+ * Copyright 2018 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,9 @@
  */
 package org.wildfly.swarm.microprofile.restclient;
 
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
-/**
- * Created by hbraun on 22.01.18.
- */
-public class BuilderResolver extends RestClientBuilderResolver {
-    @Override
-    public RestClientBuilder newBuilder() {
-        return new RestClientBuilderImpl();
-    }
+@ApplicationPath("/v1")
+public class JaxRsActivator extends Application {
 }
