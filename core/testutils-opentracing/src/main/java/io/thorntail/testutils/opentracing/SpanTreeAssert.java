@@ -1,8 +1,8 @@
 package io.thorntail.testutils.opentracing;
 
-import org.fest.assertions.Assertions;
+import org.assertj.core.api.Assertions;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by bob on 2/27/18.

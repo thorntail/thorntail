@@ -1,9 +1,9 @@
 package io.thorntail.config.impl.converters.fallback;
 
-import org.fest.assertions.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StaticValueOfConverterTest {
 

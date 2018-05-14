@@ -5,12 +5,12 @@ import java.net.URI;
 import javax.inject.Inject;
 
 import io.thorntail.test.ThorntailTestRunner;
-import org.fest.assertions.Assertions;
+import org.assertj.core.api.Assertions;
 import io.thorntail.servlet.annotation.Primary;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by bob on 4/6/18.

@@ -55,9 +55,9 @@ This may be useful when running tests on a CI machine or if you wish to parallel
 In order to know what port are actually selected and in-use, you may `@Inject` either a `@Primary` or `@Management` `URL` or `InetSocketAddress` component.
 These instances are made available throw the xref:component-servlet[Servlet] component.
 
-.fest-assert
+.assertj
 
-The `testing` artifact transitively brings in https://github.com/alexruiz/fest-assert-2.x[fest-assert] for making fluent assertions in your tests.
+The `testing` artifact transitively brings in http://joel-costigliola.github.io/assertj/index.html[assertj] for making fluent assertions in your tests.
 
 .RestAssured
 

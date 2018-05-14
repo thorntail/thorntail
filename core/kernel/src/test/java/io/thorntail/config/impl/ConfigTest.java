@@ -7,7 +7,7 @@ import io.thorntail.config.impl.sources.MapConfigSource;
 import org.eclipse.microprofile.config.Config;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConfigTest {
 

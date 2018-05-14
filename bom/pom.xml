@@ -98,7 +98,7 @@
     <version.mp-jwt-auth>1.0</version.mp-jwt-auth>
 
     <version.arquillian-core>1.2.1.Final</version.arquillian-core>
-    <version.fest-assert>1.4</version.fest-assert>
+    <version.assertj>3.10.0</version.assertj>
     <version.junit>4.12</version.junit>
     <version.testng>6.9.9</version.testng>
     <version.rest-assured>3.0.6</version.rest-assured>
@@ -755,9 +755,9 @@
         <version>${version.testng}</version>
       </dependency>
       <dependency>
-        <groupId>org.easytesting</groupId>
-        <artifactId>fest-assert</artifactId>
-        <version>${version.fest-assert}</version>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.assertj}</version>
         <scope>test</scope>
       </dependency>
       <dependency>

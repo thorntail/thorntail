@@ -9,13 +9,13 @@ import javax.enterprise.util.TypeLiteral;
 import javax.inject.Provider;
 
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
-import org.fest.assertions.Assertions;
+import org.assertj.core.api.Assertions;
 import io.thorntail.config.impl.ConfigImpl;
 import io.thorntail.config.impl.sources.MapConfigSource;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 /**

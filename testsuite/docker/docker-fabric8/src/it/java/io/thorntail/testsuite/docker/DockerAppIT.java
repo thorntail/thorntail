@@ -15,7 +15,7 @@ import junit.framework.AssertionFailedError;
 import org.junit.Test;
 
 import static junit.framework.TestCase.fail;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by bob on 2/14/18.

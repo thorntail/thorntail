@@ -10,7 +10,7 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 /**

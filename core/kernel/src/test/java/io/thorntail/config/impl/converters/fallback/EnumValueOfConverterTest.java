@@ -2,11 +2,11 @@ package io.thorntail.config.impl.converters.fallback;
 
 import java.util.concurrent.TimeUnit;
 
-import org.fest.assertions.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.assertions.Fail.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Fail.fail;
 
 public class EnumValueOfConverterTest {
 

@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 
 import static io.restassured.RestAssured.when;
 import io.thorntail.testsuite.jpa_contracts.jpa_impl.EnforcedEntityManagerFactory;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(ThorntailTestRunner.class)
 public class JPAAppTest {
