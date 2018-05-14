@@ -88,9 +88,8 @@ public class DefaultJoseImpl implements Jose {
 
     private String signJson(JwsSignatureProvider provider, JwsHeaders headers, String data) {
         try {
-            JwsJsonProducer producer = new JwsJsonProducer(data, true);
-            producer.signWith(provider, headers);
-            return producer.getJwsJsonSignedDocument(fraction.signatureDataDetached());
+            JwsJsonProducer producer = new JwsJsonProducer(data, true, fraction.signatureDataDetached());
+            return producer.signWith(provider, headers);
         } catch (Exception ex) {
             throw new JoseException("JWS JOSE Signature Creation Failure", ex);
         }
