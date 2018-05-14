@@ -1,4 +1,5 @@
 
+image:https://semaphoreci.com/api/v1/thorntail/thorntail/branches/4-x/badge.svg["Semaphore CI"]
 image:https://img.shields.io/github/license/thorntail/thorntail.svg["License", link="http://www.apache.org/licenses/LICENSE-2.0"] 
 
 Thorntail PoC
