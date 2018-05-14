@@ -57,17 +57,18 @@ $ java -jar myapp-hollow-swarm.jar myapp.war
 
 {Thorntail} ships the following pre-built hollow JARs:
 
-full:: The main Java EE related capabilities
+ifndef::product[full:: The main Java EE related capabilities]
 web:: A smaller functional scope, focused on web technologies
 microprofile:: Functionality defined by all Eclipse MicroProfile specifications
 
 The hollow JARs are available under the following coordinates:
 
-[source,xml,options="nowrap"]
+[source,xml,options="nowrap",subs="attributes+"]
 ----
 <dependency>
     <groupId>org.wildfly.swarm.servers</groupId>
-    <artifactId>[full|web|microprofile]</artifactId>
+ifndef::product[    <artifactId>[full|web|microprofile]</artifactId>]
+ifdef::product[    <artifactId>[web|microprofile]</artifactId>]
 </dependency>
 ----
 
