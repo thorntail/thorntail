@@ -79,7 +79,7 @@ public abstract class JoseFactory {
 
         if (instance == null) {
             ServiceLoader<JoseFactory> sl = ServiceLoader.load(JoseFactory.class, cl);
-            URL u = cl.getResource("/META-INF/services/org.wildfly.swarm.jose.JoseFactory");
+            URL u = cl.getResource("/META-INF/services/org.wildfly.swarm.jose.provider.JoseFactory");
             log.debugf("loadSpi, cl=%s, u=%s, sl=%s", cl, u, sl);
             try {
                 for (Object spi : sl) {
