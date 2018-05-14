@@ -26,7 +26,7 @@ public class JPAJTAAppTest {
                         .statusCode(500)
                         .extract().response().body().print();
 
-        assertThat(responseBody).contains("Internal Server Error");
+        assertThat(responseBody).contains("Error");
 
 
 
@@ -49,7 +49,7 @@ public class JPAJTAAppTest {
                         .statusCode(500)
                         .extract().response().body().print();
 
-        assertThat(responseBody).contains("Internal Server Error");
+        assertThat(responseBody).contains("Error");
 
 
         responseBody =
