@@ -1,8 +1,0 @@
-sudo: required
-
-language: java
-
-services:
-  - docker
-
-script: mvn clean verify 
