@@ -35,15 +35,13 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>cdi</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-naming</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
