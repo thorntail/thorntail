@@ -30,8 +30,12 @@ For more information, see https://git-scm.com/docs/gittutorial[Git tutorial].
 +
 [source,xml,options="nowrap",subs="attributes+"]
 ----
-ifndef::product[include::src/main/resources/pom.xml[]]
-ifdef::product[include::src/main/resources/pom-product.xml[]]
+ifndef::product[]
+include::src/main/resources/pom.xml[]
+endif::[]
+ifdef::product[]
+include::src/main/resources/pom-product.xml[]
+endif::[]
 ----
 
 . Create a directory structure for your application:
