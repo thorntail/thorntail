@@ -95,7 +95,7 @@ public abstract class JoseFactory {
                     }
                 }
             } catch (Throwable e) {
-                log.warn("Failed to locate JWTCallerPrincipalFactory provider", e);
+                log.warn("Failed to locate JoseFactory provider", e);
             }
         }
         return instance;
