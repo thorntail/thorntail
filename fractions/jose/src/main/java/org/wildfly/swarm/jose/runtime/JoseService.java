@@ -24,6 +24,7 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.wildfly.swarm.jose.Jose;
+import org.wildfly.swarm.jose.JoseFraction;
 import org.wildfly.swarm.jose.JoseLookup;
 
 /**
@@ -36,13 +37,13 @@ public class JoseService implements JoseLookup, Service<JoseService> {
 
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.jose");
 
-    public JoseService(Jose joseInstance) {
+    public JoseService(JoseFraction joseInstance) {
         this.jose = joseInstance;
     }
 
     @Override
     public Jose get() {
-        return this.jose;
+        return this.jose.getJoseInstance();
     }
 
     @Override
@@ -63,6 +64,6 @@ public class JoseService implements JoseLookup, Service<JoseService> {
     }
 
 
-    private Jose jose;
+    private JoseFraction jose;
 }
 

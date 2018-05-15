@@ -30,6 +30,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 
 import org.wildfly.swarm.jose.Jose;
+import org.wildfly.swarm.jose.JoseFraction;
 
 /**
  *
@@ -37,9 +38,9 @@ import org.wildfly.swarm.jose.Jose;
 @Vetoed
 public class JoseBean implements Bean<Jose> {
 
-    private Jose jose;
+    private JoseFraction jose;
 
-    public JoseBean(Jose jose) {
+    public JoseBean(JoseFraction jose) {
         this.jose = jose;
     }
 
@@ -95,7 +96,7 @@ public class JoseBean implements Bean<Jose> {
 
     @Override
     public Jose create(CreationalContext<Jose> creationalContext) {
-        return this.jose;
+        return this.jose.getJoseInstance();
     }
 
     @Override

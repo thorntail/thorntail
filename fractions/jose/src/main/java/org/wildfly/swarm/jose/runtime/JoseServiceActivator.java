@@ -46,7 +46,7 @@ public class JoseServiceActivator implements ServiceActivator {
 
         ServiceTarget target = context.getServiceTarget();
 
-        JoseService service = new JoseService(joseFractionInstance.get().getJoseInstance());
+        JoseService service = new JoseService(joseFractionInstance.get());
 
         ServiceBuilder<JoseService> serviceBuilder = target.addService(JoseService.SERVICE_NAME, service);
 

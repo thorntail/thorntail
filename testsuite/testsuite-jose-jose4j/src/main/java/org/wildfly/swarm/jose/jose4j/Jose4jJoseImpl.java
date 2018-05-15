@@ -42,7 +42,7 @@ public class Jose4jJoseImpl implements Jose {
 
     @Override
     public String sign(SignatureInput input) {
-        return "";
+        return "jose4j+jws";
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Jose4jJoseImpl implements Jose {
 
     @Override
     public VerificationOutput verification(String jws) throws JoseException {
-        return null;
+        return new VerificationOutput("jose4j+jws");
     }
 
     @Override
@@ -73,7 +73,7 @@ public class Jose4jJoseImpl implements Jose {
 
     @Override
     public String encrypt(EncryptionInput input) {
-        return "";
+        return "jose4j+jwe";
     }
 
     @Override
@@ -83,7 +83,7 @@ public class Jose4jJoseImpl implements Jose {
 
     @Override
     public DecryptionOutput decryption(String jwe) throws JoseException {
-        return null;
+        return new DecryptionOutput("jose4j+jwe");
     }
 
 }
