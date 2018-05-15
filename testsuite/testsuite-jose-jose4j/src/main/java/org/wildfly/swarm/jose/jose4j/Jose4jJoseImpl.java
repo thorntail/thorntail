@@ -20,19 +20,19 @@ import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_JOSE_FORMAT;
 import org.wildfly.swarm.jose.DecryptionOutput;
 import org.wildfly.swarm.jose.EncryptionInput;
 import org.wildfly.swarm.jose.Jose;
+import org.wildfly.swarm.jose.JoseConfiguration;
 import org.wildfly.swarm.jose.JoseException;
-import org.wildfly.swarm.jose.JoseFraction;
 import org.wildfly.swarm.jose.SignatureInput;
 import org.wildfly.swarm.jose.VerificationOutput;
 
 public class Jose4jJoseImpl implements Jose {
-    private JoseFraction fraction;
-    public Jose4jJoseImpl(JoseFraction fraction) {
-       if (DEFAULT_JOSE_FORMAT != fraction.signatureFormat()
-           || DEFAULT_JOSE_FORMAT != fraction.encryptionFormat()) {
+    private JoseConfiguration config;
+    public Jose4jJoseImpl(JoseConfiguration config) {
+       if (DEFAULT_JOSE_FORMAT != config.signatureFormat()
+           || DEFAULT_JOSE_FORMAT != config.encryptionFormat()) {
             throw new IllegalStateException("JWS and JWE JSON formats are not supported");
         }
-       this.fraction = fraction;
+       this.config = config;
     }
 
     @Override

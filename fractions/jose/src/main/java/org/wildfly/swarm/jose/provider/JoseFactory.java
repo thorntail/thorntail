@@ -22,7 +22,7 @@ import java.util.ServiceLoader;
 
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.jose.Jose;
-import org.wildfly.swarm.jose.JoseFraction;
+import org.wildfly.swarm.jose.JoseConfiguration;
 
 public abstract class JoseFactory {
 
@@ -101,5 +101,5 @@ public abstract class JoseFactory {
         return instance;
     }
 
-    public abstract Jose getJose(JoseFraction fraction);
+    public abstract Jose getJose(JoseConfiguration config);
 }

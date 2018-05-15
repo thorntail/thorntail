@@ -16,13 +16,13 @@
 package org.wildfly.swarm.jose.jose4j;
 
 import org.wildfly.swarm.jose.Jose;
-import org.wildfly.swarm.jose.JoseFraction;
+import org.wildfly.swarm.jose.JoseConfiguration;
 import org.wildfly.swarm.jose.provider.JoseFactory;
 
 public class Jose4jJoseFactory extends JoseFactory {
 
     @Override
-    public Jose getJose(JoseFraction fraction) {
-        return new Jose4jJoseImpl(fraction);
+    public Jose getJose(JoseConfiguration config) {
+        return new Jose4jJoseImpl(config);
     }
 }
