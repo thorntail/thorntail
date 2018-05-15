@@ -26,6 +26,7 @@ import org.jboss.msc.service.StopContext;
 import org.wildfly.swarm.jose.Jose;
 import org.wildfly.swarm.jose.JoseFraction;
 import org.wildfly.swarm.jose.JoseLookup;
+import org.wildfly.swarm.jose.provider.JoseFactory;
 
 /**
  *
@@ -43,7 +44,7 @@ public class JoseService implements JoseLookup, Service<JoseService> {
 
     @Override
     public Jose get() {
-        return this.jose.getJoseInstance();
+        return JoseFactory.instance().getJose(jose);
     }
 
     @Override
