@@ -18,3 +18,7 @@ The JPA component provides support for JPA `EntityManager` and `@PersistenceCont
 `jpa._PersistenceUnitId_.trace`::
 Enable tracing if `OpenTracing` is available. Acceptable values are `OFF`, `ALWAYS`, and `ACTIVE`.
 By setting to `ACTIVE`, only usage of the `EntityManager` when there is already an active parent context will be traced.
+
+.Related Information
+
+* xref:component-jpa-support[]

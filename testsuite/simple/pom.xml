@@ -24,6 +24,7 @@
     <module>jpa-jta</module>
     <module>jpa-opentracing</module>
     <module>keycloak</module>
+    <module>ogm</module>
     <module>openapi</module>
     <module>proof</module>
     <module>servlet</module>

@@ -112,7 +112,9 @@
     <module>jndi</module>
     <module>jms</module>
     <module>jms-artemis</module>
+    <module>jpa-support</module>
     <module>jpa</module>
+    <module>ogm</module>
     <module>jta</module>
     <module>json-p</module>
     <module>jwt-auth</module>

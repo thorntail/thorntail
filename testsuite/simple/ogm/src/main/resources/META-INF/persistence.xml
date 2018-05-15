@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+	version="2.1">
+	<persistence-unit name="MyPU">
+		<provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<properties>
+			<property name="hibernate.ogm.datastore.provider" value="neo4j_embedded" />
+			<property name="hibernate.ogm.datastore.database" value="test" />
+			<property name="hibernate.ogm.datastore.create_database" value="true"/>
+			<property name="hibernate.ogm.neo4j.database_path" value="target/neo4j.db" />
+		</properties>
+	</persistence-unit>
+</persistence>

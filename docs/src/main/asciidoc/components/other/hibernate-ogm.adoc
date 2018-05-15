@@ -1,0 +1,40 @@
+[#component-ogm]
+= OGM
+
+Provides support for Hibernate OGM `EntityManager` and `@PersistenceContext` resources and allows for the use of NoSQL datastores with JPA.
+
+.Supported Datastores
+
+* Infinispan
+* MongoDB
+* Neo4j
+* Cassandra
+* CouchDB
+* EhCache
+* Apache Ignite
+* Redis
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-ogm</artifactId>
+</dependency>
+----
+
+Version of Hibernate Search is managed by the Thorntail bom to ensure compatibility with OGM. Add the following to `pom.xml` if required by the NoSQL driver in use with OGM.
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.hibernate</groupId>
+  <artifactId>hibernate-search-orm</artifactId>
+</dependency>
+----
+
+.Related Information
+
+* xref:component-jpa-support[]
+* https://docs.jboss.org/hibernate/ogm/5.3/reference/en-US/html_single/[Hibernate OGM 5.3 Documentation]

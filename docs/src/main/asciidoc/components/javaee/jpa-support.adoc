@@ -1,0 +1,21 @@
+[#component-jpa-support]
+= JPA Support
+
+The JPA Support component provides support for JPA `EntityManager` and `@PersistenceContext` resources inside of a CDI container.
+
+[source,java]
+----
+@RequestScoped
+public class EmployeeDao {
+	@PersistenceContext
+	EntityManager em;
+
+	@PersistenceUnit
+	EntityManagerFactory emf;
+
+	public Employee getEmployeeById(Long employeeId){
+		return em.find(Employee.class, employeeId);
+	}
+	...
+}
+----
