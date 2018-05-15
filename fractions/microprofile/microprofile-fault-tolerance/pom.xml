@@ -92,6 +92,11 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- See also THORN-2027 -->
+    <dependency>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-api</artifactId>
+    </dependency>
 
    <!-- Test dependencies -->
    <dependency>
