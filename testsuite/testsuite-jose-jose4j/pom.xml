@@ -22,7 +22,7 @@
   <packaging>jar</packaging>
   
   <properties>
-    <version.jose4j>0.6.0</version.jose4j>
+    <version.jose4j>0.6.3</version.jose4j>
   </properties>
 
   <dependencies>
