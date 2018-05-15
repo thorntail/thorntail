@@ -45,15 +45,15 @@ import org.apache.cxf.rs.security.jose.jws.JwsUtils;
 import org.wildfly.swarm.jose.DecryptionOutput;
 import org.wildfly.swarm.jose.EncryptionInput;
 import org.wildfly.swarm.jose.Jose;
+import org.wildfly.swarm.jose.JoseConfiguration;
 import org.wildfly.swarm.jose.JoseException;
-import org.wildfly.swarm.jose.JoseFraction;
 import org.wildfly.swarm.jose.SignatureInput;
 import org.wildfly.swarm.jose.VerificationOutput;
 
 public class DefaultJoseImpl implements Jose {
-    private JoseFraction fraction;
-    public DefaultJoseImpl(JoseFraction fraction) {
-        this.fraction = fraction;
+    private JoseConfiguration config;
+    public DefaultJoseImpl(JoseConfiguration config) {
+        this.config = config;
     }
 
     @Override
@@ -65,21 +65,21 @@ public class DefaultJoseImpl implements Jose {
     public String sign(SignatureInput input) {
         JwsHeaders headers = new JwsHeaders();
         headers.asMap().putAll(input.getMetadata());
-        if (!fraction.signatureDataEncoding()) {
+        if (!config.signatureDataEncoding()) {
             headers.setPayloadEncodingStatus(false);
         }
         Properties props = prepareSignatureProperties();
-        headers.setSignatureAlgorithm(SignatureAlgorithm.getAlgorithm(fraction.signatureAlgorithm()));
+        headers.setSignatureAlgorithm(SignatureAlgorithm.getAlgorithm(config.signatureAlgorithm()));
         JwsSignatureProvider provider =
             JwsUtils.loadSignatureProvider(props, headers);
 
-        return DEFAULT_JOSE_FORMAT == fraction.signatureFormat()
+        return DEFAULT_JOSE_FORMAT == config.signatureFormat()
             ? signCompact(provider, headers, input.getData()) : signJson(provider, headers, input.getData());
     }
 
     private String signCompact(JwsSignatureProvider provider, JwsHeaders headers, String data) {
         try {
-            JwsCompactProducer producer = new JwsCompactProducer(headers, data, fraction.signatureDataDetached());
+            JwsCompactProducer producer = new JwsCompactProducer(headers, data, config.signatureDataDetached());
             return producer.signWith(provider);
         } catch (Exception ex) {
             throw new JoseException("JWS Compact Signature Creation Failure", ex);
@@ -88,7 +88,7 @@ public class DefaultJoseImpl implements Jose {
 
     private String signJson(JwsSignatureProvider provider, JwsHeaders headers, String data) {
         try {
-            JwsJsonProducer producer = new JwsJsonProducer(data, true, fraction.signatureDataDetached());
+            JwsJsonProducer producer = new JwsJsonProducer(data, true, config.signatureDataDetached());
             return producer.signWith(provider, headers);
         } catch (Exception ex) {
             throw new JoseException("JWS JOSE Signature Creation Failure", ex);
@@ -112,7 +112,7 @@ public class DefaultJoseImpl implements Jose {
 
     @Override
     public VerificationOutput verificationDetached(String jws, String detachedData) throws JoseException {
-        if (fraction.signatureDataEncoding()) {
+        if (config.signatureDataEncoding()) {
             detachedData = Base64UrlUtility.encode(detachedData);
         }
         return getVerificationOutput(jws, detachedData);
@@ -120,7 +120,7 @@ public class DefaultJoseImpl implements Jose {
 
     private VerificationOutput getVerificationOutput(String jws, String detachedData) throws JoseException {
         Properties props = prepareSignatureProperties();
-        return DEFAULT_JOSE_FORMAT == fraction.signatureFormat()
+        return DEFAULT_JOSE_FORMAT == config.signatureFormat()
                 ? verifyCompact(props, jws, detachedData) : verifyJson(props, jws, detachedData);
     }
 
@@ -175,7 +175,7 @@ public class DefaultJoseImpl implements Jose {
         Properties props = prepareEncryptionProperties();
         JweEncryptionProvider provider = JweUtils.loadEncryptionProvider(props, headers);
 
-        return DEFAULT_JOSE_FORMAT == fraction.encryptionFormat()
+        return DEFAULT_JOSE_FORMAT == config.encryptionFormat()
                 ? encryptCompact(provider, headers, input.getData()) : encryptJson(provider, headers, input.getData());
     }
 
@@ -206,7 +206,7 @@ public class DefaultJoseImpl implements Jose {
     public DecryptionOutput decryption(String jwe) throws JoseException {
         Properties props = prepareEncryptionProperties();
 
-        return DEFAULT_JOSE_FORMAT == fraction.signatureFormat()
+        return DEFAULT_JOSE_FORMAT == config.signatureFormat()
                 ? decryptCompact(props, jwe) : decryptJson(props, jwe);
     }
 
@@ -242,24 +242,24 @@ public class DefaultJoseImpl implements Jose {
 
     private Properties prepareSignatureProperties() {
         Properties props = new Properties();
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_TYPE, fraction.keystoreType());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_FILE, fraction.keystorePath());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_PSWD, fraction.keystorePassword());
-        props.setProperty(JoseConstants.RSSEC_KEY_PSWD, fraction.signatureKeyPassword());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, fraction.signatureKeyAlias());
-        props.setProperty(JoseConstants.RSSEC_SIGNATURE_ALGORITHM, fraction.signatureAlgorithm());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_TYPE, config.keystoreType());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_FILE, config.keystorePath());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_PSWD, config.keystorePassword());
+        props.setProperty(JoseConstants.RSSEC_KEY_PSWD, config.signatureKeyPassword());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, config.signatureKeyAlias());
+        props.setProperty(JoseConstants.RSSEC_SIGNATURE_ALGORITHM, config.signatureAlgorithm());
         return props;
     }
 
     private Properties prepareEncryptionProperties() {
         Properties props = new Properties();
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_TYPE, fraction.keystoreType());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_FILE, fraction.keystorePath());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_PSWD, fraction.keystorePassword());
-        props.setProperty(JoseConstants.RSSEC_KEY_PSWD, fraction.encryptionKeyPassword());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, fraction.encryptionKeyAlias());
-        props.setProperty(JoseConstants.RSSEC_ENCRYPTION_KEY_ALGORITHM, fraction.keyEncryptionAlgorithm());
-        props.setProperty(JoseConstants.RSSEC_ENCRYPTION_CONTENT_ALGORITHM, fraction.contentEncryptionAlgorithm());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_TYPE, config.keystoreType());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_FILE, config.keystorePath());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_PSWD, config.keystorePassword());
+        props.setProperty(JoseConstants.RSSEC_KEY_PSWD, config.encryptionKeyPassword());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, config.encryptionKeyAlias());
+        props.setProperty(JoseConstants.RSSEC_ENCRYPTION_KEY_ALGORITHM, config.keyEncryptionAlgorithm());
+        props.setProperty(JoseConstants.RSSEC_ENCRYPTION_CONTENT_ALGORITHM, config.contentEncryptionAlgorithm());
         return props;
     }
 }
