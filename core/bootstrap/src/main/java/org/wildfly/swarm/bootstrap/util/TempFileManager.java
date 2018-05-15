@@ -25,6 +25,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Bob McWhirter
@@ -64,6 +65,14 @@ public class TempFileManager {
         tmp.delete();
         register(tmp);
         return tmp;
+    }
+
+    public File getExplodedApplicationArtifact() {
+        return explodedApplicationArtifact.get();
+    }
+
+    public void setExplodedApplicationArtifact(File explodedApplicationArtifact) {
+        this.explodedApplicationArtifact.set(explodedApplicationArtifact);
     }
 
     private void register(File file) {
@@ -109,7 +118,9 @@ public class TempFileManager {
         return true;
     }
 
-    private Set<File> registered = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<File> registered = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
+    private final AtomicReference<File> explodedApplicationArtifact = new AtomicReference<>();
 
     private File tmpDir;
 

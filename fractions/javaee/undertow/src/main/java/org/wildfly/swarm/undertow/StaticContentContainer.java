@@ -61,7 +61,9 @@ public interface StaticContentContainer<T extends Archive<T>> extends Archive<T>
 
         try {
             // Add all the static content from the current app to the archive
-            Archive allResources = DefaultWarDeploymentFactory.archiveFromCurrentApp();
+            // I believe it does not make sense to call archiveFromCurrentApp() again if this archive was created by DefaultWarDeploymentFactory
+            Archive allResources = contains(DefaultWarDeploymentFactory.MARKER_PATH) ? this : DefaultWarDeploymentFactory.archiveFromCurrentApp();
+
             // Here we define static as basically anything that's not a
             // Java class file or under WEB-INF or META-INF
             mergeIgnoringDuplicates(allResources, base, Filters.exclude(".*\\.class$"));
