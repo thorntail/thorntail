@@ -31,6 +31,7 @@ import javax.enterprise.util.AnnotationLiteral;
 
 import org.wildfly.swarm.jose.Jose;
 import org.wildfly.swarm.jose.JoseFraction;
+import org.wildfly.swarm.jose.provider.JoseFactory;
 
 /**
  *
@@ -96,7 +97,7 @@ public class JoseBean implements Bean<Jose> {
 
     @Override
     public Jose create(CreationalContext<Jose> creationalContext) {
-        return this.jose.getJoseInstance();
+        return JoseFactory.instance().getJose(jose);
     }
 
     @Override
