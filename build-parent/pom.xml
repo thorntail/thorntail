@@ -161,6 +161,12 @@
         <version>2.0.3.Final</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.jboss.modules</groupId>
+        <artifactId>jboss-modules</artifactId>
+        <version>1.6.4.Final</version>
+      </dependency>
+
 
       <!--
         org.wildfly:wildfly-parent transitively brings in 3.2.1, which breaks ShrinkWrap's resolver.
