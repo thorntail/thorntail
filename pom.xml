@@ -1330,6 +1330,7 @@
         <module>testsuite/testsuite-webservices</module>
         <module>testsuite/testsuite-zipkin-jaxrs</module>
         <module>testsuite/testsuite-jose</module>
+        <module>testsuite/testsuite-jose-jose4j</module>
 
         <!-- This testsuite needs to be in a profile that comes after the profiles that build the BOMs as they are a dependency -->
         <module>testsuite/testsuite-maven-plugin</module>
