@@ -22,7 +22,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.modules.Module;
-import org.wildfly.swarm.jose.Jose;
 import org.wildfly.swarm.jose.JoseFraction;
 import org.wildfly.swarm.spi.api.UserSpaceExtensionFactory;
 
@@ -39,8 +38,8 @@ public class InjectJoseExtensionFactory implements UserSpaceExtensionFactory {
     public void configure() throws Exception {
         Module module = Module.getBootModuleLoader().loadModule("org.wildfly.swarm.jose:deployment");
         Class<?> use = module.getClassLoader().loadClass("org.wildfly.swarm.jose.deployment.InjectJoseExtension");
-        Method setJose = use.getDeclaredMethod("setJose", Jose.class);
-        setJose.invoke(null, this.joseFractionInstance.get().getJoseInstance());
+        Method setJose = use.getDeclaredMethod("setJose", JoseFraction.class);
+        setJose.invoke(null, this.joseFractionInstance.get());
     }
 
 }

@@ -20,15 +20,15 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 
-import org.wildfly.swarm.jose.Jose;
+import org.wildfly.swarm.jose.JoseFraction;
 
 /**
  *
  */
 public class InjectJoseExtension implements Extension {
 
-    private static Jose jose;
-    public static void setJose(Jose j) {
+    private static JoseFraction jose;
+    public static void setJose(JoseFraction j) {
         jose = j;
     }
 
