@@ -43,4 +43,9 @@ public class MyResource {
         return jose.encrypt(jose.decrypt(jwe));
     }
 
+    @POST
+    @Path("signAndEncrypt")
+    public String echoJwsJwe(String signedAndEncryptedData) {
+        return jose.encrypt(jose.sign(jose.verify(jose.decrypt(signedAndEncryptedData))));
+    }
 }
