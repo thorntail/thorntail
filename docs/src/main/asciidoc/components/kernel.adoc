@@ -16,11 +16,14 @@ It's Maven coordinates are:
 
 .CDI Components
 
-`ThreadFactoryProducer`::
-Produces a `Dependent` scoped `ThreadFactory` for utilizing `Thread` instances.
+`ThreadFactory`::
+A `@Dependent`-scoped `ThreadFactory` for utilizing `Thread` instances.
 
-`IndexProducer`::
-Produces an `Application` scoped `IndexView` representing the jandex'd files of the Deployment,
+`ExecutorService`::
+An `ExecutorService` for executing tasks.
+
+`IndexView`::
+An `@Application`-scoped `IndexView` representing the jandex'd files of the Deployment,
 read from `META-INF/{project_key}.idx` which is created by the plugin.
 If not found, it produces an empty `IndexView` instance.
 
