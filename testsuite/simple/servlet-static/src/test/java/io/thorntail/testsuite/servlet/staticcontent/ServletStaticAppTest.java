@@ -38,6 +38,20 @@ public class ServletStaticAppTest {
                 .body(containsString("Static content in static/"));
     }
 
+    @Test
+    public void testContentInStaticDirWithWelcomeFileWithTrailingSlash() {
+        when().get("/bar/").then()
+                .statusCode(200)
+                .body(containsString("This is bar/index.html"));
+    }
+
+    @Test
+    public void testContentInStaticDirWithWelcomeFileWithoutTrailingSlash() {
+        when().get("/bar").then()
+                .statusCode(200)
+                .body(containsString("This is bar/index.html"));
+    }
+
 
     @Test
     public void testContentInMetaInfResourcesDir() {
