@@ -40,7 +40,7 @@ public class JoseCompactTest {
     
     @Test
     public void testJwsCompact() throws Exception {
-        Jose jose = JoseLookup.lookup().get();
+        Jose jose = getJose();
         String signedData = ClientBuilder.newClient().target("http://localhost:8080/sign")
                                 .request(MediaType.TEXT_PLAIN)
                                 .post(Entity.entity(jose.sign("Hello"), MediaType.TEXT_PLAIN),
@@ -51,7 +51,7 @@ public class JoseCompactTest {
     
     @Test
     public void testJwsCompactTampered() throws Exception {
-        String[] jwsParts = JoseLookup.lookup().get().sign("Hello").split("\\.");
+        String[] jwsParts = getJose().sign("Hello").split("\\.");
         Assert.assertEquals(3, jwsParts.length);
         String encodedContent = jwsParts[1];
         Assert.assertEquals("Hello", new String(Base64.getUrlDecoder().decode(encodedContent)));
@@ -68,7 +68,7 @@ public class JoseCompactTest {
        
     @Test
     public void testJwsJweCompact() throws Exception {
-        Jose jose = JoseLookup.lookup().get();
+        Jose jose = getJose();
         String signedAndEncryptedData = ClientBuilder.newClient().target("http://localhost:8080/signAndEncrypt")
                                    .request(MediaType.TEXT_PLAIN)
                                    .post(Entity.entity(jose.encrypt(jose.sign("Hello")), MediaType.TEXT_PLAIN),
@@ -82,7 +82,7 @@ public class JoseCompactTest {
     
     @Test
     public void testJweCompact() throws Exception {
-        Jose jose = JoseLookup.lookup().get();
+        Jose jose = getJose();
         String encryptedData = ClientBuilder.newClient().target("http://localhost:8080/encrypt")
                                    .request(MediaType.TEXT_PLAIN)
                                    .post(Entity.entity(jose.encrypt("Hello"), MediaType.TEXT_PLAIN),
@@ -93,7 +93,7 @@ public class JoseCompactTest {
     
     @Test
     public void testJweCompactTampered() throws Exception {
-        Jose jose = JoseLookup.lookup().get();
+        Jose jose = getJose();
         String[] jweParts = jose.encrypt("Hello").split("\\.");
         Assert.assertEquals(5, jweParts.length);
         String[] newJweParts = jose.encrypt("HellO").split("\\.");
@@ -106,5 +106,11 @@ public class JoseCompactTest {
                .request(MediaType.TEXT_PLAIN)
                .post(Entity.entity(newJwe, MediaType.TEXT_PLAIN))
                .getStatus());
+    }
+    
+    private Jose getJose() throws Exception {
+        Jose jose = JoseLookup.lookup().get();
+        Assert.assertEquals("Jose4jJoseImpl", jose.getClass().getSimpleName());
+        return jose;
     }
 }

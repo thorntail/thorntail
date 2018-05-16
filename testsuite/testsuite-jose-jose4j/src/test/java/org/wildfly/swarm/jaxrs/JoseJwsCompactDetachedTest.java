@@ -37,7 +37,7 @@ public class JoseJwsCompactDetachedTest {
     
     @Test
     public void testJwsCompactDetached() throws Exception {
-        Jose jose = JoseLookup.lookup().get();
+        Jose jose = getJose();
         Response r = ClientBuilder.newClient().target("http://localhost:8080/signDetached")
                                 .request(MediaType.TEXT_PLAIN)
                                 .header("DetachedData", "Hello")
@@ -50,4 +50,9 @@ public class JoseJwsCompactDetachedTest {
         Assert.assertTrue(parts[1].isEmpty());
     }
        
+    private Jose getJose() throws Exception {
+        Jose jose = JoseLookup.lookup().get();
+        Assert.assertEquals("Jose4jJoseImpl", jose.getClass().getSimpleName());
+        return jose;
+    }
 }
