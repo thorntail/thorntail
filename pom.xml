@@ -1229,6 +1229,7 @@
         <module>testsuite/testsuite-jsf</module>
         <module>testsuite/testsuite-jsp</module>
         <module>testsuite/testsuite-microprofile-jwt</module>
+        <module>testsuite/testsuite-microprofile-restclient</module>
         <module>testsuite/testsuite-keycloak</module>
         <module>testsuite/testsuite-local-dependencies</module>
         <module>testsuite/testsuite-logging</module>
