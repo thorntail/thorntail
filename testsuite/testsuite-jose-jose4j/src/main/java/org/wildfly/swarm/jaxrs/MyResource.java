@@ -26,26 +26,33 @@ public class MyResource {
     @POST
     @Path("sign")
     public String echoJws(String jws) {
-        return jose.sign(jose.verify(jws));
+        return jose().sign(jose().verify(jws));
     }
 
     @POST
     @Path("signDetached")
     public Response echoJwsDetached(@HeaderParam("DetachedData") String detachedData, String jws) {
-        String data = jose.verifyDetached(jws, detachedData);
-        return Response.ok(jose.sign(data)).header("DetachedData", data).build();
+        String data = jose().verifyDetached(jws, detachedData);
+        return Response.ok(jose().sign(data)).header("DetachedData", data).build();
     }
 
 
     @POST
     @Path("encrypt")
     public String echoJwe(String jwe) {
-        return jose.encrypt(jose.decrypt(jwe));
+        return jose().encrypt(jose().decrypt(jwe));
     }
 
     @POST
     @Path("signAndEncrypt")
     public String echoJwsJwe(String signedAndEncryptedData) {
-        return jose.encrypt(jose.sign(jose.verify(jose.decrypt(signedAndEncryptedData))));
+        return jose().encrypt(jose().sign(jose().verify(jose().decrypt(signedAndEncryptedData))));
+    }
+
+    private Jose jose() {
+        if (!"Jose4jJoseImpl".equals(jose.getClass().getSimpleName())) {
+            throw new RuntimeException("Jose4J implementation is expected");
+        }
+        return jose;
     }
 }

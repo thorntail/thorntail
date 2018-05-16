@@ -36,7 +36,7 @@ public class JoseCompactJwkTest {
     
     @Test
     public void testJwsHmacCompact() throws Exception {
-        Jose jose = JoseLookup.lookup().get();
+        Jose jose = getJose();
         String signedData = ClientBuilder.newClient().target("http://localhost:8080/sign")
                                 .request(MediaType.TEXT_PLAIN)
                                 .post(Entity.entity(jose.sign("Hello"), MediaType.TEXT_PLAIN),
@@ -47,12 +47,18 @@ public class JoseCompactJwkTest {
     
     @Test
     public void testJweDirectCompact() throws Exception {
-        Jose jose = JoseLookup.lookup().get();
+        Jose jose = getJose();
         String encryptedData = ClientBuilder.newClient().target("http://localhost:8080/encrypt")
                                 .request(MediaType.TEXT_PLAIN)
                                 .post(Entity.entity(jose.encrypt("Hello"), MediaType.TEXT_PLAIN),
                                       String.class);
         Assert.assertEquals(5, encryptedData.split("\\.").length);
         Assert.assertEquals("Hello", jose.decrypt(encryptedData));
+    }
+
+    private Jose getJose() throws Exception {
+        Jose jose = JoseLookup.lookup().get();
+        Assert.assertEquals("Jose4jJoseImpl", jose.getClass().getSimpleName());
+        return jose;
     }
 }
