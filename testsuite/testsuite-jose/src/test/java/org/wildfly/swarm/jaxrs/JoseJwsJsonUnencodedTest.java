@@ -5,6 +5,7 @@ import java.io.StringReader;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
@@ -13,7 +14,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.jose.Jose;
@@ -22,6 +25,18 @@ import org.wildfly.swarm.jose.JoseLookup;
 @RunWith(Arquillian.class)
 public class JoseJwsJsonUnencodedTest {
 
+    private Client client;
+    
+    @Before
+    public void setup() throws Exception {
+        client = ClientBuilder.newClient();
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+        client.close();
+    }
+    
     @Deployment
     public static Archive<?> createDeployment() throws Exception {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
@@ -37,7 +52,7 @@ public class JoseJwsJsonUnencodedTest {
     @Test
     public void testJwsJsonUnencoded() throws Exception {
         Jose jose = JoseLookup.lookup().get();
-        String signedData = ClientBuilder.newClient().target("http://localhost:8080/sign")
+        String signedData = client.target("http://localhost:8080/sign")
                                 .request(MediaType.TEXT_PLAIN)
                                 .post(Entity.entity(jose.sign("Hello"), MediaType.TEXT_PLAIN),
                                       String.class);
