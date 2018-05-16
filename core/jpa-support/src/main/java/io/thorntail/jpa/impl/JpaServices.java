@@ -15,6 +15,9 @@ import io.thorntail.jpa.impl.opentracing.TracedEntityManagerResourceProvider;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import io.thorntail.TraceMode;
+import java.net.URL;
+import org.hibernate.jpa.boot.internal.PersistenceXmlParser;
+import org.hibernate.jpa.boot.spi.PersistenceUnitDescriptor;
 import org.jboss.weld.injection.ParameterInjectionPoint;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceReferenceFactory;
@@ -113,7 +116,12 @@ public class JpaServices implements JpaInjectionServices {
     }
 
     private String getPersistentUnitNameFromDescriptor() {
-        this.emptyScopeDefaultName = new PersistenceUnitDescriptorProducer().persistenceUnitDescriptor().getName();
+        this.emptyScopeDefaultName = getPersistenceUnitDescriptor().getName();
         return this.emptyScopeDefaultName;
+    }
+
+    private PersistenceUnitDescriptor getPersistenceUnitDescriptor(){
+        URL url = getClass().getClassLoader().getResource("META-INF/persistence.xml");
+        return PersistenceXmlParser.locateIndividualPersistenceUnit(url);
     }
 }
