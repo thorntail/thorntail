@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -39,6 +40,7 @@ import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.ParamConverterProvider;
 
+import org.jboss.logging.Logger;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.wildfly.swarm.microprofile.restclient.InvocationContextImpl.InterceptorInvocation;
 
@@ -46,6 +48,8 @@ import org.wildfly.swarm.microprofile.restclient.InvocationContextImpl.Intercept
  * Created by hbraun on 22.01.18.
  */
 class ProxyInvocationHandler implements InvocationHandler {
+
+    private static final Logger LOGGER = Logger.getLogger(ProxyInvocationHandler.class);
 
     private final Object target;
 
@@ -57,11 +61,14 @@ class ProxyInvocationHandler implements InvocationHandler {
 
     private final CreationalContext<?> creationalContext;
 
+    private final AtomicBoolean closed;
+
     public ProxyInvocationHandler(Class<?> restClientInterface, Object target, Set<Object> providerInstances, ResteasyClient client) {
         this.target = target;
         this.providerInstances = providerInstances;
         this.client = client;
-        BeanManager beanManager = getBeanManager();
+        this.closed = new AtomicBoolean();
+        BeanManager beanManager = getBeanManager(restClientInterface);
         if (beanManager != null) {
             this.creationalContext = beanManager.createCreationalContext(null);
             this.interceptorChains = initInterceptorChains(beanManager, creationalContext, restClientInterface);
@@ -73,9 +80,11 @@ class ProxyInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
         if (RestClientProxy.class.equals(method.getDeclaringClass())) {
             return invokeRestClientProxyMethod(proxy, method, args);
+        }
+        if (closed.get()) {
+            throw new IllegalStateException("RestClientProxy is closed");
         }
 
         boolean replacementNeeded = false;
@@ -162,10 +171,12 @@ class ProxyInvocationHandler implements InvocationHandler {
     }
 
     private void close() {
-        if (creationalContext != null) {
-            creationalContext.release();
+        if (closed.compareAndSet(false, true)) {
+            if (creationalContext != null) {
+                creationalContext.release();
+            }
+            client.close();
         }
-        client.close();
     }
 
     private Type[] getGenericTypes(Class<?> aClass) {
@@ -192,10 +203,11 @@ class ProxyInvocationHandler implements InvocationHandler {
         return bindings;
     }
 
-    private static BeanManager getBeanManager() {
+    private static BeanManager getBeanManager(Class<?> restClientInterface) {
         try {
             return CDI.current().getBeanManager();
         } catch (IllegalStateException e) {
+            LOGGER.warnf("CDI container is not available - interceptor bindings declared on %s will be ignored", restClientInterface.getSimpleName());
             return null;
         }
     }

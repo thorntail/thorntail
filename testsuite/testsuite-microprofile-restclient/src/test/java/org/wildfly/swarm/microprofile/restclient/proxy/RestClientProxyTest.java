@@ -18,6 +18,7 @@ package org.wildfly.swarm.microprofile.restclient.proxy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -80,6 +81,14 @@ public class RestClientProxyTest {
         assertEquals("C:OK1:C", helloClient.hello());
         clientProxy.close();
         assertTrue(CharlieService.DESTROYED.get());
+        // Further calls are no-op
+        clientProxy.close();
+        // Invoking any method on the client proxy should result in ISE
+        try {
+            helloClient.hello();
+            fail();
+        } catch (IllegalStateException expected) {
+        }
     }
 
 }
