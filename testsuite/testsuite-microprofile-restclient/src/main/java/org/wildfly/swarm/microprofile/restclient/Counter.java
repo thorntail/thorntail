@@ -22,20 +22,30 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class Counter {
 
-    private volatile int max = Integer.MAX_VALUE;
+    private volatile int threshold = Integer.MAX_VALUE;
 
     private final AtomicInteger count = new AtomicInteger(0);
 
+    /**
+     * Increments the count and returns true if the threshold is reached.
+     *
+     * @return true if the threshold is reached
+     */
     public boolean incrementAndTest() {
-        return count.incrementAndGet() >= max;
+        return count.incrementAndGet() >= threshold;
     }
 
     int getCount() {
         return count.get();
     }
 
-    public void reset(int max) {
-        this.max = max;
+    /**
+     * Reset the counter. When the given threshold is reached {@link #incrementAndTest()} returns true.
+     *
+     * @param threshold
+     */
+    public void reset(int threshold) {
+        this.threshold = threshold;
         count.set(0);
     }
 

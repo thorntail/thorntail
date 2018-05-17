@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 
 @Path("/")
@@ -30,23 +31,34 @@ public class HelloResource {
     @Inject
     private Timer timer;
 
+    @Inject
+    private Latch latch;
+
     @GET
     @Produces("text/plain")
     @Path("/hello")
     public String hello() {
-        timer.sleep();
-        if (counter.incrementAndTest()) {
-            return "OK" + counter.getCount();
-        } else {
-            throw new WebApplicationException(500);
+        try {
+            timer.sleep();
+            if (counter.incrementAndTest()) {
+                return "OK" + counter.getCount();
+            } else {
+                throw new WebApplicationException(500);
+            }
+        } finally {
+            latch.countDown();
         }
     }
 
     @GET
     @Produces("text/plain")
     @Path("/helloBulk")
-    public String helloBulk() {
-        timer.sleep();
+    public String helloBulk(@QueryParam("wait") boolean wait) throws InterruptedException {
+        // We use the default latch as "start"
+        latch.countDown();
+        if (wait && !latch.await("end")) {
+            throw new WebApplicationException("End latch not counted down", 500);
+        }
         return "OK";
     }
 }

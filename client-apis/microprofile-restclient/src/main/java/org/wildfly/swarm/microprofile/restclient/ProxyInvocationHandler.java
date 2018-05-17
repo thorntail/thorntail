@@ -141,7 +141,7 @@ class ProxyInvocationHandler implements InvocationHandler {
         List<InterceptorInvocation> chain = interceptorChains.get(method);
         if (chain != null) {
             // Invoke business method interceptors
-            return new InvocationContextImpl(target, method, argsReplacement, chain).proceed();
+            return new InvocationContextImpl(target, method, args, chain).proceed();
         } else {
             try {
                 return method.invoke(target, args);

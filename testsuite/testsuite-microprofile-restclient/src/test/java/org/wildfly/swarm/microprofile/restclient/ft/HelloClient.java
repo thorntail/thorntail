@@ -17,6 +17,7 @@ package org.wildfly.swarm.microprofile.restclient.ft;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
@@ -60,10 +61,14 @@ public interface HelloClient {
 
     // Note that bulkhead does not make sense without ResteasyClientBuilder.connectionPoolSize()
     @Bulkhead(FaultToleranceTest.BULKHEAD)
-    @Fallback(fallbackMethod = "fallback")
+    @Fallback(fallbackMethod = "bulkheadFallback")
     @GET
     @Path("/helloBulk")
-    String helloBulkhead();
+    String helloBulkhead(@QueryParam("wait") boolean wait);
 
+    @GET // resteasy client proxies do not ignore default methods, see also RESTEASY-798 fixed in 3.5.1.Final
+    default String bulkheadFallback(boolean wait) {
+        return "bulkheadFallback";
+    }
 
 }

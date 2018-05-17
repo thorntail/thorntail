@@ -16,14 +16,12 @@
 package org.wildfly.swarm.microprofile.restclient.ft;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,6 +44,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.microprofile.restclient.Counter;
 import org.wildfly.swarm.microprofile.restclient.HelloResource;
+import org.wildfly.swarm.microprofile.restclient.Latch;
 import org.wildfly.swarm.microprofile.restclient.Timer;
 
 /**
@@ -62,6 +61,9 @@ public class FaultToleranceTest {
 
     @Inject
     Timer timer;
+
+    @Inject
+    Latch latch;
 
     @ArquillianResource
     URL url;
@@ -87,11 +89,9 @@ public class FaultToleranceTest {
         HelloClient helloClient = RestClientBuilder.newBuilder().baseUrl(url).build(HelloClient.class);
 
         timer.reset(0);
-
         counter.reset(3);
+
         assertEquals("fallback", helloClient.helloFallback());
-
-        counter.reset(3);
         assertEquals("defaultFallback", helloClient.helloFallbackDefaultMethod());
     }
 
@@ -149,35 +149,48 @@ public class FaultToleranceTest {
 
         counter.reset(1);
         timer.reset(400);
+        latch.reset(1);
+
         try {
             helloClient.helloTimeout();
             fail();
         } catch (TimeoutException expected) {
         }
+
+        latch.await();
     }
 
     @Test
     public void testBulkhead() throws InterruptedException, IllegalStateException, RestClientDefinitionException, MalformedURLException, ExecutionException {
 
-        timer.reset(400);
+        int pool = BULKHEAD;
+        // Start latch
+        latch.reset(pool);
+        // End latch
+        latch.add("end", 1);
 
-        int pool = BULKHEAD + 1;
         ExecutorService executor = Executors.newFixedThreadPool(pool);
+
         try {
             HelloClient helloClient = RestClientBuilder.newBuilder().baseUrl(url).property("resteasy.connectionPoolSize", pool * 2).build(HelloClient.class);
 
-            List<Callable<String>> tasks = new ArrayList<>();
+            List<Future<String>>  results = new ArrayList<>();
             for (int i = 0; i < pool; i++) {
-                tasks.add(() -> helloClient.helloBulkhead());
+                results.add(executor.submit(() -> helloClient.helloBulkhead(true)));
             }
-            List<Future<String>> futures = executor.invokeAll(tasks);
-            List<String> results = new ArrayList<>();
-            for (Future<String> future : futures) {
-                results.add(future.get());
+            // Wait until all requests are being processed
+            if(!latch.await()) {
+                fail();
             }
-            assertTrue(results.remove("defaultFallback"));
-            assertTrue(results.remove("OK"));
-            assertTrue(results.remove("OK"));
+
+            // Next invocation should return fallback due to BulkheadException
+            assertEquals("bulkheadFallback", helloClient.helloBulkhead(false));
+
+            latch.countDown("end");
+            for (Future<String> future : results) {
+                assertEquals("OK", future.get());
+            }
+
         } finally {
             executor.shutdown();
         }
