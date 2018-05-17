@@ -171,7 +171,7 @@ public class JoseConfiguration {
      * Path to the keystore.
      */
     @Configurable("swarm.jose.keystore.path")
-    @AttributeDocumentation("Path to the keystore")
+    @AttributeDocumentation("Path to the keystore, only the classpath is currently supported")
     private Defaultable<String> keystorePath = string(DEFAULT_KEYSTORE_PATH);
 
     /**
