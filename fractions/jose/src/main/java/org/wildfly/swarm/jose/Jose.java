@@ -16,7 +16,8 @@
 package org.wildfly.swarm.jose;
 
 /**
- * Supports the protection of data with JOSE Signature and Encryption algorithms
+ * Supports the protection of data with JOSE Signature (RFC7515) and Encryption (RFC7516)
+ * using JSON Web Algorithms (RFC7518).
  */
 public interface Jose {
     /**

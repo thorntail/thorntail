@@ -21,7 +21,7 @@ public enum JoseFormat {
      */
     COMPACT,
     /**
-     * JOSE JOSE representation: supporting this format is optional
+     * JOSE JSON representation: supporting this format is optional
      */
     JSON
 }

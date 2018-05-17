@@ -27,7 +27,7 @@ import org.wildfly.swarm.jose.JoseConfiguration;
 public abstract class JoseFactory {
 
     private static Logger log = Logger.getLogger(JoseFactory.class);
-    private static JoseFactory instance;
+    private static volatile JoseFactory instance;
 
     /**
      * Obtain the JoseFactory using the ServiceLoader pattern.

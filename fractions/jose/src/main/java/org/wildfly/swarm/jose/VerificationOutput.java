@@ -19,17 +19,17 @@ import java.util.Collections;
 import java.util.Map;
 
 public class VerificationOutput {
-    private Map<String, Object> metadata;
+    private Map<String, Object> headers;
     private String data;
     public VerificationOutput(String data) {
         this(Collections.emptyMap(), data);
     }
-    public VerificationOutput(Map<String, Object> metadata, String data) {
-        this.metadata = metadata;
+    public VerificationOutput(Map<String, Object> headers, String data) {
+        this.headers = headers;
         this.data = data;
     }
-    public Map<String, Object> getMetadata() {
-        return metadata;
+    public Map<String, Object> getHeaders() {
+        return headers;
     }
     public String getData() {
         return data;

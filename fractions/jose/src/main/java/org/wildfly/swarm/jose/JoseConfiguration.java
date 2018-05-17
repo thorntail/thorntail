@@ -164,7 +164,7 @@ public class JoseConfiguration {
      * Keystore type.
      */
     @Configurable("swarm.jose.keystore.type")
-    @AttributeDocumentation("Keystore type")
+    @AttributeDocumentation("Keystore type: Java KeyStore type or 'jwk' - JSON Web Key store, see RFC7517, section 5")
     private Defaultable<String> keystoreType = string(DEFAULT_KEYSTORE_TYPE);
 
     /**
@@ -185,28 +185,28 @@ public class JoseConfiguration {
      * Signature algorithm.
      */
     @Configurable("swarm.jose.signature.algorithm")
-    @AttributeDocumentation("Signature algorithm")
+    @AttributeDocumentation("Signature algorithm: see RFC7518, Section 3")
     private Defaultable<String> signatureAlgorithm = string(DEFAULT_SIGNATURE_ALGORITHM);
 
     /**
      * Signature Format.
      */
     @Configurable("swarm.jose.signature.format")
-    @AttributeDocumentation("Compact or JSON JWS format, support for JSON is optional")
+    @AttributeDocumentation("Signature format: COMPACT (default) or JSON (support  is optional)")
     private Defaultable<String> signatureFormat = string(DEFAULT_JOSE_FORMAT.name());
 
     /**
      * Signature Data Encoding.
      */
     @Configurable("swarm.jose.signature.data-encoding")
-    @AttributeDocumentation("JWS data encoding mode, true - base64url (default), false - clear text")
+    @AttributeDocumentation("Signature data encoding mode: true - Base64Url (default), false - clear text")
     private Defaultable<Boolean> signatureDataEncoding = bool(DEFAULT_SIGNATURE_DATA_ENCODING);
 
     /**
      * Signature Detached Data.
      */
     @Configurable("swarm.jose.signature.data-detached")
-    @AttributeDocumentation("JWS data detached mode, true - the data is in the JWS payload (default), false - outside")
+    @AttributeDocumentation("Signature detached mode: true - the data is in the sequence (default), false - outside")
     private Defaultable<Boolean> signatureDataDetached = bool(DEFAULT_SIGNATURE_DATA_DETACHED);
 
     /**
@@ -227,21 +227,21 @@ public class JoseConfiguration {
      * Encryption Format.
      */
     @Configurable("swarm.jose.encryption.format")
-    @AttributeDocumentation("Compact or JSON JWE format, support for JSON is optional")
+    @AttributeDocumentation("Encryption format: COMPACT (default) or JSON (support is optional)")
     private Defaultable<String> encryptionFormat = string(DEFAULT_JOSE_FORMAT.name());
 
     /**
      * Key Encryption algorithm.
      */
     @Configurable("swarm.jose.encryption.keyAlgorithm")
-    @AttributeDocumentation("Key Encryption algorithm")
+    @AttributeDocumentation("Key encryption algorithm: see RFC7518, Section 4")
     private Defaultable<String> keyEncryptionAlgorithm = string(DEFAULT_KEY_ENCRYPTION_ALGORITHM);
 
     /**
      * Content Encryption algorithm.
      */
     @Configurable("swarm.jose.encryption.contentAlgorithm")
-    @AttributeDocumentation("Content Encryption algorithm")
+    @AttributeDocumentation("Content encryption algorithm: : see RFC7518, Section 5")
     private Defaultable<String> contentEncryptionAlgorithm = string(DEFAULT_CONTENT_ENCRYPTION_ALGORITHM);
 
     /**
