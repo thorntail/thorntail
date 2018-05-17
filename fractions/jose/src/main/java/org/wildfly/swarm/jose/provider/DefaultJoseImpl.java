@@ -64,7 +64,7 @@ public class DefaultJoseImpl implements Jose {
     @Override
     public String sign(SignatureInput input) {
         JwsHeaders headers = new JwsHeaders();
-        headers.asMap().putAll(input.getMetadata());
+        headers.asMap().putAll(input.getHeaders());
         if (!config.signatureDataEncoding()) {
             headers.setPayloadEncodingStatus(false);
         }
@@ -171,7 +171,7 @@ public class DefaultJoseImpl implements Jose {
     @Override
     public String encrypt(EncryptionInput input) {
         JweHeaders headers = new JweHeaders();
-        headers.asMap().putAll(input.getMetadata());
+        headers.asMap().putAll(input.getHeaders());
         Properties props = prepareEncryptionProperties();
         JweEncryptionProvider provider = JweUtils.loadEncryptionProvider(props, headers);
 

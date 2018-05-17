@@ -61,7 +61,7 @@ public class Jose4jJoseImpl implements Jose {
     public String sign(SignatureInput input) {
         JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(input.getData());
-        for (Map.Entry<String, Object> entry : input.getMetadata().entrySet()) {
+        for (Map.Entry<String, Object> entry : input.getHeaders().entrySet()) {
             jws.getHeaders().setObjectHeaderValue(entry.getKey(), entry.getValue());
         }
         jws.setAlgorithmHeaderValue(config.signatureAlgorithm());
@@ -132,7 +132,7 @@ public class Jose4jJoseImpl implements Jose {
     public String encrypt(EncryptionInput input) {
         JsonWebEncryption jwe = new JsonWebEncryption();
         jwe.setPlaintext(input.getData());
-        for (Map.Entry<String, Object> entry : input.getMetadata().entrySet()) {
+        for (Map.Entry<String, Object> entry : input.getHeaders().entrySet()) {
             jwe.getHeaders().setObjectHeaderValue(entry.getKey(), entry.getValue());
         }
         jwe.setAlgorithmHeaderValue(config.keyEncryptionAlgorithm());

@@ -19,17 +19,17 @@ import java.util.Collections;
 import java.util.Map;
 
 public class DecryptionOutput {
-    private Map<String, Object> metadata;
+    private Map<String, Object> headers;
     private String data;
     public DecryptionOutput(String data) {
         this(Collections.emptyMap(), data);
     }
-    public DecryptionOutput(Map<String, Object> metadata, String data) {
-        this.metadata = metadata;
+    public DecryptionOutput(Map<String, Object> headers, String data) {
+        this.headers = headers;
         this.data = data;
     }
-    public Map<String, Object> getMetadata() {
-        return metadata;
+    public Map<String, Object> getHeaders() {
+        return headers;
     }
     public String getData() {
         return data;
