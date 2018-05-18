@@ -23,29 +23,6 @@ include::pom.xml[tag=bom,indent=4]
 </dependencyManagement>
 ----
 
-ifdef::product[]
-. If your test uses the Apache HTTP Client or the JAX-RS Client, add the `commons-logging` artifact to the `test` scope of the project in the `pom.xml` file:
-+
---
-[source,xml]
-----
-<project>
-  <dependencies>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.2</version>
-      <scope>test</scope>
-    <dependency>
-  </dependencies>
-</project>
-----
-
-The reason is that the {Thorntail} productized rutime artifact BOM imports the EAP runtime artifacts BOM (`org.jboss.bom:eap-runtime-artifacts`), which excludes the `commons-logging` artifact from the `org.apache.httpcomponents:httpclient` and `org.apache.james:apache-mime4j` artifacts.
-As a result, when running tests in a Maven project that imports the {Thorntail} productized runtime artifact BOM, neither the Apache HTTP Client nor any other artifact that depends on it (for example, the JAX-RS Client) works.
---
-endif::[]
-
 . Reference the `org.wildfly.swarm:arquillian` artifact in your `pom.xml` file
 with the `<scope>` set to `test`:
 +
