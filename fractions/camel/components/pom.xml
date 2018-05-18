@@ -23,14 +23,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>camel</artifactId>
         <version>2018.6.0-SNAPSHOT</version>
     </parent>
     
     <name>Camel Components</name>
 
-    <groupId>org.wildfly.swarm</groupId>
+    <groupId>io.thorntail</groupId>
     <artifactId>camel-components</artifactId>
     <packaging>pom</packaging>
 

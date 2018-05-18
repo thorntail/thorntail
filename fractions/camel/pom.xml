@@ -24,7 +24,7 @@
     <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
+    <groupId>io.thorntail</groupId>
     <artifactId>build-parent</artifactId>
     <version>2018.6.0-SNAPSHOT</version>
     <relativePath>../../build-parent/pom.xml</relativePath>
@@ -33,7 +33,7 @@
     <name>Camel</name>
     <description>Java Integration Framework implementing the Enterprise Integration Patterns</description>
 
-    <groupId>org.wildfly.swarm</groupId>
+    <groupId>io.thorntail</groupId>
     <artifactId>camel</artifactId>
     <packaging>pom</packaging>
 

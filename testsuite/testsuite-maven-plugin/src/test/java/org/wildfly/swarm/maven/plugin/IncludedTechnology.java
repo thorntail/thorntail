@@ -59,7 +59,7 @@ public enum IncludedTechnology {
         switch (dependencies) {
             case FRACTIONS:
                 return "<dependency>\n" +
-                        "  <groupId>org.wildfly.swarm</groupId>\n" +
+                        "  <groupId>io.thorntail</groupId>\n" +
                         "  <artifactId>" + fraction + "</artifactId>\n" +
                         "</dependency>\n";
             case JAVA_EE_APIS:

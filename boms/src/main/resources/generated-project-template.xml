@@ -4,7 +4,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.wildfly.swarm</groupId>
+  <groupId>io.thorntail</groupId>
   <artifactId>wildfly-swarm-packaging-helper-project</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
@@ -38,7 +38,7 @@
     FRACTIONS_FROM_BOM
 
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>fraction-metadata</artifactId>
       <version>SWARM_VERSION</version>
       <scope>provided</scope>
@@ -50,8 +50,8 @@
     <finalName>full-project-package</finalName>
     <plugins>
       <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
         <version>SWARM_VERSION</version>
         <executions>
           <execution>

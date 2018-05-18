@@ -22,7 +22,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>build-parent</artifactId>
       <version>2018.6.0-SNAPSHOT</version>
       <relativePath>../../build-parent/pom.xml</relativePath>
@@ -50,7 +50,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
+            <groupId>io.thorntail</groupId>
             <artifactId>logging</artifactId>
         </dependency>
         <dependency>
@@ -59,7 +59,7 @@
             <version>${version.asciidoctorj}</version>
         </dependency>
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
+            <groupId>io.thorntail</groupId>
             <artifactId>meta-spi</artifactId>
         </dependency>
         <dependency>

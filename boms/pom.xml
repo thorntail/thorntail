@@ -8,13 +8,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
+    <groupId>io.thorntail</groupId>
     <artifactId>build-parent</artifactId>
     <version>2018.6.0-SNAPSHOT</version>
     <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
+  <groupId>io.thorntail</groupId>
   <artifactId>boms</artifactId>
 
   <name>BOMs</name>
@@ -33,7 +33,7 @@
             <goals>
               <goal>copy-resources</goal>
             </goals>
-            <inherited>false</inherited> 
+            <inherited>false</inherited>
             <configuration>
               <outputDirectory>${basedir}/target</outputDirectory>
               <resources>

@@ -27,6 +27,7 @@ import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
 import org.jboss.shrinkwrap.api.Node;
+import org.wildfly.swarm.fractions.FractionDescriptor;
 
 /**
  * Dependencies that have been resolved to local files.
@@ -36,8 +37,6 @@ import org.jboss.shrinkwrap.api.Node;
  * @since 26/10/2016
  */
 public interface ResolvedDependencies {
-
-    String WILDFLY_SWARM_GROUP_ID = "org.wildfly.swarm";
 
     String WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID = "bootstrap";
 
@@ -60,7 +59,7 @@ public interface ResolvedDependencies {
         if (dependency.groupId().equals(JBOSS_MODULES_GROUP_ID) && dependency.artifactId().equals(JBOSS_MODULES_ARTIFACT_ID)) {
             return true;
         }
-        if (dependency.groupId().equals(WILDFLY_SWARM_GROUP_ID) && dependency.artifactId().equals(WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
+        if (dependency.groupId().equals(FractionDescriptor.THORNTAIL_GROUP_ID) && dependency.artifactId().equals(WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
             return true;
         }
         return false;

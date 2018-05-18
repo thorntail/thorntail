@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
+    <groupId>io.thorntail</groupId>
     <artifactId>boms</artifactId>
     <version>2018.6.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
@@ -34,7 +34,7 @@
         <artifactId>wildfly-swarm-fraction-plugin</artifactId>
         <dependencies>
           <dependency>
-            <groupId>org.wildfly.swarm</groupId>
+            <groupId>io.thorntail</groupId>
             <artifactId>fraction-metadata</artifactId>
             <version>${version.certified-community}</version>
           </dependency>

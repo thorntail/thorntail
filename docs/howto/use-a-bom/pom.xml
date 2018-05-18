@@ -31,8 +31,8 @@
     <plugins>
       <plugin>
         <!-- tag::plugin[] -->
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
         <version>${version.wildfly-swarm}</version>
         <!-- end::plugin[] -->
         <executions>
@@ -118,7 +118,7 @@
     <dependencies>
       <!-- tag::bom-dependency[] -->
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>bom</artifactId>
         <version>${version.wildfly-swarm}</version>
         <type>pom</type>
@@ -129,7 +129,7 @@
       <!-- tag::bom-unstable-dependency[] -->
       <!--
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>bom-unstable</artifactId>
         <version>${version.wildfly-swarm}</version>
         <type>pom</type>
@@ -149,11 +149,11 @@
 
     <!-- tag::fraction-dependencies[] -->
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>jaxrs</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>datasources</artifactId>
     </dependency>
     <!-- end::fraction-dependencies[] -->

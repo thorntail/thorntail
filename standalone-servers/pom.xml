@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
+    <groupId>io.thorntail</groupId>
     <artifactId>build-parent</artifactId>
     <version>2018.6.0-SNAPSHOT</version>
     <relativePath>../build-parent/pom.xml</relativePath>
@@ -22,8 +22,8 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-plugin</artifactId>
+          <groupId>io.thorntail</groupId>
+          <artifactId>thorntail-maven-plugin</artifactId>
           <version>${project.version}</version>
           <executions>
             <execution>
@@ -71,8 +71,8 @@
         <pluginManagement>
           <plugins>
             <plugin>
-              <groupId>org.wildfly.swarm</groupId>
-              <artifactId>wildfly-swarm-plugin</artifactId>
+              <groupId>io.thorntail</groupId>
+              <artifactId>thorntail-maven-plugin</artifactId>
               <version>${project.version}</version>
               <executions>
                 <execution>

@@ -24,7 +24,7 @@
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
-      <groupId>org.wildfly.swarm.testsuite</groupId>
+      <groupId>io.thorntail.testsuite</groupId>
       <artifactId>wildlfy-swarm-microprofile-tck-parent</artifactId>
       <version>2018.6.0-SNAPSHOT</version>
       <relativePath>../</relativePath>
@@ -41,7 +41,7 @@
       </dependency>
 
       <dependency>
-         <groupId>org.wildfly.swarm</groupId>
+         <groupId>io.thorntail</groupId>
          <artifactId>microprofile-openapi</artifactId>
          <scope>test</scope>
       </dependency>
@@ -58,7 +58,7 @@
       </dependency>
 
       <dependency>
-         <groupId>org.wildfly.swarm</groupId>
+         <groupId>io.thorntail</groupId>
          <artifactId>arquillian</artifactId>
          <scope>test</scope>
          <exclusions>
@@ -112,8 +112,8 @@
           <artifactId>maven-enforcer-plugin</artifactId>
           <dependencies>
              <dependency>
-              <groupId>org.wildfly.swarm</groupId>
-              <artifactId>wildfly-swarm-enforcer-pattern-size</artifactId>
+              <groupId>io.thorntail</groupId>
+              <artifactId>thorntail-enforcer-pattern-size</artifactId>
               <version>${project.version}</version>
             </dependency>
          </dependencies>

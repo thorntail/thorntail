@@ -28,7 +28,7 @@ public class SwarmInfo {
 
     static {
         String version = "unknown";
-        String groupId = "org.wildfly.swarm";
+        String groupId = "io.thorntail";
 
         try {
             InputStream in = SwarmInfo.class.getClassLoader().getResourceAsStream(SWARM_INFO_PROPERTIES);

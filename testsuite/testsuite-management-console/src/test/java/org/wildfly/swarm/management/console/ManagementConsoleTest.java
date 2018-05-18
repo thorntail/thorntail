@@ -29,17 +29,6 @@ public class ManagementConsoleTest {
         return ShrinkWrap.create(WARArchive.class);
     }
 
-
-    /*
-    @ArtifactDependencies
-    public static List<String> appDependencies() {
-
-        return Arrays.asList(
-                "org.wildfly.swarm:management-console"
-        );
-    }
-    */
-
     @Test
     @RunAsClient
     public void testHomePageShouldHaveCorrectTitle() throws IOException {

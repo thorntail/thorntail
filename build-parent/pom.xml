@@ -8,8 +8,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm</artifactId>
+    <groupId>io.thorntail</groupId>
+    <artifactId>thorntail</artifactId>
     <version>2018.6.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
@@ -22,7 +22,8 @@
   <description>Build Parent to bring in required dependencies</description>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>86</version.wildfly.swarm.fraction.plugin>
+    <!-- TODO -->
+    <version.wildfly.swarm.fraction.plugin>87-SNAPSHOT</version.wildfly.swarm.fraction.plugin>
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 

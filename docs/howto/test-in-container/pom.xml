@@ -33,7 +33,7 @@
       <dependencyManagement>
         <dependencies>
           <dependency>
-            <groupId>org.wildfly.swarm</groupId>
+            <groupId>io.thorntail</groupId>
             <artifactId>bom-certified</artifactId>
             <version>${version.wildfly-swarm}</version>
             <type>pom</type>
@@ -48,7 +48,7 @@
     <dependencies>
       <!-- tag::bom[] -->
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>bom</artifactId>
         <version>${version.wildfly-swarm}</version>
         <type>pom</type>
@@ -66,19 +66,19 @@
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>datasources</artifactId>
     </dependency>
 
     <!-- Only required for use of @ArquillianResource in test -->
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>cdi</artifactId>
     </dependency>
 
     <!-- tag::arquillian[] -->
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>arquillian</artifactId>
       <scope>test</scope>
     </dependency>

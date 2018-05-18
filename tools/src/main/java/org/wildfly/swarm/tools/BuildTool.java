@@ -349,7 +349,7 @@ public class BuildTool {
     }
 
     private static String strippedSwarmGav(MavenArtifactDescriptor desc) {
-        if (desc.groupId().equals(DependencyManager.WILDFLY_SWARM_GROUP_ID)) {
+        if (desc.groupId().equals(FractionDescriptor.THORNTAIL_GROUP_ID)) {
             return String.format("%s:%s", desc.artifactId(), desc.version());
         }
 

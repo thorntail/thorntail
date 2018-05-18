@@ -21,7 +21,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>bom</artifactId>
         <version>${version.wildfly.swarm}</version>
         <scope>import</scope>
@@ -32,7 +32,7 @@
   <dependencies>
     <!-- Wildfly Swarm Fractions -->
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>jaxrs</artifactId>
     </dependency>
   </dependencies>
@@ -41,8 +41,8 @@
     <finalName>restful-endpoint</finalName>
     <plugins>
       <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
         <version>${version.wildfly.swarm}</version>
         <executions>
           <execution>

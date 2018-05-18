@@ -148,7 +148,7 @@ public final class TestingProject {
 
         if (packaging.hasCustomMain()) {
             result.append("<dependency>\n" +
-                          "  <groupId>org.wildfly.swarm</groupId>\n" +
+                          "  <groupId>io.thorntail</groupId>\n" +
                           "  <artifactId>container</artifactId>\n" +
                           "  <version>" + swarmVersion + "</version>\n" +
                           "</dependency>\n");
@@ -157,7 +157,7 @@ public final class TestingProject {
         if (packaging == Packaging.JAR_WITH_MAIN && dependencies == Dependencies.JAVA_EE_APIS) {
             // for the Main class
             result.append("<dependency>\n" +
-                          "  <groupId>org.wildfly.swarm</groupId>\n" +
+                          "  <groupId>io.thorntail</groupId>\n" +
                           "  <artifactId>undertow</artifactId>\n" +
                           "</dependency>\n");
         }

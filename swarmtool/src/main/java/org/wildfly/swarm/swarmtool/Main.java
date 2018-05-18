@@ -300,7 +300,7 @@ public class Main {
                     switch (parts.length) {
                         case 1:
                             final FractionDescriptor desc = FractionList.get()
-                                    .getFractionDescriptor("org.wildfly.swarm", parts[0]);
+                                    .getFractionDescriptor("io.thorntail", parts[0]);
                             if (desc != null) {
 
                                 return desc;
@@ -311,7 +311,7 @@ public class Main {
                             }
                         case 2:
 
-                            return new FractionDescriptor("org.wildfly.swarm", parts[0], parts[1]);
+                            return new FractionDescriptor("io.thorntail", parts[0], parts[1]);
                         case 3:
 
                             return new FractionDescriptor(parts[0], parts[1], parts[2]);
