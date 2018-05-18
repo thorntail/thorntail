@@ -10,6 +10,7 @@
         <module name="javax.api"/>
         <module name="javax.annotation.api"/>
         <module name="org.wildfly.swarm.undertow" slot="main"/>
+        <module name="org.jboss.logging" slot="main"/>
         <module name="org.eclipse.microprofile.config.api" export="true"/>
         <module name="org.wildfly.extension.microprofile.config" export="true"/>
         <module name="org.eclipse.microprofile.restclient" export="true" services="import"/>

@@ -1,5 +1,5 @@
-/**
- * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
+/*
+ * Copyright 2018 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile.restclient;
+package org.wildfly.swarm.microprofile.restclient.proxy;
 
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 
-/**
- * Created by hbraun on 22.01.18.
- */
-public class BuilderResolver extends RestClientBuilderResolver {
-    @Override
-    public RestClientBuilder newBuilder() {
-        return new RestClientBuilderImpl();
-    }
+@Path("/v1")
+public interface HelloClient {
+
+    @SuperBinding
+    @GET
+    @Path("/hello")
+    String hello();
+
 }

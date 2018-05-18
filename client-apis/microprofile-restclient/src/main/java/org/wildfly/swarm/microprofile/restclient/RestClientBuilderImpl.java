@@ -16,6 +16,7 @@
 package org.wildfly.swarm.microprofile.restclient;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
@@ -46,17 +47,23 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.RestClientDefinitionException;
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
+import org.jboss.logging.Logger;
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.specimpl.ResteasyUriBuilder;
 
 /**
  * Created by hbraun on 15.01.18.
  */
-class BuilderImpl implements RestClientBuilder {
+class RestClientBuilderImpl implements RestClientBuilder {
+
+    private static final Logger LOGGER = Logger.getLogger(RestClientBuilderImpl.class);
+
+    private static final String RESTEASY_PROPERTY_PREFIX = "resteasy.";
 
     private static final String DEFAULT_MAPPER_PROP = "microprofile.rest.client.disable.default.mapper";
 
-    BuilderImpl() {
+    RestClientBuilderImpl() {
         ClientBuilder availableBuilder = ClientBuilder.newBuilder();
 
         if (availableBuilder instanceof ResteasyClientBuilder) {
@@ -82,6 +89,7 @@ class BuilderImpl implements RestClientBuilder {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T build(Class<T> aClass) throws IllegalStateException, RestClientDefinitionException {
 
@@ -106,39 +114,32 @@ class BuilderImpl implements RestClientBuilder {
 
         List<String> noProxyHosts = Arrays.asList(
                 System.getProperty("http.nonProxyHosts", "localhost|127.*|[::1]").split("|"));
+        String proxyHost = System.getProperty("http.proxyHost");
 
-        final T actualClient;
-
-        final String proxyHost = System.getProperty("http.proxyHost");
+        T actualClient;
+        ResteasyClient client;
 
         if (proxyHost != null && !noProxyHosts.contains(this.baseURI.getHost())) {
             // Use proxy, if defined
-            actualClient = this.builderDelegate.defaultProxy(
+            client = this.builderDelegate.defaultProxy(
                     proxyHost,
                     Integer.parseInt(System.getProperty("http.proxyPort", "80")))
-                    .build()
-                    .target(this.baseURI)
-                    .proxyBuilder(aClass)
-                    .classloader(classLoader)
-                    .defaultConsumes(MediaType.TEXT_PLAIN)
-                    .defaultProduces(MediaType.TEXT_PLAIN)
                     .build();
         } else {
-            actualClient = this.builderDelegate.build()
-                    .target(this.baseURI)
-                    .proxyBuilder(aClass)
-                    .classloader(classLoader)
-                    .defaultConsumes(MediaType.TEXT_PLAIN)
-                    .defaultProduces(MediaType.TEXT_PLAIN)
-                    .build();
+            client = this.builderDelegate.build();
         }
 
-        return (T) Proxy.newProxyInstance(
-                classLoader,
-                new Class[] {aClass},
-                new ProxyInvocationHandler(actualClient, getLocalProviderInstances())
-        );
+        actualClient = client.target(this.baseURI)
+                .proxyBuilder(aClass)
+                .classloader(classLoader)
+                .defaultConsumes(MediaType.TEXT_PLAIN)
+                .defaultProduces(MediaType.TEXT_PLAIN).build();
 
+        Class<?>[] interfaces = new Class<?>[2];
+        interfaces[0] = aClass;
+        interfaces[1] = RestClientProxy.class;
+
+        return (T) Proxy.newProxyInstance(classLoader, interfaces, new ProxyInvocationHandler(aClass, actualClient, getLocalProviderInstances(), client));
     }
 
     private boolean isMapperDisabled() {
@@ -236,11 +237,34 @@ class BuilderImpl implements RestClientBuilder {
 
     @Override
     public RestClientBuilder property(String name, Object value) {
+        if (name.startsWith(RESTEASY_PROPERTY_PREFIX)) {
+            // Allows to configure some of the ResteasyClientBuilder delegate properties
+            String builderMethodName = name.substring(RESTEASY_PROPERTY_PREFIX.length());
+            try {
+                Method builderMethod = ResteasyClientBuilder.class.getMethod(builderMethodName, unwrapPrimitiveType(value));
+                builderMethod.invoke(builderDelegate, value);
+            } catch (NoSuchMethodException e) {
+                LOGGER.warnf("ResteasyClientBuilder method %s not found", builderMethodName);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                LOGGER.errorf(e, "Unable to invoke ResteasyClientBuilder method %s", builderMethodName);
+            }
+        }
         this.builderDelegate.property(name, value);
         return this;
     }
 
-    private static Object newInstanceOf(Class clazz) {
+    private static Class<?> unwrapPrimitiveType(Object value) {
+        if (value instanceof Integer) {
+            return int.class;
+        } else if (value instanceof Long) {
+            return long.class;
+        } else if (value instanceof Boolean) {
+            return boolean.class;
+        }
+        return value.getClass();
+    }
+
+    private static Object newInstanceOf(Class<?> clazz) {
         try {
             return clazz.newInstance();
         } catch (Throwable t) {

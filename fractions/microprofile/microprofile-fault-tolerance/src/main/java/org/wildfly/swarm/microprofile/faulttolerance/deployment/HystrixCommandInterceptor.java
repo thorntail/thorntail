@@ -16,8 +16,11 @@
 
 package org.wildfly.swarm.microprofile.faulttolerance.deployment;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.PrivilegedActionException;
 import java.time.Duration;
@@ -403,8 +406,26 @@ public class HystrixCommandInterceptor {
             } else {
                 return () -> {
                     try {
-                        return fallbackMethod.invoke(ctx.getTarget(), ctx.getParameters());
-                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        if (fallbackMethod.isDefault()) {
+                            // Workaround for default methods (used e.g. in MP Rest Client)
+                            Class<?> declaringClazz = fallbackMethod.getDeclaringClass();
+                            try {
+                                // First try java 8 hack
+                                Constructor<Lookup> constructor = Lookup.class.getDeclaredConstructor(Class.class);
+                                constructor.setAccessible(true);
+                                return constructor.newInstance(declaringClazz).in(declaringClazz).unreflectSpecial(fallbackMethod, declaringClazz).bindTo(ctx.getTarget())
+                                        .invokeWithArguments(ctx.getParameters());
+                            } catch (Exception e) {
+                                // Now let's try java 9 hack
+                                return MethodHandles.lookup()
+                                        .findSpecial(declaringClazz, fallbackMethod.getName(),
+                                                MethodType.methodType(fallbackMethod.getReturnType(), fallbackMethod.getParameterTypes()), declaringClazz)
+                                        .bindTo(ctx.getTarget()).invokeWithArguments(ctx.getParameters());
+                            }
+                        } else {
+                            return fallbackMethod.invoke(ctx.getTarget(), ctx.getParameters());
+                        }
+                    } catch (Throwable e) {
                         throw new FaultToleranceException("Error during fallback method invocation", e);
                     }
                 };

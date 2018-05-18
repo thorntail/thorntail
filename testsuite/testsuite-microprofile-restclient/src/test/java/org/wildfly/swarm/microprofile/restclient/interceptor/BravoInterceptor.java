@@ -1,5 +1,5 @@
-/**
- * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
+/*
+ * Copyright 2018 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile.restclient;
+package org.wildfly.swarm.microprofile.restclient.interceptor;
 
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver;
+import javax.annotation.Priority;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
-/**
- * Created by hbraun on 22.01.18.
- */
-public class BuilderResolver extends RestClientBuilderResolver {
-    @Override
-    public RestClientBuilder newBuilder() {
-        return new RestClientBuilderImpl();
+@SuperBinding
+@Priority(1000)
+@Interceptor
+public class BravoInterceptor {
+
+    @AroundInvoke
+    public Object aroundInvoke(InvocationContext ctx) throws Exception {
+        return "B:" + ctx.proceed() + ":B";
     }
 }
