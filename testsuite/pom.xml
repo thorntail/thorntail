@@ -93,6 +93,11 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>io.thorntail</groupId>
+          <artifactId>thorntail-maven-plugin</artifactId>
+          <version>4.0.0-SNAPSHOT</version>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${version.maven-surefire-plugin}</version>

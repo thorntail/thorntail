@@ -97,7 +97,7 @@
                 </ports>
                 <env>
                   <JAVA_APP_DIR>/maven</JAVA_APP_DIR>
-                  <JAVA_MAIN_CLASS>io.thorntail.Thorntail</JAVA_MAIN_CLASS>
+                  <JAVA_MAIN_CLASS>io.thorntail.Main</JAVA_MAIN_CLASS>
                 </env>
               </build>
               <run>

@@ -1,0 +1,46 @@
+[#main]
+= `main(...)`
+
+Since {project_name} is more of a library and framework than it is a platform, and everything executes within a flat classpath, you need a `main(...)` to start the Java process.
+
+.Implicit `main(...)`
+
+Implicitly, {project_name} provides a `main(...)` entry-point if you do not provide one.
+The xref:maven-plugin[Maven plugin] will scan your application for a class that provides a `main(...)` method, but if one is not found, `io.thorntail.Main` will be used.
+
+From your IDE, you can usually configure a _Run_ target specifying an arbitrary class outside of your application (but within your classpath).
+In this case, you may also use `io.thorntail.Main`.
+
+.Explicit `main(...)`
+
+In the event you desire to write and control the process startup, you must provide a `main(...)` method matching the Java requirements:
+
+* `public` qualifier
+* `static` qualifiter
+* `void` return type
+* named `main`
+* with an array (or varargs) of `String` arguments.
+
+The simplest possible `main(...)`:
+
+[source,java]
+----
+public class MyMain {
+  public static void main(String... args) throws Exception {
+    Thorntail.run();
+  }
+}
+----
+
+If you desire to have a `main(...)` within your codebase, but have do not require custom behaviour, your class my simply extend `io.thorntail.Main`, which provides an appropriate entry-point.
+
+[source,java]
+----
+import io.thorntail.Main;
+
+public class MyMain extends Main {
+  /* nothing required */
+}
+----
+
+Now you may directly execute your `MyMain` class directly from your IDE.

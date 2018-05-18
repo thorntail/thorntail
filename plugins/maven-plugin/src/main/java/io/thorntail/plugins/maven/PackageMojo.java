@@ -150,7 +150,7 @@ public class PackageMojo extends AbstractMojo {
             List<String> candidates = new MainFinder(this.project.getArtifact().getFile()).search();
             if (candidates.isEmpty()) {
                 getLog().info("Using default Thorntail main()");
-                this.mainClass = "io.thorntail.Thorntail";
+                this.mainClass = "io.thorntail.Main";
             } else if (candidates.size() > 1) {
                 throw new MojoFailureException("No 'mainClass' specified and several candidates detected");
             } else {

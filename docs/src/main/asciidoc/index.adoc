@@ -36,6 +36,10 @@ include::concepts/cdi-native.adoc[leveloffset=+2]
 include::concepts/microprofile-native.adoc[leveloffset=+2]
 include::concepts/flat-classpath.adoc[leveloffset=+2]
 
+# Usage
+
+include::usage/main.adoc[leveloffset=+2]
+
 # Tools
 
 include::tools/maven-plugin.adoc[leveloffset=+1]

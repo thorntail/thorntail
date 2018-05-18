@@ -15,10 +15,8 @@
  */
 package io.thorntail.testsuite.proof;
 
-import io.thorntail.Thorntail;
-
 /**
  * @author Ken Finnigan
  */
-public class Main extends Thorntail.Main {
+public class Main extends io.thorntail.Main {
 }

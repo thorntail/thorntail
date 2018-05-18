@@ -48,19 +48,12 @@ import static io.thorntail.Info.VERSION;
 /**
  * Root entry-point into the system.
  *
- * <p>This class may be used staticly via {@link #run()}, as an executable jar's entry-point via {@link #main(String...)} or as an object.</p>
+ * <p>This class may be used staticly via {@link #run()}, as an executable jar's entry-point via {@link Main#main(String...)} or as an object.</p>
  *
  * @author Ken Finnigan
  * @author Bob McWhirter
  */
 public class Thorntail {
-
-    public static class Main {
-        public static void main(String... args) throws Exception {
-            Thorntail.run();
-        }
-
-    }
 
     private static Thorntail INSTANCE;
 
@@ -94,15 +87,6 @@ public class Thorntail {
             new DirectRunner(configClass).run();
         }
         //new Thorntail(configClass).start();
-    }
-
-    /**
-     * Default executable entrypoint, which simply calls {@link #run()}.
-     *
-     * @param args Command-line arguments.
-     */
-    public static void main(String... args) throws Exception {
-        run();
     }
 
     /**
