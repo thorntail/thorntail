@@ -9,7 +9,7 @@ And a lot of complexity.
 .Just CDI Bean Archives
 
 Instead of magic _fractions_ with a lot of ceremony and boiler-plate, a Thorntail component is usually just a plain CDI bean archive.
-These archives may include CDI beans, extensions, and optional default configuration (provided through MicroProfile-Configuration mechanisms).
+These archives may include CDI beans, extensions, and optional default configuration (provided through MicroProfile Config mechanisms).
 
 .Application & Runtimes Mix
 
@@ -36,7 +36,7 @@ Similar extensions exist to discover things such as `@MessageDriven` implementat
 
 For functionality such as OpenTracing, the ability to detect the presence of implementations is baked into the kernel.
 When a particular dependency is available (such as Jaeger), additional capability is enabled.
-Through the usage of `@RequiredClassPresent`, entire CDI beans and producers may be automatically vetoed (disabled) if particularly classes are not present.
+Through the usage of `@RequiredClassPresent`, entire CDI beans and producers may be automatically vetoed (disabled) if particular classes are not present.
 
 [source,java]
 ----
@@ -56,6 +56,6 @@ public class JaegerTracerProvider implements TracerProvider {
 
 In the above situation, if Jaeger's `Configuration` class is not available on the classpath through dependencies, then the Jaeger-based `Tracer` will not be produced.
 
-Multiple instances of `@RequiredClassPresent` and its inverse,`@RequiredClassNotPresent`, may be applied.
+Multiple instances of `@RequiredClassPresent` and its inverse, `@RequiredClassNotPresent`, may be applied.
 If either annotation is supplied, then _all_ annotations must be true to prevent the automatic disabling of that component.
 
