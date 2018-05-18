@@ -1,0 +1,61 @@
+[#architecture]
+= Architecture
+
+Previous versions of Thorntail had a _lot_ of architecture. 
+And a lot of complexity.
+
+== Basics
+
+.Just CDI Bean Archives
+
+Instead of magic _fractions_ with a lot of ceremony and boiler-plate, a Thorntail component is usually just a plain CDI bean archive.
+These archives may include CDI beans, extensions, and optional default configuration (provided through MicroProfile-Configuration mechanisms).
+
+.Application & Runtimes Mix
+
+There is no distinction between application code and runtime code, other than the archives that provide the classes and components. 
+
+== Details
+
+Any given component may provide CDI beans, extensions, both or neither.
+A CDI portable extension may be used to convert non-CDI components, such as Servlets or JAX-RS resources, into CDI-aware components.
+For instance, `{project_key}-servlet` contains a CDI extension that scans for all `Servlet` implementations and creates relevant meta-data to allow deployment of them.
+
+[source,java]
+----
+void createServletMetaData(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
+    beanManager.getBeans(Servlet.class).forEach(e -> {
+        createServletMetaData((Bean<Servlet>) e, event, beanManager);
+    });
+}
+----
+
+Similar extensions exist to discover things such as `@MessageDriven` implementations.
+
+.Optional Dependency-enabled Functionality
+
+For functionality such as OpenTracing, the ability to detect the presence of implementations is baked into the kernel.
+When a particular dependency is available (such as Jaeger), additional capability is enabled.
+Through the usage of `@RequiredClassPresent`, entire CDI beans and producers may be automatically vetoed (disabled) if particularly classes are not present.
+
+[source,java]
+----
+@ApplicationScoped
+@RequiredClassPresent("com.uber.jaeger.Configuration")
+@Priority(1000)
+public class JaegerTracerProvider implements TracerProvider {
+    @Override
+    public Tracer get() {
+        return this.configuration.getTracer();
+    }
+
+    @Inject
+    Configuration configuration;
+}
+----
+
+In the above situation, if Jaeger's `Configuration` class is not available on the classpath through dependencies, then the Jaeger-based `Tracer` will not be produced.
+
+Multiple instances of `@RequiredClassPresent` and its inverse,`@RequiredClassNotPresent`, may be applied.
+If either annotation is supplied, then _all_ annotations must be true to prevent the automatic disabling of that component.
+

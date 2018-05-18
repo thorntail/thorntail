@@ -27,6 +27,7 @@ endif::[]
 # Introduction
 
 include::design/lessons-learned.adoc[leveloffset=+1]
+include::design/architecture.adoc[leveloffset=+1]
 
 ## Concepts
 
