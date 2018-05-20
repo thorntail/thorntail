@@ -51,11 +51,15 @@ public class DefaultJWTCallerPrincipalFactory extends JWTCallerPrincipalFactory 
                     .setRequireExpirationTime()
                     .setRequireSubject()
                     .setSkipDefaultAudienceValidation()
-                    .setExpectedIssuer(authContextInfo.getIssuedBy())
                     .setJwsAlgorithmConstraints(
                             new AlgorithmConstraints(AlgorithmConstraints.ConstraintType.WHITELIST,
                                     AlgorithmIdentifiers.RSA_USING_SHA256));
 
+            if (authContextInfo.isRequireIssuer()) {
+                builder.setExpectedIssuer(true, authContextInfo.getIssuedBy());
+            } else {
+                builder.setExpectedIssuer(false, null);
+            }
             if (authContextInfo.getSignerKey() != null) {
                 builder.setVerificationKey(authContextInfo.getSignerKey());
             } else if (authContextInfo.isFollowMpJwt11Rules()) {

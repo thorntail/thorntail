@@ -35,6 +35,12 @@ public class JWTAuthContextInfo {
     private String jwksUri;
     private Integer jwksRefreshInterval;
     private HttpsJwks httpsJwks;
+
+    /**
+     * Flag that indicates whether the issuer required, or optional, new in MP-JWT 1.1.
+     * Defaults to the MP-JWT 1.0 behavior of true.
+     */
+    private boolean requireIssuer = true;
     private boolean followMpJwt11Rules;
 
     public JWTAuthContextInfo() {
@@ -115,6 +121,14 @@ public class JWTAuthContextInfo {
 
     public void setJwksRefreshInterval(Integer jwksRefreshInterval) {
         this.jwksRefreshInterval = jwksRefreshInterval;
+    }
+
+    public boolean isRequireIssuer() {
+        return requireIssuer;
+    }
+
+    public void setRequireIssuer(boolean requireIssuer) {
+        this.requireIssuer = requireIssuer;
     }
 
     /**
