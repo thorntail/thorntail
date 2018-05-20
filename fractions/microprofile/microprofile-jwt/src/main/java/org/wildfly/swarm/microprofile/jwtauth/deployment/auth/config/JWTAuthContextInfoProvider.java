@@ -113,7 +113,11 @@ public class JWTAuthContextInfoProvider {
             contextInfo.setIssuedBy(mpJwtIssuer);
         } else if (issuedBy != null && !issuedBy.equals(NONE)) {
             contextInfo.setIssuedBy(issuedBy);
+        } else {
+            // If there is no expected issuer configured, don't validate it; new in MP-JWT 1.1
+            contextInfo.setRequireIssuer(false);
         }
+
         if (expGracePeriodSecs.isPresent()) {
             contextInfo.setExpGracePeriodSecs(expGracePeriodSecs.get());
         }
