@@ -126,9 +126,9 @@
                 <show>public</show>
                 <failOnError>true</failOnError>
                 <quiet>true</quiet>
-                <header>WildFly Swarm API, ${project.version}</header>
-                <footer>WildFly Swarm API, ${project.version}</footer>
-                <doctitle>WildFly Swarm API, ${project.version}</doctitle>
+                <header>Thorntail API, ${project.version}</header>
+                <footer>Thorntail API, ${project.version}</footer>
+                <doctitle>Thorntail API, ${project.version}</doctitle>
               </configuration>
             </execution>
           </executions>

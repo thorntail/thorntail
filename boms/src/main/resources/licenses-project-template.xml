@@ -86,7 +86,7 @@
                            <parameters>
                               <parameter>
                                  <name>product</name>
-                                 <value>WildFly Swarm BOM
+                                 <value>Thorntail BOM
                                     ${project.version}</value>
                               </parameter>
                            </parameters>

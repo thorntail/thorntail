@@ -16,8 +16,8 @@
 
   <artifactId>spi</artifactId>
 
-  <name>WildFly Swarm: SPI</name>
-  <description>WildFly Swarm: SPI</description>
+  <name>Thorntail: SPI</name>
+  <description>Thorntail: SPI</description>
 
   <packaging>jar</packaging>
 

@@ -17,8 +17,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <name>WildFly Swarm HOWTO: Auto-detecting Fractions</name>
-  <description>WildFly Swarm HOWTO: Auto-detecting Fractions</description>
+  <name>Thorntail HOWTO: Auto-detecting Fractions</name>
+  <description>Thorntail HOWTO: Auto-detecting Fractions</description>
   <packaging>war</packaging>
 
   <build>

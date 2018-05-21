@@ -17,8 +17,8 @@
     <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
-  <name>WildFly Swarm Documentation</name>
-  <description>WildFly Swarm Documentation</description>
+  <name>Thorntail Documentation</name>
+  <description>Thorntail Documentation</description>
 
   <packaging>pom</packaging>
 
@@ -81,7 +81,7 @@
             <version>${project.version}</version>
             <product>${swarm.product.build}</product>
             <WildFly>WildFly</WildFly>
-            <Thorntail>WildFly Swarm</Thorntail>
+            <Thorntail>Thorntail</Thorntail>
           </attributes>
           <doctype>book</doctype>
           <backend>html5</backend>

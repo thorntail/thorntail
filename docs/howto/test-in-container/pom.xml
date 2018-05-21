@@ -17,8 +17,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <name>WildFly Swarm HOWTO: Test in Container</name>
-  <description>WildFly Swarm HOWTO: Test in Container</description>
+  <name>Thorntail HOWTO: Test in Container</name>
+  <description>Thorntail HOWTO: Test in Container</description>
   <packaging>war</packaging>
 
   <profiles>

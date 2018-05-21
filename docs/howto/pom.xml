@@ -11,7 +11,7 @@
   <artifactId>howto-parent</artifactId>
   <version>2.0.0.Final-SNAPSHOT</version>
 
-  <name>WildFly Swarm HOWTO: Parent</name>
+  <name>Thorntail HOWTO: Parent</name>
   <packaging>pom</packaging>
 
   <properties>

@@ -17,8 +17,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <name>WildFly Swarm HOWTO: Create a Fraction</name>
-  <description>WildFly Swarm HOWTO: Create a Fraction</description>
+  <name>Thorntail HOWTO: Create a Fraction</name>
+  <description>Thorntail HOWTO: Create a Fraction</description>
   <packaging>pom</packaging>
 
 </project>

@@ -16,8 +16,8 @@
 
   <artifactId>meta-spi</artifactId>
 
-  <name>WildFly Swarm: Meta SPI</name>
-  <description>WildFly Swarm: Meta SPI</description>
+  <name>Thorntail: Meta SPI</name>
+  <description>Thorntail: Meta SPI</description>
 
   <packaging>jar</packaging>
 

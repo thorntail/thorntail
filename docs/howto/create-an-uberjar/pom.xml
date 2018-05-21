@@ -17,8 +17,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <name>WildFly Swarm HOWTO: Create an Uberjar</name>
-  <description>WildFly Swarm HOWTO: Create an Uberjar</description>
+  <name>Thorntail HOWTO: Create an Uberjar</name>
+  <description>Thorntail HOWTO: Create an Uberjar</description>
   <packaging>war</packaging>
 
   <build>

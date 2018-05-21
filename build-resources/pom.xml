@@ -13,6 +13,6 @@
   <artifactId>build-resources</artifactId>
   <version>2.0.0.Final-SNAPSHOT</version>
 
-  <name>WildFly Swarm Build Resources</name>
-  <description>Resources that are necessary for building WildFly Swarm</description>
+  <name>Thorntail Build Resources</name>
+  <description>Resources that are necessary for building Thorntail</description>
 </project>

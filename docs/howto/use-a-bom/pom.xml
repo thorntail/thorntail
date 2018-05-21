@@ -17,8 +17,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <name>WildFly Swarm HOWTO: Use a BOM</name>
-  <description>WildFly Swarm HOWTO: Use a BOM</description>
+  <name>Thorntail HOWTO: Use a BOM</name>
+  <description>Thorntail HOWTO: Use a BOM</description>
   <packaging>war</packaging>
 
   <properties>

@@ -17,8 +17,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <name>WildFly Swarm HOWTO: Use Explicit Fractions</name>
-  <description>WildFly Swarm HOWTO: Use Explicit Fractions</description>
+  <name>Thorntail HOWTO: Use Explicit Fractions</name>
+  <description>Thorntail HOWTO: Use Explicit Fractions</description>
   <packaging>war</packaging>
 
   <build>

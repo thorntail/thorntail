@@ -17,8 +17,8 @@
     <relativePath>../../build-parent/pom.xml</relativePath>
   </parent>
 
-  <name>WildFly Swarm Reference Documentation</name>
-  <description>WildFly Swarm Reference Documentation</description>
+  <name>Thorntail Reference Documentation</name>
+  <description>Thorntail Reference Documentation</description>
 
   <packaging>pom</packaging>
 

@@ -18,7 +18,7 @@
   <artifactId>msc</artifactId>
 
   <name>MSC</name>
-  <description>WildFly Swarm: MSC</description>
+  <description>Thorntail: MSC</description>
 
   <packaging>jar</packaging>
 

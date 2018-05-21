@@ -16,8 +16,8 @@
 
   <artifactId>fraction-metadata</artifactId>
 
-  <name>WildFly Swarm: Fraction Metadata</name>
-  <description>WildFly Swarm: Fraction Metadata</description>
+  <name>Thorntail: Fraction Metadata</name>
+  <description>Thorntail: Fraction Metadata</description>
 
   <packaging>jar</packaging>
 
