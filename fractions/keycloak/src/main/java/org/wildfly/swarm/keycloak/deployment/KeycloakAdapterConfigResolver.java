@@ -16,6 +16,7 @@
 package org.wildfly.swarm.keycloak.deployment;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.KeycloakDeployment;
@@ -35,6 +36,10 @@ public class KeycloakAdapterConfigResolver implements KeycloakConfigResolver {
     public KeycloakDeployment resolve(OIDCHttpFacade.Request request) {
         String path = request.getRelativePath();
         return pathDeployments.entrySet().stream().filter(e -> path.startsWith(e.getKey())).findFirst()
-            .map(e -> e.getValue()).orElseThrow(() -> new IllegalStateException("KeycloakDeployment is null"));
+            .map(e -> e.getValue()).orElseThrow(throwException(path));
+    }
+
+    private static Supplier<IllegalStateException> throwException(String path) {
+        return () -> new IllegalStateException("No Keycloak configuration for the path " + path);
     }
 }

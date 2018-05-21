@@ -84,7 +84,7 @@ public class KeycloakMultitenancyTest {
         
         Client client = ClientBuilder.newClient();
         try {
-            WebTarget target = client .target("http://localhost:8080/secured");
+            WebTarget target = client.target("http://localhost:8080/secured");
             String serviceResponse = target.request()
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                     .get(String.class);
