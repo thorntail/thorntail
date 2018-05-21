@@ -20,6 +20,7 @@ import java.net.URL;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -83,9 +84,14 @@ public class KeycloakMultitenancyTest {
         
         Client client = ClientBuilder.newClient();
         try {
-            String serviceResponse = 
-                client .target("http://localhost:8080/secured")
-                    .request()
+            WebTarget target = client .target("http://localhost:8080/secured");
+            String serviceResponse = target.request()
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                    .get(String.class);
+            Assert.assertEquals("Hi user1, this resource is secured", serviceResponse);
+            
+            // access the sub-resource
+            serviceResponse = target.path("sub").request()
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                     .get(String.class);
             Assert.assertEquals("Hi user1, this resource is secured", serviceResponse);

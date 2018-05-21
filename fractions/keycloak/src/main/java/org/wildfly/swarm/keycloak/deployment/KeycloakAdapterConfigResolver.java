@@ -34,6 +34,7 @@ public class KeycloakAdapterConfigResolver implements KeycloakConfigResolver {
     @Override
     public KeycloakDeployment resolve(OIDCHttpFacade.Request request) {
         String path = request.getRelativePath();
-        return pathDeployments.get(path);
+        return pathDeployments.entrySet().stream().filter(e -> path.startsWith(e.getKey())).findFirst()
+            .map(e -> e.getValue()).orElseThrow(() -> new IllegalStateException("KeycloakDeployment is null"));
     }
 }
