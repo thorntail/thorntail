@@ -10,7 +10,7 @@
     <property name="jboss.api" value="private"/>
   </properties>
   <resources>
-    <artifact name="org.wildfly.swarm:container:${project.version}">
+    <artifact name="io.thorntail:container:${project.version}">
       <filter>
         <include-set>
           <path name="org/wildfly/swarm/container/runtime"/>
