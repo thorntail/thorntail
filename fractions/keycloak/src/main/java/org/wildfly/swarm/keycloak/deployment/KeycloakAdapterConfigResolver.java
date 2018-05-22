@@ -35,8 +35,15 @@ public class KeycloakAdapterConfigResolver implements KeycloakConfigResolver {
 
     @Override
     public KeycloakDeployment resolve(OIDCHttpFacade.Request request) {
+
+        // Select the deployment using the relative request path
         String path = request.getRelativePath();
+
+        // Try to get the exact match first
         Optional<KeycloakDeployment> dep = Optional.ofNullable(pathDeployments.get(path));
+
+        // If no exact match exists then iterate over the pathDeployments entries
+        // and find the first deployment whose entry path is a prefix of the request path
         return dep.orElse(getMatchingPathDeployment(path).orElseThrow(throwException(path)));
     }
 
