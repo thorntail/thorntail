@@ -36,9 +36,9 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.wildfly.swarm</groupId>
-                    <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-                    <version>${version.org.wildfly.swarm.fraction.plugin}</version>
+                    <groupId>io.thorntail</groupId>
+                    <artifactId>thorntail-fraction-plugin</artifactId>
+                    <version>${version.thorntail.fraction.plugin}</version>
                     <executions>
                         <execution>
                             <id>process</id>
@@ -53,8 +53,8 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.wildfly.swarm</groupId>
-                <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+                <groupId>io.thorntail</groupId>
+                <artifactId>thorntail-fraction-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

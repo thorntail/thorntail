@@ -52,7 +52,7 @@ to configure the server.
 </dependencies>
 ----
 
-Additionally, the `wildfly-swarm-fraction-plugin` should be configured
+Additionally, the `thorntail-fraction-plugin` should be configured
 within the parent `pom.xml` so that it fires for every sub-module:
 
 [source,xml]
@@ -60,9 +60,9 @@ within the parent `pom.xml` so that it fires for every sub-module:
 <build>
   <plugins>
     <plugin>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-      <version>${version.swarm.fraction-plugin}</version>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-fraction-plugin</artifactId>
+      <version>${version.thorntail.fraction-plugin}</version>
       <executions>
         <execution>
           <phase>process-classes</phase>
@@ -100,7 +100,7 @@ classes that may be added to deployment archives.
 * The `org.wildfly.swarm._CAPABILITY_.detect` package holds fraction autodetection logic classes.
 See also <<auto-detection>>.
 
-The `wildfly-swarm-fraction-plugin` automatically generates a number of `module.xml` descriptors depending on what features it has found in the fraction.
+The `thorntail-fraction-plugin` automatically generates a number of `module.xml` descriptors depending on what features it has found in the fraction.
 Each generated module descriptor is used to isolate a particular part of a fraction functionality.
 E.g. a fraction module with `deployment` slot (which includes the content of `org.wildfly.swarm._CAPABILITY_.deployment`) is automatically added as a module dependency to any deployment.
 It’s a convenient way to add code into the user deployment for handling integrations with the container.

@@ -51,9 +51,9 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-          <version>${version.wildfly.swarm.fraction.plugin}</version>
+          <groupId>io.thorntail</groupId>
+          <artifactId>thorntail-fraction-plugin</artifactId>
+          <version>${version.thorntail.fraction.plugin}</version>
           <executions>
             <execution>
               <id>generate-bom</id>
