@@ -218,6 +218,13 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
     @Configurable("swarm.keycloak.json.path")
     String keycloakJsonPath;
 
+    /**
+     * Map of the relative request paths to KeyCloak adapter configuration locations.
+     * First a look-up for the deployment with the path exactly matching the request path is done,
+     * next the first deployment whose entry path is a prefix of the request path is searched for.
+     * Note the exact path values have to be provided in cases where one configured path is a prefix
+     * of another configured path to avoid the unexpected KeyCloak token validation results.
+     */
     @AttributeDocumentation("Map of the relative request paths to Keycloak adapter configuration locations")
     @Configurable("swarm.keycloak.multitenancy.paths")
     Map<String, String> keycloakMultitenancyPaths;

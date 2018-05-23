@@ -16,6 +16,8 @@
 package org.wildfly.swarm.keycloak.deployment;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.KeycloakDeployment;
@@ -33,7 +35,24 @@ public class KeycloakAdapterConfigResolver implements KeycloakConfigResolver {
 
     @Override
     public KeycloakDeployment resolve(OIDCHttpFacade.Request request) {
+
+        // Select the deployment using the relative request path
         String path = request.getRelativePath();
-        return pathDeployments.get(path);
+
+        // Try to get the exact match first
+        Optional<KeycloakDeployment> dep = Optional.ofNullable(pathDeployments.get(path));
+
+        // If no exact match exists then iterate over the pathDeployments entries
+        // and find the first deployment whose entry path is a prefix of the request path
+        return dep.orElse(getMatchingPathDeployment(path).orElseThrow(throwException(path)));
+    }
+
+    private Optional<KeycloakDeployment> getMatchingPathDeployment(String path) {
+        return pathDeployments.entrySet().stream().filter(e -> path.startsWith(e.getKey()))
+            .findFirst().map(e -> e.getValue());
+    }
+
+    private static Supplier<IllegalStateException> throwException(String path) {
+        return () -> new IllegalStateException("No Keycloak configuration for the path " + path);
     }
 }
