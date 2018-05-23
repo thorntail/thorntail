@@ -1,0 +1,20 @@
+
+= Elytron
+
+[NOTE]
+====
+By default, Elytron generates the audit log to the same directory where the {Thorntail} application is executed.
+In some environments, for example cloud, you might have to relocate the audit file to a globally writable directory.
+
+Include the following section in the `project-defaults.yml` file in your application:
+
+[source,text]
+----
+swarm:
+  elytron:
+    file-audit-logs:
+      local-audit:
+        path: /tmp/audit.log
+----
+====
+
