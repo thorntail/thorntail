@@ -1,5 +1,7 @@
 package io.thorntail.jpa.impl;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
@@ -20,6 +22,10 @@ public class EntityManagerResourceProvider implements ResourceReferenceFactory<E
 
     private EntityManagerFactory entityManagerFactory;
 
+    protected final boolean useFullTextEntityManager;
+
+    protected Class<?> hibernateSearchClazz = null;
+
     protected EntityManagerResourceProvider(String unitName) {
         this(unitName, Collections.emptyMap());
     }
@@ -27,6 +33,7 @@ public class EntityManagerResourceProvider implements ResourceReferenceFactory<E
     protected EntityManagerResourceProvider(String unitName, Map<String, String> properties) {
         this.unitName = unitName;
         this.properties = properties;
+        this.useFullTextEntityManager = isHibernateSearchPresent();
     }
 
     @Override
@@ -45,6 +52,9 @@ public class EntityManagerResourceProvider implements ResourceReferenceFactory<E
 
                 if (null == entityManager) {
                     entityManager = wrap( entityManagerFactory.createEntityManager(properties) );
+                    if (useFullTextEntityManager) {
+                        entityManager = wrapWithSearch(entityManager);
+                    }
                 }
 
                 return entityManager;
@@ -63,4 +73,21 @@ public class EntityManagerResourceProvider implements ResourceReferenceFactory<E
         return em;
     }
 
+    protected EntityManager wrapWithSearch(EntityManager em) {
+        try{
+            Method fullTextWrapper = this.hibernateSearchClazz.getMethod("getFullTextEntityManager", EntityManager.class);
+            return (EntityManager)fullTextWrapper.invoke(null, em);
+        } catch (NoSuchMethodException|SecurityException|IllegalAccessException|IllegalArgumentException|InvocationTargetException ex) {
+            throw JpaMessages.MESSAGES.errorWrappingEntityManagerForSearch(ex);
+        }
+    }
+
+    private boolean isHibernateSearchPresent() {
+        try{
+            this.hibernateSearchClazz = Class.forName("org.hibernate.search.jpa.Search");
+            return true;
+        } catch (ClassNotFoundException ex) {
+            return false;
+        }
+    }
 }

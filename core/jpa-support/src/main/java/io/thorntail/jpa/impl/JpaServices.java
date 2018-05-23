@@ -27,7 +27,7 @@ import org.jboss.weld.injection.spi.ResourceReferenceFactory;
  */
 public class JpaServices implements JpaInjectionServices {
 
-    private String emptyScopeDefaultName;
+    private static String emptyScopeDefaultName;
 
     private static Map<String, ResourceReferenceFactory<EntityManagerFactory>> emfs = new ConcurrentHashMap<>();
 
@@ -107,21 +107,21 @@ public class JpaServices implements JpaInjectionServices {
         return injectionPoint.getAnnotated();
     }
 
-    private String getScopedPuName(String unitName) {
+    public static String getScopedPuName(String unitName) {
         return (null != unitName && unitName.trim().length() > 0)
                 ? unitName
                 :
-                (null != this.emptyScopeDefaultName
-                        ? this.emptyScopeDefaultName : getPersistentUnitNameFromDescriptor());
+                (null != emptyScopeDefaultName
+                        ? emptyScopeDefaultName : getPersistentUnitNameFromDescriptor());
     }
 
-    private String getPersistentUnitNameFromDescriptor() {
-        this.emptyScopeDefaultName = getPersistenceUnitDescriptor().getName();
-        return this.emptyScopeDefaultName;
+    public static String getPersistentUnitNameFromDescriptor() {
+        emptyScopeDefaultName = getPersistenceUnitDescriptor().getName();
+        return emptyScopeDefaultName;
     }
 
-    private PersistenceUnitDescriptor getPersistenceUnitDescriptor(){
-        URL url = getClass().getClassLoader().getResource("META-INF/persistence.xml");
+    private static PersistenceUnitDescriptor getPersistenceUnitDescriptor(){
+        URL url = JpaServices.class.getClassLoader().getResource("META-INF/persistence.xml");
         return PersistenceXmlParser.locateIndividualPersistenceUnit(url);
     }
 }

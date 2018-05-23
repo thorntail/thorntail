@@ -83,6 +83,7 @@ include::components/microprofile/opentracing.adoc[leveloffset=+2]
 
 include::components/other/vertx.adoc[leveloffset=+2]
 include::components/other/hibernate-ogm.adoc[leveloffset=+2]
+include::components/other/hibernate-search.adoc[leveloffset=+2]
 
 # Guides
 
