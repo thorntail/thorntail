@@ -167,6 +167,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>keycloak</artifactId>
+    </dependency>       
   </dependencies>
   <build>
     <resources>

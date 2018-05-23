@@ -17,33 +17,30 @@ package org.wildfly.swarm.odata.runtime;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.wildfly.swarm.keycloak.Secured;
 import org.wildfly.swarm.odata.ODataFraction;
-import org.wildfly.swarm.spi.runtime.annotations.Post;
-import org.wildfly.swarm.undertow.WARArchive;
+import org.wildfly.swarm.spi.api.Customizer;
+import org.wildfly.swarm.spi.runtime.annotations.Pre;
+import org.wildfly.swarm.teiid.TeiidFraction;
 
-@Post
+@Pre
 @ApplicationScoped
-public class ODataWarDeploymentProducer {
+public class ODataCustomizer implements Customizer {
+
     @Inject
     @Any
-    ODataFraction fraction;
+    TeiidFraction teiidFraction;
 
-    @Produces
-    public Archive odataWar() throws Exception {
-        WARArchive war = ShrinkWrap.create(WARArchive.class, "odata.war")
-                .setContextRoot(this.fraction.getContext())
-                .setWebXML(this.getClass().getResource("/web.xml"));
-        war.addModule("org.jboss.teiid.olingo");
+    @Inject
+    @Any
+    ODataFraction odataFraction;
 
-        if (this.fraction.isSecure()) {
-            war.as(Secured.class).protect().withRole(fraction.getRole());
+    @Override
+    public void customize() throws Exception {
+        // when odata is secured through Keycloak, it uses "other" as security-domain.
+        if (odataFraction.isSecure() && teiidFraction.authenticationSecurityDomain() == null) {
+            teiidFraction.authenticationSecurityDomain("other");
         }
-        return war;
     }
 }

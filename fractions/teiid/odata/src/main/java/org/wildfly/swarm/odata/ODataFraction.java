@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.odata;
 
+import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 import org.wildfly.swarm.spi.api.Defaultable;
@@ -22,9 +23,14 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 public class ODataFraction implements Fraction<ODataFraction> {
-
-    @Configurable("swarm.odata.context")
+    @Configurable("swarm.teiid.odata.context")
     private Defaultable<String> context = string("odata4");
+
+    @Configurable("swarm.teiid.odata.secured")
+    private Defaultable<Boolean> secure = bool(false);
+
+    @Configurable("swarm.teiid.odata.role")
+    private Defaultable<String> role = string("odata");
 
     public String getContext() {
         return context.get();
@@ -33,5 +39,13 @@ public class ODataFraction implements Fraction<ODataFraction> {
     @Override
     public ODataFraction applyDefaults(boolean hasConfiguration) {
         return Fraction.super.applyDefaults(hasConfiguration);
+    }
+
+    public boolean isSecure() {
+        return secure.get();
+    }
+
+    public String getRole() {
+        return role.get();
     }
 }
