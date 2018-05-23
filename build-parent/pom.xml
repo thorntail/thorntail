@@ -18,7 +18,7 @@
 
   <packaging>pom</packaging>
 
-  <name>WF Swarm Build Parent</name>
+  <name>Thorntail Build Parent</name>
   <description>Build Parent to bring in required dependencies</description>
 
   <properties>

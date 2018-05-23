@@ -25,11 +25,11 @@
 
    <parent>
       <groupId>io.thorntail.testsuite</groupId>
-      <artifactId>wildlfy-swarm-microprofile-tck-parent</artifactId>
+      <artifactId>thorntail-microprofile-tck-parent</artifactId>
       <version>2.0.0.Final-SNAPSHOT</version>
    </parent>
 
-   <artifactId>wildlfy-swarm-microprofile-tck-fault-tolerance</artifactId>
+   <artifactId>thorntail-microprofile-tck-fault-tolerance</artifactId>
    <name>MicroProfile TCK: Fault Tolerance</name>
 
    <dependencies>

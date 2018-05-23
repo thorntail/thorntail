@@ -31,7 +31,7 @@
    </parent>
 
     <groupId>io.thorntail.testsuite</groupId>
-    <artifactId>wildlfy-swarm-microprofile-tck-parent</artifactId>
+    <artifactId>thorntail-microprofile-tck-parent</artifactId>
     <name>MicroProfile TCK: Parent</name>
     <packaging>pom</packaging>
 
