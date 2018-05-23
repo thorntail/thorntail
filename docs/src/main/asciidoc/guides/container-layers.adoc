@@ -55,6 +55,7 @@ Next, configure the `fabric8-maven-plugin` to package the base distribution:
 
 This image builds upon a base JDK8 image theoretically named `myapp/base-jdk8` within the `<from>` line.
 The only requirement of this image is the ability to execute a JDK8-compatible JVM.
+An example of such a base image is `fabric8/java-jboss-openjdk8-jdk`.
 
 This configuration will ensure that within the image, the `/${project_key}` directory will contain your application's run-time components.
 
