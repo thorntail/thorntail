@@ -5,12 +5,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.thorntail.testsuite</groupId>
-    <artifactId>wildlfy-swarm-microprofile-tck-parent</artifactId>
+    <artifactId>thorntail-microprofile-tck-parent</artifactId>
     <version>2.0.0.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>wildlfy-swarm-microprofile-tck-opentracing</artifactId>
+  <artifactId>thorntail-microprofile-tck-opentracing</artifactId>
   <name>MicroProfile TCK: OpenTracing</name>
 
   <properties>
@@ -145,8 +145,8 @@
         <artifactId>maven-enforcer-plugin</artifactId>
         <dependencies>
           <dependency>
-            <groupId>org.wildfly.swarm</groupId>
-            <artifactId>wildfly-swarm-enforcer-pattern-size</artifactId>
+            <groupId>io.thorntail</groupId>
+            <artifactId>thorntail-enforcer-pattern-size</artifactId>
             <version>${project.version}</version>
           </dependency>
         </dependencies>
