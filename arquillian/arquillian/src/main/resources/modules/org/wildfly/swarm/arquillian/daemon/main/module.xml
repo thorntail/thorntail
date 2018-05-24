@@ -2,7 +2,7 @@
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.arquillian.daemon" slot="main">
 
   <resources>
-    <artifact name="org.wildfly.swarm:arquillian-daemon:${project.version}"/>
+    <artifact name="io.thorntail:arquillian-daemon:${project.version}"/>
   </resources>
 
   <dependencies>

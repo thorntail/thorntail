@@ -15,6 +15,9 @@
  */
 package org.wildfly.swarm.maven.plugin;
 
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assume.assumeTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -45,9 +48,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-
-import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
 
 /**
  * End-to-end tests of the Swarm Maven plugin.
@@ -299,15 +299,18 @@ public class MavenPluginTest {
         String manifestContent = readFileFromArchive(uberjar, "META-INF/wildfly-swarm-manifest.yaml");
 
         for (String fraction : testingProject.fractionsThatShouldBePresent()) {
-            assertThat(manifestContent).contains("org.wildfly.swarm." + fraction);
-            assertThat(manifestContent).contains("org.wildfly.swarm:" + fraction);
-            assertThat(uberjar.contains("m2repo/org/wildfly/swarm/" + fraction)).isTrue();
+            // module name
+        	assertThat(manifestContent).contains("org.wildfly.swarm." + fraction);
+            // bootstrap artifact groupId
+            assertThat(manifestContent).contains("io.thorntail:" + fraction);
+            // maven gav
+            assertThat(uberjar.contains("m2repo/io/thorntail/" + fraction)).isTrue();
         }
 
         for (String fraction : testingProject.fractionsThatShouldBeMissing()) {
             assertThat(manifestContent).doesNotContain("org.wildfly.swarm." + fraction);
-            assertThat(manifestContent).doesNotContain("org.wildfly.swarm:" + fraction);
-            assertThat(uberjar.contains("m2repo/org/wildfly/swarm/" + fraction)).isFalse();
+            assertThat(manifestContent).doesNotContain("io.thorntail:" + fraction);
+            assertThat(uberjar.contains("m2repo/io/thorntail/" + fraction)).isFalse();
         }
     }
 

@@ -8,9 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm</artifactId>
-    <version>2018.6.0-SNAPSHOT</version>
+    <groupId>io.thorntail</groupId>
+    <artifactId>thorntail</artifactId>
+    <version>2.0.0.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -18,11 +18,11 @@
 
   <packaging>pom</packaging>
 
-  <name>WF Swarm Build Parent</name>
+  <name>Thorntail Build Parent</name>
   <description>Build Parent to bring in required dependencies</description>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>86</version.wildfly.swarm.fraction.plugin>
+    <version.thorntail.fraction.plugin>87</version.thorntail.fraction.plugin>
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
@@ -113,9 +113,9 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-        <version>${version.wildfly.swarm.fraction.plugin}</version>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-fraction-plugin</artifactId>
+        <version>${version.thorntail.fraction.plugin}</version>
         <executions>
           <execution>
             <id>process</id>

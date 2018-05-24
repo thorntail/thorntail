@@ -38,6 +38,7 @@ import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.wildfly.swarm.bootstrap.env.FractionManifest;
 import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
+import org.wildfly.swarm.fractions.FractionDescriptor;
 
 /**
  * @author Bob McWhirter
@@ -65,7 +66,7 @@ public class DependencyManager implements ResolvedDependencies {
 
     @Override
     public ArtifactSpec findWildFlySwarmBootstrapJar() {
-        return findArtifact(WILDFLY_SWARM_GROUP_ID, WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID, null, JAR, null, false);
+        return findArtifact(FractionDescriptor.THORNTAIL_GROUP_ID, WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID, null, JAR, null, false);
     }
 
     @Override

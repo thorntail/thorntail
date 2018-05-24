@@ -15,6 +15,8 @@
  */
 package org.wildfly.swarm.fractions;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
@@ -23,8 +25,6 @@ import java.util.stream.Collectors;
 import org.fest.assertions.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Bob McWhirter
@@ -48,7 +48,7 @@ public class FractionListTest {
     }
 
     private boolean hasLogging(FractionDescriptor desc) {
-        if ( desc.getGroupId().equals( "org.wildfly.swarm" ) && desc.getArtifactId().equals( "logging" ) ) {
+        if ( desc.getGroupId().equals(FractionDescriptor.THORNTAIL_GROUP_ID) && desc.getArtifactId().equals( "logging" ) ) {
             return true;
         }
 
@@ -64,9 +64,9 @@ public class FractionListTest {
 
         FractionDescriptor ee = descriptors.stream().filter(e -> e.getArtifactId().equals("ee")).findFirst().get();
 
-        Assertions.assertThat(list.getFractionDescriptor("org.wildfly.swarm", "ee")).isEqualTo(ee);
+        Assertions.assertThat(list.getFractionDescriptor(FractionDescriptor.THORNTAIL_GROUP_ID, "ee")).isEqualTo(ee);
 
-        Assertions.assertThat(ee.getGroupId()).isEqualTo("org.wildfly.swarm");
+        Assertions.assertThat(ee.getGroupId()).isEqualTo(FractionDescriptor.THORNTAIL_GROUP_ID);
         Assertions.assertThat(ee.getArtifactId()).isEqualTo("ee");
         Assertions.assertThat(ee.getDependencies()).hasSize(3);
 
@@ -97,16 +97,16 @@ public class FractionListTest {
 
     @Test
     public void testNameAndDescription() throws Exception {
-        FractionDescriptor cdi = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "jaxrs");
+        FractionDescriptor cdi = FractionList.get().getFractionDescriptor(FractionDescriptor.THORNTAIL_GROUP_ID, "jaxrs");
         Assertions.assertThat(cdi.getName()).isEqualTo("JAX-RS");
         Assertions.assertThat(cdi.getDescription()).isEqualTo("RESTful Web Services with RESTEasy");
     }
 
     @Test
     public void testEEFractionDependsOnNamingAndContainer() {
-        FractionDescriptor ee = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "ee");
-        FractionDescriptor naming = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "naming");
-        FractionDescriptor container = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "container");
+        FractionDescriptor ee = FractionList.get().getFractionDescriptor(FractionDescriptor.THORNTAIL_GROUP_ID, "ee");
+        FractionDescriptor naming = FractionList.get().getFractionDescriptor(FractionDescriptor.THORNTAIL_GROUP_ID, "naming");
+        FractionDescriptor container = FractionList.get().getFractionDescriptor(FractionDescriptor.THORNTAIL_GROUP_ID, "container");
         Set<FractionDescriptor> dependencies = ee.getDependencies();
         assertThat(dependencies).contains(naming, container);
     }
@@ -114,7 +114,7 @@ public class FractionListTest {
     @Test
     @Ignore
     public void testArchaiusFractionShouldBeInternal() {
-        FractionDescriptor archaius = FractionList.get().getFractionDescriptor("org.wildfly.swarm", "archaius");
+        FractionDescriptor archaius = FractionList.get().getFractionDescriptor(FractionDescriptor.THORNTAIL_GROUP_ID, "archaius");
         Assertions.assertThat(archaius.isInternal()).isTrue();
         ;
     }

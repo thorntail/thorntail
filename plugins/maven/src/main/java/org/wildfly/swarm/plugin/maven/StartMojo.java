@@ -319,7 +319,7 @@ public class StartMojo extends AbstractSwarmMojo {
 
             declaredDependencies.add(DeclaredDependencies.createSpec(parentDep), DeclaredDependencies.createSpec(each.toString()));
 
-            if (each.getGroupId().equals(DependencyManager.WILDFLY_SWARM_GROUP_ID)
+            if (each.getGroupId().equals(FractionDescriptor.THORNTAIL_GROUP_ID)
                     && each.getArtifactId().equals(DependencyManager.WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
                 hasSwarmDeps = true;
             }

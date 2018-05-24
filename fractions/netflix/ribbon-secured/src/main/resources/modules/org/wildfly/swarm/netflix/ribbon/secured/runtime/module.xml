@@ -3,7 +3,7 @@
     <property name="jboss.api" value="private"/>
   </properties>
   <resources>
-    <artifact name="org.wildfly.swarm:ribbon-secured-runtime:${project.version}"/>
+    <artifact name="io.thorntail:ribbon-secured-runtime:${project.version}"/>
   </resources>
 
   <dependencies>

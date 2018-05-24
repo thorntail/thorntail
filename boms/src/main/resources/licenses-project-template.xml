@@ -4,7 +4,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
-   <groupId>org.wildfly.swarm</groupId>
+   <groupId>io.thorntail</groupId>
    <artifactId>generate-licence-xml</artifactId>
    <version>1.0.0</version>
    <packaging>pom</packaging>
@@ -86,7 +86,7 @@
                            <parameters>
                               <parameter>
                                  <name>product</name>
-                                 <value>WildFly Swarm BOM
+                                 <value>Thorntail BOM
                                     ${project.version}</value>
                               </parameter>
                            </parameters>

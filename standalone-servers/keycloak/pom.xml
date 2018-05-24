@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.wildfly.swarm.servers</groupId>
     <artifactId>standalone-servers</artifactId>
-    <version>2018.6.0-SNAPSHOT</version>
+    <version>2.0.0.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -25,8 +25,8 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
         <configuration>
           <properties>
             <swarm.inhibit.default-deployment>true</swarm.inhibit.default-deployment>
@@ -46,8 +46,8 @@
        <artifactId>maven-enforcer-plugin</artifactId>
        <dependencies>
           <dependency>
-          <groupId>org.wildfly.swarm</groupId>
-          <artifactId>wildfly-swarm-enforcer-pattern-size</artifactId>
+          <groupId>io.thorntail</groupId>
+          <artifactId>thorntail-enforcer-pattern-size</artifactId>
           <version>${project.version}</version>
         </dependency>
       </dependencies>
@@ -80,7 +80,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>keycloak-server</artifactId>
     </dependency>
   </dependencies>

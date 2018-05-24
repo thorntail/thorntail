@@ -24,12 +24,12 @@
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
-      <groupId>org.wildfly.swarm.testsuite</groupId>
-      <artifactId>wildlfy-swarm-microprofile-tck-parent</artifactId>
-      <version>2018.6.0-SNAPSHOT</version>
+      <groupId>io.thorntail.testsuite</groupId>
+      <artifactId>thorntail-microprofile-tck-parent</artifactId>
+      <version>2.0.0.Final-SNAPSHOT</version>
    </parent>
 
-   <artifactId>wildlfy-swarm-microprofile-tck-config</artifactId>
+   <artifactId>thorntail-microprofile-tck-config</artifactId>
    <name>MicroProfile TCK: Config</name>
 
    <dependencies>
@@ -40,7 +40,7 @@
       </dependency>
 
       <dependency>
-         <groupId>org.wildfly.swarm</groupId>
+         <groupId>io.thorntail</groupId>
          <artifactId>microprofile-config</artifactId>
          <scope>test</scope>
       </dependency>
@@ -57,7 +57,7 @@
       </dependency>
 
       <dependency>
-         <groupId>org.wildfly.swarm</groupId>
+         <groupId>io.thorntail</groupId>
          <artifactId>arquillian</artifactId>
          <scope>test</scope>
          <exclusions>

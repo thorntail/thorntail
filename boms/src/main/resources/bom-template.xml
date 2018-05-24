@@ -8,13 +8,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
+    <groupId>io.thorntail</groupId>
     <artifactId>parent</artifactId>
     <version>${project.parent.parent.parent.version}</version>
     <relativePath />
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
+  <groupId>io.thorntail</groupId>
   <artifactId>#{bom-artifactId}</artifactId>
   <version>${project.version}</version>
 
@@ -27,16 +27,16 @@
   <developers>
     <developer>
       <id>wildfly-swarm.io</id>
-      <name>WildFly Swarm Community</name>
-      <organization>WildFly Swarm</organization>
+      <name>Thorntail Community</name>
+      <organization>Thorntail</organization>
       <organizationUrl>http://wildfly-swarm.io/</organizationUrl>
     </developer>
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</connection>
-    <developerConnection>scm:git:git@github.com:wildfly-swarm/wildfly-swarm.git</developerConnection>
-    <url>https://github.com/wildfly-swarm/wildfly-swarm</url>
+    <connection>scm:git:git@github.com:thorntail/thorntail.git</connection>
+    <developerConnection>scm:git:git@github.com:thorntail/thorntail.git</developerConnection>
+    <url>https://github.com/thorntail/thorntail</url>
     <tag>${project.scm.tag}</tag>
   </scm>
 
@@ -56,7 +56,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>spi</artifactId>
         <version>${project.version}</version>
       </dependency>

@@ -1,6 +1,6 @@
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.netflix.ribbon.secured.client">
   <resources>
-    <artifact name="org.wildfly.swarm:ribbon-secured-client:${project.version}"/>
+    <artifact name="io.thorntail:ribbon-secured-client:${project.version}"/>
   </resources>
 
   <dependencies>

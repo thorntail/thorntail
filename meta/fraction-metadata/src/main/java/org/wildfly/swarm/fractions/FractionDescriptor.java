@@ -23,7 +23,8 @@ import java.util.Set;
  * @author Bob McWhirter
  */
 public class FractionDescriptor {
-    public static final String WILDFLY_SWARM_GROUP_ID = "org.wildfly.swarm";
+
+    public static final String THORNTAIL_GROUP_ID = "io.thorntail";
 
     public FractionDescriptor(String groupId, String artifactId, String version, String name, String description, String tags, boolean internal, FractionStability stability) {
         this.groupId = groupId;
@@ -59,13 +60,13 @@ public class FractionDescriptor {
 
         switch (parts.length) {
             case 1:
-                desc = fractionList.getFractionDescriptor(WILDFLY_SWARM_GROUP_ID, parts[0]);
+                desc = fractionList.getFractionDescriptor(THORNTAIL_GROUP_ID, parts[0]);
                 if (desc == null) {
                     throw new RuntimeException("Fraction not found: " + gav);
                 }
                 break;
             case 2:
-                desc = fractionList.getFractionDescriptor(WILDFLY_SWARM_GROUP_ID, parts[0]);
+                desc = fractionList.getFractionDescriptor(THORNTAIL_GROUP_ID, parts[0]);
                 if (desc == null) {
                     throw new RuntimeException("Fraction not found: " + gav);
                 }
@@ -162,7 +163,7 @@ public class FractionDescriptor {
     }
 
     public String gavOrAv() {
-        if (WILDFLY_SWARM_GROUP_ID.equals(this.groupId)) {
+        if (THORNTAIL_GROUP_ID.equals(this.groupId)) {
 
             return av();
         }

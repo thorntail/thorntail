@@ -7,7 +7,7 @@
 
 <module xmlns="urn:jboss:module:1.5" name="org.wildfly.swarm.container" slot="api">
   <resources>
-    <artifact name="org.wildfly.swarm:container:${project.version}">
+    <artifact name="io.thorntail:container:${project.version}">
       <filter>
         <include-set>
           <path name="META-INF"/>
