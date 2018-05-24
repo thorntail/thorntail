@@ -1,0 +1,11 @@
+swarm:
+  jose:
+    keystore:
+      path: jwk.keys
+      type: jwk
+    signature:
+      key:
+        alias: HMacKey
+      algorithm: HS256
+      data-detached: true
+      data-encoding: false
