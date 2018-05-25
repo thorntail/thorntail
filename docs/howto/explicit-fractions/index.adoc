@@ -11,9 +11,9 @@ When writing your application from scratch, ensure it compiles correctly and use
 
 . Add the BOM to your `pom.xml`. For more information, see xref:using-a-bom[].
 
-. Add the WildFly Swarm Maven plugin to your `pom.xml`. For more information, see xref:creating-an-uberjar[].
+. Add the {Thorntail} Maven plugin to your `pom.xml`. For more information, see xref:creating-an-uberjar[].
 
-. Add one or more dependencies on WildFly Swarm fractions to the `pom.xml` file:
+. Add one or more dependencies on {Thorntail} fractions to the `pom.xml` file:
 +
 [source,xml]
 ----

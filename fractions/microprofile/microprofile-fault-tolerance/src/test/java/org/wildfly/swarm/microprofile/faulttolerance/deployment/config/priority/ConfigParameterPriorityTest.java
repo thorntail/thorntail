@@ -16,6 +16,10 @@
 package org.wildfly.swarm.microprofile.faulttolerance.deployment.config.priority;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.time.temporal.ChronoUnit;
 
 import javax.inject.Inject;
@@ -31,10 +35,6 @@ import org.wildfly.swarm.microprofile.faulttolerance.deployment.TestArchive;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.FaultToleranceOperation;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.RetryConfig;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 /**
  *
  * @author Martin Kouba
@@ -44,7 +44,7 @@ public class ConfigParameterPriorityTest {
 
     @Deployment
     public static JavaArchive createTestArchive() {
-        return TestArchive.createBase("ConfigParamaterPriorityTest.jar")
+        return TestArchive.createBase(ConfigParameterPriorityTest.class)
                 .addPackage(ConfigParameterPriorityTest.class.getPackage())
                 .addClass(FaultToleranceOperations.class)
                 .addAsManifestResource(new StringAsset("Retry/delay=10"), "microprofile-config.properties");

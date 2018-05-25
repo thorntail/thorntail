@@ -81,13 +81,7 @@ public abstract class FileSystemLayout {
         if (Files.exists(Paths.get(root, mavenBuildFile))) {
             return new MavenFileSystemLayout(root);
         } else if (Files.exists(Paths.get(root, BUILD_GRADLE))) {
-            // from version 4 gradle uses separate output directories for each jvm language
-
-            if (Files.exists(Paths.get(root, BUILD_CLASSES_JAVA_MAIN))) {
-                return new Gradle4FileSystemLayout(root);
-            } else if (Files.exists(Paths.get(root, BUILD_CLASSES_MAIN))) {
-                return new GradleFileSystemLayout(root);
-            }
+            return new GradleFileSystemLayout(root);
         }
 
         throw SwarmMessages.MESSAGES.cannotIdentifyFileSystemLayout(root);

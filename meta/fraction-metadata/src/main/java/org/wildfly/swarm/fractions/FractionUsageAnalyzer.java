@@ -137,7 +137,7 @@ public class FractionUsageAnalyzer {
 
         // Add container only if no fractions are detected, as they have a transitive explicitDependency to container
         if (detectedFractions.isEmpty()) {
-            detectedFractions.add(this.fractionList.getFractionDescriptor(FractionDescriptor.WILDFLY_SWARM_GROUP_ID, "container"));
+            detectedFractions.add(this.fractionList.getFractionDescriptor(FractionDescriptor.THORNTAIL_GROUP_ID, "container"));
         }
 
         return detectedFractions;

@@ -47,9 +47,34 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
     public EnhancedServer enableInVm() {
         int serverId = COUNTER.getAndIncrement();
 
-        inVmConnector(IN_VM, (c) -> c.serverId(serverId));
+        securitySetting("#", security -> {
+            security.role("guest", guest -> {
+                guest.send(true);
+                guest.consume(true);
+                guest.createNonDurableQueue(true);
+                guest.deleteNonDurableQueue(true);
+            });
+        });
 
-        inVmAcceptor(IN_VM, (a) -> a.serverId(serverId));
+        addressSetting("#", address -> {
+            address.deadLetterAddress("jms.queue.DLQ");
+            address.expiryAddress("jms.queue.ExpiryQueue");
+            address.maxSizeBytes(10485760L);
+            address.pageSizeBytes(2097152L);
+            address.messageCounterHistoryDayLimit(10);
+        });
+
+        inVmConnector(IN_VM, (c) -> c.serverId(serverId).param("buffer-pooling", "false"));
+
+        inVmAcceptor(IN_VM, (a) -> a.serverId(serverId).param("buffer-pooling", "false"));
+
+        jmsQueue("ExpiryQueue", queue -> {
+            queue.entry("java:/jms/queue/ExpiryQueue");
+        });
+
+        jmsQueue("DLQ", queue -> {
+            queue.entry("java:/jms/queue/DLQ");
+        });
 
         connectionFactory(new ConnectionFactory("InVmConnectionFactory")
                                   .connector(IN_VM)
@@ -166,9 +191,17 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
         }
         httpAcceptor(new HTTPAcceptor("http-acceptor")
                              .httpListener("default"));
+        httpAcceptor(new HTTPAcceptor("http-acceptor-throughput")
+                             .httpListener("default")
+                             .param("batch-delay", "50")
+                             .param("direct-deliver", "false"));
         httpConnector(new HTTPConnector(HTTP_CONNECTOR)
                               .socketBinding("http")
                               .endpoint("http-acceptor"));
+        httpConnector(new HTTPConnector("http-connector-throughput")
+                              .socketBinding("http")
+                              .endpoint("http-acceptor-throughput")
+                              .param("batch-delay", "50"));
         return this;
     }
 

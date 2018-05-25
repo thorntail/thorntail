@@ -1,7 +1,7 @@
 [#packaging_types]
 = Packaging Types
 
-When using WildFly Swarm, there are the following ways to package your
+When using {Thorntail}, there are the following ways to package your
 runtime and application, depending on how you intend to use and deploy
 it:
 
@@ -18,7 +18,7 @@ An uberjar is useful for many continuous integration and continuous deployment
 and moved through the testing, validation, and production environments in your
 organization.
 
-The names of the uberjars that WildFly Swarm produces include the name of your
+The names of the uberjars that {Thorntail} produces include the name of your
 application and the `-swarm.jar` suffix.
 
 An uberjar can be executed like any executable JAR:
@@ -28,7 +28,6 @@ An uberjar can be executed like any executable JAR:
 $ java -jar myapp-swarm.jar
 ----
 
-ifndef::product[]
 [#hollow-jar]
 == Hollow JAR
 
@@ -41,7 +40,7 @@ in a container image lower in the image hierarchy--which means it changes less
 often--so that the higher layer which contains only your application code can
 be rebuilt more quickly.
 
-The names of the hollow JARs that WildFly Swarm produces include the name of
+The names of the hollow JARs that {Thorntail} produces include the name of
 your application, and the `-hollow-swarm.jar` suffix. You must package the
 `.war` file of your application separately in order to benefit from the hollow
 JAR.
@@ -53,5 +52,45 @@ executing the hollow JAR:
 ----
 $ java -jar myapp-hollow-swarm.jar myapp.war
 ----
+
+=== Pre-Built Hollow JARs
+
+{Thorntail} ships the following pre-built hollow JARs:
+
+ifndef::product[]
+full:: The main Java EE related capabilities
 endif::[]
+web:: Functionality focused on web technologies
+microprofile:: Functionality defined by all Eclipse MicroProfile specifications
+
+The hollow JARs are available under the following coordinates:
+
+[source,xml,options="nowrap",subs="attributes+"]
+----
+<dependency>
+    <groupId>org.wildfly.swarm.servers</groupId>
+ifndef::product[    <artifactId>[full|web|microprofile]</artifactId>]
+ifdef::product[    <artifactId>[web|microprofile]</artifactId>]
+</dependency>
+----
+
+[NOTE]
+====
+anchor:hollow-jar-limitations[]Using hollow JARs has certain limitations:
+
+* To enable {Thorntail} to autodetect a JDBC driver, you must add the JAR with the driver to the `swarm.classpath` system property, for example:
++
+[source,bash,options="nowrap"]
+----
+$ java -Dswarm.classpath=./h2-1.4.196.jar -jar my-hollow-swarm.jar myApp.war
+----
+
+* YAML configuration files in your application are not automatically applied.
+You must specify them manually, for example:
++
+[source,bash,options="nowrap"]
+----
+$ java -jar my-hollow-swarm.jar myApp.war -s ./project-defaults.yml
+----
+====
 

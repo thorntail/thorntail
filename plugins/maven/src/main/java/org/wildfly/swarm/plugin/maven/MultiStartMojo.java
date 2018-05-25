@@ -57,6 +57,8 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
         requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class MultiStartMojo extends AbstractSwarmMojo {
 
+    private static final String THORNTAIL_MAVEN_PLUGIN = "io.thorntail:thorntail-maven-plugin";
+
     private static final String SWARM_PROCESS = "swarm-process";
 
     @Parameter(alias = "processes")
@@ -95,6 +97,9 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
         String classifier = process.getChild("classifier").getValue();
         Artifact artifact = findArtifact(groupId, artifactId, classifier);
+        if (artifact == null) {
+            artifact = findArtifact(groupId, artifactId, "swarm");
+        }
 
         if (artifact != null) {
             startArtifact(artifact, process);
@@ -106,7 +111,7 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
     @SuppressWarnings("unchecked")
     protected void startProject(MavenProject project, String executionId, XmlPlexusConfiguration process) throws InvalidPluginDescriptorException, PluginResolutionException, PluginDescriptorParsingException, PluginNotFoundException, PluginConfigurationException, MojoFailureException, MojoExecutionException, PluginManagerException {
-        Plugin plugin = this.project.getPlugin("org.wildfly.swarm:wildfly-swarm-plugin");
+        Plugin plugin = this.project.getPlugin(THORNTAIL_MAVEN_PLUGIN);
 
         Xpp3Dom config = getConfiguration(project, executionId);
         Xpp3Dom processConfig = getProcessConfiguration(process);
@@ -223,7 +228,7 @@ public class MultiStartMojo extends AbstractSwarmMojo {
     }
 
     protected Xpp3Dom getConfiguration(MavenProject project, String executionId) {
-        Plugin plugin = project.getPlugin("org.wildfly.swarm:wildfly-swarm-plugin");
+        Plugin plugin = project.getPlugin(THORNTAIL_MAVEN_PLUGIN);
 
         PluginExecution execution = null;
 

@@ -1,0 +1,5 @@
+swarm:
+  deployment:
+    ArquillianModulesTest.war:
+      jaxrs:
+        application-path: /

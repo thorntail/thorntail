@@ -1,25 +1,27 @@
 [![Build Status](https://ci.wildfly-swarm.io/buildStatus/icon?job=wildfly-swarm-linux)](https://ci.wildfly-swarm.io/job/wildfly-swarm-linux)
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/wildfly-swarm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/wildfly-swarm)
-[![Join the chat at freenode:wildfly-swarm](https://img.shields.io/badge/irc-freenode%3A%20%23wildfly--swarm-blue.svg)](http://webchat.freenode.net/?channels=%23wildfly-swarm)
+[![Join the chat at freenode:thorntail](https://img.shields.io/badge/irc-freenode%3A%20%23thorntail-blue.svg)](http://webchat.freenode.net/?channels=%23thorntail)
 
 We rely on the [Java profiler from EJ Technologies](http://www.ej-technologies.com/products/jprofiler/overview.html)
 ![Supported by JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)
 
-![WildFly Swarm: Rightsize your JavaEE Applications](http://wildfly-swarm.io/images/swarm_logo_final.png)
+![Thorntail: Rightsize your JavaEE Applications](http://wildfly-swarm.io/images/swarm_logo_final.png)
 
-> Issues are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/projects/SWARM/issues?filter=allopenissues) (JIRA). Bug reports and feature requests are greatly appreciated.
+> Issues for v2/master are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/projects/THORN/issues?filter=allopenissues) (JIRA).
+> Issues for v4 are being tracked in GitHub Issues.
+> Bug reports and feature requests are greatly appreciated.
 
-# WildFly Swarm Core
+# Thorntail Core
 
-WildFly Swarm provides a mechanism for building
+Thorntail provides a mechanism for building
 applications as *uber jars*, with just enough of the
 WildFly application server wrapped around it to support
 each application's use-case.
 
-> Note: WildFly Swarm requires Maven 3.2.5 or higher for building your application.
+> Note: Thorntail requires Maven 3.2.5 or higher for building your application.
 
-> Note: WildFly Swarm requires JDK 8 or higher for building your application
+> Note: Thorntail requires JDK 8 or higher for building your application
 > or for building WildFly Swarm itself.
 
 # Project Configuration
@@ -66,7 +68,7 @@ the `org.wildfly.swarm` Maven group-id:
 
 # How To Build WildFly Swarm Itself
 
-WildFly Swarm attempts to be a well-behaved Maven project. To install to your local repository for usage:
+Thorntail attempts to be a well-behaved Maven project. To install to your local repository for usage:
 ```bash
 mvn clean install
 ```
@@ -84,5 +86,4 @@ Guide](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/).
 
 # Community
 
-* We hang out in `#wildfly-swarm` on irc.freenode.net.
-* Logs can be found [here](http://transcripts.jboss.org/channel/irc.freenode.org/%23wildfly-swarm/)
+* We hang out in `#thorntail` on irc.freenode.net.

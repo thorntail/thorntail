@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 import org.wildfly.swarm.config.Elytron;
 import org.wildfly.swarm.config.elytron.Format;
-import org.wildfly.swarm.config.elytron.LogicalPermissionMapper;
+import org.wildfly.swarm.config.elytron.SimplePermissionMapper;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
@@ -50,6 +50,8 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
 
     private static final String MECHANISM_NAME = "mechanism-name";
 
+    private static final String MECHANISM_REALM_CONFIGURATIONS = "mechanism-realm-configurations";
+
     private static final String REALM = "realm";
 
     private static final String REALM_NAME = "realm-name";
@@ -70,6 +72,7 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
     @Override
     public ElytronFraction applyDefaults() {
         finalProviders(COMBINED_PROVIDERS);
+        disallowedProvider("OracleUcrypto");
 
         providerLoader(ELYTRON, (loader) -> loader.module("org.wildfly.security.elytron"));
         providerLoader(OPENSSL, (loader) -> loader.module("org.wildfly.openssl"));
@@ -79,12 +82,12 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
         });
         fileAuditLog(LOCAL_AUDIT, (log) -> {
             log.path("audit.log");
+            log.relativeTo("jboss.server.log.dir");
             log.format(Format.JSON);
         });
         securityDomain(APPLICATION_DOMAIN, (domain) -> {
             domain.defaultRealm(APPLICATION_REALM);
             domain.permissionMapper("default-permission-mapper");
-            domain.securityEventListener(LOCAL_AUDIT);
             domain.realm(new HashMap() {{
                 put(REALM, APPLICATION_REALM);
                 put(ROLE_DECODER, "groups-to-roles");
@@ -97,7 +100,6 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
         securityDomain(MANAGEMENT_DOMAIN, (domain) -> {
             domain.defaultRealm(MANAGEMENT_REALM);
             domain.permissionMapper("default-permission-mapper");
-            domain.securityEventListener(LOCAL_AUDIT);
             domain.realm(new HashMap() {{
                 put(REALM, MANAGEMENT_REALM);
                 put(ROLE_DECODER, "groups-to-roles");
@@ -133,40 +135,48 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
             realm.className("org.wildfly.swarm.elytron.runtime.Realm");
         });
 
-
-        logicalPermissionMapper("default-permission-mapper", (mapper) -> {
-            mapper.logicalOperation(LogicalPermissionMapper.LogicalOperation.UNLESS);
-            mapper.left("constant-permission-mapper");
-            mapper.right("anonymous-permission-mapper");
-        });
-
-        simplePermissionMapper("anonymous-permission-mapper", (mapper) -> {
+        simplePermissionMapper("default-permission-mapper", mapper -> {
+            mapper.mappingMode(SimplePermissionMapper.MappingMode.FIRST);
             mapper.permissionMapping(new HashMap() {{
                 put("principals", new ArrayList() {{
                     add("anonymous");
                 }});
-                put("permissions", new HashMap() {{
-                    put(CLASS_NAME, "org.wildfly.security.auth.permission.LoginPermission");
+                put("permissions", new ArrayList() {{
+                    add(new HashMap() {{
+                        put(CLASS_NAME, "org.wildfly.extension.batch.jberet.deployment.BatchPermission");
+                        put(MODULE, "org.wildfly.extension.batch.jberet");
+                        put(TARGET_NAME, "*");
+                    }});
+                    add(new HashMap() {{
+                        put(CLASS_NAME, "org.wildfly.transaction.client.RemoteTransactionPermission");
+                        put(MODULE, "org.wildfly.transaction.client");
+                    }});
+                    add(new HashMap() {{
+                        put(CLASS_NAME, "org.jboss.ejb.client.RemoteEJBPermission");
+                        put(MODULE, "org.jboss.ejb-client");
+                    }});
                 }});
             }});
-        });
-
-        constantPermissionMapper("constant-permission-mapper", (mapper) -> {
-            mapper.permission(new HashMap() {{
-                put(CLASS_NAME, "org.wildfly.security.auth.permission.LoginPermission");
-            }});
-            mapper.permission(new HashMap() {{
-                put(CLASS_NAME, "org.wildfly.extension.batch.jberet.deployment.BatchPermission");
-                put(MODULE, "org.wildfly.extension.batch.jberet");
-                put(TARGET_NAME, "*");
-            }});
-            mapper.permission(new HashMap() {{
-                put(CLASS_NAME, "org.wildfly.transaction.client.RemoteTransactionPermission");
-                put(MODULE, "org.wildfly.transaction.client");
-            }});
-            mapper.permission(new HashMap() {{
-                put(CLASS_NAME, "org.jboss.ejb.client.RemoteEJBPermission");
-                put(MODULE, "org.jboss.ejb-client");
+            mapper.permissionMapping(new HashMap() {{
+                put("match-all", true);
+                put("permissions", new ArrayList() {{
+                    add(new HashMap() {{
+                        put(CLASS_NAME, "org.wildfly.security.auth.permission.LoginPermission");
+                    }});
+                    add(new HashMap() {{
+                        put(CLASS_NAME, "org.wildfly.extension.batch.jberet.deployment.BatchPermission");
+                        put(MODULE, "org.wildfly.extension.batch.jberet");
+                        put(TARGET_NAME, "*");
+                    }});
+                    add(new HashMap() {{
+                        put(CLASS_NAME, "org.wildfly.transaction.client.RemoteTransactionPermission");
+                        put(MODULE, "org.wildfly.transaction.client");
+                    }});
+                    add(new HashMap() {{
+                        put(CLASS_NAME, "org.jboss.ejb.client.RemoteEJBPermission");
+                        put(MODULE, "org.jboss.ejb-client");
+                    }});
+                }});
             }});
         });
 
@@ -186,8 +196,8 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
             auth.httpServerMechanismFactory(GLOBAL);
             auth.securityDomain(MANAGEMENT_DOMAIN);
             auth.mechanismConfiguration(new HashMap() {{
-                put(MECHANISM_NAME, "BASIC");
-                put("mechanism-realm-configurations", new ArrayList() {{
+                put(MECHANISM_NAME, "DIGEST");
+                put(MECHANISM_REALM_CONFIGURATIONS, new ArrayList() {{
                     add(new HashMap() {{
                         put(REALM_NAME, MANAGEMENT_REALM);
                     }});
@@ -200,13 +210,13 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
             auth.securityDomain(APPLICATION_DOMAIN);
             auth.mechanismConfiguration(new HashMap() {{
                 put(MECHANISM_NAME, "BASIC");
-                put("mechanism-realm-configurations", new ArrayList() {{
+                put(MECHANISM_REALM_CONFIGURATIONS, new ArrayList() {{
                     add(new HashMap() {{
-                        put(REALM_NAME, APPLICATION_REALM);
+                        put(REALM_NAME, "Application Realm");
                     }});
                 }});
             }});
-            auth.mechanismConfigurations(new HashMap() {{
+            auth.mechanismConfiguration(new HashMap() {{
                 put(MECHANISM_NAME, "FORM");
             }});
         });
@@ -222,7 +232,7 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
             }});
             auth.mechanismConfiguration(new HashMap() {{
                 put(MECHANISM_NAME, "DIGEST-MD5");
-                put("mechanism-realm-configuration", new ArrayList() {{
+                put(MECHANISM_REALM_CONFIGURATIONS, new ArrayList() {{
                     add(new HashMap() {{
                         put(REALM_NAME, MANAGEMENT_REALM);
                     }});
@@ -239,7 +249,7 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
             }});
             auth.mechanismConfiguration(new HashMap() {{
                 put(MECHANISM_NAME, "DIGEST-MD5");
-                put("mechanism-realm-configuration", new ArrayList() {{
+                put(MECHANISM_REALM_CONFIGURATIONS, new ArrayList() {{
                     add(new HashMap() {{
                         put(REALM_NAME, APPLICATION_REALM);
                     }});
@@ -252,22 +262,15 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
         mechanismProviderFilteringSaslServerFactory(ELYTRON, (filtering) -> {
             filtering.saslServerFactory(GLOBAL);
             filtering.filter(new HashMap() {{
-                put("provider-name", ELYTRON);
+                put("provider-name", "WildFlyElytron");
             }});
 
         });
 
         configurableSaslServerFactory("configured", (configurable) -> {
             configurable.saslServerFactory(ELYTRON);
-            configurable.filter(new HashMap() {{
-                put("pattern-filter", "JBOSS-LOCAL-USER");
-            }});
-            configurable.filter(new HashMap() {{
-                put("pattern-filter", "DIGEST-MD5");
-            }});
             configurable.property("wildfly.sasl.local-user.default-user", "$local");
         });
-
 
         return this;
     }

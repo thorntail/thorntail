@@ -35,7 +35,7 @@ public class ParameterizedFallbackMethodTest {
     @ShouldThrowException(DefinitionException.class)
     @Deployment
     public static JavaArchive createTestArchive() {
-        return TestArchive.createBase("ParameterizedFallbackMethodTest.jar")
+        return TestArchive.createBase(ParameterizedFallbackMethodTest.class)
                 .addPackage(ParameterizedFallbackMethodTest.class.getPackage());
     }
 

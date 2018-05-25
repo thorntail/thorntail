@@ -44,16 +44,25 @@ public class ArtifactDeployer {
 
         for (SimpleKey subkey : subkeys) {
             String spec = subkey.name();
-            if (spec.contains(":")) {
-                String[] parts = spec.split(":");
-                String groupId = parts[0];
-                parts = parts[1].split("\\.");
-                String artifactId = parts[0];
-                String packaging = parts[1];
-
-                JavaArchive artifact = Swarm.artifact(groupId + ":" + artifactId + ":" + packaging + ":*", artifactId + "." + packaging);
-                deployer.get().deploy(artifact, spec);
+            if (!spec.contains(":")) {
+                // TODO Should we really silently ignore this? Rather warn the user about a problem in his config?
+                continue;
             }
+
+            String[] parts = spec.split(":");
+            String groupId = parts[0];
+            int p = parts[1].lastIndexOf('.');
+            String artifactId;
+            String packaging;
+            if (p == -1) {
+                artifactId = parts[1];
+                packaging = "jar";
+            } else {
+                artifactId = parts[1].substring(0, p);
+                packaging = parts[1].substring(p + 1);
+            }
+            JavaArchive artifact = Swarm.artifact(groupId + ":" + artifactId + ":" + packaging + ":*", artifactId + "." + packaging);
+            deployer.get().deploy(artifact, spec);
         }
 
     }

@@ -49,6 +49,8 @@ import org.wildfly.swarm.tools.DeclaredDependencies;
  */
 public abstract class AbstractSwarmMojo extends AbstractMojo {
 
+    protected static final String EXCLUDE_PREFIX = "!";
+
     @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 
@@ -90,7 +92,7 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     protected List<String> additionalModules = new ArrayList<>();
 
     @Parameter(alias = "fractions")
-    protected List<String> additionalFractions = new ArrayList<>();
+    protected List<String> fractions = new ArrayList<>();
 
     @Parameter(defaultValue = "when_missing", property = "swarm.detect.mode")
     protected BuildTool.FractionDetectionMode fractionDetectMode;

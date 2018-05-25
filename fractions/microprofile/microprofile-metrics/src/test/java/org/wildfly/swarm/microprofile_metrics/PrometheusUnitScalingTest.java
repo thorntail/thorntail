@@ -26,29 +26,15 @@ import org.wildfly.swarm.microprofile.metrics.runtime.exporters.PrometheusUnit;
 public class PrometheusUnitScalingTest {
 
     @Test
-    public void testScaleMinutesToSeconds() {
-        String foo = MetricUnits.MINUTES;
-        double out = PrometheusUnit.scaleToBase(foo, 1.0);
-        assert out == 60;
-    }
-
-    @Test
-    public void testScaleHoursToSeconds() {
-        String foo = MetricUnits.HOURS;
+    public void testScaleToSeconds() {
+        String foo = MetricUnits.SECONDS;
         double out = PrometheusUnit.scaleToBase(foo, 3.0);
-        assert out == 3 * 3600;
+        assert out == 0.000_000_003 : "Out was " + out;
     }
 
     @Test
-    public void testScaleMillisecondsToSeconds() {
-        String foo = MetricUnits.MILLISECONDS;
-        double out = PrometheusUnit.scaleToBase(foo, 3.0);
-        assert out == 0.003 : "Out was " + out;
-    }
-
-    @Test
-    public void testScaleNanosecondsToSeconds() {
-        String foo = MetricUnits.NANOSECONDS;
+    public void testScaleToSecondsForDays() {
+        String foo = MetricUnits.DAYS;
         double out = PrometheusUnit.scaleToBase(foo, 3.0);
         assert out == 0.000_000_003 : "Out was " + out;
     }

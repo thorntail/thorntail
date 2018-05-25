@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +31,11 @@ import java.util.stream.Collectors;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.PublishArtifactSet;
 import org.gradle.api.artifacts.ResolvedConfiguration;
 import org.gradle.api.artifacts.ResolvedDependency;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.ApplicationPluginConvention;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
@@ -39,9 +43,9 @@ import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
-import org.gradle.api.tasks.SourceSet;
 import org.wildfly.swarm.fractions.PropertiesUtil;
 import org.wildfly.swarm.spi.meta.SimpleLogger;
 import org.wildfly.swarm.tools.ArtifactSpec;
@@ -90,7 +94,7 @@ public class PackageTask extends DefaultTask {
 
 
         this.tool = new BuildTool(resolvingHelper)
-                .projectArtifact(project.getGroup().toString(), project.getName(), project.getVersion().toString(),
+                .projectArtifact(this.jarTask.getGroup().toString(), this.jarTask.getBaseName(), this.jarTask.getVersion(),
                                  getPackaging(), getProjectArtifactFile())
                 .mainClass(getMainClassName())
                 .bundleDependencies(getBundleDependencies())
@@ -176,7 +180,24 @@ public class PackageTask extends DefaultTask {
             this.tool.bundleDependencies(bundleDependencies);
         }
 
-        this.tool.build(getBaseName(), getOutputDirectory());
+        this.tool.build(getOutputFile().getName(), getOutputDirectory());
+
+        /* We expect a war task to be present before scanning for war files. */
+        final java.util.Optional<Task> task = project.getTasks().stream().filter(t -> "war".equals(t.getName())).findAny();
+        if (task.isPresent()) {
+            /* Look for all the war archives present */
+            final Set<File> warArchives = project.getConfigurations()
+                    .stream()
+                    .map(Configuration::getAllArtifacts)
+                    .map(PublishArtifactSet::getFiles)
+                    .map(FileCollection::getFiles)
+                    .flatMap(Collection::stream)
+                    .filter(f -> f.getName().endsWith(".war"))
+                    .collect(Collectors.toSet());
+            for (File warArchive : warArchives) {
+                tool.repackageWar(warArchive);
+            }
+        }
     }
 
     @Input
@@ -273,7 +294,7 @@ public class PackageTask extends DefaultTask {
 
     @OutputFile
     private File getOutputFile() {
-        return BuildTool.getOutputFile(getBaseName(), getOutputDirectory());
+        return BuildTool.getOutputFile(getBaseName() + "-swarm.jar", getOutputDirectory());
     }
 
     private String getBaseName() {

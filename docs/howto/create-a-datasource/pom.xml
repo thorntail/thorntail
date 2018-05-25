@@ -13,19 +13,19 @@
   <parent>
     <groupId>org.wildfly.swarm.howto</groupId>
     <artifactId>howto-parent</artifactId>
-    <version>2018.4.0-SNAPSHOT</version>
+    <version>2.0.0.Final-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <name>WildFly Swarm HOWTO: Create a Datasource</name>
-  <description>WildFly Swarm HOWTO: Create a Datasource</description>
+  <name>Thorntail HOWTO: Create a Datasource</name>
+  <description>Thorntail HOWTO: Create a Datasource</description>
   <packaging>war</packaging>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
         <version>${version.wildfly-swarm}</version>
         <executions>
           <execution>
@@ -109,7 +109,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>bom</artifactId>
         <version>${version.wildfly-swarm}</version>
         <type>pom</type>

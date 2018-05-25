@@ -18,15 +18,16 @@ package org.wildfly.swarm.container.runtime;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
@@ -53,7 +54,6 @@ import org.wildfly.swarm.bootstrap.modules.MavenResolvers;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.JarFileManager;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
-
 import org.wildfly.swarm.container.internal.Deployer;
 import org.wildfly.swarm.container.internal.Server;
 import org.wildfly.swarm.container.runtime.deployments.DefaultDeploymentCreator;
@@ -200,7 +200,9 @@ public class RuntimeServer implements Server {
 
         List<ServiceActivator> activators = new ArrayList<>();
 
-        this.serviceActivators.forEach(activators::add);
+        StreamSupport.stream(serviceActivators.spliterator(), false)
+                .filter(Objects::nonNull)
+                .forEach(activators::add);
 
         activators.add(new ContentRepositoryServiceActivator(this.contentRepository));
 
@@ -301,7 +303,7 @@ public class RuntimeServer implements Server {
         if (shutdownHookHolder != null) {
             Field containersSetField = shutdownHookHolder.getDeclaredField("containers");
             containersSetField.setAccessible(true);
-            Set<?> set = (Set<?>)containersSetField.get(null);
+            Set<?> set = (Set<?>) containersSetField.get(null);
             set.clear();
         }
 
@@ -310,7 +312,15 @@ public class RuntimeServer implements Server {
         this.client = null;
         this.deployer.get().removeAllContent();
         this.deployer = null;
+        cleanup();
+    }
 
+    /**
+     * Clean up all open resources.
+     *
+     * @throws IOException if the close operation fails.
+     */
+    private void cleanup() throws IOException {
         JarFileManager.INSTANCE.close();
         TempFileManager.INSTANCE.close();
         MavenResolvers.close();

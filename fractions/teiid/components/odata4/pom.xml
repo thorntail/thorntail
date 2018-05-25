@@ -3,9 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
+    <groupId>io.thorntail</groupId>
     <artifactId>teiid-components</artifactId>
-    <version>2018.4.0-SNAPSHOT</version>
+    <version>2.0.0.Final-SNAPSHOT</version>
   </parent>
 
   <name>Teiid OData V4 Translator</name>
@@ -70,7 +70,7 @@
       <version>${version.teiid}</version>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>logging</artifactId>
     </dependency>
   </dependencies>
@@ -83,8 +83,8 @@
     </resources>
     <plugins>
       <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-fraction-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

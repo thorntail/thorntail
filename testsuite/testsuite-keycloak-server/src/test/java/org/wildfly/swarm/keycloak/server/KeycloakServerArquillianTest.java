@@ -15,14 +15,18 @@
  */
 package org.wildfly.swarm.keycloak.server;
 
+import javax.ws.rs.client.ClientBuilder;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
@@ -32,7 +36,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
 public class KeycloakServerArquillianTest {
 
     @Deployment(testable = false)
-    public static Archive createDeployment() {
+    public static Archive<?> createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
         return deployment;
@@ -40,8 +44,8 @@ public class KeycloakServerArquillianTest {
 
     @Test
     @RunAsClient
-    public void testNothing() {
-
+    public void testKeycloakServerIsUp() throws Exception {
+        Assert.assertEquals(200,  ClientBuilder.newClient().target("http://localhost:8080/auth/").request().get().getStatus());
     }
 
 }

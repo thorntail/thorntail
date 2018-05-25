@@ -84,6 +84,12 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
         addDependencies(builder, env);
 
+        try {
+            addClasspathJars(builder);
+        } catch (IOException e) {
+            throw new ModuleLoadException(e);
+        }
+
         builder.addDependency(DependencySpec.createModuleDependencySpec("org.jboss.modules"));
         builder.addDependency(DependencySpec.createModuleDependencySpec("org.jboss.shrinkwrap"));
         builder.addDependency(DependencySpec.createModuleDependencySpec("org.wildfly.swarm.configuration", false, true));
@@ -134,8 +140,11 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
         File tmpDir = TempFileManager.INSTANCE.newTempDirectory(name, ext);
 
-        //Explode jar due to some issues in Windows on stopping (JarFiles cannot be deleted)
+        // Explode jar due to some issues in Windows on stopping (JarFiles cannot be deleted)
         BootstrapUtil.explodeJar(jarFile, tmpDir.getAbsolutePath());
+
+        // SWARM-1473: exploded app artifact is also used to back ShrinkWrap archive used by deployment processors
+        TempFileManager.INSTANCE.setExplodedApplicationArtifact(tmpDir);
 
         jarFile.close();
         tmp.delete();
@@ -183,6 +192,26 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                         throw new RuntimeException(e);
                     }
                 });
+    }
+
+    private void addClasspathJars(ModuleSpec.Builder builder) throws IOException {
+        String driversList = System.getProperty("swarm.classpath");
+
+        if (driversList != null && driversList.trim().length() > 0) {
+            String[] drivers = driversList.split(";");
+
+            for (String driver : drivers) {
+                File driverFile = new File(driver);
+
+                if (driverFile.exists()) {
+                    builder.addResourceRoot(
+                            ResourceLoaderSpec.createResourceLoaderSpec(
+                                    ResourceLoaders.createJarResourceLoader(driverFile.getName(), new JarFile(driverFile))
+                            )
+                    );
+                }
+            }
+        }
     }
 
     private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.application");

@@ -1,0 +1,6 @@
+# This file is translated in to the project defaults file in to the archives created during the test cases.
+swarm:
+  deployment:
+    myapp.war:
+      jaxrs:
+        application-path: /

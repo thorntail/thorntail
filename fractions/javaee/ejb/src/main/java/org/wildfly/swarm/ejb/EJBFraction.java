@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import org.wildfly.swarm.config.EJB3;
 import org.wildfly.swarm.config.ejb3.AsyncService;
 import org.wildfly.swarm.config.ejb3.Cache;
+import org.wildfly.swarm.config.ejb3.PassivationStore;
 import org.wildfly.swarm.config.ejb3.StrictMaxBeanInstancePool;
 import org.wildfly.swarm.config.ejb3.ThreadPool;
 import org.wildfly.swarm.config.ejb3.TimerService;
@@ -53,25 +54,37 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction<EJBFracti
 
     public EJBFraction applyDefaults() {
         Map<Object, Object> threadPoolSettings = new HashMap<>();
-        threadPoolSettings.put("time", "100");
+        threadPoolSettings.put("time", 100L);
         threadPoolSettings.put("unit", "MILLISECONDS");
 
         defaultStatefulBeanAccessTimeout(5000L)
                 .defaultSingletonBeanAccessTimeout(5000L)
                 .defaultSfsbCache("simple")
+                .defaultSfsbPassivationDisabledCache("simple")
+                .defaultSlsbInstancePool("slsb-strict-max-pool")
+                .defaultMdbInstancePool("mdb-strict-max-pool")
                 .defaultSecurityDomain("other")
                 .defaultMissingMethodPermissionsDenyAccess(true)
                 .logSystemExceptions(true)
-                .defaultResourceAdapterName(SwarmProperties.propertyVar("$ejb.resource-adapter-name", "activemq-ra.rar"))
+                .defaultResourceAdapterName(SwarmProperties.propertyVar("ejb.resource-adapter-name", "activemq-ra.rar"))
                 .strictMaxBeanInstancePool(new StrictMaxBeanInstancePool("slsb-strict-max-pool")
-                                                   .maxPoolSize(20)
+                                                   .deriveSize(StrictMaxBeanInstancePool.DeriveSize.FROM_WORKER_POOLS)
                                                    .timeout(5L)
                                                    .timeoutUnit(StrictMaxBeanInstancePool.TimeoutUnit.MINUTES))
                 .strictMaxBeanInstancePool(new StrictMaxBeanInstancePool("mdb-strict-max-pool")
-                                                   .maxPoolSize(20)
+                                                   .deriveSize(StrictMaxBeanInstancePool.DeriveSize.FROM_CPU_COUNT)
                                                    .timeout(5L)
                                                    .timeoutUnit(StrictMaxBeanInstancePool.TimeoutUnit.MINUTES))
                 .cache(new Cache("simple"))
+                // ideally, the distributable cache and the infinispan passivation store would be defined
+                // in InfinispanCustomizer, but that only applies after YAML is processed
+                .cache(new Cache("distributable")
+                        .alias("passivating")
+                        .alias("clustered")
+                        .passivationStore("infinispan"))
+                .passivationStore(new PassivationStore("infinispan")
+                        .cacheContainer("ejb")
+                        .maxSize(10000))
                 .asyncService(new AsyncService().threadPoolName("default"))
                 .timerService(new TimerService()
                                       .threadPoolName("default")

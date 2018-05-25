@@ -1,6 +1,6 @@
 <module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.client.jaxrs">
   <resources>
-    <artifact name="org.wildfly.swarm:jaxrs-client-api:${project.version}"/>
+    <artifact name="io.thorntail:jaxrs-client-api:${project.version}"/>
   </resources>
 
   <dependencies>

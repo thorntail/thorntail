@@ -122,25 +122,13 @@ public class PrometheusUnit {
                 out = value * 1_000_000_000;
                 break;
             case MetricUnits.NANOSECONDS:
-                out = value / 1_000_000_000;
-                break;
             case MetricUnits.MICROSECONDS:
-                out = value / 1_000_000;
-                break;
             case MetricUnits.MILLISECONDS:
-                out = value / 1000;
-                break;
             case MetricUnits.SECONDS:
-                out = value;
-                break;
             case MetricUnits.MINUTES:
-                out = value * 60;
-                break;
             case MetricUnits.HOURS:
-                out = value * 3600;
-                break;
             case MetricUnits.DAYS:
-                out = value * 24 * 3600;
+                out = ExporterUtil.convertNanosTo(value, MetricUnits.SECONDS);
                 break;
             default:
                 out = value;

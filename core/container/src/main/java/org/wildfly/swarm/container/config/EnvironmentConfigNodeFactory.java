@@ -53,14 +53,23 @@ public class EnvironmentConfigNodeFactory {
         Set<String> names = input.keySet();
 
         for (String name : names) {
-            if (name.startsWith("swarm.")) {
+            String after = normalizeName(name);
+            if (after.startsWith("swarm.")) {
                 String value = input.get(name);
-                ConfigKey key = ConfigKey.parse(name);
+                ConfigKey key = ConfigKey.parse(after);
                 config.recursiveChild(key, value);
             }
         }
     }
 
+    protected static String normalizeName(String key) {
+        key = key.replace("_DASH_", "-");
+        key = key.replace("_UNDERSCORE_", "---");
+        key = key.replace('_', '.');
+        key = key.replace("---", "_");
+        key = key.toLowerCase();
+        return key;
+    }
 }
 
 

@@ -38,9 +38,11 @@ public class WFSwarmWarArchiveProcessor implements ApplicationArchiveProcessor {
         if (webXml != null) {
             war.setWebXML(webXml);
         }
-        war.addAsResource("project-defaults.yml", "/project-defaults.yml")
-            .addAsWebInfResource("jwt-roles.properties", "classes/jwt-roles.properties")
-            .addAsManifestResource(publicKeyNode.getAsset(), "/MP-JWT-SIGNER");
+        if (!war.contains("/WEB-INF/classes/project-defaults.yml")) {
+            war.addAsResource("project-defaults.yml", "/project-defaults.yml");
+        }
+
+        war.addAsWebInfResource("jwt-roles.properties", "classes/jwt-roles.properties").addAsManifestResource(publicKeyNode.getAsset(), "/MP-JWT-SIGNER");
         log.fine("Augmented war: \n" + war.toString(true));
     }
 }

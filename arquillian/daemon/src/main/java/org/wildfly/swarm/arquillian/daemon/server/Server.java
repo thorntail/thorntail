@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -157,7 +158,7 @@ public class Server {
 
     }
 
-    public final synchronized void stop() throws ServerLifecycleException, IllegalStateException {
+    public final synchronized void stop() throws ServerLifecycleException, IllegalStateException, InterruptedException {
         // Use an anonymous logger because the JUL LogManager will not log after process shutdown has been received
         final Logger log = Logger.getAnonymousLogger();
         log.addHandler(new Handler() {
@@ -190,6 +191,10 @@ public class Server {
         this.eventLoopGroups.forEach(EventLoopGroup::shutdownGracefully);
         this.eventLoopGroups.clear();
 
+        shutdownService.shutdown();
+        if (!shutdownService.awaitTermination(2, TimeUnit.MINUTES)) {
+            log.warning("Unable to shutdown the server process cleanly.");
+        }
         // Kill the shutdown service
         shutdownService.shutdownNow();
         shutdownService = null;

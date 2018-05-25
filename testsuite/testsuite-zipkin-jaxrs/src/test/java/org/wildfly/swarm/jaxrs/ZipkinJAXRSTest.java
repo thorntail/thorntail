@@ -1,6 +1,7 @@
 package org.wildfly.swarm.jaxrs;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -38,12 +39,14 @@ public class ZipkinJAXRSTest {
     private static final String SPAN_COLLECTOR = "com.github.kristofa.brave.LoggingSpanCollector";
 
 
-
     @Deployment
     public static Archive createDeployment() throws Exception {
-        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
+        URL url = Thread.currentThread().getContextClassLoader().getResource("project-defaults.yml");
+        File projectDefaults = new File(url.toURI());
+        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
         deployment.addResource(MyResource.class);
         deployment.addAllDependencies();
+        deployment.addAsResource(projectDefaults, "/project-defaults.yml");
         return deployment;
     }
 

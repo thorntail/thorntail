@@ -69,6 +69,9 @@ public class PackageMojo extends AbstractSwarmMojo {
     @Parameter(alias = "hollow", defaultValue = "false", property = "swarm.hollow")
     protected boolean hollow;
 
+    @Parameter(property = "finalName")
+    public String finalName;
+
     /**
      * Flag to skip packaging entirely.
      */
@@ -157,10 +160,13 @@ public class PackageMojo extends AbstractSwarmMojo {
                     }
                 });
 
-        this.additionalFractions.stream()
-                .map(f -> FractionDescriptor.fromGav(FractionList.get(), f))
-                .map(ArtifactSpec::fromFractionDescriptor)
-                .forEach(tool::fraction);
+        this.fractions.forEach(f -> {
+            if (f.startsWith(EXCLUDE_PREFIX)) {
+                tool.excludeFraction(ArtifactSpec.fromFractionDescriptor(FractionDescriptor.fromGav(FractionList.get(), f.substring(1))));
+            } else {
+                tool.fraction(ArtifactSpec.fromFractionDescriptor(FractionDescriptor.fromGav(FractionList.get(), f)));
+            }
+        });
 
         Map<ArtifactSpec, Set<ArtifactSpec>> buckets = createBuckets(this.project.getArtifacts(), this.project.getDependencies());
 
@@ -200,8 +206,12 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .forEach(tool::additionalModule);
 
         try {
-            File jar = tool.build(finalName + (this.hollow ? "-hollow" : ""), Paths.get(this.projectBuildDir));
-
+            String jarFinalName = finalName + (this.hollow ? "-hollow" : "") + "-swarm";
+            if (this.finalName != null) {
+                jarFinalName = this.finalName;
+            }
+            jarFinalName += ".jar";
+            File jar = tool.build(jarFinalName, Paths.get(this.projectBuildDir));
             ArtifactHandler handler = new DefaultArtifactHandler("jar");
             Artifact swarmJarArtifact = new DefaultArtifact(
                     primaryArtifact.getGroupId(),

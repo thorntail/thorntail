@@ -8,9 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
+    <groupId>io.thorntail</groupId>
     <artifactId>build-parent</artifactId>
-    <version>2018.4.0-SNAPSHOT</version>
+    <version>2.0.0.Final-SNAPSHOT</version>
     <relativePath>../../../build-parent/pom.xml</relativePath>
   </parent>
 
@@ -38,40 +38,40 @@
   <dependencies>
     <!-- Fractions introduced by MicroProfile 1.0 -->
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>jaxrs</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>cdi</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>jaxrs-jsonp</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>jaxrs-jaxb</artifactId>
     </dependency>
     <!-- Fractions introduced by MicroProfile 1.2 -->
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>microprofile-config</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>microprofile-health</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>microprofile-fault-tolerance</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>microprofile-jwt</artifactId>
     </dependency>
      <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>microprofile-metrics</artifactId>
     </dependency>
 

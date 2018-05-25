@@ -39,13 +39,10 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
-import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
-import net.lingala.zip4j.model.FileHeader;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
@@ -59,6 +56,10 @@ import org.wildfly.swarm.fractions.FractionDescriptor;
 import org.wildfly.swarm.fractions.FractionList;
 import org.wildfly.swarm.fractions.FractionUsageAnalyzer;
 import org.wildfly.swarm.spi.meta.SimpleLogger;
+
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
 
 /**
  * @author Bob McWhirter
@@ -126,6 +127,11 @@ public class BuildTool {
     public BuildTool fraction(ArtifactSpec spec) {
         this.fractions.add(spec);
 
+        return this;
+    }
+
+    public BuildTool excludeFraction(ArtifactSpec spec) {
+        this.excludedFractions.add(spec);
         return this;
     }
 
@@ -327,6 +333,9 @@ public class BuildTool {
                 .map(ArtifactSpec::toFractionDescriptor)
                 .collect(Collectors.toSet()));
 
+        // Remove explicitly excluded fractions
+        detectedFractions.removeAll(this.excludedFractions.stream().map(ArtifactSpec::toFractionDescriptor).collect(Collectors.toSet()));
+
         this.log.info(String.format("Detected %sfractions: %s",
                 this.fractions.isEmpty() ? "" : "additional ",
                 String.join(", ",
@@ -340,7 +349,7 @@ public class BuildTool {
     }
 
     private static String strippedSwarmGav(MavenArtifactDescriptor desc) {
-        if (desc.groupId().equals(DependencyManager.WILDFLY_SWARM_GROUP_ID)) {
+        if (desc.groupId().equals(FractionDescriptor.THORNTAIL_GROUP_ID)) {
             return String.format("%s:%s", desc.artifactId(), desc.version());
         }
 
@@ -438,7 +447,7 @@ public class BuildTool {
     }
 
     public static File getOutputFile(String baseName, Path directory) {
-        return new File(directory.toFile(), baseName + "-swarm.jar");
+        return new File(directory.toFile(), baseName);
     }
 
     private File createJar(String baseName, Path dir) throws IOException {
@@ -566,6 +575,8 @@ public class BuildTool {
     }
 
     private final Set<ArtifactSpec> fractions = new HashSet<>();
+
+    private final Set<ArtifactSpec> excludedFractions = new HashSet<>();
 
     private final JavaArchive archive;
 

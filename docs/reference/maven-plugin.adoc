@@ -1,11 +1,11 @@
 [#maven-plugin]
 = Maven Plugin
 
-WildFly Swarm provides a Maven plugin to accomplish most of the work of building xref:uberjar[uberjar] packages.
+{Thorntail} provides a Maven plugin to accomplish most of the work of building xref:uberjar[uberjar] packages.
 
 .General Usage
 
-The WildFly Swarm Maven plugin is used like any other Maven plugin, that is through editing the `pom.xml` file in your application and adding a `<plugin>` section:
+The {Thorntail} Maven plugin is used like any other Maven plugin, that is through editing the `pom.xml` file in your application and adding a `<plugin>` section:
 
 [source,xml]
 ----
@@ -15,16 +15,21 @@ The WildFly Swarm Maven plugin is used like any other Maven plugin, that is thro
   <version>${version.wildfly-swarm}</version>
   <executions>
     ...
-    <configuration>
-      ...
-    <configuration/>
+    <execution>
+      <goals>
+        ...
+      </goals>
+      <configuration>
+        ...
+      </configuration>
+    </execution>
   </executions>
 </plugin>
 ----
 
 == Goals
 
-The WildFly Swarm Maven plugin provides several goals:
+The {Thorntail} Maven plugin provides several goals:
 
 package::
 Creates the executable package (see xref:creating-an-uberjar[]).
@@ -35,7 +40,7 @@ Executes your application in the Maven process. The application is stopped if th
 [#maven-plugin-multistart-goal]
 start and multistart::
 Executes your application in a forked process. Generally, it is only useful for running integration tests using a plugin, such as the `maven-failsafe-plugin`.
-The `multistart` variant allows starting multiple WildFly Swarm{ndash}built applications using Maven GAVs to support complex testing scenarios.
+The `multistart` variant allows starting multiple {Thorntail}{ndash}built applications using Maven GAVs to support complex testing scenarios.
 
 stop::
 Stops any previously started applications.
@@ -114,7 +119,7 @@ fractionDetectMode::
 --
 The mode of fraction detection. The available options are:
 
-* `when_missing`: Runs only when no WildFly Swarm dependencies are found.
+* `when_missing`: Runs only when no {Thorntail} dependencies are found.
 * `force`: Always run, and merge any detected fractions with the existing dependencies. Existing dependencies take precedence.
 * `never`: Disable fraction detection.
 
@@ -137,13 +142,37 @@ fractions::
 A list of extra fractions to include when auto-detection is used. It is useful for fractions that cannot be detected or user-provided fractions.
 
 The format of specifying a fraction can be:
-* `group:name:version`
-* `name:version`
-* `name`
+* `group:artifact:version`
+* `artifact:version`
+* `artifact`
 
 If no group is provided, `org.wildfly.swarm` is assumed.
 
-If no version is provided, the version is taken from the WildFly Swarm BOM for the version of the plugin you are using.
+If no version is provided, the version is taken from the {Thorntail} BOM for the version of the plugin you are using.
+
+If the value starts with the character `!` a corresponding auto-detected fraction is not installed (unless it's a dependency of any other fraction).
+In the following example the Undertow fraction is not installed even if your application references a class from the `javax.servlet` package:
+
+[source,xml]
+----
+<plugin>
+  <groupId>org.wildfly.swarm</groupId>
+  <artifactId>wildfly-swarm-plugin</artifactId>
+  <version>${version.wildfly-swarm}</version>
+  <executions>
+    <execution>
+      <goals>
+        <goal>package</goal>
+      </goals>
+      <configuration>
+       <fractions>
+         <fraction>!undertow</fraction>
+       </fractions>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+----
 
 [cols="1,2a"]
 |===

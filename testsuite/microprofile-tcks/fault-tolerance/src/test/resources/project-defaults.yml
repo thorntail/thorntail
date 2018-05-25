@@ -1,0 +1,15 @@
+swarm:
+  hystrix:
+    threadpool:
+      default:
+        # Needed for extreme load in some bulkhead tests
+        maximumSize:
+          40
+    command:
+      default:
+        execution:
+          isolation:
+            thread:
+              # Do not interrupt command execution when a timeout occurs - needed for bulkhead tests
+              interruptOnTimeout:
+                false

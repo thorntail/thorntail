@@ -8,9 +8,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
-    <artifactId>wildfly-swarm</artifactId>
-    <version>2018.4.0-SNAPSHOT</version>
+    <groupId>io.thorntail</groupId>
+    <artifactId>thorntail</artifactId>
+    <version>2.0.0.Final-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -18,18 +18,18 @@
 
   <packaging>pom</packaging>
 
-  <name>WF Swarm Build Parent</name>
+  <name>Thorntail Build Parent</name>
   <description>Build Parent to bring in required dependencies</description>
 
   <properties>
-    <version.wildfly.swarm.fraction.plugin>83</version.wildfly.swarm.fraction.plugin>
+    <version.thorntail.fraction.plugin>87</version.thorntail.fraction.plugin>
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
-    <version.wildfly.config-api>1.3.0</version.wildfly.config-api>
+    <version.wildfly.config-api>1.3.1</version.wildfly.config-api>
 
     <version.keycloak.config-api>1.3.1.Final</version.keycloak.config-api>
-    <version.teiid.config-api>1.1.1.Final</version.teiid.config-api>
+    <version.teiid.config-api>1.1.2.Final</version.teiid.config-api>
     <version.keycloak>3.4.0.Final</version.keycloak>
     <version.mongo.config-api>1.2.4</version.mongo.config-api>
     <version.cassandra.config-api>1.2.4</version.cassandra.config-api>
@@ -42,17 +42,17 @@
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
     <!-- Weld SE version must be aligned with the version used in WildFly -->
     <version.weld-se>2.4.3.Final</version.weld-se>
+    <!-- Align dependency versions with those present in WildFly parent -->
+    <!-- Doing this explicitly since there is no easy way to import project properties from a pom file -->
+    <version.com.fasterxml.jackson>2.8.9</version.com.fasterxml.jackson>
 
     <version.org.objectweb.asm>6.0</version.org.objectweb.asm>
 
     <version.jolokia>1.3.4</version.jolokia>
     <version.io.swagger>1.5.16</version.io.swagger>
     <version.org.webjars.swagger-ui>3.2.2</version.org.webjars.swagger-ui>
-    <version.swagger.jackson>2.8.4</version.swagger.jackson>
     <version.swagger.reflections>0.9.10</version.swagger.reflections>
     <version.swagger.slf4j>1.6.3</version.swagger.slf4j>
-    <version.swagger.guava>18.0</version.swagger.guava>
-    <version.swagger.javassist>3.18.2-GA</version.swagger.javassist>
     <version.swagger.commons.lang>3.2.1</version.swagger.commons.lang>
 
     <version.hibernate-spatial>5.0.10.Final</version.hibernate-spatial>
@@ -84,7 +84,9 @@
     <!-- OpenTracing related versions -->
     <version.opentracing.tracerresolver>0.1.4</version.opentracing.tracerresolver>
     <version.opentracing.servlet>0.1.0</version.opentracing.servlet>
-    <version.jaeger>0.25.0</version.jaeger>
+    <version.jaeger>0.27.0</version.jaeger>
+    <version.opentracing.concurrent>0.1.0</version.opentracing.concurrent>
+    <version.opentracing.jaxrs>0.1.5</version.opentracing.jaxrs>
     <version.jaeger.apache.thrift>0.9.2</version.jaeger.apache.thrift>
     <version.jaeger.apache.httpclient>4.2.5</version.jaeger.apache.httpclient>
     <version.jaeger.commons.logging>1.1.1</version.jaeger.commons.logging>
@@ -105,6 +107,7 @@
     <version.microprofile-metrics>1.1</version.microprofile-metrics>
     <version.microprofile.restclient>1.0</version.microprofile.restclient>
     <version.microprofile-openapi>1.0.1</version.microprofile-openapi>
+    <version.microprofile-opentracing>1.1</version.microprofile-opentracing>
     <!-- MP Config implementation -->
     <version.wildfly-microprofile-config>1.2.1</version.wildfly-microprofile-config>
 
@@ -113,9 +116,9 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.wildfly.swarm</groupId>
-        <artifactId>wildfly-swarm-fraction-plugin</artifactId>
-        <version>${version.wildfly.swarm.fraction.plugin}</version>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-fraction-plugin</artifactId>
+        <version>${version.thorntail.fraction.plugin}</version>
         <executions>
           <execution>
             <id>process</id>
@@ -159,6 +162,12 @@
         <groupId>org.jboss</groupId>
         <artifactId>jandex</artifactId>
         <version>2.0.3.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.modules</groupId>
+        <artifactId>jboss-modules</artifactId>
+        <version>1.6.4.Final</version>
       </dependency>
 
 

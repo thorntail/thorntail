@@ -1,6 +1,10 @@
 
 swarm:
   deployment:
-    SwaggerConfiguredArquillianTest.war:
+    SampleTest.war:
+      context:
+        path: mycorp
+      jaxrs:
+        application-path: /api
       swagger:
         title: My Custom App

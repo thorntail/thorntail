@@ -8,13 +8,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
+    <groupId>io.thorntail</groupId>
     <artifactId>build-parent</artifactId>
-    <version>2018.4.0-SNAPSHOT</version>
+    <version>2.0.0.Final-SNAPSHOT</version>
     <relativePath>../../build-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>wildfly-swarm-plugin</artifactId>
+  <artifactId>thorntail-maven-plugin</artifactId>
 
   <name>Plugin for Maven</name>
   <description>Plugin for Maven</description>
@@ -45,15 +45,15 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>fraction-metadata</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>tools</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>spi</artifactId>
     </dependency>
     <dependency>

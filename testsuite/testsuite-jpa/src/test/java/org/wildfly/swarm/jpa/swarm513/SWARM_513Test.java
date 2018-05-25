@@ -1,5 +1,8 @@
 package org.wildfly.swarm.jpa.swarm513;
 
+import java.io.File;
+import java.net.URL;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -22,6 +25,8 @@ import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.transactions.TransactionsFraction;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 /**
  * @author Heiko Braun
  */
@@ -30,7 +35,10 @@ public class SWARM_513Test {
 
     @Deployment(testable = true)
     public static Archive createDeployment() throws Exception {
-        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "swarm_513.war");
+        URL url = Thread.currentThread().getContextClassLoader().getResource("project-test-defaults-path.yml");
+        assertThat(url).isNotNull();
+        File projectDefaults = new File(url.toURI());
+        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
         deployment.addResource(TicketEndpoint.class);
         deployment.addClass(Ticket.class);
         deployment.addClass(Tickets.class);
@@ -39,6 +47,7 @@ public class SWARM_513Test {
         deployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/persistence.xml", SWARM_513Test.class.getClassLoader()), "classes/META-INF/persistence.xml");
         deployment.addAsWebInfResource(new ClassLoaderAsset("META-INF/import.sql", SWARM_513Test.class.getClassLoader()), "classes/META-INF/import.sql");
 
+        deployment.addAsResource(projectDefaults, "/project-defaults.yml");
         return deployment;
     }
 

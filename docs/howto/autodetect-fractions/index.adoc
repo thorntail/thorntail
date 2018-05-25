@@ -1,10 +1,10 @@
 [#auto-detecting-fractions]
 = Auto-detecting fractions
 
-Migrating existing legacy applications to benefit from WildFly Swarm is simple when using fraction auto-detection.
-If you enable the WildFly Swarm Maven plugin in your application, WildFly Swarm detects which APIs you use, and includes the appropriate fractions at build time.
+Migrating existing legacy applications to benefit from {Thorntail} is simple when using fraction auto-detection.
+If you enable the {Thorntail} Maven plugin in your application, {Thorntail} detects which APIs you use, and includes the appropriate fractions at build time.
 
-NOTE: By default, WildFly Swarm only auto-detects if you do not specify any fractions explicitly. This behavior is controlled by the `fractionDetectMode` property. For more information, see the xref:maven-plugin-configuration[Maven plugin configuration reference].
+NOTE: By default, {Thorntail} only auto-detects if you do not specify any fractions explicitly. This behavior is controlled by the `fractionDetectMode` property. For more information, see the xref:maven-plugin-configuration[Maven plugin configuration reference].
 
 For example, consider your `pom.xml` already specifies the API `.jar` file for a specification such as JAX-RS:
 
@@ -15,7 +15,7 @@ include::pom.xml[tag=jaxrs,index=2]
 </dependencies>
 ----
 
-WildFly Swarm then includes the `jaxrs` fraction during the build automatically.
+{Thorntail} then includes the `jaxrs` fraction during the build automatically.
 
 .Prerequisites
 

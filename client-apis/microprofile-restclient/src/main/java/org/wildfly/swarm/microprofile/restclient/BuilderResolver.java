@@ -24,6 +24,6 @@ import org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver;
 public class BuilderResolver extends RestClientBuilderResolver {
     @Override
     public RestClientBuilder newBuilder() {
-        return new BuilderImpl();
+        return new RestClientBuilderImpl();
     }
 }

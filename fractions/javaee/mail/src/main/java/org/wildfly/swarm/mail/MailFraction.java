@@ -16,6 +16,7 @@
 package org.wildfly.swarm.mail;
 
 import org.wildfly.swarm.config.Mail;
+import org.wildfly.swarm.config.mail.MailSession;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
@@ -34,22 +35,26 @@ public class MailFraction extends Mail<MailFraction> implements Fraction<MailFra
 
     public MailFraction applyDefaults() {
         mailSession("default", EnhancedMailSession::smtpServer);
-
         return this;
     }
 
     @Configurable
     public MailFraction mailSession(String key, EnhancedMailSessionConsumer consumer) {
-        EnhancedMailSession session = new EnhancedMailSession(key);
-        return super.mailSession(() -> {
-            if (consumer != null) {
-                consumer.accept(session);
-                if (session.jndiName() == null) {
-                    session.jndiName("java:jboss/mail/" + key);
-                }
+        @SuppressWarnings("rawtypes")
+        MailSession mailSession = subresources().mailSession(key);
+        if (mailSession == null) {
+            // No mail session exists yet
+            EnhancedMailSession enhancedMailSession = new EnhancedMailSession(key);
+            applyConsumer(enhancedMailSession, consumer, key);
+            return super.mailSession(enhancedMailSession);
+        } else {
+            if (!(mailSession instanceof EnhancedMailSession)) {
+                throw new IllegalStateException("Expected an instance of EnhancedMailSession: " + mailSession);
             }
-            return session;
-        });
+            EnhancedMailSession enhancedMailSession = (EnhancedMailSession) mailSession;
+            applyConsumer(enhancedMailSession, consumer, key);
+            return this;
+        }
     }
 
     @Configurable
@@ -58,4 +63,14 @@ public class MailFraction extends Mail<MailFraction> implements Fraction<MailFra
             session.smtpServer(consumer);
         });
     }
+
+    private void applyConsumer(EnhancedMailSession mailSession, EnhancedMailSessionConsumer consumer, String key) {
+        if (consumer != null) {
+            consumer.accept(mailSession);
+            if (mailSession.jndiName() == null) {
+                mailSession.jndiName("java:jboss/mail/" + key);
+            }
+        }
+    }
+
 }

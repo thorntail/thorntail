@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ~ Copyright 2015 Red Hat, Inc. and/or its affiliates. ~ ~ Licensed under
+   the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0 -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>io.thorntail.testsuite</groupId>
+      <artifactId>testsuite-parent</artifactId>
+      <version>2.0.0.Final-SNAPSHOT</version>
+      <relativePath>../</relativePath>
+   </parent>
+
+   <artifactId>testsuite-microprofile-restclient</artifactId>
+   <name>Test Suite: MicroProfile Rest Client</name>
+
+   <dependencies>
+      <dependency>
+         <groupId>io.thorntail</groupId>
+         <artifactId>microprofile-restclient</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>io.thorntail</groupId>
+         <artifactId>arquillian</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <!-- CDI interceptors -->
+      <dependency>
+         <groupId>io.thorntail</groupId>
+         <artifactId>microprofile-fault-tolerance</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+   </dependencies>
+
+</project>

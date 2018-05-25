@@ -1,0 +1,15 @@
+<module xmlns="urn:jboss:module:1.3" name="io.jaegertracing">
+  <resources>
+    <artifact name="io.jaegertracing:jaeger-core:${version.jaeger}"/>
+    <artifact name="io.jaegertracing:jaeger-tracerresolver:${version.jaeger}"/>
+    <artifact name="io.jaegertracing:jaeger-thrift:${version.jaeger}"/>
+  </resources>
+
+  <dependencies>
+    <module name="org.slf4j"/>
+    <module name="io.opentracing"/>
+    <module name="org.apache.thrift" slot="jaeger"/>
+    <module name="com.squareup.okhttp3"/>
+    <module name="com.google.code.gson" slot="jaeger"/>
+  </dependencies>
+</module>

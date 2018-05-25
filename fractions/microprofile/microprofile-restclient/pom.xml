@@ -8,16 +8,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.wildfly.swarm</groupId>
+    <groupId>io.thorntail</groupId>
     <artifactId>build-parent</artifactId>
-    <version>2018.4.0-SNAPSHOT</version>
+    <version>2.0.0.Final-SNAPSHOT</version>
     <relativePath>../../../build-parent/pom.xml</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm</groupId>
+  <groupId>io.thorntail</groupId>
   <artifactId>microprofile-restclient</artifactId>
 
-  <name>Microprofile Rest Client</name>
+  <name>MicroProfile Rest Client</name>
 
   <packaging>jar</packaging>
 
@@ -38,17 +38,17 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>jaxrs-jsonp</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>cdi</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>microprofile-config</artifactId>
     </dependency>
 
@@ -64,7 +64,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>microprofile-restclient-api</artifactId>
       <exclusions>
         <exclusion>
@@ -100,7 +100,6 @@
       <artifactId>wildfly-server</artifactId>
       <scope>provided</scope>
     </dependency>
-
 
     <dependency>
       <groupId>org.wildfly.core</groupId>

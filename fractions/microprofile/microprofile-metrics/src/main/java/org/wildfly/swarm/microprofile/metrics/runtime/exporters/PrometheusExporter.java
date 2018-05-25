@@ -167,7 +167,7 @@ public class PrometheusExporter implements Exporter {
         String suffix = USCORE + PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit());
         writeHelpLine(sb, scope, md.getName(), md, suffix);
         writeTypeLine(sb,scope,md.getName(),md, suffix,SUMMARY);
-        writeValueLine(sb,scope,suffix + "_count",timer.getCount(),md);
+        writeValueLine(sb,scope,suffix + "_count",timer.getCount(),md, null, false);
 
         writeSnapshotQuantiles(sb, scope, md, snapshot, theUnit);
     }
@@ -183,7 +183,7 @@ public class PrometheusExporter implements Exporter {
         writeHelpLine(sb, scope, md.getName(), md, SUMMARY);
         writeSnapshotBasics(sb, scope, md, snapshot, theUnit);
         writeTypeLine(sb,scope,md.getName(),md, theUnit,SUMMARY);
-        writeValueLine(sb,scope,theUnit + "_count",histogram.getCount(),md);
+        writeValueLine(sb,scope,theUnit + "_count",histogram.getCount(),md, null, false);
         writeSnapshotQuantiles(sb, scope, md, snapshot, theUnit);
     }
 
@@ -229,6 +229,16 @@ public class PrometheusExporter implements Exporter {
     }
 
     private void writeValueLine(StringBuilder sb, MetricRegistry.Type scope, String suffix, double valueRaw, Metadata md, Tag extraTag) {
+        writeValueLine(sb, scope, suffix, valueRaw, md, extraTag, true);
+    }
+
+    private void writeValueLine(StringBuilder sb,
+                                MetricRegistry.Type scope,
+                                String suffix,
+                                double valueRaw,
+                                Metadata md,
+                                Tag extraTag,
+                                boolean scaled) {
         String name = md.getName();
         name = getPrometheusMetricName(md, name);
         fillBaseName(sb, scope, name);
@@ -246,7 +256,8 @@ public class PrometheusExporter implements Exporter {
         }
 
         sb.append(SPACE);
-        sb.append(PrometheusUnit.scaleToBase(md.getUnit(), valueRaw)).append(LF);
+        Double value = scaled ? PrometheusUnit.scaleToBase(md.getUnit(), valueRaw) : valueRaw;
+        sb.append(value).append(LF);
 
     }
 

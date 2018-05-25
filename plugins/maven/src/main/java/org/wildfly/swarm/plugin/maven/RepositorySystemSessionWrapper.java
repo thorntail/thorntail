@@ -38,6 +38,7 @@ import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.resolution.ArtifactDescriptorPolicy;
 import org.eclipse.aether.resolution.ResolutionErrorPolicy;
 import org.eclipse.aether.transfer.TransferListener;
+import org.wildfly.swarm.fractions.FractionDescriptor;
 
 /**
  * @author Ken Finnigan
@@ -197,14 +198,13 @@ final class RepositorySystemSessionWrapper implements RepositorySystemSession {
 
         @Override
         public boolean traverseDependency(Dependency dependency) {
-            return !SWARM_GROUP_ID.equals(dependency.getArtifact().getGroupId());
+            return !FractionDescriptor.THORNTAIL_GROUP_ID.equals(dependency.getArtifact().getGroupId());
         }
 
         @Override
         public DependencyTraverser deriveChildTraverser(DependencyCollectionContext context) {
             return this;
         }
-
-        private static final String SWARM_GROUP_ID = "org.wildfly.swarm";
     }
+
 }

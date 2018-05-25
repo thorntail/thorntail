@@ -37,7 +37,7 @@ public class InstallMonitorFilter implements DeploymentProcessor {
     @Override
     public void process() throws Exception {
         WARArchive warArchive = archive.as(WARArchive.class);
-        warArchive.addDependency("org.wildfly.swarm:health-api:jar:" + SwarmInfo.VERSION);
+        warArchive.addDependency("io.thorntail:health-api:jar:" + SwarmInfo.VERSION);
         warArchive.findWebXmlAsset().setContextParam("resteasy.scan", "true");
     }
 

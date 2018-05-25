@@ -18,8 +18,9 @@ package org.wildfly.swarm.microprofile.openapi.runtime;
 
 import java.io.IOException;
 import java.util.Deque;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
 import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer;
 import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Format;
@@ -39,23 +40,13 @@ public class OpenApiHttpHandler implements HttpHandler {
     private static final String OAI = "/openapi";
     private static final String ALLOWED_METHODS = "GET, HEAD, OPTIONS";
     private static final String QUERY_PARAM_FORMAT = "format";
-    private static final String OAI_JSON;
-    private static final String OAI_YAML;
 
-    static {
-        try {
-            OpenAPI model = OpenApiDocument.INSTANCE.get();
-            OAI_JSON = OpenApiSerializer.serialize(model, Format.JSON);
-            OAI_YAML = OpenApiSerializer.serialize(model, Format.YAML);
-        } catch (IOException ioe) {
-            throw new RuntimeException(ioe);
-        }
-    }
-
+    private final Map<Format, String> cachedModels;
     private final HttpHandler next;
 
     public OpenApiHttpHandler(HttpHandler next) {
         this.next = next;
+        this.cachedModels = new ConcurrentHashMap<>();
     }
 
     /**
@@ -63,7 +54,7 @@ public class OpenApiHttpHandler implements HttpHandler {
      */
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
-        if (OAI.equalsIgnoreCase(exchange.getRequestPath())) {
+        if (OAI.equalsIgnoreCase(exchange.getRequestPath()) && OpenApiDocument.INSTANCE.isSet()) {
             if (exchange.getRequestMethod().equals(Methods.GET)) {
                 sendOai(exchange);
             } else if (exchange.getRequestMethod().equals(Methods.OPTIONS))  {
@@ -107,7 +98,15 @@ public class OpenApiHttpHandler implements HttpHandler {
     }
 
     private String getCachedOaiString(Format format) {
-        return format == Format.YAML ? OAI_YAML : OAI_JSON;
+        return cachedModels.computeIfAbsent(format, this::getModel);
+    }
+
+    private String getModel(Format format) {
+        try {
+            return OpenApiSerializer.serialize(OpenApiDocument.INSTANCE.get(), format);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to serialize OpenAPI in " + format, e);
+        }
     }
 
     private static void addCorsResponseHeaders(HttpServerExchange exchange) {

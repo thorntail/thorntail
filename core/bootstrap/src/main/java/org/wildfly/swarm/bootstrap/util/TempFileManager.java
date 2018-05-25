@@ -17,10 +17,15 @@ package org.wildfly.swarm.bootstrap.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Bob McWhirter
@@ -62,33 +67,60 @@ public class TempFileManager {
         return tmp;
     }
 
+    public File getExplodedApplicationArtifact() {
+        return explodedApplicationArtifact.get();
+    }
+
+    public void setExplodedApplicationArtifact(File explodedApplicationArtifact) {
+        this.explodedApplicationArtifact.set(explodedApplicationArtifact);
+    }
+
     private void register(File file) {
         this.registered.add(file);
     }
 
-    public void close() {
-        for (File file : registered) {
-            deleteRecursively(file);
-        }
+    public synchronized void close() {
+        registered.forEach(TempFileManager::deleteRecursively);
+        registered.clear();
     }
 
     public static boolean deleteRecursively(File f) {
         if (!f.exists()) {
             return false;
         }
-        if (f.isDirectory()) {
-            File[] children = f.listFiles();
-            for (int i = 0; i < children.length; ++i) {
-                if (!deleteRecursively(children[i])) {
-                    return false;
+
+        try {
+            Files.walkFileTree(f.toPath(), new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                        throws IOException {
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
                 }
-            }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException e)
+                        throws IOException {
+                    if (e == null) {
+                        Files.delete(dir);
+                        return FileVisitResult.CONTINUE;
+                    } else {
+                        // directory iteration failed
+                        throw e;
+                    }
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
 
-        return f.delete();
+        return true;
     }
 
-    private Set<File> registered = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<File> registered = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
+    private final AtomicReference<File> explodedApplicationArtifact = new AtomicReference<>();
 
     private File tmpDir;
 

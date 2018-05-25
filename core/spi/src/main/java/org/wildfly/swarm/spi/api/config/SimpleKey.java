@@ -109,7 +109,7 @@ public class SimpleKey implements ConfigKey {
         if (this == ConfigKey.EMPTY) {
             return System.identityHashCode(this);
         }
-        return this.name.hashCode();
+        return this.name.toLowerCase().hashCode();
     }
 
     @Override
@@ -119,7 +119,7 @@ public class SimpleKey implements ConfigKey {
         }
 
         if (obj instanceof SimpleKey) {
-            return this.name.equals((((SimpleKey) obj).name));
+            return this.name.equalsIgnoreCase((((SimpleKey) obj).name));
         }
 
         return false;

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceException;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.config.RetryConfig;
 
 class RetryContext {
@@ -46,8 +47,28 @@ class RetryContext {
         return config;
     }
 
-    void doRetry() {
+    /**
+     *
+     * @param retryContext
+     * @param throwable
+     * @return an exception to rethrow or null if we should try again
+     */
+    Exception nextRetry(Throwable throwable) {
+        // Decrement the retry count for this attempt
         remainingAttempts.decrementAndGet();
+        // Check the exception type
+        if (shouldRetryOn(throwable, System.nanoTime())) {
+            return delayIfNeeded();
+        } else {
+            if (throwable instanceof Error) {
+                throw (Error) throwable;
+            } else if (throwable instanceof Exception) {
+                return (Exception) throwable;
+            } else {
+                // Business method interceptors may only throw exceptions
+                return new FaultToleranceException(throwable);
+            }
+        }
     }
 
     boolean shouldRetry() {
@@ -58,7 +79,7 @@ class RetryContext {
         return remainingAttempts.get() == 1;
     }
 
-    boolean shouldRetryOn(Exception exception, long time) {
+    boolean shouldRetryOn(Throwable exception, long time) {
         return
         // There are some remaining attempts left
         shouldRetry()
@@ -70,24 +91,33 @@ class RetryContext {
                 && (time - start <= maxDuration);
     }
 
-    private boolean retryOn(Exception exception) {
+    private boolean retryOn(Throwable throwable) {
         Class<?>[] retryOn = config.getRetryOn();
         if (retryOn.length == 0) {
             return false;
         }
-        if (retryOn.length == 1 && retryOn[0].equals(Exception.class)) {
-            // By default, retry on any exception
-            return true;
+        if (retryOn.length == 1) {
+            return retryOn[0].isAssignableFrom(throwable.getClass());
         }
-        return Arrays.stream(retryOn).anyMatch(ex -> ex.isAssignableFrom(exception.getClass()));
+        return Arrays.stream(retryOn).anyMatch(t -> t.isAssignableFrom(throwable.getClass()));
     }
 
-    void delayIfNeeded() throws InterruptedException {
+    /**
+     *
+     * @return an exception to rethrow or null if we should try again
+     */
+    Exception delayIfNeeded() {
         if (delay > 0) {
             long jitterBase = config.getJitter();
             long jitter = (long) (Math.random() * ((jitterBase * 2) + 1)) - jitterBase; // random number between -jitter and +jitter
-            TimeUnit.MILLISECONDS.sleep(delay + Duration.of(jitter, config.getJitterDelayUnit()).toMillis());
+            try {
+                TimeUnit.MILLISECONDS.sleep(delay + Duration.of(jitter, config.getJitterDelayUnit()).toMillis());
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return e;
+            }
         }
+        return null;
     }
 
     @Override

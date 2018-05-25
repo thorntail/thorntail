@@ -35,6 +35,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.HystrixCommandInterceptor;
+import org.wildfly.swarm.microprofile.faulttolerance.deployment.SimpleCommand;
 import org.wildfly.swarm.microprofile.faulttolerance.deployment.TestArchive;
 
 import com.netflix.config.DynamicLongProperty;
@@ -51,7 +52,7 @@ public class SyncCircuitBreakerDisabledTest {
 
     @Deployment
     public static JavaArchive createTestArchive() throws NoSuchMethodException, SecurityException {
-        return TestArchive.createBase("SyncCircuitBreakerDisabledTest.jar")
+        return TestArchive.createBase(SyncCircuitBreakerDisabledTest.class)
                 .addPackage(SyncCircuitBreakerDisabledTest.class.getPackage())
                 .addAsManifestResource(new StringAsset(HystrixCommandInterceptor.SYNC_CIRCUIT_BREAKER_KEY + "=false"), "microprofile-config.properties");
     }
@@ -85,7 +86,7 @@ public class SyncCircuitBreakerDisabledTest {
 
     private String getCommandKey() {
         try {
-            return ShakyServiceClient.class.getDeclaredMethod("ping").toGenericString();
+            return SimpleCommand.getCommandKey(ShakyServiceClient.class.getDeclaredMethod("ping"));
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException();
         }

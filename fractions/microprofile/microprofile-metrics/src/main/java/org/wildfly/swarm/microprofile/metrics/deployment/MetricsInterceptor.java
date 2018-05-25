@@ -102,7 +102,7 @@ import org.jboss.logging.Logger;
             Counted t = counted.metricAnnotation();
             Metadata metadata = getMetadata(counted.metricName(), t.unit(),t.description(),t.displayName(), MetricType.COUNTER, t.tags());
 
-            registry.counter(counted.metricName());
+            registry.counter(metadata);
         }
 
 

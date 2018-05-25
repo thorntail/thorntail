@@ -15,11 +15,11 @@
  */
 package org.wildfly.swarm.jaxrs;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.File;
 import java.net.URL;
-import java.net.URLConnection;
+import java.nio.charset.Charset;
 
+import org.apache.commons.io.IOUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -38,12 +38,16 @@ public class ArqJAXRSExceptionMapperTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() throws Exception {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("project-test-defaults-path.yml");
+        assertThat(url).isNotNull();
+        File projectDefaults = new File(url.toURI());
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
         deployment.addClass(JsonProcessingExceptionMapper.class);
         deployment.addClass(CustomExceptionMapper.class);
         deployment.addClass(CustomException.class);
         deployment.addResource(JsonParsingExceptionResource.class);
         deployment.addResource(CustomExceptionResource.class);
+        deployment.addAsResource(projectDefaults, "/project-defaults.yml");
         deployment.addAllDependencies();
         return deployment;
     }
@@ -51,39 +55,15 @@ public class ArqJAXRSExceptionMapperTest {
     @Test
     @RunAsClient
     public void testCustom() throws Exception {
-        String content = getUrlContents("http://localhost:8080/custom/throw");
-        assertThat( content ).contains( "mapped custom: Custom exception" );
+        String content = IOUtils.toString(new URL("http://localhost:8080/custom/throw"), Charset.forName("UTF-8"));
+        assertThat(content).contains("mapped custom: Custom exception");
     }
 
     @Test
     @RunAsClient
     public void testJson() throws Exception {
-        String content = getUrlContents("http://localhost:8080/json/throw");
-        assertThat( content ).contains( "mapped json: that didn't work" );
+        String content = IOUtils.toString(new URL("http://localhost:8080/json/throw"), Charset.forName("UTF-8"));
+        assertThat(content).contains("mapped json: that didn't work");
     }
-
-    static String getUrlContents(String theUrl) {
-        StringBuilder content = new StringBuilder();
-
-        try {
-            URL url = new URL(theUrl);
-            URLConnection urlConnection = url.openConnection();
-            BufferedReader bufferedReader = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream())
-            );
-
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                content.append(line + "\n");
-            }
-            bufferedReader.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return content.toString();
-    }
-
 
 }

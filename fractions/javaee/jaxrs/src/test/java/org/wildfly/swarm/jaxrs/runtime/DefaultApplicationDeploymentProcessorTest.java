@@ -39,10 +39,10 @@ public class DefaultApplicationDeploymentProcessorTest {
     private static final String PATH = "WEB-INF/classes/org/wildfly/swarm/generated/WildFlySwarmDefaultJAXRSApplication.class";
 
     @Test
-    public void testApplicationPathAnnotation_None() throws Exception {
-        JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class);
+    public void testApplicationPathAnnotation_SpecifiedInProjectDefaults() throws Exception {
+        JAXRSArchive archive = ShrinkWrap.create(JAXRSArchive.class, "app.war");
         DefaultApplicationDeploymentProcessor processor = new DefaultApplicationDeploymentProcessor(archive);
-
+        processor.applicationPath.set("/api-test"); // Simulate the behavior of loading the project defaults.
         processor.process();
 
         Node generated = archive.get(PATH);
@@ -121,6 +121,7 @@ public class DefaultApplicationDeploymentProcessorTest {
         archive.addClass(MyResource.class);
         archive.setWebXML(new StringAsset("<web-app><display-name>Foo</display-name></web-app>"));
         DefaultApplicationDeploymentProcessor processor = new DefaultApplicationDeploymentProcessor(archive);
+        processor.applicationPath.set("/api-test"); // Simulate the behavior of loading the project defaults.
 
         processor.process();
 
@@ -134,6 +135,7 @@ public class DefaultApplicationDeploymentProcessorTest {
         archive.addClass(MyResource.class);
         archive.setWebXML(new StringAsset("blablabla"));
         DefaultApplicationDeploymentProcessor processor = new DefaultApplicationDeploymentProcessor(archive);
+        processor.applicationPath.set("/api-test"); // Simulate the behavior of loading the project defaults.
 
         processor.process();
 

@@ -1,6 +1,6 @@
 = Elytron configuration 
 
-Elytron by default will generate an audit log to the same directory that a WildFly Swarm application is run. 
+Elytron by default will generate an audit log to the same directory that a {Thorntail} application is run. 
 However, in some environments (e.g., cloud), it may be necessary to relocate the audit file to a globally writable directory.
 
 Specify the following in your project-defaults.yml:

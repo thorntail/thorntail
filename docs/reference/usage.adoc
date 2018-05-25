@@ -1,6 +1,6 @@
 = The `usage.txt` file
 
-Each WildFly Swarm application can contain a text file with usage instructions at one of the following locations:
+Each {Thorntail} application can contain a text file with usage instructions at one of the following locations:
 
 * `/usage.txt`
 * `/META-INF/usage.txt`

@@ -95,7 +95,7 @@ public class JsonExporter implements Exporter {
                 case TIMER:
                     TimerImpl timer = (TimerImpl) value;
                     writeStartLine(sb, key);
-                    writeTimerValues(sb, timer);
+                    writeTimerValues(sb, timer, metadata.getUnit());
                     writeEndLine(sb);
                     break;
                 case HISTOGRAM:
@@ -132,8 +132,8 @@ public class JsonExporter implements Exporter {
         sb.append("    \"fifteenMinRate\": ").append(meter.getFifteenMinuteRate()).append(LF);
     }
 
-    private void writeTimerValues(StringBuilder sb, TimerImpl timer) {
-        writeSnapshotValues(sb, timer.getSnapshot());
+    private void writeTimerValues(StringBuilder sb, TimerImpl timer, String unit) {
+        writeSnapshotValues(sb, timer.getSnapshot(), unit);
         // Backup and write COMMA_LF
         sb.setLength(sb.length() - 1);
         sb.append(COMMA_LF);
@@ -155,11 +155,28 @@ public class JsonExporter implements Exporter {
 
     }
 
+    private void writeSnapshotValues(StringBuilder sb, Snapshot snapshot, String unit) {
+        sb.append("    \"p50\": ").append(toBase(snapshot.getMedian(), unit)).append(COMMA_LF);
+        sb.append("    \"p75\": ").append(toBase(snapshot.get75thPercentile(), unit)).append(COMMA_LF);
+        sb.append("    \"p95\": ").append(toBase(snapshot.get95thPercentile(), unit)).append(COMMA_LF);
+        sb.append("    \"p98\": ").append(toBase(snapshot.get98thPercentile(), unit)).append(COMMA_LF);
+        sb.append("    \"p99\": ").append(toBase(snapshot.get99thPercentile(), unit)).append(COMMA_LF);
+        sb.append("    \"p999\": ").append(toBase(snapshot.get999thPercentile(), unit)).append(COMMA_LF);
+        sb.append("    \"min\": ").append(toBase(snapshot.getMin(), unit)).append(COMMA_LF);
+        sb.append("    \"mean\": ").append(toBase(snapshot.getMean(), unit)).append(COMMA_LF);
+        sb.append("    \"max\": ").append(toBase(snapshot.getMax(), unit)).append(COMMA_LF);
+        // Can't be COMMA_LF has there may not be anything following as is the case for a Histogram
+        sb.append("    \"stddev\": ").append(toBase(snapshot.getStdDev(), unit)).append(LF);
+
+    }
+
+    private Number toBase(Number count, String unit) {
+        return ExporterUtil.convertNanosTo(count.doubleValue(), unit);
+    }
 
     private Number getValueFromMetric(Metric theMetric, String name) {
         if (theMetric instanceof Gauge) {
             Number value = (Number) ((Gauge) theMetric).getValue();
-            double v;
             if (value != null) {
                 return value;
             } else {

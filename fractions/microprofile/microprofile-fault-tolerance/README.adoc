@@ -1,16 +1,13 @@
+
 = Microprofile Fault Tolerance Fraction
 :icons: font
 
 This fraction implements the https://github.com/eclipse/microprofile-fault-tolerance[Eclipse Microprofile Fault tolerance API^].
+The implementation depends on the xref:_hystrix[Hystrix fraction], which is added transitively into your application.
+Use xref:configuring-a-wildfly-swarm-application[standard configuration mechanisms] to configure Hystrix properties in your application.
 
-To use this in your project you need the following in your pom.xml
+== Bulkhead fallback rejection
 
-[source,xml]
-----
-   <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>microprofile-fault-tolerance</artifactId>
-    </dependency>
-----
+If you use the semaphore-style `@Bulkhead` pattern with a `@Fallback` logic to limit the number of concurrent requests, the invocation may still result in a `BulkheadException` if the maximum concurrent limit for the `HystrixCommand.getFallback()` method is reached.
+To avoid that, set the `swarm.hystrix.command.default.fallback.isolation.semaphore.maxConcurrentRequests` property to increase the limit.
 
-There is no need to include the MicroProfile Fault Tolerance API dependency, as it comes with the fraction.
