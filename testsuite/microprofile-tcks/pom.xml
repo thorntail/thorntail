@@ -184,6 +184,12 @@
             <scope>test</scope>
          </dependency>
 
+         <dependency>
+            <groupId>org.eclipse.microprofile.opentracing</groupId>
+            <artifactId>microprofile-opentracing-tck</artifactId>
+            <version>${version.microprofile-opentracing}</version>
+            <scope>test</scope>
+         </dependency>
       </dependencies>
    </dependencyManagement>
 

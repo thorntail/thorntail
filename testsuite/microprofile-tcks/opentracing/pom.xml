@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.thorntail.testsuite</groupId>
+    <artifactId>thorntail-microprofile-tck-parent</artifactId>
+    <version>2.0.0.Final-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
+
+  <artifactId>thorntail-microprofile-tck-opentracing</artifactId>
+  <name>MicroProfile TCK: OpenTracing</name>
+
+  <properties>
+    <version.resteasy>3.0.24.Final</version.resteasy>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>microprofile-opentracing</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>arquillian</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>spi</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- TODO fix dependency issue
+      java.lang.ClassNotFoundException: org.apache.http.params.HttpParams
+      at org.eclipse.microprofile.opentracing.tck.OpentracingClientTests.clearTracer
+      (OpentracingClientTests.java:1075)
+    -->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.5.2</version>
+    </dependency>
+
+    <!-- TCK uses MockTracer configured by the container -->
+    <dependency>
+      <groupId>io.opentracing</groupId>
+      <artifactId>opentracing-mock</artifactId>
+      <version>${version.opentracing}</version>
+    </dependency>
+
+    <!-- from MP repo -->
+    <dependency>
+      <groupId>org.eclipse.microprofile.opentracing</groupId>
+      <artifactId>microprofile-opentracing-api</artifactId>
+      <version>${version.microprofile-opentracing}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.opentracing</groupId>
+      <artifactId>microprofile-opentracing-tck</artifactId>
+      <version>${version.microprofile-opentracing}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.9.9</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
+      <version>${version.resteasy}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson-provider</artifactId>
+      <version>${version.resteasy}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- TODO otherwise it produces:
+    java.lang.ClassNotFoundException: org.codehaus.jackson.jaxrs.JacksonJsonProvider
+    -->
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-jaxrs</artifactId>
+      <version>1.9.13</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-xc</artifactId>
+      <version>1.9.13</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+      <version>2.2.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <version>2.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <version>2.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap</groupId>
+      <artifactId>shrinkwrap-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>src/test/tck-suite.xml</suiteXmlFile>
+          </suiteXmlFiles>
+          <dependenciesToScan>
+            <dependency>org.eclipse.microprofile.opentracing:microprofile-opentracing-tck</dependency>
+          </dependenciesToScan>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>thorntail-enforcer-pattern-size</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -765,6 +765,12 @@
 
       <dependency>
         <groupId>io.thorntail</groupId>
+        <artifactId>microprofile-opentracing</artifactId>
+        <version>2.0.0.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.thorntail</groupId>
         <artifactId>mod_cluster</artifactId>
         <version>2.0.0.Final-SNAPSHOT</version>
       </dependency>
@@ -1049,6 +1055,7 @@
     <module>fractions/microprofile/microprofile-metrics</module>
     <module>fractions/microprofile/microprofile-openapi</module>
     <module>fractions/microprofile/microprofile-fault-tolerance</module>
+    <module>fractions/microprofile/microprofile-opentracing</module>
     <module>fractions/microprofile/microprofile</module>
     <module>fractions/monitor</module>
     <module>fractions/topology</module>
@@ -1401,6 +1408,7 @@
         <module>testsuite/microprofile-tcks/fault-tolerance</module>
         <module>testsuite/microprofile-tcks/restclient</module>
         <module>testsuite/microprofile-tcks/openapi</module>
+        <module>testsuite/microprofile-tcks/opentracing</module>
       </modules>
     </profile>
 
