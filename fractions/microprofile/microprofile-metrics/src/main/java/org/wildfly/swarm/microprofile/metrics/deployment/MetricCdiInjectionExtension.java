@@ -17,12 +17,9 @@
  */
 package org.wildfly.swarm.microprofile.metrics.deployment;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
@@ -30,7 +27,6 @@ import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -41,9 +37,7 @@ import javax.enterprise.inject.spi.ProcessProducerField;
 import javax.enterprise.inject.spi.ProcessProducerMethod;
 import javax.enterprise.inject.spi.WithAnnotations;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.enterprise.util.Nonbinding;
 import javax.inject.Inject;
-import javax.interceptor.InterceptorBinding;
 
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
@@ -60,10 +54,6 @@ public class MetricCdiInjectionExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
 
-    private static final AnnotationLiteral<InterceptorBinding> INTERCEPTOR_BINDING = new AnnotationLiteral<InterceptorBinding>() {
-    };
-    private static final AnnotationLiteral<Nonbinding> NON_BINDING = new AnnotationLiteral<Nonbinding>() {
-    };
     private static final AnnotationLiteral<MetricsBinding> METRICS_BINDING = new AnnotationLiteral<MetricsBinding>() {
     };
 
@@ -76,20 +66,14 @@ public class MetricCdiInjectionExtension implements Extension {
     MetricRegistry registry;
 
     public MetricCdiInjectionExtension() {
-        LOGGER.infof("MetricCdiInjectionExtension");
+        LOGGER.debug("MetricCdiInjectionExtension");
     }
-
 
     private void addInterceptorBindings(@Observes BeforeBeanDiscovery bbd, BeanManager manager) {
         LOGGER.info("MicroProfile: Metrics activated");
 
-        declareAsInterceptorBinding(Counted.class, manager, bbd);
-        declareAsInterceptorBinding(Gauge.class, manager, bbd);
-        declareAsInterceptorBinding(Timed.class, manager, bbd);
-        declareAsInterceptorBinding(Metered.class, manager, bbd);
-
         // It seems that fraction deployment module cannot be picked up as a CDI bean archive - see also SWARM-1725
-        bbd.addAnnotatedType(manager.createAnnotatedType(AMetricRegistryFactory.class));
+        bbd.addAnnotatedType(manager.createAnnotatedType(MetricProducer.class));
         bbd.addAnnotatedType(manager.createAnnotatedType(MetricNameFactory.class));
 
         bbd.addAnnotatedType(manager.createAnnotatedType(MeteredInterceptor.class));
@@ -111,7 +95,7 @@ public class MetricCdiInjectionExtension implements Extension {
     }
 
     private void metricProducerMethod(@Observes ProcessProducerMethod<? extends Metric, ?> ppm) {
-        if (!ppm.getBean().getBeanClass().equals(AMetricRegistryFactory.class)) {
+        if (!ppm.getBean().getBeanClass().equals(MetricProducer.class)) {
             LOGGER.infof("Metrics producer method discovered: %s", ppm.getAnnotatedProducerMethod());
             metrics.put(ppm.getBean(), ppm.getAnnotatedProducerMethod());
         }
@@ -136,15 +120,6 @@ public class MetricCdiInjectionExtension implements Extension {
 
         // Let's clear the collected metric producers
         metrics.clear();
-    }
-
-    private static <T extends Annotation> void declareAsInterceptorBinding(Class<T> annotation, BeanManager manager, BeforeBeanDiscovery bbd) {
-        AnnotatedType<T> annotated = manager.createAnnotatedType(annotation);
-        Set<AnnotatedMethod<? super T>> methods = new HashSet<>();
-        for (AnnotatedMethod<? super T> method : annotated.getMethods()) {
-            methods.add(new AnnotatedMethodDecorator<>(method, NON_BINDING));
-        }
-        bbd.addInterceptorBinding(new AnnotatedTypeDecorator<>(annotated, INTERCEPTOR_BINDING, methods));
     }
 
     private static boolean hasInjectionPointMetadata(AnnotatedMember<?> member) {
