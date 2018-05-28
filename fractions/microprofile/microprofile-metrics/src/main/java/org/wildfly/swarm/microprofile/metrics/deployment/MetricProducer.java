@@ -45,7 +45,7 @@ import org.wildfly.swarm.microprofile.metrics.api.RegistryFactory;
  * @author hrupp
  */
 @ApplicationScoped
-public class AMetricRegistryFactory {
+public class MetricProducer {
 
     @Inject
     private MetricName metricName;
@@ -58,14 +58,14 @@ public class AMetricRegistryFactory {
     }
 
     @Default
-    @Produces
     @RegistryType(type = MetricRegistry.Type.APPLICATION)
-    public MetricRegistry getApplicationRegistry() {
+    @Produces
+    MetricRegistry getApplicationRegistry() {
         return get(MetricRegistry.Type.APPLICATION);
     }
 
     @Produces
-    private <T> Gauge<T> gauge(InjectionPoint ip) {
+    <T> Gauge<T> getGauge(InjectionPoint ip) {
         // A forwarding Gauge must be returned as the Gauge creation happens when the declaring bean gets instantiated and the corresponding Gauge can be injected before which leads to producing a null value
         return new Gauge<T>() {
             @Override
@@ -78,22 +78,22 @@ public class AMetricRegistryFactory {
     }
 
     @Produces
-    public Counter getCounter(InjectionPoint ip) {
+    Counter getCounter(InjectionPoint ip) {
         return getApplicationRegistry().counter(getMetadata(ip, MetricType.COUNTER));
     }
 
     @Produces
-    public Histogram getHistogram(InjectionPoint ip) {
+    Histogram getHistogram(InjectionPoint ip) {
         return getApplicationRegistry().histogram(getMetadata(ip, MetricType.HISTOGRAM));
     }
 
     @Produces
-    public Meter getMeter(InjectionPoint ip) {
+    Meter getMeter(InjectionPoint ip) {
         return getApplicationRegistry().meter(getMetadata(ip, MetricType.METERED));
     }
 
     @Produces
-    public Timer getTimer(InjectionPoint ip) {
+    Timer getTimer(InjectionPoint ip) {
         return getApplicationRegistry().timer(getMetadata(ip, MetricType.TIMER));
     }
 
