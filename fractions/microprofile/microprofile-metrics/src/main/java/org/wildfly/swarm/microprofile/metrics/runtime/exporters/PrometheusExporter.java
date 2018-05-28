@@ -33,7 +33,7 @@ import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Snapshot;
 import org.jboss.logging.Logger;
-import org.wildfly.swarm.microprofile.metrics.runtime.MetricRegistryFactory;
+import org.wildfly.swarm.microprofile.metrics.runtime.MetricRegistries;
 import org.wildfly.swarm.microprofile.metrics.runtime.Tag;
 import org.wildfly.swarm.microprofile.metrics.runtime.app.HistogramImpl;
 import org.wildfly.swarm.microprofile.metrics.runtime.app.MeterImpl;
@@ -88,7 +88,7 @@ public class PrometheusExporter implements Exporter {
 
     @Override
     public StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName) {
-        MetricRegistry registry = MetricRegistryFactory.get(scope);
+        MetricRegistry registry = MetricRegistries.get(scope);
         Map<String, Metric> metricMap = registry.getMetrics();
 
         Metric m = metricMap.get(metricName);
@@ -108,7 +108,7 @@ public class PrometheusExporter implements Exporter {
     }
 
     private void getEntriesForScope(MetricRegistry.Type scope, StringBuilder sb) {
-        MetricRegistry registry = MetricRegistryFactory.get(scope);
+        MetricRegistry registry = MetricRegistries.get(scope);
         Map<String, Metric> metricMap = registry.getMetrics();
 
         exposeEntries(scope, sb, registry, metricMap);

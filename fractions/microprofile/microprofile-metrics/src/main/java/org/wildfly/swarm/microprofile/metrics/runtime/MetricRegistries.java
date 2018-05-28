@@ -16,52 +16,34 @@
  */
 package org.wildfly.swarm.microprofile.metrics.runtime;
 
-import org.eclipse.microprofile.metrics.MetricRegistry;
-
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.eclipse.microprofile.metrics.MetricRegistry;
 
 /**
  * @author hrupp
  */
-public class MetricRegistryFactory {
+public final class MetricRegistries {
 
-    private static final Map<MetricRegistry.Type, MetricRegistry> registries = new HashMap<>();
+    private static final Map<MetricRegistry.Type, MetricRegistry> REGISTRIES = new ConcurrentHashMap<>();
 
-    private MetricRegistryFactory() { /* Singleton */ }
+    private MetricRegistries() {
+    }
 
-    //  @Produces
-//  @Default
-//  @RegistryType(type = MetricRegistry.Type.APPLICATION)
-//  @ApplicationScoped
     public static MetricRegistry getApplicationRegistry() {
         return get(MetricRegistry.Type.APPLICATION);
     }
 
-    //  @Produces
-//  @ApplicationScoped
-//  @RegistryType(type = MetricRegistry.Type.BASE)
     public static MetricRegistry getBaseRegistry() {
         return get(MetricRegistry.Type.BASE);
     }
 
-    //  @Produces
-//  @ApplicationScoped
-//  @RegistryType(type = MetricRegistry.Type.VENDOR)
     public static MetricRegistry getVendorRegistry() {
         return get(MetricRegistry.Type.VENDOR);
     }
 
     public static MetricRegistry get(MetricRegistry.Type type) {
-
-        synchronized (registries) {
-            if (registries.get(type) == null) {
-
-                MetricRegistry result = new MetricsRegistryImpl();
-                registries.put(type, result);
-            }
-        }
-
-        return registries.get(type);
+        return REGISTRIES.computeIfAbsent(type, (t) -> new MetricsRegistryImpl());
     }
 }

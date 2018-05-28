@@ -25,6 +25,6 @@ import org.wildfly.swarm.microprofile.metrics.api.RegistryFactory;
 public class RegistryFactoryImpl implements RegistryFactory {
     @Override
     public MetricRegistry get(MetricRegistry.Type type) {
-        return MetricRegistryFactory.get(type);
+        return MetricRegistries.get(type);
     }
 }

@@ -56,7 +56,7 @@ public class JmxWorker {
 
     public Map<String, Double> getMetrics(MetricRegistry.Type scope) {
 
-        Map<String, Metadata> metadataMap = MetricRegistryFactory.get(scope).getMetadata();
+        Map<String, Metadata> metadataMap = MetricRegistries.get(scope).getMetadata();
         Map<String, Double> outcome = new HashMap<>();
 
         for (Metadata m : metadataMap.values()) {
