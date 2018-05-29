@@ -64,6 +64,18 @@ public class MetricProducer {
         return get(MetricRegistry.Type.APPLICATION);
     }
 
+    @RegistryType(type = MetricRegistry.Type.BASE)
+    @Produces
+    MetricRegistry getBaseRegistry() {
+        return get(MetricRegistry.Type.BASE);
+    }
+
+    @RegistryType(type = MetricRegistry.Type.VENDOR)
+    @Produces
+    MetricRegistry getVendorRegistry() {
+        return get(MetricRegistry.Type.VENDOR);
+    }
+
     @Produces
     <T> Gauge<T> getGauge(InjectionPoint ip) {
         // A forwarding Gauge must be returned as the Gauge creation happens when the declaring bean gets instantiated and the corresponding Gauge can be injected before which leads to producing a null value

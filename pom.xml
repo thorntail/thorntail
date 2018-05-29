@@ -1236,7 +1236,7 @@
         <module>testsuite/testsuite-jsf</module>
         <module>testsuite/testsuite-jsp</module>
         <module>testsuite/testsuite-microprofile-jwt</module>
-        <module>testsuite/testsuite-microprofile-restclient</module>
+        <module>testsuite/testsuite-microprofile-metrics</module>
         <module>testsuite/testsuite-keycloak</module>
         <module>testsuite/testsuite-local-dependencies</module>
         <module>testsuite/testsuite-logging</module>
@@ -1305,8 +1305,8 @@
         <module>testsuite/testsuite-management-console</module>
         <module>testsuite/testsuite-messaging</module>
         <module>testsuite/testsuite-messaging-remote</module>
-        <module>testsuite/testsuite-microprofile-jwt</module>
         <module>testsuite/testsuite-microprofile-openapi</module>
+        <module>testsuite/testsuite-microprofile-restclient</module>
         <module>testsuite/testsuite-mod_cluster</module>
         <module>testsuite/testsuite-mvc</module>
         <module>testsuite/testsuite-opentracing</module>

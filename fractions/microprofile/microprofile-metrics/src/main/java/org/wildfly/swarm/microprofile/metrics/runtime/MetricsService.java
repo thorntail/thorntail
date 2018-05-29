@@ -79,12 +79,12 @@ public class MetricsService implements Service<MetricsService> {
             for (ExtendedMetadata em : ml.getBase()) {
                 em.processTags(globalTags);
                 Metric type = getType(em);
-                MetricRegistryFactory.getBaseRegistry().register(em, type);
+                MetricRegistries.getBaseRegistry().register(em, type);
             }
             for (ExtendedMetadata em : ml.getVendor()) {
                 em.processTags(globalTags);
                 Metric type = getType(em);
-                MetricRegistryFactory.getVendorRegistry().register(em, type);
+                MetricRegistries.getVendorRegistry().register(em, type);
             }
         } else {
             throw new IllegalStateException("Was not able to find the mapping file 'mapping.yml'");

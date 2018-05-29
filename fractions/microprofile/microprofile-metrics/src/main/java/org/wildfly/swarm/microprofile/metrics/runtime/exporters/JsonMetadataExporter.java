@@ -19,7 +19,7 @@ package org.wildfly.swarm.microprofile.metrics.runtime.exporters;
 
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.wildfly.swarm.microprofile.metrics.runtime.MetricRegistryFactory;
+import org.wildfly.swarm.microprofile.metrics.runtime.MetricRegistries;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,7 +44,7 @@ public class JsonMetadataExporter implements Exporter {
     }
 
     private void getDataForOneScope(MetricRegistry.Type scope, StringBuilder sb) {
-        MetricRegistry registry = MetricRegistryFactory.get(scope);
+        MetricRegistry registry = MetricRegistries.get(scope);
         Map<String, Metadata> theMetadata = registry.getMetadata();
 
         sb.append("{");
@@ -101,7 +101,7 @@ public class JsonMetadataExporter implements Exporter {
         int scopes = 0;
         for (int i = 0; i < values.length; i++) {
             MetricRegistry.Type scope = values[i];
-            MetricRegistry registry = MetricRegistryFactory.get(scope);
+            MetricRegistry registry = MetricRegistries.get(scope);
 
             if (registry.getNames().size() > 0) {
                 sb.append('"').append(scope.getName().toLowerCase()).append('"').append(" :\n");
@@ -121,7 +121,7 @@ public class JsonMetadataExporter implements Exporter {
 
     @Override
     public StringBuilder exportOneMetric(MetricRegistry.Type scope, String metricName) {
-        MetricRegistry registry = MetricRegistryFactory.get(scope);
+        MetricRegistry registry = MetricRegistries.get(scope);
         Map<String, Metadata> metadataMap = registry.getMetadata();
 
         Metadata m = metadataMap.get(metricName);

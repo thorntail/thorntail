@@ -18,7 +18,7 @@
 package org.wildfly.swarm.microprofile.metrics.runtime.exporters;
 
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.wildfly.swarm.microprofile.metrics.runtime.MetricRegistryFactory;
+import org.wildfly.swarm.microprofile.metrics.runtime.MetricRegistries;
 
 /**
  * @author hrupp
@@ -32,7 +32,7 @@ class Helper {
         MetricRegistry.Type[] values = MetricRegistry.Type.values();
         int totalNonEmptyScopes = 0;
         for (MetricRegistry.Type scope : values) {
-            MetricRegistry registry = MetricRegistryFactory.get(scope);
+            MetricRegistry registry = MetricRegistries.get(scope);
             if (registry.getNames().size() > 0) {
                 totalNonEmptyScopes++;
             }

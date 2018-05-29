@@ -100,7 +100,7 @@ public class MetricsHttpHandler implements HttpHandler {
                 return;
             }
 
-            MetricRegistry registry = MetricRegistryFactory.get(scope);
+            MetricRegistry registry = MetricRegistries.get(scope);
             Map<String, Metric> metricValuesMap = registry.getMetrics();
 
             if (metricValuesMap.containsKey(attribute)) {
@@ -120,7 +120,7 @@ public class MetricsHttpHandler implements HttpHandler {
                 return;
             }
 
-            MetricRegistry reg = MetricRegistryFactory.get(scope);
+            MetricRegistry reg = MetricRegistries.get(scope);
             if (reg.getMetadata().size() == 0) {
                 exchange.setStatusCode(204);
                 exchange.setReasonPhrase("No data in scope " + scopePath);
