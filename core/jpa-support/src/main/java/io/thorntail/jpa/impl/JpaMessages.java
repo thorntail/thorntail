@@ -34,4 +34,7 @@ public interface JpaMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 11 + JPA_OFFSET, value = "initializing persistence contexts")
     void persistencecontextInitialization();
+
+    @Message(id = 12 + JPA_OFFSET, value = "%s when attempting to wrap EntityManager with FullTextEntityManager")
+    RuntimeException errorWrappingEntityManagerForSearch(Exception e);
 }

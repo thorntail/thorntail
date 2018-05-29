@@ -572,6 +572,11 @@
       </dependency>
       <dependency>
         <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-hibernate-search</artifactId>
+        <version>4.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.thorntail</groupId>
         <artifactId>thorntail-ogm</artifactId>
         <version>4.0.0-SNAPSHOT</version>
       </dependency>

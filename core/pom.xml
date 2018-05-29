@@ -106,6 +106,7 @@
     <module>bean-validation</module>
     <module>datasources</module>
     <module>health</module>
+    <module>hibernate-search</module>
     <module>jaxrs</module>
     <module>jca</module>
     <module>jdbc</module>

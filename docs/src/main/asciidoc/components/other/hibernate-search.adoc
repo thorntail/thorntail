@@ -1,0 +1,69 @@
+[#component-hibernate-search]
+= Hibernate Search
+
+Support for Hibernate Search. By including Thorntail's hibernate-search module, all `EntityManager` injected with `@PersistenceContext` will be instances of `FullTextEntityManager`.
+
+[source,java]
+----
+@PersistenceContext
+EntityManager em;
+
+public void performAction() {
+	FullTextEntityManager searchEntityManager = (FullTextEntityManager)em;
+	...
+----
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-hibernate-search</artifactId>
+</dependency>
+----
+
+.CDI Helpers
+
+* FullTextEntityManager
+* QueryBuilder
+
+`FullTextEntityManager` can be injected with or without the `@EntityManagerContext` annotation, which is used optionally to specify a specific persistence unit.
+
+[source,java]
+----
+import org.hibernate.search.jpa.FullTextEntityManager;
+import io.thorntail.hibernate_search.EntityManagerContext;
+
+...
+
+@Inject
+FullTextEntityManager em;
+
+@Inject
+@EntityManagerContext("MyAppPU")
+FullTextEntityManager em;
+----
+
+Likewise, an instance of `QueryBuilder` can also be injected. Injection of `QueryBuilder` requires the use of the `@QueryBuilderContext` annotation which accepts the class of the Entity for which the `QueryBuilder` functions. It can also be used to specify the persistence unit for projects that require this functionality.
+
+[source,java]
+----
+import org.hibernate.search.query.dsl.QueryBuilder;
+import io.thorntail.hibernate_search.QueryBuilderContext;
+
+...
+
+@Inject
+@QueryBuilderContext(Employee.class)
+QueryBuilder employeeQb;
+
+@Inject
+@QueryBuilderContext(value = Employee.class, persistenceUnit = "MyAppPU")
+QueryBuilder employeeQb;
+----
+
+.Related Information
+
+* xref:component-jpa-support[]
+* https://docs.jboss.org/hibernate/search/5.9/reference/en-US/html_single/[Hibernate Search 5.9 Documentation]
