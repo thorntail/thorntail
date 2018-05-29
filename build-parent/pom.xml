@@ -26,15 +26,15 @@
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
-    <version.wildfly.config-api>1.3.1</version.wildfly.config-api>
+    <version.wildfly.config-api>1.4.0</version.wildfly.config-api>
 
-    <version.keycloak.config-api>1.3.1.Final</version.keycloak.config-api>
-    <version.teiid.config-api>1.1.2.Final</version.teiid.config-api>
+    <version.keycloak.config-api>1.4.0</version.keycloak.config-api>
+    <version.teiid.config-api>1.2.0.Final</version.teiid.config-api>
     <version.keycloak>3.4.0.Final</version.keycloak>
-    <version.mongo.config-api>1.2.4</version.mongo.config-api>
-    <version.cassandra.config-api>1.2.4</version.cassandra.config-api>
-    <version.neo4j.config-api>1.2.4</version.neo4j.config-api>
-    <version.orientdb.config-api>1.2.4</version.orientdb.config-api>
+    <version.mongo.config-api>1.3.0</version.mongo.config-api>
+    <version.cassandra.config-api>1.3.0</version.cassandra.config-api>
+    <version.neo4j.config-api>1.3.0</version.neo4j.config-api>
+    <version.orientdb.config-api>1.3.0</version.orientdb.config-api>
     <version.wildfly.nosql.feature-pack>1.0.0.Alpha6</version.wildfly.nosql.feature-pack>
 
     <version.wildfly>11.0.0.Final</version.wildfly>
@@ -233,32 +233,32 @@
       </dependency>
 
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>config-api</artifactId>
         <version>${version.wildfly.config-api}</version>
       </dependency>
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>config-api-runtime</artifactId>
         <version>${version.wildfly.config-api}</version>
       </dependency>
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>mongo-config-api</artifactId>
         <version>${version.mongo.config-api}</version>
       </dependency>
      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>cassandra-config-api</artifactId>
         <version>${version.cassandra.config-api}</version>
       </dependency>
      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>neo4j-config-api</artifactId>
         <version>${version.neo4j.config-api}</version>
       </dependency>
      <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>orientdb-config-api</artifactId>
         <version>${version.orientdb.config-api}</version>
       </dependency>
@@ -313,7 +313,7 @@
       </dependency>
 
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>keycloak-client-config-api</artifactId>
         <version>${version.keycloak.config-api}</version>
       </dependency>
@@ -336,7 +336,7 @@
       </dependency>
 
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>keycloak-server-config-api</artifactId>
         <version>${version.keycloak.config-api}</version>
       </dependency>
@@ -674,7 +674,7 @@
           </dependency>
 
           <dependency>
-            <groupId>org.wildfly.swarm</groupId>
+            <groupId>io.thorntail</groupId>
             <artifactId>teiid-config-api</artifactId>
             <version>${version.teiid.config-api}</version>
           </dependency>
