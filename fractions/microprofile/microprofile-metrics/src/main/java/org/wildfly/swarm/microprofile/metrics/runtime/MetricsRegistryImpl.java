@@ -185,8 +185,8 @@ public class MetricsRegistryImpl extends MetricRegistry {
             LOGGER.infof("Register metric [name: %s, type: %s]", name, type);
             register(metadata, m);
         } else if (!metadataMap.get(name).getTypeRaw().equals(metadata.getTypeRaw())) {
-            throw new IllegalArgumentException("Type of existing previously registered metric " + name + " does not " +
-                                                "match passed type");
+            throw new IllegalArgumentException("Previously registered metric " + name + " is of type "
+                    + metadataMap.get(name).getType() + ", expected " + metadata.getType());
         }
 
         return (T) metricMap.get(name);
@@ -286,13 +286,14 @@ public class MetricsRegistryImpl extends MetricRegistry {
     }
 
     private <T extends Metric> SortedMap<String, T> getMetrics(MetricType type, MetricFilter filter) {
-        SortedMap<String, T> out = new TreeMap<String, T>();
+        SortedMap<String, T> out = new TreeMap<>();
 
-        Iterator<Map.Entry<String, Metric>> iterator = metricMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Metric> entry = iterator.next();
-            if (filter.matches(entry.getKey(), entry.getValue())) {
-                out.put(entry.getKey(), (T) entry.getValue());
+        for (Map.Entry<String, Metric> entry : metricMap.entrySet()) {
+            Metadata metadata = metadataMap.get(entry.getKey());
+            if (metadata.getTypeRaw() == type) {
+                if (filter.matches(entry.getKey(), entry.getValue())) {
+                    out.put(entry.getKey(), (T) entry.getValue());
+                }
             }
         }
 

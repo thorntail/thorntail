@@ -17,7 +17,9 @@ package org.wildfly.swarm.microprofile.metrics;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 
 @ApplicationScoped
 public class HelloService {
@@ -25,5 +27,10 @@ public class HelloService {
     @Counted(monotonic = true, name = "hello-count", absolute = true, displayName = "Hello Count", description = "Number of hello invocations")
     public String hello() {
         return "Hello from counted method";
+    }
+
+    @Timed(unit = MetricUnits.MILLISECONDS, name = "howdy-time", absolute = true, displayName = "Howdy Time", description = "Time of howdy invocations")
+    public String howdy() {
+        return "Howdy from timed method";
     }
 }
