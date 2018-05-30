@@ -69,7 +69,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>config-api-runtime</artifactId>
       <scope>provided</scope>
     </dependency>

@@ -102,7 +102,7 @@
       <artifactId>bootstrap</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>config-api</artifactId>
     </dependency>
     <dependency>

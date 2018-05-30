@@ -138,7 +138,7 @@
       <version>${version.neo4j.driver}</version>
     </dependency>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>neo4j-config-api</artifactId>
     </dependency>
     <!-- Provided APIs -->
