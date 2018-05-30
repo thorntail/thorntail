@@ -6,9 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import io.thorntail.plugins.common.CommonPlanFactory;
 import io.thorntail.plugins.common.MainFinder;
 import io.thorntail.plugins.common.Plan;
+import io.thorntail.plugins.common.PlanExporter;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.plugin.AbstractMojo;
@@ -19,11 +19,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import io.thorntail.plugins.common.PlanExporter;
 
-import static io.thorntail.plugins.common.CommonPlanFactory.*;
-import static io.thorntail.plugins.maven.MavenPlanFactory.application;
-import static io.thorntail.plugins.maven.MavenPlanFactory.dependencies;
+import static io.thorntail.plugins.common.CommonPlanFactory.bootClass;
+import static io.thorntail.plugins.common.CommonPlanFactory.confDir;
+import static io.thorntail.plugins.common.CommonPlanFactory.manifest;
+import static io.thorntail.plugins.common.CommonPlanFactory.scripts;
 
 /**
  * Created by bob on 2/12/18.
@@ -38,8 +38,8 @@ import static io.thorntail.plugins.maven.MavenPlanFactory.dependencies;
 public class PackageMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (!this.project.getPackaging().equals("jar")) {
-            getLog().info("Skipping " + this.project.getArtifactId() + " as packaging is not jar");
+        if (!this.project.getPackaging().equals("jar") && !this.project.getPackaging().equals("war")) {
+            getLog().info("Skipping " + this.project.getArtifactId() + " as packaging is not jar/war");
             return;
         }
 

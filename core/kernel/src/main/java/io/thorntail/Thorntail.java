@@ -15,7 +15,11 @@
  */
 package io.thorntail;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.logging.ConsoleHandler;
@@ -31,6 +35,7 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import io.thorntail.events.LifecycleEvent;
 import io.thorntail.impl.KernelMessages;
+import io.thorntail.impl.WarClassLoader;
 import io.thorntail.logging.impl.jdk.DefaultConsoleFormatter;
 import io.thorntail.runner.DebugRunner;
 import io.thorntail.runner.DirectRunner;
@@ -182,6 +187,21 @@ public class Thorntail {
             weld.addPackages(true, this.configClass);
         }
 
+        String deployment = System.getProperty(Info.KEY + ".deployments");
+        if (deployment != null ) {
+            Path deploymentPath = Paths.get(deployment);
+            if ( Files.exists(deploymentPath)) {
+                try {
+                    WarClassLoader cl = WarClassLoader.of(deploymentPath, this.classLoader);
+                    this.classLoader = cl;
+                    this.serviceRegistryClassLoader.setDelegate(cl);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        weld.containerId(Info.KEY + "-kernel");
         weld.setClassLoader(this.serviceRegistryClassLoader);
         Thread.currentThread().setContextClassLoader(this.classLoader);
 
@@ -207,6 +227,8 @@ public class Thorntail {
 
         long endTick = System.currentTimeMillis();
         KernelMessages.MESSAGES.started(format(endTick - startTick));
+
+
 
         return this;
     }

@@ -21,5 +21,6 @@
     <module>openshift</module>
     <module>openshift-s2i</module>
     <module>devtools</module>
+    <module>deployment</module>
   </modules>
 </project>

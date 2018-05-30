@@ -15,6 +15,11 @@ LIB_DIR=$ROOT_DIR/lib
 APP_DIR=$ROOT_DIR/app
 
 APP_CP=$APP_DIR/*.jar
+APP_DEPLOYMENTS=$APP_DIR/*.war
+
+if [ "x$APP_DEPLOYMENTS" != "x" ]; then
+  APP_DEPLOYMENTS=$(join ':' $APP_DEPLOYMENTS)
+fi
 
 if [ ! -d $APP_DIR ]; then
   echo "APP does not exist"
@@ -68,5 +73,5 @@ fi
 
 export THORNTAIL_CONFIG_LOCATION
 
-SERVER_OPTS="$SERVER_OPTS $JAVA_OPTS -cp $CLASSPATH"
+SERVER_OPTS="$SERVER_OPTS $JAVA_OPTS -cp $CLASSPATH -Dthorntail.deployments=$APP_DEPLOYMENTS"
 exec $JAVA $SERVER_OPTS $MAIN_CLASS $*

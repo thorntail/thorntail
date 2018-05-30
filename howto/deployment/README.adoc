@@ -1,0 +1,3 @@
+== Using Thorntail as a deployment target for normal .war files
+
+TBD.
