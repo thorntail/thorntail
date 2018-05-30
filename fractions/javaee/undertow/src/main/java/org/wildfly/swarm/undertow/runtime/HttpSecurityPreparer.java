@@ -112,8 +112,12 @@ public class HttpSecurityPreparer implements DeploymentProcessor {
             ((List<String>) sc.getOrDefault("methods", Collections.emptyList()))
                     .forEach(securityConstraint::withMethod);
 
-            ((List<String>) sc.getOrDefault("roles", Collections.emptyList()))
-                    .forEach(securityConstraint::withRole);
+            List<String> roles = (List<String>) sc.get("roles");
+            if (roles != null) {
+              securityConstraint.withRole(roles.toArray(new String[roles.size()]));
+            } else {
+              securityConstraint.permitAll();
+            }
         }
     }
 
