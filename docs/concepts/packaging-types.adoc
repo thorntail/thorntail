@@ -68,7 +68,7 @@ The hollow JARs are available under the following coordinates:
 [source,xml,options="nowrap",subs="attributes+"]
 ----
 <dependency>
-    <groupId>org.wildfly.swarm.servers</groupId>
+    <groupId>io.thorntail.servers</groupId>
 ifndef::product[    <artifactId>[full|web|microprofile]</artifactId>]
 ifdef::product[    <artifactId>[web|microprofile]</artifactId>]
 </dependency>

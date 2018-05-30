@@ -9,7 +9,7 @@
     <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm.servers</groupId>
+  <groupId>io.thorntail.servers</groupId>
   <artifactId>standalone-servers</artifactId>
 
   <name>Standalone Servers</name>
