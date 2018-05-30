@@ -1,4 +1,4 @@
-[![Build Status](https://ci.wildfly-swarm.io/buildStatus/icon?job=wildfly-swarm-linux)](https://ci.wildfly-swarm.io/job/wildfly-swarm-linux)
+[![Build Status](https://ci.wildfly-swarm.io/buildStatus/icon?job=thorntail-linux)](https://ci.wildfly-swarm.io/job/thorntail-linux)
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/wildfly-swarm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/wildfly-swarm)
 [![Join the chat at freenode:thorntail](https://img.shields.io/badge/irc-freenode%3A%20%23thorntail-blue.svg)](http://webchat.freenode.net/?channels=%23thorntail)
