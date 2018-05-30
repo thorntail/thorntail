@@ -66,6 +66,7 @@ public class DefaultVDBDeploymentFactory extends DefaultDeploymentFactory {
         FileSystemLayout fsLayout = FileSystemLayout.create();
         final Path classes = fsLayout.resolveBuildClassesDir();
 
+
         boolean success = false;
 
         if (Files.exists(classes)) {
