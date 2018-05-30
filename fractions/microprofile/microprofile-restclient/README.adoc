@@ -1,0 +1,41 @@
+= MicroProfile Rest Client
+
+== CDI Interceptors Support
+
+In general, Rest Client proxies are not created by the CDI container and therefore method invocations do not pass through CDI interceptors.
+In Thorntail, however, you can associate business method interceptors (denoted by the `@AroundInvoke` annotation) with a Rest Client proxy by using interceptor bindings.
+This feature is non-portable.
+The primary use case is the support of xref:microprofile-fault-tolerance[] annotations, for example:
+
+[source,java]
+----
+import org.eclipse.microprofile.faulttolerance.Retry;
+
+@Path("/v1")
+interface MyClient {
+
+    @Retry(maxRetries = 3) // Retry on any exception thrown
+    @GET
+    @Path("/hello")
+    String hello();
+}
+----
+
+NOTE: The `org.eclipse.microprofile.faulttolerance.Asynchronous` annotation is currently not supported because the underlying RESTEasy client is not able to handle the `java.util.concurrent.Future` return types.
+
+== RestClientProxy
+
+In addition to the MicroProfile Rest Client specification, every Rest Client proxy implements `org.wildfly.swarm.microprofile.restclient.RestClientProxy` interface which allows you to:
+
+* obtain the underlying `javax.ws.rs.client.Client` instance
+* release all associated resources, for example:
++
+[source,java]
+----
+public void hello() {
+   MyClient myClient = RestClientBuilder.newBuilder().build(MyClient.class);
+   myClient.hello();
+   // Finally release all associated resources
+   ((RestClientProxy) helloClient).close();
+}
+----
