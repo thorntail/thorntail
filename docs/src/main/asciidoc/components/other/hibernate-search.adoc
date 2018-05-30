@@ -66,4 +66,4 @@ QueryBuilder employeeQb;
 .Related Information
 
 * xref:component-jpa-support[]
-* https://docs.jboss.org/hibernate/search/5.9/reference/en-US/html_single/[Hibernate Search 5.9 Documentation]
+* https://docs.jboss.org/hibernate/search/5.10/reference/en-US/html_single/[Hibernate Search 5.10 Documentation]
