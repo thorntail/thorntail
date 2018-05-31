@@ -68,6 +68,8 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
 
 public class UberjarSimpleContainer implements SimpleContainer {
 
+    static final String UBERJAR_SUFFIX = "-thorntail";
+
     private final ContainerContext containerContext;
 
     private final DeploymentContext deploymentContext;
@@ -275,7 +277,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
                 System.err.println("-> " + each.getKey());
             }*/
 
-        File executable = File.createTempFile(TempFileManager.WFSWARM_TMP_PREFIX + "arquillian", "-swarm.jar");
+        File executable = File.createTempFile(TempFileManager.WFSWARM_TMP_PREFIX + "arquillian", UBERJAR_SUFFIX + ".jar");
         wrapped.as(ZipExporter.class).exportTo(executable, true);
         executable.deleteOnExit();
 

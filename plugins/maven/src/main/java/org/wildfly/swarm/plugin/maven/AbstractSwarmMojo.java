@@ -51,6 +51,16 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
 
     protected static final String EXCLUDE_PREFIX = "!";
 
+    protected static final String JAR = "jar";
+
+    protected static final String WAR = "war";
+
+    protected static final String DOT = ".";
+
+    protected static final String JAR_FILE_EXTENSION = DOT + JAR;
+
+    protected static final String WAR_FILE_EXTENSION = DOT + WAR;
+
     @Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 

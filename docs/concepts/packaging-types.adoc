@@ -19,13 +19,13 @@ and moved through the testing, validation, and production environments in your
 organization.
 
 The names of the uberjars that {Thorntail} produces include the name of your
-application and the `-swarm.jar` suffix.
+application and the `-thorntail.jar` suffix.
 
 An uberjar can be executed like any executable JAR:
 
 [source]
 ----
-$ java -jar myapp-swarm.jar
+$ java -jar myapp-thorntail.jar
 ----
 
 [#hollow-jar]
@@ -50,7 +50,7 @@ executing the hollow JAR:
 
 [source]
 ----
-$ java -jar myapp-hollow-swarm.jar myapp.war
+$ java -jar myapp-hollow-thorntail.jar myapp.war
 ----
 
 === Pre-Built Hollow JARs

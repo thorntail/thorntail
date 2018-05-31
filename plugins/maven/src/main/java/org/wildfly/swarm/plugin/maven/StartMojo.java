@@ -92,9 +92,9 @@ public class StartMojo extends AbstractSwarmMojo {
 
         if (this.useUberJar) {
             executor = uberJarExecutor();
-        } else if (this.project.getPackaging().equals("war")) {
+        } else if (this.project.getPackaging().equals(WAR)) {
             executor = warExecutor();
-        } else if (this.project.getPackaging().equals("jar")) {
+        } else if (this.project.getPackaging().equals(JAR)) {
             executor = jarExecutor();
         } else {
             throw new MojoExecutionException("Unsupported packaging: " + this.project.getPackaging());
@@ -180,24 +180,24 @@ public class StartMojo extends AbstractSwarmMojo {
     }
 
     protected SwarmExecutor uberJarExecutor() throws MojoFailureException {
-        getLog().info("Starting -swarm.jar");
+        getLog().info("Starting uberjar");
 
         String finalName = this.project.getBuild().getFinalName();
 
-        if (finalName.endsWith(".war") || finalName.endsWith(".jar")) {
+        if (finalName.endsWith(WAR_FILE_EXTENSION) || finalName.endsWith(JAR_FILE_EXTENSION)) {
             finalName = finalName.substring(0, finalName.length() - 4);
         }
 
         return new SwarmExecutor()
-                .withExecutableJar(Paths.get(this.projectBuildDir, finalName + "-swarm.jar"));
+                .withExecutableJar(Paths.get(this.projectBuildDir, finalName + PackageMojo.UBERJAR_SUFFIX + JAR_FILE_EXTENSION));
     }
 
     protected SwarmExecutor warExecutor() throws MojoFailureException {
         getLog().info("Starting .war");
 
         String finalName = this.project.getBuild().getFinalName();
-        if (!finalName.endsWith(".war")) {
-            finalName = finalName + ".war";
+        if (!finalName.endsWith(WAR_FILE_EXTENSION)) {
+            finalName = finalName + WAR_FILE_EXTENSION;
         }
 
         Path warPath = Paths.get(this.projectBuildDir, finalName);
@@ -214,7 +214,7 @@ public class StartMojo extends AbstractSwarmMojo {
         final String finalName = this.project.getBuild().getFinalName();
 
         return executor(Paths.get(this.project.getBuild().getOutputDirectory()),
-                        finalName.endsWith(".jar") ? finalName : finalName + ".jar",
+                        finalName.endsWith(JAR_FILE_EXTENSION) ? finalName : finalName + JAR_FILE_EXTENSION,
                         true);
     }
 

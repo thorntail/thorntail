@@ -57,6 +57,10 @@ import org.wildfly.swarm.tools.DeclaredDependencies;
  */
 public class PackageTask extends DefaultTask {
 
+    static final String UBERJAR_SUFFIX = "-thorntail";
+
+    static final String HOLLOW_SUFFIX = "-hollow";
+
     private static final String MODULE_DIR_NAME = "modules";
 
     private BuildTool tool;
@@ -294,11 +298,11 @@ public class PackageTask extends DefaultTask {
 
     @OutputFile
     private File getOutputFile() {
-        return BuildTool.getOutputFile(getBaseName() + "-swarm.jar", getOutputDirectory());
+        return BuildTool.getOutputFile(getBaseName() + UBERJAR_SUFFIX + ".jar", getOutputDirectory());
     }
 
     private String getBaseName() {
-        return getProject().getName() + (this.getHollow() ? "-hollow" : "");
+        return getProject().getName() + (this.getHollow() ? HOLLOW_SUFFIX : "");
     }
 
     private Path getOutputDirectory() {

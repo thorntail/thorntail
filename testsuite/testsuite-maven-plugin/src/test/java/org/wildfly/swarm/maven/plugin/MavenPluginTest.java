@@ -251,7 +251,7 @@ public class MavenPluginTest {
         }
 
         verifier.assertFilePresent("target/testing-project." + testingProject.packaging.fileExtension());
-        verifier.assertFilePresent("target/testing-project-swarm.jar");
+        verifier.assertFilePresent("target/testing-project-thorntail.jar");
 
         String log = new String(Files.readAllBytes(logPath), StandardCharsets.UTF_8);
 
@@ -277,7 +277,7 @@ public class MavenPluginTest {
 
         checkFractionAutodetection(log);
 
-        File uberjarFile = new File(verifier.getBasedir(), "target/testing-project-swarm.jar");
+        File uberjarFile = new File(verifier.getBasedir(), "target/testing-project-thorntail.jar");
         Archive uberjar = ShrinkWrap.createFromZipFile(GenericArchive.class, uberjarFile);
 
         checkFractionsPresent(uberjar);
