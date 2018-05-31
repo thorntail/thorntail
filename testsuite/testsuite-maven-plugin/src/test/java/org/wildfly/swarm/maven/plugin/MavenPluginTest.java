@@ -243,7 +243,7 @@ public class MavenPluginTest {
                     && testingProject.autodetection == Autodetection.NEVER) {
                 // the only situation when build failure is expected
                 String log = new String(Files.readAllBytes(logPath), StandardCharsets.UTF_8);
-                assertThat(log).contains("No WildFly Swarm Bootstrap fraction found");
+                assertThat(log).contains("No Thorntail Bootstrap fraction found");
                 return;
             }
 
@@ -287,9 +287,9 @@ public class MavenPluginTest {
 
     private void checkFractionAutodetection(String log) {
         if (testingProject.doesAutodetectionHappen()) {
-            assertThat(log).contains("Scanning for needed WildFly Swarm fractions");
+            assertThat(log).contains("Scanning for needed Thorntail fractions");
         } else {
-            assertThat(log).doesNotContain("Scanning for needed WildFly Swarm fractions");
+            assertThat(log).doesNotContain("Scanning for needed Thorntail fractions");
         }
     }
 

@@ -119,14 +119,14 @@ public interface SwarmMessages extends BasicLogger {
 
     @LogMessage(level = Logger.Level.WARN)
     @Message(id = 24, value =
-            "In order to use HTTP/2 in WildFly Swarm, you must have the OpenSSL provider with ALPN capability from " +
+            "In order to use HTTP/2 in Thorntail, you must have the OpenSSL provider with ALPN capability from " +
                     "JBoss Core Services installed and configured. This is due to the fact that HTTP/2 requires " +
                     "a TLS stack that supports ALPN, which is not provided by the default installation of Java 8. " +
                     "HTTP/2 will only work with browsers that also support the HTTP/2 standard. " +
-                    "OpenSSL usage with WildFly Swarm on HP-UX is NOT supported.")
+                    "OpenSSL usage with Thorntail on HP-UX is NOT supported.")
     void http2NotSupported();
 
-    @Message(id = 25, value = "This version of WildFly Swarm does not support generating self signed certificates.")
+    @Message(id = 25, value = "This version of Thorntail does not support generating self signed certificates.")
     RuntimeException generateSelfSignedCertificateNotSupported();
 
     @LogMessage(level = Logger.Level.ERROR)
@@ -163,7 +163,7 @@ public interface SwarmMessages extends BasicLogger {
 
 
     @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 99999, value = "WildFly Swarm is Ready")
+    @Message(id = 99999, value = "Thorntail is Ready")
     void wildflySwarmIsReady();
 
 }

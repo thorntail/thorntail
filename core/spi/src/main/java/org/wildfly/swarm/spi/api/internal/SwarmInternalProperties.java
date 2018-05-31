@@ -16,7 +16,7 @@
 package org.wildfly.swarm.spi.api.internal;
 
 /**
- * Defines a set of properties used internally by WildFly Swarm.
+ * Defines a set of properties used internally by Thorntail.
  *
  * @author Ken Finnigan
  */

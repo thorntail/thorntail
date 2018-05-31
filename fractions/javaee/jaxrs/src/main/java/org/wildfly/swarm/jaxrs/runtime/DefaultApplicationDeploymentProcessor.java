@@ -48,7 +48,7 @@ public class DefaultApplicationDeploymentProcessor implements DeploymentProcesso
      */
     static final ArchivePath PATH_WEB_XML = ArchivePaths.create(ArchivePaths.create("WEB-INF"), "web.xml");
 
-    @AttributeDocumentation("Set the JAX-RS application path. If set, WildFly Swarm will automatically generate a JAX-RS" +
+    @AttributeDocumentation("Set the JAX-RS application path. If set, Thorntail will automatically generate a JAX-RS" +
             " Application class and use this value as the @ApplicationPath")
     @Configurable("swarm.deployment.*.jaxrs.application-path")
     Defaultable<String> applicationPath = Defaultable.string("/");
