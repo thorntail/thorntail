@@ -36,6 +36,10 @@
       <groupId>io.thorntail</groupId>
       <artifactId>undertow</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>keycloak</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>javax.inject</groupId>
@@ -167,10 +171,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>keycloak</artifactId>
-    </dependency>       
   </dependencies>
   <build>
     <resources>
