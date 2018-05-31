@@ -51,6 +51,10 @@ import org.wildfly.swarm.tools.DeclaredDependencies;
 )
 public class PackageMojo extends AbstractSwarmMojo {
 
+    static final String UBERJAR_SUFFIX = "-thorntail";
+
+    static final String HOLLOWJAR_SUFFIX = "-hollow" + UBERJAR_SUFFIX;
+
     @Parameter(alias = "bundleDependencies", defaultValue = "true", property = "swarm.bundleDependencies")
     protected boolean bundleDependencies;
 
@@ -206,31 +210,33 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .forEach(tool::additionalModule);
 
         try {
-            String jarFinalName = finalName + (this.hollow ? "-hollow" : "") + "-swarm";
+            String jarFinalName;
             if (this.finalName != null) {
                 jarFinalName = this.finalName;
+            } else {
+                jarFinalName = finalName + (this.hollow ? HOLLOWJAR_SUFFIX : UBERJAR_SUFFIX);
             }
-            jarFinalName += ".jar";
+            jarFinalName += JAR_FILE_EXTENSION;
             File jar = tool.build(jarFinalName, Paths.get(this.projectBuildDir));
-            ArtifactHandler handler = new DefaultArtifactHandler("jar");
+            ArtifactHandler handler = new DefaultArtifactHandler(JAR);
             Artifact swarmJarArtifact = new DefaultArtifact(
                     primaryArtifact.getGroupId(),
                     primaryArtifact.getArtifactId(),
                     primaryArtifact.getBaseVersion(),
                     primaryArtifact.getScope(),
-                    "jar",
-                    (this.hollow ? "hollow" : "") + "swarm",
+                    JAR,
+                    (this.hollow ? HOLLOWJAR_SUFFIX : UBERJAR_SUFFIX),
                     handler
             );
 
             swarmJarArtifact.setFile(jar);
             this.project.addAttachedArtifact(swarmJarArtifact);
 
-            if (this.project.getPackaging().equals("war")) {
+            if (this.project.getPackaging().equals(WAR)) {
                 tool.repackageWar(primaryArtifactFile);
             }
         } catch (Exception e) {
-            throw new MojoFailureException("Unable to create -swarm.jar", e);
+            throw new MojoFailureException("Unable to create " + UBERJAR_SUFFIX + JAR_FILE_EXTENSION, e);
         }
     }
 
