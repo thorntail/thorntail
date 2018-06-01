@@ -16,8 +16,8 @@ seenSnapshot = false
 versions.reject! {|e|
   puts "test #{e}"
   result = false;
-  if ( e.include? '-SNAPSHOT' ) 
-    if ( seenSnapshot ) 
+  if ( e.include? '-SNAPSHOT' )
+    if ( seenSnapshot )
       puts "reject-1 #{e}"
       result = true;
     else
@@ -36,7 +36,7 @@ open('target/generated-docs/versions.txt', 'w') do |out|
 end
 
 open('target/index.adoc', 'w') do |out|
-  out.puts "= WildFly Swarm Documentation"
+  out.puts "= Thorntail Documentation"
   out.puts
   out.puts ".Available Versions"
   out.puts

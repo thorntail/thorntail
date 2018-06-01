@@ -1,7 +1,7 @@
 # Swagger UI Server
 
 The Swagger UI Server provides a simple way to deploy
-[Swagger UI](http://swagger.io/swagger-ui/) using WildFly Swarm. The
+[Swagger UI](http://swagger.io/swagger-ui/) using Thorntail. The
 Swagger UI is, "Swagger UI is a dependency-free collection of HTML,
 Javascript, and CSS assets that dynamically generate beautiful
 documentation and sandbox from a Swagger-compliant API." If you
@@ -13,7 +13,7 @@ Server may be useful to you.
 You can run the server using either `java -jar ...` or `mvn wildfly-swarm:run`
 depending on your preference and deployment environment.
 
-    $ java -jar swagger-ui-swarm.jar
+    $ java -jar swagger-ui-thorntail.jar
 
 The browse to `http://localhost:8080/swagger-ui`. If you don't like the port
 number or default context of `swagger-ui` you can change these with runtime
@@ -41,18 +41,18 @@ this user-provided file will be used instead of the default provided by
 
 The format of the `swarm.swagger.ui.resources` string can be in the form of
 a path on disk, or a GAV with maven coordinates. For example, if you have a
-directory called `resources` alongside your `swagger-ui-swarm.jar`, and it
+directory called `resources` alongside your `swagger-ui-thorntail.jar`, and it
 contains an `index.html` file, then running
 
-    $ java -jar swagger-ui-swarm.jar -Dswarm.swagger.ui.resources=resources
+    $ java -jar swagger-ui-thorntail.jar -Dswarm.swagger.ui.resources=resources
 
 will cause Swagger UI Server to use the provided file from that directory.
 If the directory has been compressed as a `jar` or `war` file, you can just
 provide the file name.
 
-    $ java -jar swagger-ui-swarm.jar -Dswarm.swagger.ui.resources=resources.jar
+    $ java -jar swagger-ui-thorntail.jar -Dswarm.swagger.ui.resources=resources.jar
 
 And if that jar actually exists in a maven repository, then you can just provide
 the coordinates.
 
-    $ java -jar swagger-ui-swarm.jar -Dswarm.swagger.ui.resources="com.example:resources:war:1.0.0"
+    $ java -jar swagger-ui-thorntail.jar -Dswarm.swagger.ui.resources="com.example:resources:war:1.0.0"

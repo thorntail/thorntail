@@ -115,7 +115,7 @@ public class Main {
                     .describedAs("module-dir1,module-dir2,...");
 
     private static final OptionSpec<String> NAME_OPT =
-            OPT_PARSER.acceptsAll(asList("n", "name"), "The name of the final jar sans the -swarm.jar suffix (default: <source name>)")
+            OPT_PARSER.acceptsAll(asList("n", "name"), "The name of the final jar sans the -thorntail.jar suffix (default: <source name>)")
                     .withRequiredArg()
                     .ofType(String.class)
                     .describedAs("jar-name");

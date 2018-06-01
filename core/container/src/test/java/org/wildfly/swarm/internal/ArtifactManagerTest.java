@@ -170,7 +170,7 @@ public class ArtifactManagerTest {
         List<String> classpath = read(in); // usually it's System.getProperty("java.class.path")
 
         final String javaHome = "/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre";
-        final String pwd = "/Users/hbraun/dev/prj/wfs/wildfly-swarm-examples/jaxrs/jaxrs-shrinkwrap";
+        final String pwd = "/Users/hbraun/dev/prj/wfs/thorntail-examples/jaxrs/jaxrs-shrinkwrap";
 
         Set<String> archives = new SystemDependencyResolution(classpath, javaHome, pwd, Collections.EMPTY_LIST)
                 .resolve(Collections.emptyList());

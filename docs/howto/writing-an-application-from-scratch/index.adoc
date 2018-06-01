@@ -64,7 +64,7 @@ include::src/main/resources/RestApplication.java[]
 +
 [source,bash,options="nowrap"]
 ----
-$ mvn wildfly-swarm:run
+$ mvn thorntail:run
 ----
 
 [discrete]

@@ -1,4 +1,4 @@
-# WildFly Swarm - Test suite - OpenTracing
+# Thorntail - Test suite - OpenTracing
 
 This module has integration tests for the OpenTracing fraction. It serves
 also as an example of how a project can be bootstrapped with the OpenTracing
@@ -9,4 +9,4 @@ The image below is a visual representation of the spans, as if they were reporte
 to Jaeger. It contains a parent span that is automatically created by the Servlet
 framework integration, plus the business span under that.
 
-![WildFly Swarm: Rightsize your JavaEE Applications](example.png)
+![Thorntail: Rightsize your JavaEE Applications](example.png)

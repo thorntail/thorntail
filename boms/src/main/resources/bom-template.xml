@@ -49,7 +49,7 @@
   <properties>
     <version.shrinkwrap>${version.org.jboss.shrinkwrap}</version.shrinkwrap>
     <version.shrinkwrap-descriptors>${version.org.jboss.shrinkwrap.descriptors}</version.shrinkwrap-descriptors>
-    <version.wildfly-swarm>${project.version}</version.wildfly-swarm>
+    <version.thorntail>${project.version}</version.thorntail>
     <version.wildfly-config-api-runtime>${version.wildfly.config-api}</version.wildfly-config-api-runtime>
   </properties>
 

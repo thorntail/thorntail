@@ -2,7 +2,7 @@
 = Creating an Uberjar
 
 One method of packaging an application for execution
-with {Thorntail} is as an _uberjar_. 
+with {Thorntail} is as an _uberjar_.
 
 .Prerequisites
 
@@ -10,7 +10,7 @@ with {Thorntail} is as an _uberjar_.
 
 .Procedure
 
-. Add the `wildfly-swarm-plugin` to your `pom.xml` in a `<plugin>` block,
+. Add the `thorntail-maven-plugin` to your `pom.xml` in a `<plugin>` block,
   with an `<execution>` specifying the `package` goal.
 +
 [source,xml]
@@ -31,7 +31,7 @@ $ mvn package
 +
 [source]
 ----
-$ java -jar ./target/myapp-swarm.jar
+$ java -jar ./target/myapp-thorntail.jar
 ----
 
 ifndef::product[]
