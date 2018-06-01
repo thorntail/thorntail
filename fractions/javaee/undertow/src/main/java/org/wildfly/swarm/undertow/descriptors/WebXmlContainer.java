@@ -59,7 +59,7 @@ public interface WebXmlContainer<T extends Archive<T>> extends Archive<T>, Servi
     }
 
     /**
-     * Add the default WildFly Swarm {@code favicon.ico} handler.
+     * Add the default Thorntail {@code favicon.ico} handler.
      *
      * @return This archive.
      */

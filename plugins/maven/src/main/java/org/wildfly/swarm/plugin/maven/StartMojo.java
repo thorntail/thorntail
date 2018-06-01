@@ -239,7 +239,7 @@ public class StartMojo extends AbstractSwarmMojo {
     List<Path> findNeededFractions(final Set<Artifact> existingDeps,
                                    final Path source,
                                    final boolean scanDeps) throws MojoFailureException {
-        getLog().info("Scanning for needed WildFly Swarm fractions with mode: " + fractionDetectMode);
+        getLog().info("Scanning for needed Thorntail fractions with mode: " + fractionDetectMode);
 
         final Set<String> existingDepGASet = existingDeps.stream()
                 .map(d -> String.format("%s:%s", d.getGroupId(), d.getArtifactId()))
@@ -366,7 +366,7 @@ public class StartMojo extends AbstractSwarmMojo {
                 }
             }
         } else if (!hasSwarmDeps) {
-            getLog().warn("No WildFly Swarm dependencies found and fraction detection disabled");
+            getLog().warn("No Thorntail dependencies found and fraction detection disabled");
         }
 
         return elements;

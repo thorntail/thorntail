@@ -24,7 +24,7 @@ import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.api.JBossDeploymentStructureAsset;
 
 /**
- * Non-public class for debugging by the WildFly Swarm developers.
+ * Non-public class for debugging by the Thorntail developers.
  *
  * @author Bob McWhirter
  */

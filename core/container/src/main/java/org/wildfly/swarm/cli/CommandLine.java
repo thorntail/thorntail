@@ -81,7 +81,7 @@ public class CommandLine {
     public static final Option<Boolean> VERSION = new Option<Boolean>()
             .withLong("version")
             .withShort('v')
-            .withDescription("Display the version of WildFly Swarm")
+            .withDescription("Display the version of Thorntail")
             .withDefault(() -> false)
             .then((cmd, opt, value) -> cmd.put(opt, true));
 
@@ -311,7 +311,7 @@ public class CommandLine {
      * @param out The output stream to display help upon.
      */
     public void displayVersion(PrintStream out) {
-        out.println("WildFly Swarm version " + SwarmInfo.VERSION);
+        out.println("Thorntail version " + SwarmInfo.VERSION);
     }
 
     /**

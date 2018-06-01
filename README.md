@@ -22,16 +22,16 @@ each application's use-case.
 > Note: Thorntail requires Maven 3.2.5 or higher for building your application.
 
 > Note: Thorntail requires JDK 8 or higher for building your application
-> or for building WildFly Swarm itself.
+> or for building Thorntail itself.
 
 # Project Configuration
 
 In a normal WAR-based maven `pom.xml`, simply add the following
 ```xml
 <plugin>
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-plugin</artifactId>
-  <version>${version.wildfly-swarm}</version>
+  <groupId>io.thorntail</groupId>
+  <artifactId>thorntail-maven-plugin</artifactId>
+  <version>${version.thorntail}</version>
   <executions>
     <execution>
       <phase>package</phase>
@@ -47,11 +47,11 @@ This will take the `.war` file normally created by your build, and wrap
 it in the wildfly-swarm mechanisms.
 
 If you normally produce `myapp-1.0.war`, in your `target/` directory will
-then also be present a `myapp-1.0-swarm.jar`.
+then also be present a `myapp-1.0-thorntail.jar`.
 
 In order to specify the portions of the WildFly AS your application needs,
 your `pom.xml` should specify some of the following dependencies within
-the `org.wildfly.swarm` Maven group-id:
+the `io.thorntail` Maven group-id:
 
 * bean-validation
 * cdi
@@ -66,7 +66,7 @@ the `org.wildfly.swarm` Maven group-id:
 * undertow
 * _and many more!_
 
-# How To Build WildFly Swarm Itself
+# How To Build Thorntail Itself
 
 Thorntail attempts to be a well-behaved Maven project. To install to your local repository for usage:
 ```bash
