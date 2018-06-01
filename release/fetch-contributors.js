@@ -3,7 +3,7 @@ var exec = require('child_process').exec;
 var prevVersion = process.argv[2]
 var thisVersion = process.argv[3]
 var websiteRepo = process.argv[4] || 'wildfly-swarm-swarm.io'
-var examplesRepo = process.argv[6] || 'wildfly-swarm-examples'
+var examplesRepo = process.argv[6] || 'thorntail-examples'
 
 if ( ! prevVersion) {
   console.log( "Must specify previous version" );

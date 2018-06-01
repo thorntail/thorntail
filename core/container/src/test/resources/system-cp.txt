@@ -25,7 +25,7 @@
 /Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext/sunjce_provider.jar
 /Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext/sunpkcs11.jar
 /Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext/zipfs.jar
-/Users/hbraun/dev/prj/wfs/wildfly-swarm-examples/jaxrs/jaxrs-shrinkwrap/target/classes
+/Users/hbraun/dev/prj/wfs/thorntail-examples/jaxrs/jaxrs-shrinkwrap/target/classes
 /Users/hbraun/dev/prj/wfs/wildfly-swarm-core/jaxrs/target/classes
 /Users/hbraun/dev/prj/wfs/wildfly-swarm-core/container/target/classes
 /Users/hbraun/dev/prj/wfs/wildfly-swarm-core/bootstrap/target/classes

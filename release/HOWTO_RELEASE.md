@@ -11,7 +11,7 @@
 
 # Tag the examples repository
 
-* Checkout/rebase latest from https://github.com/wildfly-swarm/wildfly-swarm-examples
+* Checkout/rebase latest from https://github.com/thorntail/thorntail-examples
 
 * Update -examples to just released version, replacing for correct value of `2017.2.0`:
 
@@ -81,11 +81,11 @@ Run the local wildfly-swarm/release/fetch-contributors.js with node.js, passing 
 By default the script relies on the following repositories as peers to the core repository:
 
 * `wildfly-swarm.io`
-* `wildfly-swarm-examples`
+* `thorntail-examples`
 
 If they have different names, simply pass the appropriate name as an argument
 to `fetch-contributors` after versions. For example, if `wildfly-swarm.io` was cloned to 'site'
-and `wildfly-swarm-examples` to 'examples' then run:
+and `thorntail-examples` to 'examples' then run:
     
     node fetch-contributors.js 2017.1.1 2017.2.0 site examples
 

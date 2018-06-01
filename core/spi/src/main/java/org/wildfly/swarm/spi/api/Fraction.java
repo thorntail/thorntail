@@ -28,7 +28,7 @@ package org.wildfly.swarm.spi.api;
  * a sub-class of the matching WildFly subsystem configuration tree from
  * the {@code wildfly-config-api} project.</p>
  *
- * @link https://github.com/wildfly-swarm/wildfly-config-api
+ * @link https://github.com/thorntail/wildfly-config-api
  *
  * @author Bob McWhirter
  */
