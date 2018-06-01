@@ -36,8 +36,8 @@ An example Maven plugin configuration for the `swarm.bind.address` item:
 <build>
   <plugins>
     <plugin>
-      <groupId>org.wildfly.swarm</groupId>
-      <artifactId>wildfly-swarm-plugin</artifactId>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-maven-plugin</artifactId>
       <version>{version}</version>
       <configuration>
         <properties>
@@ -65,7 +65,7 @@ To use a property on the command line, pass it as a command-line parameter to th
 
 [source,shell]
 ----
-$ java -Dswarm.bind.address=127.0.0.1 -jar myapp-swarm.jar
+$ java -Dswarm.bind.address=127.0.0.1 -jar myapp-thorntail.jar
 ----
 
 [discrete]
@@ -76,7 +76,7 @@ This way, you do not need to package the driver in the hollow JAR.
 
 [source,bash]
 ----
-$ java -Dswarm.classpath=./h2-1.4.196.jar -jar microprofile-jpa-hollow-swarm.jar example-jpa-jaxrs-cdi.war
+$ java -Dswarm.classpath=./h2-1.4.196.jar -jar microprofile-jpa-hollow-thorntail.jar example-jpa-jaxrs-cdi.war
 ----
 
 The `swarm.classpath` property accepts one or more paths to JAR files separated by `;`.
@@ -123,7 +123,7 @@ Consider the following application execution:
 
 [source,bash]
 ----
-$ java -jar myapp-swarm.jar -Stesting -Scloud
+$ java -jar myapp-thorntail.jar -Stesting -Scloud
 ----
 
 The following YAML files are loaded, in this order. The first file containing a given configuration item takes precedence over others:
@@ -147,7 +147,7 @@ Consider the following application execution:
 
 [source,bash]
 ----
-$ java -jar myapp-swarm.jar -s/home/app/openshift.yml -Scloud -Stesting
+$ java -jar myapp-thorntail.jar -s/home/app/openshift.yml -Scloud -Stesting
 ----
 
 The following YAML files are loaded, in this order:
@@ -161,7 +161,7 @@ The same order of preference is applied even if you invoke the application as fo
 
 [source,bash]
 ----
-$ java -jar myapp-swarm.jar -Scloud -Stesting -s/home/app/openshift.yml
+$ java -jar myapp-thorntail.jar -Scloud -Stesting -s/home/app/openshift.yml
 ----
 ====
 

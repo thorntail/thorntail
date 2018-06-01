@@ -61,7 +61,7 @@ Tracking the current version of {Thorntail} through a property in your
 [source,xml,subs="+attributes"]
 ----
 <properties>
-  <version.wildfly-swarm>{version}</version.wildfly-swarm>
+  <version.thorntail>{version}</version.thorntail>
 </properties>
 ----
 

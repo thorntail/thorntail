@@ -23,7 +23,7 @@ include::pom.xml[tag=bom,indent=4]
 </dependencyManagement>
 ----
 
-. Reference the `org.wildfly.swarm:arquillian` artifact in your `pom.xml` file
+. Reference the `io.thorntail:arquillian` artifact in your `pom.xml` file
 with the `<scope>` set to `test`:
 +
 [source,xml]

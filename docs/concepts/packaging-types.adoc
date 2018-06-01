@@ -41,7 +41,7 @@ often--so that the higher layer which contains only your application code can
 be rebuilt more quickly.
 
 The names of the hollow JARs that {Thorntail} produces include the name of
-your application, and the `-hollow-swarm.jar` suffix. You must package the
+your application, and the `-hollow-thorntail.jar` suffix. You must package the
 `.war` file of your application separately in order to benefit from the hollow
 JAR.
 
@@ -82,7 +82,7 @@ anchor:hollow-jar-limitations[]Using hollow JARs has certain limitations:
 +
 [source,bash,options="nowrap"]
 ----
-$ java -Dswarm.classpath=./h2-1.4.196.jar -jar my-hollow-swarm.jar myApp.war
+$ java -Dswarm.classpath=./h2-1.4.196.jar -jar my-hollow-thorntail.jar myApp.war
 ----
 
 * YAML configuration files in your application are not automatically applied.
@@ -90,7 +90,7 @@ You must specify them manually, for example:
 +
 [source,bash,options="nowrap"]
 ----
-$ java -jar my-hollow-swarm.jar myApp.war -s ./project-defaults.yml
+$ java -jar my-hollow-thorntail.jar myApp.war -s ./project-defaults.yml
 ----
 ====
 

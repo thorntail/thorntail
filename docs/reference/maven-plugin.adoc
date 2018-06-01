@@ -10,9 +10,9 @@ The {Thorntail} Maven plugin is used like any other Maven plugin, that is throug
 [source,xml]
 ----
 <plugin>
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-plugin</artifactId>
-  <version>${version.wildfly-swarm}</version>
+  <groupId>io.thorntail</groupId>
+  <artifactId>thorntail-maven-plugin</artifactId>
+  <version>${version.thorntail}</version>
   <executions>
     ...
     <execution>
@@ -53,7 +53,7 @@ NOTE: The `stop` goal can only stop applications that were started _in the same 
 The plugin accepts the following options:
 
 bundleDependencies::
-If true, dependencies will be included in the `-swarm.jar` file.
+If true, dependencies will be included in the `-thorntail.jar` file.
 Otherwise, they will be resolved from `$M2_REPO` or the network at runtime.
 +
 [cols="1,2a"]
@@ -146,7 +146,7 @@ The format of specifying a fraction can be:
 * `artifact:version`
 * `artifact`
 
-If no group is provided, `org.wildfly.swarm` is assumed.
+If no group is provided, `io.thorntail` is assumed.
 
 If no version is provided, the version is taken from the {Thorntail} BOM for the version of the plugin you are using.
 
@@ -156,9 +156,9 @@ In the following example the Undertow fraction is not installed even if your app
 [source,xml]
 ----
 <plugin>
-  <groupId>org.wildfly.swarm</groupId>
-  <artifactId>wildfly-swarm-plugin</artifactId>
-  <version>${version.wildfly-swarm}</version>
+  <groupId>io.thorntail</groupId>
+  <artifactId>thorntail-maven-plugin</artifactId>
+  <version>${version.thorntail}</version>
   <executions>
     <execution>
       <goals>
@@ -310,7 +310,7 @@ A file path where to store the `stdout` output instead of sending it to the `std
 |===
 
 useUberJar::
-If true, the `-swarm.jar` file specified at `${project.build.directory}` is used.
+If true, the `-thorntail.jar` file specified at `${project.build.directory}` is used.
 This JAR is not created automatically, so make sure you execute the `package` goal first.
 +
 [cols="1,2a"]
@@ -331,8 +331,8 @@ This JAR is not created automatically, so make sure you execute the `package` go
 Properties can be used to configure execution and affect the packaging
 or running of your application.
 
-If you add a `<properties>` or `<propertiesFile>` section to the `<configuration>` of the plugin, the properties are used when executing your application using the `mvn wildfly-swarm:run` command.
-In addition to that, the same properties are added to your `_myapp_-swarm.jar` file to affect subsequent executions of the uberjar.
+If you add a `<properties>` or `<propertiesFile>` section to the `<configuration>` of the plugin, the properties are used when executing your application using the `mvn thorntail:run` command.
+In addition to that, the same properties are added to your `_myapp_-thorntail.jar` file to affect subsequent executions of the uberjar.
 Any properties loaded from the `<propertiesFile>` override identically-named properties in the `<properties>` section.
 
 Any properties added to the uberjar can be overridden at runtime using the traditional `-Dname=value` mechanism of the `java` binary, or using the YAML-based configuration files.

@@ -1,2 +1,2 @@
-JBoss-Product-Release-Name: WildFly Swarm
+JBoss-Product-Release-Name: Thorntail
 JBoss-Product-Release-Version: ${project.version}

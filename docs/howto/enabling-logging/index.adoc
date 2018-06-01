@@ -17,7 +17,7 @@ Verify it contains the following coordinates. If it does not, add them.
 [source,xml]
 ----
 <dependency>
-  <groupId>org.wildfly.swarm</groupId>
+  <groupId>io.thorntail</groupId>
   <artifactId>logging</artifactId>
 </dependency>
 ----
@@ -27,7 +27,7 @@ Verify it contains the following coordinates. If it does not, add them.
 --
 [source,bash]
 ----
-$ mvn swarm:run -Dswarm.logging=FINE
+$ mvn thorntail:run -Dswarm.logging=FINE
 ----
 
 See the link:https://wildfly-swarm.github.io/wildfly-swarm-javadocs/{version}/apidocs/org/wildfly/swarm/config/logging/Level.html[`org.wildfly.swarm.config.logging.Level`] class for the list of available levels.

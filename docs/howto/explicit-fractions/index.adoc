@@ -33,7 +33,7 @@ $ mvn package
 +
 [source]
 ----
-$ java -jar ./target/myapp-swarm.jar
+$ java -jar ./target/myapp-thorntail.jar
 ----
 
 .Related Information

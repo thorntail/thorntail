@@ -9,7 +9,7 @@ The xref:hollow-jar[hollow JAR] is one method of packaging an application for ex
 
 .Procedure
 
-. Add the `wildfly-swarm-plugin` to your `pom.xml` in a `<plugin>` block, with an `<execution>` specifying the `package` goal.
+. Add the `thorntail-maven-plugin` to your `pom.xml` in a `<plugin>` block, with an `<execution>` specifying the `package` goal.
 In addition to that, put `true` in the `hollow` property of the `<configuration>` element:
 +
 --
@@ -32,11 +32,11 @@ $ mvn package
 
 . Execute the hollow JAR:
 +
-Execute the resulting `-hollow-swarm.jar` file using the Java binary and pass the `.war` file with your application as the first argument:
+Execute the resulting `-hollow-thorntail.jar` file using the Java binary and pass the `.war` file with your application as the first argument:
 +
 [source]
 ----
-$ java -jar ./target/myapp-hollow-swarm.jar ./target/myapp.war
+$ java -jar ./target/myapp-hollow-thorntail.jar ./target/myapp.war
 ----
 
 .Related Information

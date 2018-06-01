@@ -7,7 +7,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.wildfly.swarm.howto</groupId>
+  <groupId>io.thorntail.howto</groupId>
   <artifactId>howto-parent</artifactId>
   <version>2.0.0.Final-SNAPSHOT</version>
 
@@ -15,7 +15,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <version.wildfly-swarm>2.0.0.Final-SNAPSHOT</version.wildfly-swarm>
+    <version.thorntail>2.0.0.Final-SNAPSHOT</version.thorntail>
     <version.maven-war-plugin>2.2</version.maven-war-plugin>
     <version.maven-failsafe-plugin>2.19.1</version.maven-failsafe-plugin>
     <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>
@@ -89,7 +89,7 @@
       <plugin>
         <groupId>io.thorntail</groupId>
         <artifactId>thorntail-maven-plugin</artifactId>
-        <version>${version.wildfly-swarm}</version>
+        <version>${version.thorntail}</version>
         <executions>
           <execution>
             <goals>

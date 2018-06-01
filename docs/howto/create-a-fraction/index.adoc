@@ -14,8 +14,8 @@ of the {Thorntail} SPI and fraction-plugin being used:
 [source,xml,subs=+attributes]
 ----
 <properties>
-  <version.swarm>{version}</version.swarm.spi>
-  <version.swarm.fraction-plugin>34</version.swarm.fraction-plugin>
+  <version.thorntail>{version}</version.thorntail>
+  <version.thorntail.fraction-plugin>87</version.thorntail.fraction-plugin>
 </properties>
 ----
 
@@ -29,9 +29,9 @@ to configure the server.
 <dependencyManagement>
   <dependencies>
     <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>bom-all</artifactId>
-      <version>${version.swarm}</version>
+      <version>${version.thorntail}</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
@@ -355,7 +355,7 @@ your `pom.xml`
 ----
 <dependencies>
   <dependency>
-    <groupId>org.wildfly.swarm</groupId>
+    <groupId>io.thorntail</groupId>
     <artifactId>undertow</artifactId>
   </dependency>
 </dependencies>
