@@ -18,9 +18,8 @@
 package org.wildfly.swarm.microprofile.metrics.deployment;
 
 
-import org.eclipse.microprofile.metrics.Meter;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.annotation.Metered;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Member;
 
 import javax.annotation.Priority;
 import javax.enterprise.inject.Intercepted;
@@ -31,8 +30,10 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.AroundTimeout;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Member;
+
+import org.eclipse.microprofile.metrics.Meter;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.annotation.Metered;
 
 @SuppressWarnings("unused")
 @Metered
@@ -69,7 +70,7 @@ import java.lang.reflect.Member;
     }
 
     private <E extends Member & AnnotatedElement> Object meteredCallable(InvocationContext context, E element) throws Exception {
-        String name = resolver.metered(bean.getBeanClass(), element).metricName();
+        String name = resolver.metered(bean != null ? bean.getBeanClass() : element.getDeclaringClass(), element).metricName();
         Meter meter = (Meter) registry.getMetrics().get(name);
         if (meter == null) {
             throw new IllegalStateException("No meter with name [" + name + "] found in registry [" + registry + "]");

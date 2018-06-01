@@ -17,8 +17,12 @@
  */
 package org.wildfly.swarm.microprofile.metrics.deployment;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.event.Observes;
@@ -37,7 +41,6 @@ import javax.enterprise.inject.spi.ProcessProducerField;
 import javax.enterprise.inject.spi.ProcessProducerMethod;
 import javax.enterprise.inject.spi.WithAnnotations;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
 
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
@@ -60,13 +63,14 @@ public class MetricCdiInjectionExtension implements Extension {
     private static final AnnotationLiteral<Default> DEFAULT = new AnnotationLiteral<Default>() {
     };
 
-    private final Map<Bean<?>, AnnotatedMember<?>> metrics = new HashMap<>();
+    private final Map<Bean<?>, AnnotatedMember<?>> metrics;
 
-    @Inject
-    MetricRegistry registry;
+    private final List<Class<?>> metricsInterfaces;
 
     public MetricCdiInjectionExtension() {
         LOGGER.debug("MetricCdiInjectionExtension");
+        metrics =  new HashMap<>();
+        metricsInterfaces = new ArrayList<>();
     }
 
     private void addInterceptorBindings(@Observes BeforeBeanDiscovery bbd, BeanManager manager) {
@@ -83,10 +87,22 @@ public class MetricCdiInjectionExtension implements Extension {
     }
 
     private <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class, Timed.class }) ProcessAnnotatedType<X> pat) {
-        AnnotatedTypeDecorator newPAT = new AnnotatedTypeDecorator<>(pat.getAnnotatedType(), METRICS_BINDING);
-        LOGGER.debugf("annotations: %s", newPAT.getAnnotations());
-        LOGGER.debugf("methods: %s", newPAT.getMethods());
-        pat.setAnnotatedType(newPAT);
+        Class<X> clazz = pat.getAnnotatedType().getJavaClass();
+        Package pack = clazz.getPackage();
+        if (pack != null && pack.getName().equals(MetricCdiInjectionExtension.class.getPackage().getName())) {
+            // Do not add MetricsBinding to metrics interceptor classes
+            return;
+        }
+        if (clazz.isInterface()) {
+            // THORN-2068: MicroProfile Rest Client basic support
+            // All declared metrics of an annotated interface are registered during AfterDeploymentValidation
+            metricsInterfaces.add(clazz);
+        } else {
+            AnnotatedTypeDecorator newPAT = new AnnotatedTypeDecorator<>(pat.getAnnotatedType(), METRICS_BINDING);
+            LOGGER.debugf("annotations: %s", newPAT.getAnnotations());
+            LOGGER.debugf("methods: %s", newPAT.getMethods());
+            pat.setAnnotatedType(newPAT);
+        }
     }
 
     private void metricProducerField(@Observes ProcessProducerField<? extends Metric, ?> ppf) {
@@ -117,6 +133,19 @@ public class MetricCdiInjectionExtension implements Extension {
             String metricName = name.of(bean.getValue());
             registry.register(metricName, getReference(manager, bean.getValue().getBaseType(), bean.getKey()));
         }
+
+        // THORN-2068: MicroProfile Rest Client basic support
+        if (!metricsInterfaces.isEmpty()) {
+            MetricResolver resolver = new MetricResolver();
+            for (Class<?> metricsInterface : metricsInterfaces) {
+                for (Method method : metricsInterface.getDeclaredMethods()) {
+                    if (!method.isDefault() && !Modifier.isStatic(method.getModifiers())) {
+                        MetricsMetadata.registerMetrics(registry, resolver, metricsInterface, method);
+                    }
+                }
+            }
+        }
+        metricsInterfaces.clear();
 
         // Let's clear the collected metric producers
         metrics.clear();
