@@ -8,6 +8,6 @@ import io.thorntail.Thorntail;
 @ApplicationPath("/")
 public class MyApplication extends Application {
     public static void main(String... args) throws Exception {
-        Thorntail.main(args);
+        Thorntail.run();
     }
 }
