@@ -18,9 +18,8 @@
 package org.wildfly.swarm.microprofile.metrics.deployment;
 
 
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.Timer;
-import org.eclipse.microprofile.metrics.annotation.Timed;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Member;
 
 import javax.annotation.Priority;
 import javax.enterprise.inject.Intercepted;
@@ -31,8 +30,10 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.AroundTimeout;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Member;
+
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.Timer;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 
 @SuppressWarnings("unused")
 @Timed
@@ -69,7 +70,7 @@ import java.lang.reflect.Member;
     }
 
     private <E extends Member & AnnotatedElement> Object timedCallable(InvocationContext context, E element) throws Exception {
-        String name = resolver.timed(bean.getBeanClass(), element).metricName();
+        String name = resolver.timed(bean != null ? bean.getBeanClass() : element.getDeclaringClass(), element).metricName();
         Timer timer = (Timer) registry.getMetrics().get(name);
         if (timer == null) {
             throw new IllegalStateException("No timer with name [" + name + "] found in registry [" + registry + "]");

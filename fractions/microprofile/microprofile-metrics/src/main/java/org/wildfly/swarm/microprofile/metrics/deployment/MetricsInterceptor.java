@@ -16,9 +16,7 @@
 
 package org.wildfly.swarm.microprofile.metrics.deployment;
 
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -31,10 +29,7 @@ import javax.interceptor.InvocationContext;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
-import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
-import org.eclipse.microprofile.metrics.annotation.Metered;
-import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.jboss.logging.Logger;
 
 @SuppressWarnings("unused")
@@ -62,7 +57,7 @@ import org.jboss.logging.Logger;
         Class<?> bean = context.getConstructor().getDeclaringClass();
         LOGGER.infof("MetricsInterceptor, bean=%s\n", bean);
         // Registers the bean constructor metrics
-        registerMetrics(bean, context.getConstructor());
+        MetricsMetadata.registerMetrics(registry, resolver, bean, context.getConstructor());
 
         // Registers the methods metrics over the bean type hierarchy
         Class<?> type = bean;
@@ -70,7 +65,7 @@ import org.jboss.logging.Logger;
             // TODO: discover annotations declared on implemented interfaces
             for (Method method : type.getDeclaredMethods()) {
                 if (!method.isSynthetic() && !Modifier.isPrivate(method.getModifiers())) {
-                    registerMetrics(bean, method);
+                    MetricsMetadata.registerMetrics(registry, resolver, bean, method);
                 }
             }
             type = type.getSuperclass();
@@ -86,7 +81,7 @@ import org.jboss.logging.Logger;
                 MetricResolver.Of<Gauge> gauge = resolver.gauge(bean, method);
                 if (gauge.isPresent()) {
                     Gauge g = gauge.metricAnnotation();
-                    Metadata metadata = getMetadata(gauge.metricName(), g.unit(), g.description(), g.displayName(), MetricType.GAUGE, g.tags());
+                    Metadata metadata = MetricsMetadata.getMetadata(gauge.metricName(), g.unit(), g.description(), g.displayName(), MetricType.GAUGE, g.tags());
                     registry.register(metadata, new ForwardingGauge(method, context.getTarget()));
                 }
             }
@@ -96,52 +91,6 @@ import org.jboss.logging.Logger;
         return target;
     }
 
-    private <E extends Member & AnnotatedElement> void registerMetrics(Class<?> bean, E element) {
-        MetricResolver.Of<Counted> counted = resolver.counted(bean, element);
-        if (counted.isPresent()) {
-            Counted t = counted.metricAnnotation();
-            Metadata metadata = getMetadata(counted.metricName(), t.unit(),t.description(),t.displayName(), MetricType.COUNTER, t.tags());
-
-            registry.counter(metadata);
-        }
-
-
-        MetricResolver.Of<Metered> metered = resolver.metered(bean, element);
-        if (metered.isPresent()) {
-            Metered t = metered.metricAnnotation();
-            Metadata metadata = getMetadata(metered.metricName(), t.unit(),t.description(),t.displayName(), MetricType.METERED, t.tags());
-
-            registry.meter(metadata);
-        }
-
-        MetricResolver.Of<Timed> timed = resolver.timed(bean, element);
-        if (timed.isPresent()) {
-            Timed t = timed.metricAnnotation();
-            Metadata metadata = getMetadata(timed.metricName(), t.unit(),t.description(),t.displayName(), MetricType.TIMER, t.tags());
-            registry.timer(metadata);
-        }
-    }
-
-    private Metadata getMetadata(String name, String unit, String description, String displayName, MetricType type, String... tags) {
-
-         Metadata metadata = new Metadata(name, type);
-         if (!unit.isEmpty()) {
-             metadata.setUnit(unit);
-         }
-         if (!description.isEmpty()) {
-             metadata.setDescription(description);
-         }
-         if (!displayName.isEmpty()) {
-             metadata.setDisplayName(displayName);
-         }
-         if (tags != null && tags.length > 0) {
-             for (String tag : tags) {
-                 metadata.addTags(tag);
-             }
-         }
-         return metadata;
-     }
-
     private static Object invokeMethod(Method method, Object object) {
         try {
             return method.invoke(object);
@@ -149,7 +98,6 @@ import org.jboss.logging.Logger;
             throw new IllegalStateException("Error while calling method [" + method + "]", cause);
         }
     }
-
 
     private static final class ForwardingGauge implements org.eclipse.microprofile.metrics.Gauge<Object> {
 
