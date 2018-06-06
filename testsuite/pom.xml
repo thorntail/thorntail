@@ -22,7 +22,7 @@
     <version.maven-failsafe-plugin>2.20.1</version.maven-failsafe-plugin>
     <version.maven-surefire-plugin>2.19.1</version.maven-surefire-plugin>
     <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
-    <version.java>8</version.java>
+    <version.java>1.8</version.java>
   </properties>
 
   <dependencyManagement>
