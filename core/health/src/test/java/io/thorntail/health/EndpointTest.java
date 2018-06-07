@@ -1,8 +1,5 @@
 package io.thorntail.health;
 
-import static io.restassured.RestAssured.when;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.net.URL;
 
 import javax.enterprise.inject.Produces;
@@ -12,6 +9,11 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import io.thorntail.test.ThorntailTestRunner;
+import io.thorntail.servlet.annotation.Management;
+
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.junit.After;
@@ -19,10 +21,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
-import io.thorntail.servlet.annotation.Management;
-import io.thorntail.test.ThorntailTestRunner;
+import static io.restassured.RestAssured.when;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(ThorntailTestRunner.class)
 public class EndpointTest {
