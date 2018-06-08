@@ -25,6 +25,7 @@
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Management,Eclipse MicroProfile</swarm.fraction.tags>
+    <version.smallrye.health>1.0.0-SNAPSHOT</version.smallrye.health>
   </properties>
 
   <build>
@@ -59,9 +60,9 @@
     </dependency>
 
     <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>health-api</artifactId>
-      <version>${project.version}</version>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-health</artifactId>
+      <version>${version.smallrye.health}</version>
     </dependency>
 
     <dependency>
