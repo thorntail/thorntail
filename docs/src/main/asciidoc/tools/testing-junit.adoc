@@ -53,7 +53,7 @@ If the annotation `@EphemeralPorts` is applied at the class level, and your appl
 This may be useful when running tests on a CI machine or if you wish to parallelize your tests.
 
 In order to know what port are actually selected and in-use, you may `@Inject` either a `@Primary` or `@Management` `URL` or `InetSocketAddress` component.
-These instances are made available throw the xref:component-servlet[Servlet] component.
+These instances are made available through the xref:component-servlet[Servlet] component.
 
 .assertj
 
