@@ -51,9 +51,9 @@ import org.wildfly.swarm.tools.DeclaredDependencies;
 )
 public class PackageMojo extends AbstractSwarmMojo {
 
-    static final String UBERJAR_SUFFIX = "-thorntail";
+    static final String UBERJAR_SUFFIX = "thorntail";
 
-    static final String HOLLOWJAR_SUFFIX = "-hollow" + UBERJAR_SUFFIX;
+    static final String HOLLOWJAR_SUFFIX = "hollow" + UBERJAR_SUFFIX;
 
     @Parameter(alias = "bundleDependencies", defaultValue = "true", property = "swarm.bundleDependencies")
     protected boolean bundleDependencies;
@@ -214,7 +214,7 @@ public class PackageMojo extends AbstractSwarmMojo {
             if (this.finalName != null) {
                 jarFinalName = this.finalName;
             } else {
-                jarFinalName = finalName + (this.hollow ? HOLLOWJAR_SUFFIX : UBERJAR_SUFFIX);
+                jarFinalName = finalName + "-" + (this.hollow ? HOLLOWJAR_SUFFIX : UBERJAR_SUFFIX);
             }
             jarFinalName += JAR_FILE_EXTENSION;
             File jar = tool.build(jarFinalName, Paths.get(this.projectBuildDir));

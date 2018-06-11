@@ -189,7 +189,7 @@ public class StartMojo extends AbstractSwarmMojo {
         }
 
         return new SwarmExecutor()
-                .withExecutableJar(Paths.get(this.projectBuildDir, finalName + PackageMojo.UBERJAR_SUFFIX + JAR_FILE_EXTENSION));
+                .withExecutableJar(Paths.get(this.projectBuildDir, finalName + "-" + PackageMojo.UBERJAR_SUFFIX + JAR_FILE_EXTENSION));
     }
 
     protected SwarmExecutor warExecutor() throws MojoFailureException {
