@@ -32,7 +32,6 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 @DeploymentModule(name = "javax.ws.rs.api")
 @DeploymentModule(name = "org.jboss.dmr")
 @DeploymentModule(name = "org.wildfly.swarm.microprofile.health")
-@DeploymentModule(name = "org.wildfly.swarm.microprofile.health", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
 @DeploymentModule(name = "org.eclipse.microprofile.health", services = Module.ServiceHandling.IMPORT, export = true)
 public class HealthFraction implements Fraction<HealthFraction> {
 

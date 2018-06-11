@@ -26,6 +26,7 @@
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Management,Eclipse MicroProfile</swarm.fraction.tags>
     <version.smallrye.health>1.0.0-SNAPSHOT</version.smallrye.health>
+    <version.org.glassfish.javax.json>1.0.4</version.org.glassfish.javax.json>
   </properties>
 
   <build>
@@ -73,6 +74,11 @@
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>naming</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.json</artifactId>
     </dependency>
 
     <dependency>

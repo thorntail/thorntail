@@ -15,25 +15,23 @@
  */
 package org.wildfly.swarm.microprofile.health.runtime;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.enterprise.inject.Vetoed;
 import javax.naming.NamingException;
+
+import org.eclipse.microprofile.health.HealthCheckResponse;
+import org.jboss.logging.Logger;
+import org.wildfly.swarm.microprofile.health.api.Monitor;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.AttachmentKey;
 import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
-import org.eclipse.microprofile.health.HealthCheck;
-import org.eclipse.microprofile.health.HealthCheckResponse;
-import org.jboss.logging.Logger;
-import org.wildfly.swarm.microprofile.health.api.Monitor;
 
 /**
  * The actual monitoring HTTP endpoints. These are wrapped by {@link SecureHttpContexts}.
@@ -69,64 +67,9 @@ public class HttpContexts implements HttpHandler {
         } else if (THREADS.equals(exchange.getRequestPath())) {
             threads(exchange);
             return;
-        } else if (HEALTH.equals(exchange.getRequestPath())) {
-            proxyRequestsCDI(exchange);
-            return;
         }
 
         next.handleRequest(exchange);
-    }
-
-    private void proxyRequestsCDI(HttpServerExchange exchange) {
-
-        Set<Object> procedures = monitor.getHealthDelegates();
-
-        if (procedures.isEmpty()) {
-            noHealthEndpoints(exchange);
-            return;
-        }
-
-        List<org.eclipse.microprofile.health.HealthCheckResponse> responses = new ArrayList<>();
-
-        for (Object procedure : procedures) {
-            org.eclipse.microprofile.health.HealthCheckResponse status = ((HealthCheck)procedure).call();
-            responses.add(status);
-        }
-
-        StringBuilder sb = new StringBuilder(LCURL);
-        sb.append("\"checks\": [\n");
-
-        int i = 0;
-        boolean failed = false;
-
-        for (org.eclipse.microprofile.health.HealthCheckResponse resp : responses) {
-
-            sb.append(toJson(resp));
-
-            if (!failed) {
-                failed = resp.getState() != HealthCheckResponse.State.UP;
-            }
-
-            if (i < responses.size() - 1) {
-                sb.append(",\n");
-            }
-            i++;
-        }
-        sb.append("],\n");
-
-        String outcome = failed ? "DOWN" : "UP";
-        sb.append("\"outcome\": \"" + outcome + "\"\n");
-        sb.append("}\n");
-
-        // send a response
-        if (failed) {
-            exchange.setStatusCode(503);
-        }
-
-        responseHeaders(exchange);
-        exchange.getResponseSender().send(sb.toString());
-        exchange.endExchange();
-
     }
 
     private void responseHeaders(HttpServerExchange exchange) {
