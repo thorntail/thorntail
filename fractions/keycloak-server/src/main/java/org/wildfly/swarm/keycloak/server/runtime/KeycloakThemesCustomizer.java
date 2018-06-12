@@ -47,6 +47,10 @@ public class KeycloakThemesCustomizer implements Customizer {
     public void customize() throws ModuleLoadException, IOException {
 
         if (!this.keycloakServer.subresources().themes().isEmpty()) {
+            this.keycloakServer.subresources().themes().stream().filter((t) -> t.modules() != null && t.dir() == null)
+                .forEach((t) -> {
+                t.dir(".");
+            });
             return;
         }
 
