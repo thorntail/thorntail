@@ -50,7 +50,6 @@ public class KeycloakThemesCustomizer implements Customizer {
             return;
         }
 
-        // Setting a 'dir' property is required to avoid KC NPE
         this.keycloakServer.theme("defaults", (theme) -> {
             theme.module("org.keycloak.keycloak-themes")
                 .staticmaxage(2592000L)
