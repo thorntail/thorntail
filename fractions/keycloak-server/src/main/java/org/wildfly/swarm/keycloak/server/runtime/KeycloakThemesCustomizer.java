@@ -15,22 +15,14 @@
  */
 package org.wildfly.swarm.keycloak.server.runtime;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.modules.Module;
 import org.jboss.modules.ModuleLoadException;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.wildfly.swarm.bootstrap.util.TempFileManager;
 import org.wildfly.swarm.keycloak.server.KeycloakServerFraction;
 import org.wildfly.swarm.spi.api.Customizer;
-import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 
 /**
@@ -58,21 +50,13 @@ public class KeycloakThemesCustomizer implements Customizer {
             return;
         }
 
-        Module module = Module.getBootModuleLoader().loadModule("org.keycloak.keycloak-themes");
-        URL resource = module.getExportedResource("keycloak-themes.jar");
-
-        JARArchive themesArtifact = ShrinkWrap.create(JARArchive.class);
-        themesArtifact.as(ZipImporter.class).importFrom(resource.openStream());
-
-        File root = TempFileManager.INSTANCE.newTempDirectory("keycloak-themes", ".d");
-        File exportedDir = themesArtifact.as(ExplodedExporter.class).exportExplodedInto(root);
-        File themeDir = new File(exportedDir, "theme");
-
+        // Setting a 'dir' property is required to avoid KC NPE
         this.keycloakServer.theme("defaults", (theme) -> {
-            theme.dir(themeDir.getAbsolutePath());
-            theme.staticmaxage(2592000L);
-            theme.cachethemes(true);
-            theme.cachetemplates(true);
+            theme.module("org.keycloak.keycloak-themes")
+                .staticmaxage(2592000L)
+                .cachethemes(true)
+                .cachetemplates(true)
+                .dir(".");
         });
 
     }
