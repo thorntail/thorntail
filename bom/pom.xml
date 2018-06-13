@@ -50,7 +50,7 @@
     <version.hibernate-search>5.10.1.Final</version.hibernate-search>
     <version.ironjacamar>1.4.7.Final</version.ironjacamar>
     <version.keycloak>3.4.3.Final</version.keycloak>
-    <version.resteasy>3.1.4.Final</version.resteasy>
+    <version.resteasy>4.0.0.Beta3</version.resteasy>
     <version.undertow>1.4.21.Final</version.undertow>
     <version.activemq>2.4.0</version.activemq>
     <version.jms-spec>1.0.2.Final</version.jms-spec>
