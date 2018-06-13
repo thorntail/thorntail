@@ -53,7 +53,7 @@ public class PackageMojo extends AbstractSwarmMojo {
 
     static final String UBERJAR_SUFFIX = "thorntail";
 
-    static final String HOLLOWJAR_SUFFIX = "hollow" + UBERJAR_SUFFIX;
+    static final String HOLLOWJAR_SUFFIX = "hollow" + "-" + UBERJAR_SUFFIX;
 
     @Parameter(alias = "bundleDependencies", defaultValue = "true", property = "swarm.bundleDependencies")
     protected boolean bundleDependencies;

@@ -98,7 +98,7 @@ public class MultiStartMojo extends AbstractSwarmMojo {
         String classifier = process.getChild("classifier").getValue();
         Artifact artifact = findArtifact(groupId, artifactId, classifier);
         if (artifact == null) {
-            artifact = findArtifact(groupId, artifactId, "thorntail");
+            artifact = findArtifact(groupId, artifactId, PackageMojo.UBERJAR_SUFFIX);
         }
 
         if (artifact != null) {
