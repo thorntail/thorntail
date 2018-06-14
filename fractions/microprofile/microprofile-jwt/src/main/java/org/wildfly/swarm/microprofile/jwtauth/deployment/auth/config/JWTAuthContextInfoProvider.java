@@ -48,6 +48,9 @@ public class JWTAuthContextInfoProvider {
     @Inject
     @ConfigProperty(name = "mp.jwt.verify.publickey.location", defaultValue = NONE)
     private Optional<String> mpJwtLocation;
+    @Inject
+    @ConfigProperty(name = "mp.jwt.verify.requireiss", defaultValue = "true")
+    private Optional<Boolean> mpJwtRequireIss;
     // Swarm fraction defined properties
     @Inject
     @ConfigProperty(name = "mpjwt.signerPublicKey", defaultValue = NONE)
@@ -116,6 +119,13 @@ public class JWTAuthContextInfoProvider {
         } else {
             // If there is no expected issuer configured, don't validate it; new in MP-JWT 1.1
             contextInfo.setRequireIssuer(false);
+        }
+
+        if (mpJwtRequireIss != null && mpJwtRequireIss.isPresent()) {
+            contextInfo.setRequireIssuer(mpJwtRequireIss.get());
+        } else {
+            // Default is to require iss claim
+            contextInfo.setRequireIssuer(true);
         }
 
         if (expGracePeriodSecs.isPresent()) {
