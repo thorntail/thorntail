@@ -37,8 +37,7 @@ public class JWTAuthContextInfo {
     private HttpsJwks httpsJwks;
 
     /**
-     * Flag that indicates whether the issuer required, or optional, new in MP-JWT 1.1.
-     * Defaults to the MP-JWT 1.0 behavior of true.
+     * Flag that indicates whether the issuer is required and validated, or ignored, new in MP-JWT 1.1.
      */
     private boolean requireIssuer = true;
     private boolean followMpJwt11Rules;
