@@ -20,7 +20,6 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.wildfly.swarm.config.infinispan.CacheContainer;
-import org.wildfly.swarm.config.infinispan.Mode;
 import org.wildfly.swarm.config.infinispan.cache_container.EvictionComponent;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
 import org.wildfly.swarm.spi.api.Customizer;
@@ -59,6 +58,8 @@ public class KeycloakCacheCustomizer implements Customizer {
                     .localCache("sessions")
                     .localCache("authenticationSessions")
                     .localCache("offlineSessions")
+                    .localCache("clientSessions")
+                    .localCache("offlineClientSessions")
                     .localCache("loginFailures")
                     .localCache("work")
                     .localCache("authorization", (localCache) -> {
@@ -86,12 +87,6 @@ public class KeycloakCacheCustomizer implements Customizer {
                             expire.maxIdle((long) -1);
                             expire.interval((long) 300000);
                         });
-                    })
-                    .distributedCache("clientSessions", (dCache) -> {
-                        dCache.mode(Mode.SYNC).owners(1);
-                    })
-                    .distributedCache("offlineClientSessions", (dCache) -> {
-                        dCache.mode(Mode.SYNC).owners(1);
                     })
             );
         }
