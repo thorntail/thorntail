@@ -16,7 +16,7 @@
 
   <modules>
     <module>bean-validation</module>
-    <module>config</module>
+    <module>kernel</module>
     <module>hibernate-search</module>
     <module>hibernate-search-should-fail</module>
     <module>jaxrs</module>
