@@ -48,6 +48,7 @@ public class PrometheusExporter implements Exporter {
 
     // This allows to suppress the (noisy) # HELP line
     private static final String SWARM_MICROPROFILE_METRICS_OMIT_HELP_LINE = "swarm.microprofile.metrics.omitHelpLine";
+    private static final String NONE = "none";
 
     private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
 
@@ -127,8 +128,9 @@ public class PrometheusExporter implements Exporter {
                 case COUNTER:
                     key = getPrometheusMetricName(md, key);
                     String suffix = null;
-                    if (!md.getUnit().equals(MetricUnits.NONE)) {
-                        suffix = USCORE + PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit());
+                    Optional<String> optUnit = md.getUnit();
+                    if (optUnit.isPresent() && !optUnit.get().equals(MetricUnits.NONE)) {
+                        suffix = USCORE + PrometheusUnit.getBaseUnitAsPrometheusString(optUnit.get());
                     }
                     writeHelpLine(sb, scope, key, md, suffix);
                     writeTypeLine(sb, scope, key, md, suffix, null);
@@ -155,16 +157,20 @@ public class PrometheusExporter implements Exporter {
 
     private void writeTimerValues(StringBuilder sb, MetricRegistry.Type scope, TimerImpl timer, Metadata md) {
 
-        String unit = md.getUnit();
-        unit = PrometheusUnit.getBaseUnitAsPrometheusString(unit);
+        String unit;
+        if (md.getUnit().isPresent()) {
+            unit = PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit().get());
+        } else {
+            unit = NONE;
+        }
 
-        String theUnit = unit.equals("none") ? "" : USCORE + unit;
+        String theUnit = unit.equals(NONE) ? "" : USCORE + unit;
 
         writeMeterRateValues(sb, scope, timer.getMeter(), md);
         Snapshot snapshot = timer.getSnapshot();
         writeSnapshotBasics(sb, scope, md, snapshot, theUnit);
 
-        String suffix = USCORE + PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit());
+        String suffix = USCORE + PrometheusUnit.getBaseUnitAsPrometheusString(unit);
         writeHelpLine(sb, scope, md.getName(), md, suffix);
         writeTypeLine(sb,scope,md.getName(),md, suffix,SUMMARY);
         writeValueLine(sb,scope,suffix + "_count",timer.getCount(),md, null, false);
@@ -175,10 +181,14 @@ public class PrometheusExporter implements Exporter {
     private void writeHistogramValues(StringBuilder sb, MetricRegistry.Type scope, HistogramImpl histogram, Metadata md) {
 
         Snapshot snapshot = histogram.getSnapshot();
-        String unit = md.getUnit();
-        unit = PrometheusUnit.getBaseUnitAsPrometheusString(unit);
+        String unit;
+        if (md.getUnit().isPresent()) {
+            unit = PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit().get());
+        } else {
+            unit = NONE;
+        }
 
-        String theUnit = unit.equals("none") ? "" : USCORE + unit;
+        String theUnit = unit.equals(NONE) ? "" : USCORE + unit;
 
         writeHelpLine(sb, scope, md.getName(), md, SUMMARY);
         writeSnapshotBasics(sb, scope, md, snapshot, theUnit);
@@ -256,7 +266,7 @@ public class PrometheusExporter implements Exporter {
         }
 
         sb.append(SPACE);
-        Double value = scaled ? PrometheusUnit.scaleToBase(md.getUnit(), valueRaw) : valueRaw;
+        Double value = scaled ? PrometheusUnit.scaleToBase(md.getUnit().get(), valueRaw) : valueRaw;
         sb.append(value).append(LF);
 
     }
@@ -280,7 +290,7 @@ public class PrometheusExporter implements Exporter {
 
     private void writeHelpLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, String suffix) {
         // Only write this line if we actually have a description in metadata
-        if (writeHelpLine && md.getDescription() != null) {
+        if (writeHelpLine && md.getDescription().isPresent()) {
             sb.append("# HELP ");
             sb.append(scope.getName().toLowerCase());
             sb.append(':').append(getPrometheusMetricName(md, key));
@@ -288,7 +298,7 @@ public class PrometheusExporter implements Exporter {
                 sb.append(suffix);
             }
             sb.append(SPACE);
-            sb.append(md.getDescription());
+            sb.append(md.getDescription().get());
             sb.append(LF);
         }
 
@@ -318,8 +328,9 @@ public class PrometheusExporter implements Exporter {
 
         // value line
         fillBaseName(sb, scope, key);
-        if (!md.getUnit().equals(MetricUnits.NONE)) {
-            String unit = PrometheusUnit.getBaseUnitAsPrometheusString(md.getUnit());
+        Optional<String> mdUnit = md.getUnit();
+        if (mdUnit.isPresent() && !mdUnit.get().equals(MetricUnits.NONE)) {
+            String unit = PrometheusUnit.getBaseUnitAsPrometheusString(mdUnit.get());
             sb.append("_").append(unit);
         }
         String tags = md.getTagsAsString();
@@ -340,7 +351,12 @@ public class PrometheusExporter implements Exporter {
             valIn = (double) ((Counter) metric).getCount();
         }
 
-        Double value = PrometheusUnit.scaleToBase(md.getUnit(), valIn);
+        Double value;
+        if (mdUnit.isPresent()) {
+            value = PrometheusUnit.scaleToBase(mdUnit.get(), valIn);
+        } else {
+            value = valIn;
+        }
         sb.append(SPACE).append(value).append(LF);
 
     }

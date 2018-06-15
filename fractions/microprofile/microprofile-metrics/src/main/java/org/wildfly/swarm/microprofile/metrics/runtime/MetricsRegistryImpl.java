@@ -28,12 +28,14 @@ import javax.enterprise.inject.Vetoed;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.HitCounter;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricFilter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
+import org.eclipse.microprofile.metrics.ParallelCounter;
 import org.eclipse.microprofile.metrics.Timer;
 import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile.metrics.runtime.app.CounterImpl;
@@ -78,7 +80,7 @@ public class MetricsRegistryImpl extends MetricRegistry {
             }
         }
 
-        Metadata m = new Metadata(name, type);
+        Metadata m = Metadata.builder().withName(name).withType(type).build();
         metricMap.put(name, metric);
 
         metadataMap.put(name, m);
@@ -88,9 +90,9 @@ public class MetricsRegistryImpl extends MetricRegistry {
     @Override
     public <T extends Metric> T register(String name, T metric, Metadata metadata) throws IllegalArgumentException {
 
-        metadata.setName(name);
+        Metadata newMeta = Metadata.builder(metadata).withName(name).build();
 
-        return register(metadata, metric);
+        return register(newMeta, metric);
     }
 
     @Override
@@ -125,7 +127,8 @@ public class MetricsRegistryImpl extends MetricRegistry {
 
     @Override
     public Counter counter(String name) {
-        return counter(new Metadata(name, MetricType.COUNTER));
+        Metadata metadata = Metadata.builder().withName(name).withType(MetricType.COUNTER).build();
+        return counter(metadata);
     }
 
     @Override
@@ -134,8 +137,35 @@ public class MetricsRegistryImpl extends MetricRegistry {
     }
 
     @Override
+    public HitCounter hitCounter(String name) {
+        Metadata metadata = Metadata.builder().withName(name).withType(MetricType.HIT_COUNTER).build();
+        return hitCounter(metadata);
+    }
+
+
+    @Override
+    public HitCounter hitCounter(Metadata metadata) {
+        return get(metadata, MetricType.HIT_COUNTER);
+    }
+
+
+    @Override
+    public ParallelCounter parallelCounter(String name) {
+        Metadata metadata = Metadata.builder().withName(name).withType(MetricType.PARALLEL_COUNTER).build();
+        return parallelCounter(metadata);
+    }
+
+    @Override
+    public ParallelCounter parallelCounter(Metadata metadata) {
+        return get(metadata, MetricType.PARALLEL_COUNTER);
+    }
+
+
+
+    @Override
     public Histogram histogram(String name) {
-        return histogram(new Metadata(name, MetricType.HISTOGRAM));
+        Metadata metadata = Metadata.builder().withName(name).withType(MetricType.HISTOGRAM).build();
+        return histogram(metadata);
     }
 
     @Override
@@ -144,8 +174,9 @@ public class MetricsRegistryImpl extends MetricRegistry {
     }
 
     @Override
-    public Meter meter(String s) {
-        return meter(new Metadata(s, MetricType.METERED));
+    public Meter meter(String name) {
+        Metadata metadata = Metadata.builder().withName(name).withType(MetricType.METERED).build();
+        return meter(metadata);
     }
 
     @Override
@@ -164,6 +195,8 @@ public class MetricsRegistryImpl extends MetricRegistry {
             Metric m;
             switch (type) {
 
+                case HIT_COUNTER:       // TODO different impl?
+                case PARALLEL_COUNTER:
                 case COUNTER:
                     m = new CounterImpl();
                     break;
@@ -193,8 +226,9 @@ public class MetricsRegistryImpl extends MetricRegistry {
     }
 
     @Override
-    public Timer timer(String s) {
-        return timer(new Metadata(s, MetricType.TIMER));
+    public Timer timer(String name) {
+        Metadata metadata = Metadata.builder().withName(name).withType(MetricType.TIMER).build();
+        return timer(metadata);
     }
 
     @Override
@@ -245,6 +279,26 @@ public class MetricsRegistryImpl extends MetricRegistry {
     }
 
     @Override
+    public SortedMap<String, HitCounter> getHitCounters(MetricFilter metricFilter) {
+        return getMetrics(MetricType.HIT_COUNTER, metricFilter);
+    }
+
+    @Override
+    public SortedMap<String, HitCounter> getHitCounters() {
+        return getHitCounters(MetricFilter.ALL);
+    }
+
+    @Override
+    public SortedMap<String, ParallelCounter> getParallelCounters(MetricFilter metricFilter) {
+        return getMetrics(MetricType.PARALLEL_COUNTER, metricFilter);
+    }
+
+    @Override
+    public SortedMap<String, ParallelCounter> getParallelCounters() {
+        return getParallelCounters(MetricFilter.ALL);
+    }
+
+    @Override
     public SortedMap<String, Counter> getCounters(MetricFilter metricFilter) {
         return getMetrics(MetricType.COUNTER, metricFilter);
     }
@@ -290,7 +344,7 @@ public class MetricsRegistryImpl extends MetricRegistry {
 
         for (Map.Entry<String, Metric> entry : metricMap.entrySet()) {
             Metadata metadata = metadataMap.get(entry.getKey());
-            if (metadata.getTypeRaw() == type) {
+            if (metadata.getTypeRaw().equals(type)) {
                 if (filter.matches(entry.getKey(), entry.getValue())) {
                     out.put(entry.getKey(), (T) entry.getValue());
                 }

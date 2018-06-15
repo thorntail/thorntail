@@ -21,10 +21,13 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
 
 import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetadataBuilder;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.HitCounted;
 import org.eclipse.microprofile.metrics.annotation.Metered;
+import org.eclipse.microprofile.metrics.annotation.ParallelCounted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
 class MetricsMetadata {
@@ -39,6 +42,24 @@ class MetricsMetadata {
             Metadata metadata = getMetadata(counted.metricName(), t.unit(), t.description(), t.displayName(), MetricType.COUNTER, t.tags());
             registry.counter(metadata);
         }
+        MetricResolver.Of<HitCounted> hitCountedOf = resolver.hitCounted(bean, element);
+        if (hitCountedOf.isPresent()) {
+            HitCounted t = hitCountedOf.metricAnnotation();
+            Metadata metadata = getMetadata(hitCountedOf.metricName(), t.unit(),t.description(),t.displayName(),
+                                            MetricType.HIT_COUNTER, t.tags());
+
+            registry.counter(metadata);
+        }
+
+        MetricResolver.Of<ParallelCounted> parallelCountedOf = resolver.parallelCounted(bean, element);
+        if (parallelCountedOf.isPresent()) {
+            ParallelCounted t = parallelCountedOf.metricAnnotation();
+            Metadata metadata = getMetadata(parallelCountedOf.metricName(), t.unit(),t.description(),t.displayName(),
+                                            MetricType.PARALLEL_COUNTER, t.tags());
+
+            registry.counter(metadata);
+        }
+
         MetricResolver.Of<Metered> metered = resolver.metered(bean, element);
         if (metered.isPresent()) {
             Metered t = metered.metricAnnotation();
@@ -54,22 +75,23 @@ class MetricsMetadata {
     }
 
     static Metadata getMetadata(String name, String unit, String description, String displayName, MetricType type, String... tags) {
-        Metadata metadata = new Metadata(name, type);
+
+        MetadataBuilder builder = Metadata.builder().withName(name).withType(type);
         if (!unit.isEmpty()) {
-            metadata.setUnit(unit);
+            builder.withUnit(unit);
         }
         if (!description.isEmpty()) {
-            metadata.setDescription(description);
+            builder.withDescription(description);
         }
         if (!displayName.isEmpty()) {
-            metadata.setDisplayName(displayName);
+            builder.withDisplayName(displayName);
         }
         if (tags != null && tags.length > 0) {
             for (String tag : tags) {
-                metadata.addTags(tag);
+                builder.addTags(tag);
             }
         }
-        return metadata;
+        return builder.build();
     }
 
 }

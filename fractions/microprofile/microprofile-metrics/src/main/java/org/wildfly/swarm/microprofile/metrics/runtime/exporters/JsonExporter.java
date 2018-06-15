@@ -95,7 +95,7 @@ public class JsonExporter implements Exporter {
                 case TIMER:
                     TimerImpl timer = (TimerImpl) value;
                     writeStartLine(sb, key);
-                    writeTimerValues(sb, timer, metadata.getUnit());
+                    writeTimerValues(sb, timer, metadata.getUnit().get());
                     writeEndLine(sb);
                     break;
                 case HISTOGRAM:

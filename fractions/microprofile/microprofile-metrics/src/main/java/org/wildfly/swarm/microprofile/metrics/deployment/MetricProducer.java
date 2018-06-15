@@ -32,10 +32,13 @@ import javax.naming.NamingException;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.HitCounter;
 import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetadataBuilder;
 import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
+import org.eclipse.microprofile.metrics.ParallelCounter;
 import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
@@ -95,6 +98,16 @@ public class MetricProducer {
     }
 
     @Produces
+    HitCounter getHitCounter(InjectionPoint ip) {
+        return getApplicationRegistry().hitCounter(getMetadata(ip, MetricType.HIT_COUNTER));
+    }
+
+    @Produces
+    ParallelCounter getParallelCounter(InjectionPoint ip) {
+        return getApplicationRegistry().parallelCounter(getMetadata(ip, MetricType.PARALLEL_COUNTER));
+    }
+
+    @Produces
     Histogram getHistogram(InjectionPoint ip) {
         return getApplicationRegistry().histogram(getMetadata(ip, MetricType.HISTOGRAM));
     }
@@ -123,24 +136,24 @@ public class MetricProducer {
     }
 
     private Metadata getMetadata(InjectionPoint ip, MetricType type) {
-        Metadata metadata = new Metadata(metricName.of(ip), type);
+        MetadataBuilder builder = Metadata.builder().withName(metricName.of(ip)).withType(type);
         Metric metric = ip.getAnnotated().getAnnotation(Metric.class);
         if (metric != null) {
             if (!metric.unit().isEmpty()) {
-                metadata.setUnit(metric.unit());
+                builder.withUnit(metric.unit());
             }
             if (!metric.description().isEmpty()) {
-                metadata.setDescription(metric.description());
+                builder.withDescription(metric.description());
             }
             if (!metric.displayName().isEmpty()) {
-                metadata.setDisplayName(metric.displayName());
+                builder.withDisplayName(metric.displayName());
             }
             if (metric.tags().length > 0) {
                 for (String tag : metric.tags()) {
-                    metadata.addTags(tag);
+                    builder.addTags(tag);
                 }
             }
         }
-        return metadata;
+        return builder.build();
     }
 }

@@ -49,7 +49,6 @@ import org.jboss.logging.Logger;
     private MetricsInterceptor(MetricRegistry registry) {
         this.registry = registry;
         this.resolver = new MetricResolver();
-        // LOGGER.infof("MetricsInterceptor.ctor, names=%s\n", registry.getNames());
     }
 
     @AroundConstruct
@@ -98,6 +97,7 @@ import org.jboss.logging.Logger;
             throw new IllegalStateException("Error while calling method [" + method + "]", cause);
         }
     }
+
 
     private static final class ForwardingGauge implements org.eclipse.microprofile.metrics.Gauge<Object> {
 

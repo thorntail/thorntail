@@ -64,25 +64,29 @@ public class MetricsService implements Service<MetricsService> {
         InputStream is = getClass().getResourceAsStream("mapping.yml");
 
         if (is != null) {
-            ConfigReader cr = new ConfigReader();
-            MetadataList ml = cr.readConfig(is);
 
             Config config = ConfigProvider.getConfig();
 
             Optional<String> globalTagsFromConfig = config.getOptionalValue("mp.metrics.tags", String.class);
+            if (!globalTagsFromConfig.isPresent()) {
+                globalTagsFromConfig = config.getOptionalValue("MP_METRICS_TAGS", String.class);
+            }
             List<Tag> globalTags = convertToTags(globalTagsFromConfig);
+
+            // Read base + vendor metrics from mapping.yml
+            ConfigReader cr = new ConfigReader();
+            MetadataList ml = cr.readConfig(is, globalTags);
+
 
             // Turn the multi-entry query expressions into concrete entries.
             JmxWorker.instance().expandMultiValueEntries(ml.getBase());
             JmxWorker.instance().expandMultiValueEntries(ml.getVendor());
 
             for (ExtendedMetadata em : ml.getBase()) {
-                em.processTags(globalTags);
                 Metric type = getType(em);
                 MetricRegistries.getBaseRegistry().register(em, type);
             }
             for (ExtendedMetadata em : ml.getVendor()) {
-                em.processTags(globalTags);
                 Metric type = getType(em);
                 MetricRegistries.getVendorRegistry().register(em, type);
             }

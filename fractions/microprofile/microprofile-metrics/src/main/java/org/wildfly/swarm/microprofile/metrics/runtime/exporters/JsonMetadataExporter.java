@@ -17,6 +17,7 @@
 
 package org.wildfly.swarm.microprofile.metrics.runtime.exporters;
 
+import java.util.Optional;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.wildfly.swarm.microprofile.metrics.runtime.MetricRegistries;
@@ -57,7 +58,9 @@ public class JsonMetadataExporter implements Exporter {
         while (iter.hasNext()) {
             Metadata entry = iter.next().getValue();
             sb.append('"').append(entry.getName()).append('"').append(": {\n");
-            sb.append("  \"unit\": \"").append(entry.getUnit()).append(QUOTE_COMMA_LF);
+            Optional<String> optUnit = entry.getUnit();
+            String unit = optUnit.orElse("none");
+            sb.append("  \"unit\": \"").append(unit).append(QUOTE_COMMA_LF);
             sb.append("  \"type\": \"").append(entry.getType()).append(QUOTE_COMMA_LF);
             if (entry.getDescription() != null) {
                 sb.append("  \"description\": \"").append(entry.getDescription()).append(QUOTE_COMMA_LF);

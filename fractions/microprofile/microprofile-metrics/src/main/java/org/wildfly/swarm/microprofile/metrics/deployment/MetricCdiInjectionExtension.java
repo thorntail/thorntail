@@ -46,7 +46,9 @@ import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
+import org.eclipse.microprofile.metrics.annotation.HitCounted;
 import org.eclipse.microprofile.metrics.annotation.Metered;
+import org.eclipse.microprofile.metrics.annotation.ParallelCounted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.jboss.logging.Logger;
 
@@ -82,11 +84,14 @@ public class MetricCdiInjectionExtension implements Extension {
 
         bbd.addAnnotatedType(manager.createAnnotatedType(MeteredInterceptor.class));
         bbd.addAnnotatedType(manager.createAnnotatedType(CountedInterceptor.class));
+        bbd.addAnnotatedType(manager.createAnnotatedType(HitCountedInterceptor.class));
+        bbd.addAnnotatedType(manager.createAnnotatedType(ParallelCountedInterceptor.class));
         bbd.addAnnotatedType(manager.createAnnotatedType(TimedInterceptor.class));
         bbd.addAnnotatedType(manager.createAnnotatedType(MetricsInterceptor.class));
     }
 
-    private <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class, Timed.class }) ProcessAnnotatedType<X> pat) {
+    private <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class,
+                                                                       Timed.class, HitCounted.class, ParallelCounted.class }) ProcessAnnotatedType<X> pat) {
         Class<X> clazz = pat.getAnnotatedType().getJavaClass();
         Package pack = clazz.getPackage();
         if (pack != null && pack.getName().equals(MetricCdiInjectionExtension.class.getPackage().getName())) {

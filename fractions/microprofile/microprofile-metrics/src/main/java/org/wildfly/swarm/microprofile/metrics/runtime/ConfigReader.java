@@ -17,6 +17,11 @@
 
 package org.wildfly.swarm.microprofile.metrics.runtime;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.microprofile.metrics.MetricType;
 import org.jboss.logging.Logger;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.parser.ParserException;
@@ -41,7 +46,7 @@ public class ConfigReader {
             log.info("Loading mapping file from " + file.getAbsolutePath());
             InputStream configStream = new FileInputStream(file);
 
-            return readConfig(configStream);
+            return readConfig(configStream, new ArrayList<>());
         } catch (FileNotFoundException e) {
             log.warn("No configuration found");
         } catch (ParserException pe) {
@@ -50,14 +55,51 @@ public class ConfigReader {
         return null;
     }
 
-    public MetadataList readConfig(InputStream configStream) {
+    public MetadataList readConfig(InputStream configStream, List<Tag> globalTags) {
 
-        Yaml yaml = new Yaml();
+      Yaml yaml = new Yaml();
+      YMetadataList ymlConfig = yaml.loadAs(configStream, YMetadataList.class);
 
-        MetadataList config = yaml.loadAs(configStream, MetadataList.class);
-        log.info("Loaded config");
-        return config;
+      MetadataList config = new MetadataList();
+
+      List<ExtendedMetadata> metadataList = getExtendedMetadata(globalTags, ymlConfig.base);
+      config.setBase(metadataList);
+      metadataList = getExtendedMetadata(globalTags, ymlConfig.vendor);
+      config.setVendor(metadataList);
+
+      log.info("Loaded config");
+      return config;
     }
+
+  private List<ExtendedMetadata> getExtendedMetadata(List<Tag> globalTags, List<YMetadata> ymlConfig) {
+    List<ExtendedMetadata> metadataList = new ArrayList<>();
+    for (YMetadata ym : ymlConfig) {
+      Map<String,String> labels = new HashMap<>();
+      if (ym.getLabels() != null) {
+          for (Map<String,String> l : ym.getLabels()) {
+              labels.put(l.get("key"),l.get("value"));
+          }
+      }
+      // Also add the global tags.
+      for (Tag tag : globalTags) {
+        labels.put(tag.key,tag.value);
+      }
+
+      ExtendedMetadata em = new ExtendedMetadata(ym.getName(),
+                                                 ym.getDisplayName(),
+                                                 ym.getDescription(),
+                                                 MetricType.from(ym.getType()),
+                                                 ym.getUnit(),
+                                                 labels
+      );
+      em.setMbean(ym.mbean);
+      em.setMulti(ym.multi);
+
+      metadataList.add(em);
+
+    }
+    return metadataList;
+  }
 
 
 }
