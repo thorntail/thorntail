@@ -17,24 +17,20 @@
 package org.wildfly.swarm.microprofile.openapi.runtime;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.classloader.ShrinkWrapClassLoader;
-import org.wildfly.swarm.microprofile.openapi.api.OpenApiConfig;
-import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
-import org.wildfly.swarm.microprofile.openapi.api.models.OpenAPIImpl;
-import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiParser;
-import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Format;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
+
+import io.smallrye.openapi.api.OpenApiConfig;
+import io.smallrye.openapi.api.OpenApiDocument;
+import io.smallrye.openapi.runtime.OpenApiProcessor;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -90,62 +86,8 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
         // Set models from annotations and static file
         OpenApiDocument openApiDocument = OpenApiDocument.INSTANCE;
         openApiDocument.config(config);
-        openApiDocument.modelFromStaticFile(modelFromStaticFile());
-        openApiDocument.modelFromAnnotations(modelFromAnnotations());
-    }
-
-    /**
-     * Find a static file located in the deployment and, if it exists, parse it and
-     * return the resulting model.  If no static file is found, returns null.  If an
-     * error is encountered while parsing the file then a runtime exception is
-     * thrown.
-     */
-    private OpenAPIImpl modelFromStaticFile() {
-        Format format = Format.YAML;
-
-        // Check for the file in both META-INF and WEB-INF/classes/META-INF
-        Node node = archive.get("/META-INF/openapi.yaml");
-        if (node == null) {
-            node = archive.get("/WEB-INF/classes/META-INF/openapi.yml");
-        }
-        if (node == null) {
-            node = archive.get("/META-INF/openapi.yml");
-        }
-        if (node == null) {
-            node = archive.get("/WEB-INF/classes/META-INF/openapi.yml");
-        }
-        if (node == null) {
-            node = archive.get("/META-INF/openapi.json");
-            format = Format.JSON;
-        }
-        if (node == null) {
-            node = archive.get("/WEB-INF/classes/META-INF/openapi.json");
-            format = Format.JSON;
-        }
-
-        if (node == null) {
-            return null;
-        }
-
-        try (InputStream stream = node.getAsset().openStream()) {
-            return OpenApiParser.parse(stream, format);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Create an {@link OpenAPI} model by scanning the deployment for relevant JAX-RS and
-     * OpenAPI annotations.  If scanning is disabled, this method returns null.  If scanning
-     * is enabled but no relevant annotations are found, an empty OpenAPI model is returned.
-     */
-    private OpenAPIImpl modelFromAnnotations() {
-        if (this.config.scanDisable()) {
-            return null;
-        }
-
-        OpenApiAnnotationScanner scanner = new OpenApiAnnotationScanner(config, archive);
-        return scanner.scan();
+        openApiDocument.modelFromStaticFile(OpenApiProcessor.modelFromStaticFile(config, this.archive));
+        openApiDocument.modelFromAnnotations(OpenApiProcessor.modelFromAnnotations(config, this.archive));
     }
 
     private static OpenApiConfig initConfigFromArchive(Archive<?> archive) {

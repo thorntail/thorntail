@@ -23,11 +23,13 @@ import javax.servlet.ServletContextListener;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.openapi.OASConfig;
 import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
-import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
-import org.wildfly.swarm.microprofile.openapi.api.models.OpenAPIImpl;
+
+import io.smallrye.openapi.api.OpenApiConfig;
+import io.smallrye.openapi.api.OpenApiDocument;
+import io.smallrye.openapi.api.models.OpenAPIImpl;
+import io.smallrye.openapi.runtime.OpenApiProcessor;
 
 /**
  * This listener instantiates OASModelReader and OASFilter and triggers OpenAPI document initialization.
@@ -36,14 +38,14 @@ import org.wildfly.swarm.microprofile.openapi.api.models.OpenAPIImpl;
  */
 public class OpenApiServletContextListener implements ServletContextListener {
 
-    private final Config config;
+    private final OpenApiConfig config;
 
     public OpenApiServletContextListener() {
         this(ConfigProvider.getConfig());
     }
 
     public OpenApiServletContextListener(Config config) {
-        this.config = config;
+        this.config = new OpenApiConfig(config);
     }
 
     @Override
@@ -65,43 +67,27 @@ public class OpenApiServletContextListener implements ServletContextListener {
      * error either instantiating or invokig it, a {@link RuntimeException} is thrown.
      */
     private OpenAPIImpl modelFromReader() {
-        String readerClassName = config.getOptionalValue(OASConfig.MODEL_READER, String.class).orElse(null);
-        if (readerClassName == null) {
-            return null;
+        ClassLoader cl = getContextClassLoader();
+        if (cl == null) {
+            cl = OpenApiServletContextListener.class.getClassLoader();
         }
-        try {
-            ClassLoader cl = getContextClassLoader();
-            if (cl == null) {
-                cl = OpenApiServletContextListener.class.getClassLoader();
-            }
-            Class<?> c = cl.loadClass(readerClassName);
-            OASModelReader reader = (OASModelReader) c.newInstance();
-            return (OpenAPIImpl) reader.buildModel();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        return OpenApiProcessor.modelFromReader(config, cl);
     }
 
     /**
      * Instantiate the {@link OASFilter} configured by the app.
      */
     private OASFilter getFilter() {
-        String filterClassName = config.getOptionalValue(OASConfig.FILTER, String.class).orElse(null);
-        if (filterClassName == null) {
-            return null;
+        ClassLoader cl = getContextClassLoader();
+        if (cl == null) {
+            cl = OpenApiServletContextListener.class.getClassLoader();
         }
-        try {
-            ClassLoader cl = getContextClassLoader();
-            if (cl == null) {
-                cl = OpenApiServletContextListener.class.getClassLoader();
-            }
-            Class<?> c = cl.loadClass(filterClassName);
-            return (OASFilter) c.newInstance();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        return OpenApiProcessor.getFilter(config, cl);
     }
 
+    /**
+     * Gets the current context classloader.
+     */
     private static ClassLoader getContextClassLoader() {
         if (System.getSecurityManager() == null) {
             return Thread.currentThread().getContextClassLoader();
