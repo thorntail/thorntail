@@ -79,6 +79,7 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
             providers.provider(ELYTRON);
             providers.provider(OPENSSL);
         });
+        // Local audit.log is no longer created by default, please see https://issues.jboss.org/browse/THORN-2084
         securityDomain(APPLICATION_DOMAIN, (domain) -> {
             domain.defaultRealm(APPLICATION_REALM);
             domain.permissionMapper("default-permission-mapper");
