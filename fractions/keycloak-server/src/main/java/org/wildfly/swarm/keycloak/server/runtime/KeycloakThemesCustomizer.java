@@ -45,6 +45,10 @@ public class KeycloakThemesCustomizer implements Customizer {
 
     @Override
     public void customize() throws ModuleLoadException, IOException {
+        // KC iterates over the well-known folder and class-path theme provides when loading the themes.
+        // When only a 'modules' property is set, KC still loads a FolderThemeResolver with a null 'dir' property.
+        // Setting a 'dir' property to the current folder is a workaround to avoid FolderThemeResolver failing with
+        // NPE for the class-path provider be able to load the themes resources.
 
         if (!this.keycloakServer.subresources().themes().isEmpty()) {
             this.keycloakServer.subresources().themes().stream().filter((t) -> t.modules() != null && t.dir() == null)
