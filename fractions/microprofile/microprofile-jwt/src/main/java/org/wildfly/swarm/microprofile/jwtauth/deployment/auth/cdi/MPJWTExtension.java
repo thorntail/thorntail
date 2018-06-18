@@ -116,6 +116,7 @@ public class MPJWTExtension implements Extension {
     }
 
     void doProcessProducers(@Observes ProcessProducer pp) {
+        log.infof("doProcessProducer, pp=%s", pp.getProducer());
     }
 
     /**
@@ -208,6 +209,8 @@ public class MPJWTExtension implements Extension {
      */
     void observesAfterBeanDiscovery(@Observes final AfterBeanDiscovery event, final BeanManager beanManager) {
         log.debugf("observesAfterBeanDiscovery, %s", claims);
+        event.addBean(new JWTBean());
+        event.addBean(new JWTPrincipalBean());
         installClaimValueProducerMethodsViaSyntheticBeans(event, beanManager);
 
         //installClaimValueProducesViaTemplateType(event, beanManager);
