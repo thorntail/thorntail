@@ -80,11 +80,6 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
             providers.provider(ELYTRON);
             providers.provider(OPENSSL);
         });
-        fileAuditLog(LOCAL_AUDIT, (log) -> {
-            log.path("audit.log");
-            log.relativeTo("jboss.server.log.dir");
-            log.format(Format.JSON);
-        });
         securityDomain(APPLICATION_DOMAIN, (domain) -> {
             domain.defaultRealm(APPLICATION_REALM);
             domain.permissionMapper("default-permission-mapper");
