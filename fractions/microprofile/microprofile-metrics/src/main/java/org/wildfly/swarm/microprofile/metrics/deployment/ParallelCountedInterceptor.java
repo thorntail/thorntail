@@ -26,8 +26,8 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.AroundTimeout;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.ParallelCounter;
 import org.eclipse.microprofile.metrics.annotation.ParallelCounted;
 import org.jboss.logging.Logger;
 
@@ -70,9 +70,10 @@ import org.jboss.logging.Logger;
     private <E extends Member & AnnotatedElement> Object countedCallable(InvocationContext context, E element) throws Exception {
         MetricResolver.Of<ParallelCounted> counted = resolver.parallelCounted(bean.getBeanClass(), element);
         String name = counted.metricName();
-        Counter counter = (Counter) registry.getCounters().get(name);
+        ParallelCounter counter = registry.getParallelCounters().get(name);
         if (counter == null) {
-            throw new IllegalStateException("No counter with name [" + name + "] found in registry [" + registry + "]");
+            throw new IllegalStateException("No parallel counter with name [" + name + "] found in registry [" +
+                                                registry + "]");
         }
         LOGGER.debugf("Increment counter [metricName: %s]", name);
         counter.inc();

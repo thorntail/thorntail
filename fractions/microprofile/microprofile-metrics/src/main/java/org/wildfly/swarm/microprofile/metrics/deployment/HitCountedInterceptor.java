@@ -26,7 +26,7 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.AroundTimeout;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.HitCounter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.HitCounted;
 import org.jboss.logging.Logger;
@@ -70,9 +70,10 @@ import org.jboss.logging.Logger;
     private <E extends Member & AnnotatedElement> Object countedCallable(InvocationContext context, E element) throws Exception {
         MetricResolver.Of<HitCounted> counted = resolver.hitCounted(bean.getBeanClass(), element);
         String name = counted.metricName();
-        Counter counter = (Counter) registry.getCounters().get(name);
+        HitCounter counter = registry.getHitCounters().get(name);
         if (counter == null) {
-            throw new IllegalStateException("No counter with name [" + name + "] found in registry [" + registry + "]");
+            throw new IllegalStateException("No hit counter with name [" + name + "] found in registry [" + registry +
+                                                "]");
         }
         LOGGER.debugf("Increment counter [metricName: %s]", name);
         counter.inc();

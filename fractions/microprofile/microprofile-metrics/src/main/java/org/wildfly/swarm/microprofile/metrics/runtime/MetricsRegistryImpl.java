@@ -20,7 +20,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.inject.Vetoed;
@@ -52,8 +54,8 @@ public class MetricsRegistryImpl extends MetricRegistry {
 
     private static final Logger LOGGER = Logger.getLogger(MetricsRegistryImpl.class);
 
-    private Map<String, Metadata> metadataMap = new java.util.HashMap<>();
-    private Map<String, Metric> metricMap = new ConcurrentHashMap<>();
+    private Map<MKey, Metadata> metadataMap = new java.util.HashMap<>();
+    private Map<MKey, Metric> metricMap = new ConcurrentHashMap<>();
 
     @Override
     public <T extends Metric> T register(String name, T metric) throws IllegalArgumentException {
@@ -81,9 +83,10 @@ public class MetricsRegistryImpl extends MetricRegistry {
         }
 
         Metadata m = Metadata.builder().withName(name).withType(type).build();
-        metricMap.put(name, metric);
+        MKey key = new MKey(name,type);
+        metricMap.put(key, metric);
 
-        metadataMap.put(name, m);
+        metadataMap.put(key, m);
         return metric;
     }
 
@@ -103,7 +106,8 @@ public class MetricsRegistryImpl extends MetricRegistry {
             throw new IllegalArgumentException("Metric name must not be null");
         }
 
-        Metadata existingMetadata = metadataMap.get(name);
+        MKey key = new MKey(metadata.getName(),metadata.getTypeRaw());
+        Metadata existingMetadata = metadataMap.get(key);
         boolean reusableFlag = (existingMetadata == null || existingMetadata.isReusable());
 
         //Gauges are not reusable
@@ -111,7 +115,7 @@ public class MetricsRegistryImpl extends MetricRegistry {
             reusableFlag = false;
         }
 
-        if (metricMap.keySet().contains(metadata.getName()) && !reusableFlag) {
+        if (metricMap.keySet().contains(key) && !reusableFlag) {
             throw new IllegalArgumentException("A metric with name " + metadata.getName() + " already exists");
         }
 
@@ -119,8 +123,8 @@ public class MetricsRegistryImpl extends MetricRegistry {
             throw new IllegalArgumentException("Passed metric type does not match existing type");
         }
 
-        metricMap.put(name, metric);
-        metadataMap.put(name, metadata);
+        metricMap.put(key, metric);
+        metadataMap.put(key, metadata);
 
         return metric;
     }
@@ -186,12 +190,13 @@ public class MetricsRegistryImpl extends MetricRegistry {
 
     private <T extends Metric> T get(Metadata metadata, MetricType type) {
         String name = metadata.getName();
+        MKey key = new MKey(metadata);
         LOGGER.debugf("Get metric [name: %s, type: %s]", name, type);
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Name must not be null or empty");
         }
 
-        if (!metadataMap.containsKey(name)) {
+        if (!metadataMap.containsKey(key)) {
             Metric m;
             switch (type) {
 
@@ -217,12 +222,15 @@ public class MetricsRegistryImpl extends MetricRegistry {
             }
             LOGGER.infof("Register metric [name: %s, type: %s]", name, type);
             register(metadata, m);
-        } else if (!metadataMap.get(name).getTypeRaw().equals(metadata.getTypeRaw())) {
-            throw new IllegalArgumentException("Previously registered metric " + name + " is of type "
-                    + metadataMap.get(name).getType() + ", expected " + metadata.getType());
         }
 
-        return (T) metricMap.get(name);
+        // TODO this now violates the naming rule in 5.3
+        /*else if (!metadataMap.get(name).getTypeRaw().equals(metadata.getTypeRaw())) {
+            throw new IllegalArgumentException("Previously registered metric " + name + " is of type "
+                    + metadataMap.get(name).getType() + ", expected " + metadata.getType());
+        }*/
+
+        return (T) metricMap.get(key);
     }
 
     @Override
@@ -236,12 +244,25 @@ public class MetricsRegistryImpl extends MetricRegistry {
         return get(metadata, MetricType.TIMER);
     }
 
+    public boolean remove(String name) {
+        return false; // TODO implement
+    }
+
     @Override
-    public boolean remove(String metricName) {
-        if (metricMap.containsKey(metricName)) {
-            LOGGER.infof("Remove metric [name: %s]", metricName);
-            metricMap.remove(metricName);
-            metadataMap.remove(metricName);
+    public boolean unregister(String name, MetricType type) {
+        return remove(new MKey(name, type));
+    }
+
+    @Override
+    public boolean unregister(Metadata metadata) {
+        return remove(new MKey(metadata));
+    }
+
+    private boolean remove(MKey metricKey) {
+        if (metricMap.containsKey(metricKey)) {
+            LOGGER.infof("Remove metric [key: %s]", metricKey);
+            metricMap.remove(metricKey);
+            metadataMap.remove(metricKey);
             return true;
         }
         return false;
@@ -249,10 +270,10 @@ public class MetricsRegistryImpl extends MetricRegistry {
 
     @Override
     public void removeMatching(MetricFilter metricFilter) {
-        Iterator<Map.Entry<String, Metric>> iterator = metricMap.entrySet().iterator();
+        Iterator<Map.Entry<MKey, Metric>> iterator = metricMap.entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry<String, Metric> entry = iterator.next();
-            if (metricFilter.matches(entry.getKey(), entry.getValue())) {
+            Map.Entry<MKey, Metric> entry = iterator.next();
+            if (metricFilter.matches(entry.getKey().getName(), entry.getValue())) {  // TODO filter needs type (?)
                 remove(entry.getKey());
             }
         }
@@ -260,8 +281,29 @@ public class MetricsRegistryImpl extends MetricRegistry {
 
     @Override
     public java.util.SortedSet<String> getNames() {
-        return new java.util.TreeSet<>(metricMap.keySet());
+
+        SortedSet<String> out = new TreeSet<>();
+        for (MKey key : metricMap.keySet()) {
+            out.add(key.getName());
+        }
+
+        return out;
     }
+
+    @Override
+    public java.util.SortedSet<String> getNames(MetricType type) {
+
+        SortedSet<String> out = new TreeSet<>();
+        for (MKey key : metricMap.keySet()) {
+            if (key.getType().equals(type)) {
+                out.add(key.getName());
+            }
+        }
+
+        return out;
+    }
+
+
 
     @Override
     public SortedMap<String, Gauge> getGauges() {
@@ -335,18 +377,22 @@ public class MetricsRegistryImpl extends MetricRegistry {
 
     @Override
     public Map<String, Metric> getMetrics() {
+        Map<String,Metric> out = new HashMap<>();
+        for (Map.Entry<MKey,Metric> entry: metricMap.entrySet()) {
+            out.put(entry.getKey().getName(),entry.getValue());
+        }
 
-        return new HashMap<>(metricMap);
+        return out;
     }
 
     private <T extends Metric> SortedMap<String, T> getMetrics(MetricType type, MetricFilter filter) {
         SortedMap<String, T> out = new TreeMap<>();
 
-        for (Map.Entry<String, Metric> entry : metricMap.entrySet()) {
+        for (Map.Entry<MKey, Metric> entry : metricMap.entrySet()) {
             Metadata metadata = metadataMap.get(entry.getKey());
             if (metadata.getTypeRaw().equals(type)) {
-                if (filter.matches(entry.getKey(), entry.getValue())) {
-                    out.put(entry.getKey(), (T) entry.getValue());
+                if (filter.matches(entry.getKey().getName(), entry.getValue())) {
+                    out.put(entry.getKey().getName(), (T) entry.getValue());
                 }
             }
         }
@@ -356,6 +402,10 @@ public class MetricsRegistryImpl extends MetricRegistry {
 
     @Override
     public Map<String, Metadata> getMetadata() {
-        return new HashMap<>(metadataMap);
+        Map<String,Metadata> out = new HashMap<>();
+        for (Map.Entry<MKey,Metadata> entry: metadataMap.entrySet()) {
+            out.put(entry.getKey().getName(),entry.getValue());
+        }
+        return out;
     }
 }

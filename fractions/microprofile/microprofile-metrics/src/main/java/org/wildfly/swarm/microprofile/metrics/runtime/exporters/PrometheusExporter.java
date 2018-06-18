@@ -126,6 +126,8 @@ public class PrometheusExporter implements Exporter {
             switch (md.getTypeRaw()) {
                 case GAUGE:
                 case COUNTER:
+                case HIT_COUNTER:    // TODO add label
+                case PARALLEL_COUNTER:  // TODO add label
                     key = getPrometheusMetricName(md, key);
                     String suffix = null;
                     Optional<String> optUnit = md.getUnit();
@@ -134,7 +136,13 @@ public class PrometheusExporter implements Exporter {
                     }
                     writeHelpLine(sb, scope, key, md, suffix);
                     writeTypeLine(sb, scope, key, md, suffix, null);
-                    createSimpleValueLine(sb, scope, key, md, metric);
+                    Tag typeTag = null;
+                    if (md.getTypeRaw().equals(MetricType.HIT_COUNTER)) {
+                        typeTag = new Tag("_ctype","hit_counter");
+                    } else if (md.getTypeRaw().equals(MetricType.PARALLEL_COUNTER)) {
+                        typeTag = new Tag("_ctype","parallel_counter");
+                    }
+                    createSimpleValueLine(sb, scope, key, md, metric, typeTag);
                     break;
                 case METERED:
                     MeterImpl meter = (MeterImpl) metric;
@@ -318,13 +326,17 @@ public class PrometheusExporter implements Exporter {
             sb.append(SUMMARY);
         } else if (md.getTypeRaw().equals(MetricType.METERED)) {
             sb.append(COUNTER);
+        } else if (md.getTypeRaw().equals(MetricType.PARALLEL_COUNTER)) {
+            sb.append(COUNTER);
+        } else if (md.getTypeRaw().equals(MetricType.HIT_COUNTER)) {
+            sb.append(COUNTER);
         } else {
             sb.append(md.getType());
         }
         sb.append(LF);
     }
 
-    private void createSimpleValueLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, Metric metric) {
+    private void createSimpleValueLine(StringBuilder sb, MetricRegistry.Type scope, String key, Metadata md, Metric metric, Tag typeTag) {
 
         // value line
         fillBaseName(sb, scope, key);
@@ -334,8 +346,16 @@ public class PrometheusExporter implements Exporter {
             sb.append("_").append(unit);
         }
         String tags = md.getTagsAsString();
-        if (tags != null && !tags.isEmpty()) {
-            sb.append('{').append(tags).append('}');
+        if ((tags != null && !tags.isEmpty()) || typeTag != null) {
+            sb.append('{');
+            if (typeTag != null) {
+                sb.append(typeTag.getKey()).append("=\"").append(typeTag.getValue()).append('"');
+                if (tags != null && !tags.isEmpty()) {
+                    sb.append(",");
+                }
+            }
+            sb.append(tags);
+            sb.append('}');
         }
 
         Double valIn;

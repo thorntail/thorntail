@@ -83,6 +83,8 @@ public class JsonExporter implements Exporter {
             switch (metadata.getTypeRaw()) {
                 case GAUGE:
                 case COUNTER:
+                case HIT_COUNTER:
+                case PARALLEL_COUNTER:
                     Number val = getValueFromMetric(value, key);
                     sb.append("  ").append('"').append(key).append('"').append(" : ").append(val);
                     break;

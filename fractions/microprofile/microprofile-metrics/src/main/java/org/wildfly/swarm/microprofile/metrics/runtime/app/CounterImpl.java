@@ -34,11 +34,13 @@ package org.wildfly.swarm.microprofile.metrics.runtime.app;
 import java.util.concurrent.atomic.LongAdder;
 
 import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.HitCounter;
+import org.eclipse.microprofile.metrics.ParallelCounter;
 
 /**
  * @author hrupp
  */
-public class CounterImpl implements Counter {
+public class CounterImpl implements Counter, HitCounter, ParallelCounter {
 
     private final LongAdder count;
 
