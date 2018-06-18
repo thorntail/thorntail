@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.wildfly.swarm.config.Elytron;
-import org.wildfly.swarm.config.elytron.Format;
 import org.wildfly.swarm.config.elytron.SimplePermissionMapper;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
