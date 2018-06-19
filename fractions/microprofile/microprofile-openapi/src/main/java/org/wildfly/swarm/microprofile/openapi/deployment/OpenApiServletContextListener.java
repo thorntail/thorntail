@@ -27,6 +27,7 @@ import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
 
 import io.smallrye.openapi.api.OpenApiConfig;
+import io.smallrye.openapi.api.OpenApiConfigImpl;
 import io.smallrye.openapi.api.OpenApiDocument;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
 import io.smallrye.openapi.runtime.OpenApiProcessor;
@@ -45,7 +46,7 @@ public class OpenApiServletContextListener implements ServletContextListener {
     }
 
     public OpenApiServletContextListener(Config config) {
-        this.config = new OpenApiConfig(config);
+        this.config = new OpenApiConfigImpl(config);
     }
 
     @Override

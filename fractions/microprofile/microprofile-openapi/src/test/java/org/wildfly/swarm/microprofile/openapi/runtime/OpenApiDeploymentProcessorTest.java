@@ -42,6 +42,7 @@ import org.wildfly.swarm.microprofile.openapi.runtime.app.HelloResource;
 import org.wildfly.swarm.microprofile.openapi.runtime.app.TestApplication;
 
 import io.smallrye.openapi.api.OpenApiConfig;
+import io.smallrye.openapi.api.OpenApiConfigImpl;
 import io.smallrye.openapi.api.OpenApiDocument;
 import io.smallrye.openapi.api.models.OpenAPIImpl;
 import io.smallrye.openapi.api.models.info.ContactImpl;
@@ -90,10 +91,10 @@ public class OpenApiDeploymentProcessorTest {
         System.setProperty(OASConfig.FILTER, filterClass != null ? filterClass.getName() : "");
 
         TestConfig cfg = new TestConfig();
-        OpenApiConfig config = new OpenApiConfig(cfg);
+        OpenApiConfig oaiConfig = new OpenApiConfigImpl(cfg);
         Archive archive = archive(staticResource);
         OpenApiDocument.INSTANCE.reset();
-        OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(config, archive);
+        OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(oaiConfig, archive);
         processor.process();
         new OpenApiServletContextListener(cfg).contextInitialized(null);
 

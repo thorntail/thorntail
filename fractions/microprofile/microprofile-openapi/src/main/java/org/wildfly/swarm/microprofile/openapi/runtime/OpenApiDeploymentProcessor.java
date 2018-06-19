@@ -16,21 +16,19 @@
 
 package org.wildfly.swarm.microprofile.openapi.runtime;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.jboss.logging.Logger;
+import org.jboss.jandex.IndexView;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.classloader.ShrinkWrapClassLoader;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
 
 import io.smallrye.openapi.api.OpenApiConfig;
 import io.smallrye.openapi.api.OpenApiDocument;
+import io.smallrye.openapi.api.util.ArchiveUtil;
 import io.smallrye.openapi.runtime.OpenApiProcessor;
+import io.smallrye.openapi.runtime.OpenApiStaticFile;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -39,13 +37,13 @@ import io.smallrye.openapi.runtime.OpenApiProcessor;
 @DeploymentScoped
 public class OpenApiDeploymentProcessor implements DeploymentProcessor {
 
-    private static final Logger LOGGER = Logger.getLogger(OpenApiDeploymentProcessor.class);
-
     private static final String LISTENER_CLASS = "org.wildfly.swarm.microprofile.openapi.deployment.OpenApiServletContextListener";
 
     private final OpenApiConfig config;
 
     private final Archive archive;
+
+    private final IndexView index;
 
     /**
      * Constructor for testing purposes.
@@ -56,6 +54,7 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
     public OpenApiDeploymentProcessor(OpenApiConfig config, Archive archive) {
         this.config = config;
         this.archive = archive;
+        this.index = ArchiveUtil.archiveToIndex(config, archive);
     }
 
     /**
@@ -65,8 +64,9 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
      */
     @Inject
     public OpenApiDeploymentProcessor(Archive archive) {
-        this.config = initConfigFromArchive(archive);
+        this.config = ArchiveUtil.archiveToConfig(archive);
         this.archive = archive;
+        this.index = ArchiveUtil.archiveToIndex(config, archive);
     }
 
     /**
@@ -83,24 +83,14 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
         } catch (Exception e) {
             throw new RuntimeException("Failed to register OpenAPI listener", e);
         }
+
+        OpenApiStaticFile staticFile = ArchiveUtil.archiveToStaticFile(archive);
+
         // Set models from annotations and static file
         OpenApiDocument openApiDocument = OpenApiDocument.INSTANCE;
         openApiDocument.config(config);
-        openApiDocument.modelFromStaticFile(OpenApiProcessor.modelFromStaticFile(config, this.archive));
-        openApiDocument.modelFromAnnotations(OpenApiProcessor.modelFromAnnotations(config, this.archive));
-    }
-
-    private static OpenApiConfig initConfigFromArchive(Archive<?> archive) {
-        ShrinkWrapClassLoader cl = new ShrinkWrapClassLoader(archive);
-        try {
-            return new OpenApiConfig(ConfigProvider.getConfig(cl));
-        } finally {
-            try {
-                cl.close();
-            } catch (IOException e) {
-                LOGGER.warnv("Could not close ShrinkWrapClassLoader for {0}", archive.getName());
-            }
-        }
+        openApiDocument.modelFromStaticFile(OpenApiProcessor.modelFromStaticFile(staticFile));
+        openApiDocument.modelFromAnnotations(OpenApiProcessor.modelFromAnnotations(config, index));
     }
 
 }
