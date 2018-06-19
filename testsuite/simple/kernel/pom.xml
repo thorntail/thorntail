@@ -10,8 +10,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>thorntail-testsuite-config</artifactId>
-  <name>Testsuite: Config</name>
+  <artifactId>thorntail-testsuite-kernel</artifactId>
+  <name>Testsuite: Kernel</name>
 
   <build>
     <plugins>

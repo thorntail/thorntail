@@ -168,7 +168,7 @@ public class PackageMojo extends AbstractMojo {
     @Parameter(defaultValue = "fat", property = "thorntail.mode")
     protected String mode;
 
-    @Parameter(defaultValue = "dir", property = "thorntail.format")
+    @Parameter(defaultValue = "jar", property = "thorntail.format")
     protected String format;
 
     @Parameter(defaultValue = "bin", property = "thorntail.classifier")
