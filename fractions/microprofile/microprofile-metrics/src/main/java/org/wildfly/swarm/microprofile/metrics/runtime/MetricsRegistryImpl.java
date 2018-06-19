@@ -119,10 +119,6 @@ public class MetricsRegistryImpl extends MetricRegistry {
             throw new IllegalArgumentException("A metric with name " + metadata.getName() + " already exists");
         }
 
-        if (existingMetadata != null && !existingMetadata.getTypeRaw().equals(metadata.getTypeRaw())) {
-            throw new IllegalArgumentException("Passed metric type does not match existing type");
-        }
-
         metricMap.put(key, metric);
         metadataMap.put(key, metadata);
 
@@ -196,11 +192,18 @@ public class MetricsRegistryImpl extends MetricRegistry {
             throw new IllegalArgumentException("Name must not be null or empty");
         }
 
+        if (metadataMap.containsKey(key)) {
+            Metadata existing = metadataMap.get(key);
+            if (existing.isReusable() != metadata.isReusable()) {
+                throw new IllegalArgumentException("Reusable setting has changed, must not happen");
+            }
+        }
+
         if (!metadataMap.containsKey(key)) {
             Metric m;
             switch (type) {
 
-                case HIT_COUNTER:       // TODO different impl?
+                case HIT_COUNTER:       // TODO different impl? -> not needed yet!
                 case PARALLEL_COUNTER:
                 case COUNTER:
                     m = new CounterImpl();
@@ -223,12 +226,6 @@ public class MetricsRegistryImpl extends MetricRegistry {
             LOGGER.infof("Register metric [name: %s, type: %s]", name, type);
             register(metadata, m);
         }
-
-        // TODO this now violates the naming rule in 5.3
-        /*else if (!metadataMap.get(name).getTypeRaw().equals(metadata.getTypeRaw())) {
-            throw new IllegalArgumentException("Previously registered metric " + name + " is of type "
-                    + metadataMap.get(name).getType() + ", expected " + metadata.getType());
-        }*/
 
         return (T) metricMap.get(key);
     }
