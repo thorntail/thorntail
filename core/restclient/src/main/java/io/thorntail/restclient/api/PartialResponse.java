@@ -87,7 +87,7 @@ public class PartialResponse extends Response implements Serializable {
             try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
                 return buffer.lines().collect(Collectors.joining("\n"));
             }
-        } catch (IOException e) {
+        } catch (Throwable e) {
             throw new WebApplicationException("Failed to read entity", e);
         }
     }
