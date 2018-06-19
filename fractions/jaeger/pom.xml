@@ -64,19 +64,10 @@
       <groupId>io.thorntail</groupId>
       <artifactId>undertow</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>opentracing</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-core</artifactId>
-      <version>${version.jaeger}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.jaegertracing</groupId>
-      <artifactId>jaeger-tracerresolver</artifactId>
       <version>${version.jaeger}</version>
     </dependency>
 

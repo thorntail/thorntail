@@ -18,7 +18,6 @@ package org.wildfly.swarm.mpopentracing.deployment;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
-import io.opentracing.noop.NoopTracerFactory;
 import io.opentracing.util.GlobalTracer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
@@ -45,8 +44,8 @@ public class TracerProducer {
   public Tracer produceTracer() {
     Tracer tracer = TracerResolver.resolveTracer();
     if (tracer == null) {
-      logger.info("Could not get a valid OpenTracing Tracer from the classpath. Skipping.");
-      tracer = NoopTracerFactory.create();
+      logger.info("Could not get a valid OpenTracing Tracer from the classpath. Deferring to GlobalTracer");
+      tracer = GlobalTracer.get();
     }
 
     logger.info(String.format("Registering %s as the OpenTracing Tracer", tracer.getClass().getName()));
