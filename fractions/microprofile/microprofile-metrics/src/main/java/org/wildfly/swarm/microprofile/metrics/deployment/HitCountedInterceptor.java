@@ -68,7 +68,7 @@ import org.jboss.logging.Logger;
     }
 
     private <E extends Member & AnnotatedElement> Object countedCallable(InvocationContext context, E element) throws Exception {
-        MetricResolver.Of<HitCounted> counted = resolver.hitCounted(bean.getBeanClass(), element);
+        MetricResolver.Of<HitCounted> counted = resolver.hitCounted(bean != null ? bean.getBeanClass() : element.getDeclaringClass(), element);
         String name = counted.metricName();
         HitCounter counter = registry.getHitCounters().get(name);
         if (counter == null) {

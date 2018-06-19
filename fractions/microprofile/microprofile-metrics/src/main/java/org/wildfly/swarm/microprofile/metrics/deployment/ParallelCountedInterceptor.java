@@ -68,7 +68,7 @@ import org.jboss.logging.Logger;
     }
 
     private <E extends Member & AnnotatedElement> Object countedCallable(InvocationContext context, E element) throws Exception {
-        MetricResolver.Of<ParallelCounted> counted = resolver.parallelCounted(bean.getBeanClass(), element);
+        MetricResolver.Of<ParallelCounted> counted = resolver.parallelCounted(bean != null ? bean.getBeanClass() : element.getDeclaringClass(), element);
         String name = counted.metricName();
         ParallelCounter counter = registry.getParallelCounters().get(name);
         if (counter == null) {
