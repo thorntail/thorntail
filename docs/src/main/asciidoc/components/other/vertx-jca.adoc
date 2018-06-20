@@ -1,5 +1,5 @@
-[#component-vertx]
-= Vert.x
+[#component-vertx-jca]
+= Vert.x JCA
 
 The Vert.x component provides access to the Vert.x event-bus and message-driven consumers.
 
@@ -43,7 +43,7 @@ import io.vertx.resourceadapter.inflow.VertxListener;
 @MessageDriven(
     activationConfig = {
         @ActivationConfigProperty(
-          propertyName = "address", 
+          propertyName = "address",
           propertyValue = "driven.event.address"
         )
     }

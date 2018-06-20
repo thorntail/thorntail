@@ -9,24 +9,21 @@
     <version>4.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>thorntail-vertx</artifactId>
-  <name>Vert.x</name>
+  <artifactId>thorntail-vertx-jca</artifactId>
+  <name>Vert.x JCA</name>
 
   <dependencies>
-
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>thorntail-kernel</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-jca</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>vertx-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <artifactId>vertx-jca-adapter</artifactId>
     </dependency>
 
   </dependencies>
