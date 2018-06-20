@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Priority;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
@@ -16,12 +15,10 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.AnnotationLiteral;
-import javax.interceptor.Interceptor;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 
-@Priority(Interceptor.Priority.APPLICATION + 10)
 public class JWTPrincipalBean implements Bean<Principal>, PassivationCapable {
     private Set<Type> types;
     private Set<Annotation> qualifiers;
@@ -30,7 +27,6 @@ public class JWTPrincipalBean implements Bean<Principal>, PassivationCapable {
     JWTPrincipalBean() {
         types = new HashSet<>();
         types.add(JsonWebToken.class);
-        types.add(Principal.class);
         types.add(Object.class);
         qualifiers = new HashSet<>();
         qualifiers.add(new AnnotationLiteral<Any>() { });
