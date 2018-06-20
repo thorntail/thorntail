@@ -1,1 +1,1 @@
-io.thorntail.openapi.impl.spi.OASFactoryResolverImpl
+io.smallrye.openapi.spi.OASFactoryResolverImpl
