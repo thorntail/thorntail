@@ -73,17 +73,6 @@ public class MPJWTProducer {
     }
 
     /**
-     * The @RequestScoped producer method for the current JsonWebToken
-     *
-     * @return
-     @Produces
-     @RequestScoped
-     */
-    JsonWebToken currentPrincipalOrNull() {
-        return currentPrincipal.get();
-    }
-
-    /**
      * A utility method for accessing a claim from the current JsonWebToken as a ClaimValue<Optional<T>> object.
      *
      * @param name - name of the claim

@@ -20,6 +20,8 @@ import org.eclipse.microprofile.jwt.Claims;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -42,6 +44,8 @@ import java.util.logging.Logger;
  *
  * @see JwtClaims
  */
+@Priority(1)
+@Alternative
 public class DefaultJWTCallerPrincipal extends JWTCallerPrincipal {
     private static final String TMP = "tmp";
     private static Logger logger = Logger.getLogger(DefaultJWTCallerPrincipal.class.getName());
