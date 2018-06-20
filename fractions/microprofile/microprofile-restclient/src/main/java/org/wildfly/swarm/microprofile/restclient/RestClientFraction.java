@@ -15,17 +15,16 @@
  */
 package org.wildfly.swarm.microprofile.restclient;
 
+import static org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisposition.IMPORT;
+
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.Module;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
-import static org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisposition.IMPORT;
-
 /**
  * @author Heiko Braun
  */
-@DeploymentModule(name = "org.wildfly.swarm.microprofile.restclient", slot = "deployment", metaInf = IMPORT,
-        export = true, services = Module.ServiceHandling.IMPORT)
+@DeploymentModule(name = "io.smallrye.restclient", metaInf = IMPORT, export = true, services = Module.ServiceHandling.IMPORT)
 public class RestClientFraction implements Fraction<RestClientFraction> {
 
 }
