@@ -27,4 +27,8 @@ public interface VertxMessages extends BasicLogger {
     @Message(id = 2 + OFFSET, value = "tracing requested for vertx but tracing is not available")
     void tracingEnabled();
 
+    @LogMessage(level = Logger.Level.INFO)
+    @Message(id = 3 + OFFSET, value = "deployed verticle: %s")
+    void deployedVerticle(String verticleClassName);
+
 }
