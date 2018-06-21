@@ -33,7 +33,7 @@
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>
-      <artifactId>thorntail-health</artifactId>
+      <artifactId>thorntail-jwt-auth</artifactId>
     </dependency>
   </dependencies>
 </project>
