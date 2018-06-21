@@ -14,8 +14,20 @@ import io.thorntail.test.ThorntailTestRunner;
 public class ActiveInstanceTest {
 
     @Test
-    public void test() {
+    public void testActivate() {
+        Bla.DESTROYED.set(false);
         ActiveInstance<Blu> activeBlu = Thorntail.current().activate(new Blu());
+        // Blu is intercepted
+        assertEquals("yak+foo", activeBlu.get().blabla());
+        activeBlu.release();
+        // Bla is correctly destroyed
+        assertTrue(Bla.DESTROYED.get());
+    }
+
+    @Test
+    public void testInstance() {
+        Bla.DESTROYED.set(false);
+        ActiveInstance<Blu> activeBlu = Thorntail.current().instance(Blu.class);
         // Blu is intercepted
         assertEquals("yak+foo", activeBlu.get().blabla());
         activeBlu.release();
