@@ -28,7 +28,12 @@ public class ActiveInstance<T> implements AutoCloseable {
         WeldManager weldManager = (WeldManager) WeldContainer.instance(containerId).getBeanManager();
         creationalContext = weldManager.createCreationalContext(null);
         AnnotatedType<T> annotatedType = weldManager.createAnnotatedType(type);
-        injectionTarget = weldManager.getInjectionTargetFactory(annotatedType).createNonProducibleInjectionTarget();
+        if (object == null) {
+            injectionTarget = weldManager.getInjectionTargetFactory(annotatedType).createInjectionTarget(null);
+            object = injectionTarget.produce(creationalContext);
+        } else {
+            injectionTarget = weldManager.getInjectionTargetFactory(annotatedType).createNonProducibleInjectionTarget();
+        }
         injectionTarget.inject(object, creationalContext);
         injectionTarget.postConstruct(object);
         // If there are no interceptors the original instance is used
