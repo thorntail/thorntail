@@ -15,6 +15,8 @@
  */
 package io.thorntail;
 
+import static io.thorntail.Info.VERSION;
+
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.nio.file.Files;
@@ -33,22 +35,21 @@ import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
+
 import io.thorntail.events.LifecycleEvent;
+import io.thorntail.events.impl.EventEmitter;
+import io.thorntail.ext.ThorntailProvidingExtension;
 import io.thorntail.impl.KernelMessages;
 import io.thorntail.impl.WarClassLoader;
 import io.thorntail.logging.impl.jdk.DefaultConsoleFormatter;
 import io.thorntail.runner.DebugRunner;
 import io.thorntail.runner.DirectRunner;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
-import io.thorntail.events.impl.EventEmitter;
-import io.thorntail.ext.ThorntailProvidingExtension;
 import io.thorntail.runner.ReloadRunner;
 import io.thorntail.runner.RestartRunner;
-import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
-
-import static io.thorntail.Info.VERSION;
 
 /**
  * Root entry-point into the system.
@@ -318,7 +319,7 @@ public class Thorntail {
     /**
      * Activate an already-constructed instance of an object.
      *
-     * <p>Will inject, decorate and intercept as required.</p>
+     * <p>Will inject and invoke lifecycle callbacks as required. If needed, the method invocations are intercepted but not decorated.</p>
      *
      * <p>May throw a runtime exception if the object can not be proxied due to final methods.</p>
      *
@@ -341,11 +342,8 @@ public class Thorntail {
      * @see #activate(Object)
      */
     public <T, R> R withActivated(T object, Function<T, R> function) {
-        ActiveInstance<T> instance = activate(object);
-        try {
+        try (ActiveInstance<T> instance = activate(object)) {
             return function.apply(instance.get());
-        } finally {
-            instance.release();
         }
     }
 

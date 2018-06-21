@@ -122,8 +122,8 @@ public class PartialResponse extends Response implements Serializable {
     public void close() {
         try {
             responseContext.getEntityStream().close();
-        } catch (IOException e) {
-            throw new WebApplicationException("Failed to close entity stream", e);
+        } catch (Throwable e) {
+            // ignore
         }
     }
 

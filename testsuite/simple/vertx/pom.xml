@@ -19,28 +19,6 @@
         <groupId>io.thorntail</groupId>
         <artifactId>thorntail-maven-plugin</artifactId>
       </plugin>
-      <plugin>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>integration-test</id>
-            <phase>integration-test</phase>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-            <configuration>
-              <testSourceDirectory>src/it/java</testSourceDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>verify-integration-test</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
