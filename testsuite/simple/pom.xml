@@ -32,6 +32,7 @@
     <module>servlet</module>
     <module>servlet-static</module>
     <module>vertx</module>
+    <module>vertx-jca</module>
     <module>websockets</module>
   </modules>
 
