@@ -1,5 +1,7 @@
 package io.thorntail.testsuite.vertx;
 
+import javax.inject.Inject;
+
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.Message;
@@ -16,6 +18,9 @@ public class VerticleA extends AbstractVerticle implements Handler<Message<JsonO
 
     @Override
     public void handle(Message<JsonObject> event) {
-        event.reply( "got it: " + event.body());
+        event.reply( this.prefix.getPrefix() + ": " + event.body());
     }
+
+    @Inject
+    Prefix prefix;
 }
