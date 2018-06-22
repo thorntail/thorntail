@@ -20,8 +20,6 @@ import static io.thorntail.Info.ROOT_PACKAGE;
 public class KeycloakDeploymentsCustomizer {
 
     void customize(@Observes @Priority(100) LifecycleEvent.Initialize event) {
-        SecurityKeycloakMessages.MESSAGES
-            .deploymentCustomization();
         this.deployments.stream().forEach(this::customize);
     }
 

@@ -25,12 +25,5 @@ public interface SecurityKeycloakMessages extends BasicLogger {
     @LogMessage(level = Logger.Level.INFO)
     @Message(id = 2 + OFFSET, value = "Deployment %s has no 'KEYCLOAK' authentication method enabled")
     void noKeycloakForDeployment(String name);
-    
-    //TODO: remove it asap
-    // Temp log message
-    @LogMessage(level = Logger.Level.INFO)
-    @Message(id = 3 + OFFSET, value = "Deployment customization")
-    void deploymentCustomization();
-    
 
 }

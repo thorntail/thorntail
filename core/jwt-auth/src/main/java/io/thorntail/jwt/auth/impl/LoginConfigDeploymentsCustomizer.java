@@ -17,7 +17,7 @@ import org.eclipse.microprofile.auth.LoginConfig;
  */
 @ApplicationScoped
 public class LoginConfigDeploymentsCustomizer {
-    void customize(@Observes @Priority(100) LifecycleEvent.Initialize event) {
+    void customize(@Observes @Priority(99) LifecycleEvent.Initialize event) {
         for (DeploymentMetaData metaData : this.deployments) {
             customize(metaData);
         }
@@ -28,17 +28,12 @@ public class LoginConfigDeploymentsCustomizer {
         if (app != null) {
             LoginConfig loginConfig = Annotations.getAnnotation(app, LoginConfig.class);
             if (loginConfig != null) {
-                System.err.println("--> " + loginConfig);
+                JwtAuthMessages.MESSAGES.loginConfig(deployment.getName() == null ? "" : deployment.getName(),
+                        loginConfig.authMethod(), loginConfig.realmName());
                 deployment.addAuthMethod(loginConfig.authMethod());
                 deployment.setRealm(loginConfig.realmName());
             }
         }
-        /*
-        if ( deployment.getAuthMethods().contains("KEYCLOAK")) {
-            deployment.addInitParam( "keycloak.config.resolver", ConfigResolver.class.getName());
-            deployment.setRealm("");
-        }
-        */
     }
 
     @Inject

@@ -22,4 +22,5 @@ public interface MessageOffsets {
     int OPENAPI_OFFSET = 14000;
     int VERTX_OFFSET = 15000;
     int HIBERNATE_SEARCH_OFFSET = 16000;
+    int JWT_AUTH_OFFSET = 17000;
 }
