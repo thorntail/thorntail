@@ -94,7 +94,7 @@
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>
-      <artifactId>thorntail-vertx</artifactId>
+      <artifactId>thorntail-vertx-jca</artifactId>
     </dependency>
 
     <dependency>

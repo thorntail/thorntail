@@ -127,6 +127,8 @@
     <module>security-keycloak</module>
     <module>servlet</module>
     <module>vertx</module>
+    <module>vertx-web</module>
+    <module>vertx-jca</module>
     <module>websockets</module>
 
     <module>devtools</module>
