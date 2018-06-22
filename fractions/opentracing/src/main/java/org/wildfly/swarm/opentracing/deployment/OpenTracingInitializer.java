@@ -15,10 +15,7 @@
  */
 package org.wildfly.swarm.opentracing.deployment;
 
-import io.opentracing.Tracer;
-import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.contrib.web.servlet.filter.TracingFilter;
-import io.opentracing.util.GlobalTracer;
 import javax.servlet.FilterRegistration.Dynamic;
 import org.jboss.logging.Logger;
 
@@ -51,26 +48,6 @@ public class OpenTracingInitializer implements ServletContextListener {
             .addFilter("tracingFilter", new TracingFilter());
         filterRegistration.setAsyncSupported(true);
         filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
-
-        String skipParameter = servletContext.getInitParameter("skipOpenTracingResolver");
-        if (skipParameter != null && Boolean.parseBoolean(skipParameter)) {
-            logger.info("OpenTracing automatic resolution is being explicitly skipped.");
-            return;
-        }
-
-        if (GlobalTracer.isRegistered()) {
-            logger.info("A Tracer is already registered at the GlobalTracer. Skipping resolution via TraceResolver.");
-            return;
-        }
-
-        Tracer tracer = TracerResolver.resolveTracer();
-        if (null == tracer) {
-            logger.info("Could not get a valid OpenTracing Tracer from the classpath. Skipping.");
-            return;
-        }
-
-        logger.info(String.format("Registering %s as the OpenTracing Tracer", tracer.getClass().getName()));
-        GlobalTracer.register(tracer);
     }
 
     @Override
