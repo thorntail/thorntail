@@ -17,7 +17,7 @@ import org.eclipse.microprofile.auth.LoginConfig;
  */
 @ApplicationScoped
 public class LoginConfigDeploymentsCustomizer {
-    void customize(@Observes @Priority(100) LifecycleEvent.Initialize event) {
+    void customize(@Observes @Priority(99) LifecycleEvent.Initialize event) {
         for (DeploymentMetaData metaData : this.deployments) {
             customize(metaData);
         }
