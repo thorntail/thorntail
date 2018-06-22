@@ -9,7 +9,7 @@ import io.vertx.ext.web.RoutingContext;
 @ApplicationScoped
 public class HelloObserver {
 
-    @WebRoute("/helloObserver")
+    @WebRoute(path = "/helloObserver")
     void helloObserver(@Observes RoutingContext ctx, HelloService service) {
         ctx.response().setStatusCode(200).end(service.sayHello() + ":observer");
     }

@@ -127,8 +127,8 @@ public class RouteExtension implements Extension {
         Route route;
         if (!webRoute.regex().isEmpty()) {
             route = router.routeWithRegex(webRoute.regex());
-        } else if (!webRoute.value().isEmpty()) {
-            route = router.route(webRoute.value());
+        } else if (!webRoute.path().isEmpty()) {
+            route = router.route(webRoute.path());
         } else {
             route = router.route();
         }

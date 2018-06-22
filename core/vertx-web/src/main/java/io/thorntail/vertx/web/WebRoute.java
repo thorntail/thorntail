@@ -22,7 +22,7 @@ import io.vertx.ext.web.RoutingContext;
  * an event type or an observer method which observes {@link RoutingContext}:
  *
  * <pre>
- * &#64;WebRoute("/hello")
+ * &#64;WebRoute(path = "/hello")
  * class HelloHandler implements Handler&lt;RoutingContext&gt; {
  *
  *     public void handle(RoutingContext ctx) {
@@ -33,7 +33,7 @@ import io.vertx.ext.web.RoutingContext;
  * &#64;ApplicationScoped
  * class Hello {
  *
- *     &#64;WebRoute("/hello")
+ *     &#64;WebRoute(path = "/hello")
  *     void hello(&#64;Observes RoutingContext ctx) {
  *         ctx.response().setStatusCode(200).end("Hello!");
  *     }
@@ -59,7 +59,7 @@ import io.vertx.ext.web.RoutingContext;
  * </p>
  *
  * <p>
- * If both {@link #value()} and {@link #regex()} are empty strings a route that matches all requests or failures is created.
+ * If both {@link #path()} and {@link #regex()} are empty strings a route that matches all requests or failures is created.
  * </p>
  *
  * @author Martin Kouba
@@ -74,21 +74,28 @@ public @interface WebRoute {
     /**
      *
      * @see Router#route(String)
+     * @return the path
      */
-    String value() default "";
+    String path() default "";
+
+    /**
+     *
+     * @see Router#routeWithRegex(String)
+     * @return the path regex
+     */
+    String regex() default "";
 
     /**
      *
      * @see Route#method(HttpMethod)
+     * @return the HTTP methods
      */
     HttpMethod[] methods() default {};
 
     /**
      *
-     * @see Router#routeWithRegex(String)
+     * @return the type of the handler
      */
-    String regex() default "";
-
     HandlerType type() default HandlerType.NORMAL;
 
     /**
@@ -96,8 +103,18 @@ public @interface WebRoute {
      */
     int order() default Integer.MIN_VALUE;
 
+    /**
+     *
+     * @see Route#produces(String)
+     * @return the produced content types
+     */
     String[] produces() default {};
 
+    /**
+     *
+     * @see Route#consumes(String)
+     * @return the consumed content types
+     */
     String[] consumes() default {};
 
     enum HandlerType {
