@@ -20,6 +20,8 @@ import static io.thorntail.Info.ROOT_PACKAGE;
 public class KeycloakDeploymentsCustomizer {
 
     void customize(@Observes @Priority(100) LifecycleEvent.Initialize event) {
+        SecurityKeycloakMessages.MESSAGES
+            .deploymentCustomization();
         this.deployments.stream().forEach(this::customize);
     }
 
@@ -29,6 +31,9 @@ public class KeycloakDeploymentsCustomizer {
                 .configResolverForDeployment(deployment.getName() == null ? "" : deployment.getName());
             deployment.addInitParam("keycloak.config.resolver", ConfigResolver.class.getName());
             deployment.setRealm("");
+        } else {
+            SecurityKeycloakMessages.MESSAGES
+                .noKeycloakForDeployment(deployment.getName() == null ? "" : deployment.getName());
         }
     }
 
