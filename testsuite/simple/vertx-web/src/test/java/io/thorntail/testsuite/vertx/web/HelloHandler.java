@@ -9,8 +9,8 @@ import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.web.RoutingContext;
 
-@WebRoute("/hello")
-@WebRoute(value = "/helloBlocking", methods= HttpMethod.GET, type = BLOCKING)
+@WebRoute(path = "/hello")
+@WebRoute(path = "/helloBlocking", methods= HttpMethod.GET, type = BLOCKING)
 public class HelloHandler implements Handler<RoutingContext> {
 
     @Inject
