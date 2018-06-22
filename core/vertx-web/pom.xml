@@ -9,19 +9,19 @@
     <version>4.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>thorntail-vertx</artifactId>
-  <name>Vert.x</name>
+  <artifactId>thorntail-vertx-web</artifactId>
+  <name>Vert.x Web</name>
 
   <dependencies>
 
     <dependency>
       <groupId>io.thorntail</groupId>
-      <artifactId>thorntail-kernel</artifactId>
+      <artifactId>thorntail-vertx</artifactId>
     </dependency>
 
     <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>vertx-core</artifactId>
+      <artifactId>vertx-web</artifactId>
     </dependency>
 
     <dependency>

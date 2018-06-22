@@ -10,8 +10,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>thorntail-testsuite-vertx</artifactId>
-  <name>Testsuite: Vert.x</name>
+  <artifactId>thorntail-testsuite-vertx-web</artifactId>
+  <name>Testsuite: Vert.x Web</name>
 
   <build>
     <plugins>
@@ -35,15 +35,10 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>thorntail-vertx</artifactId>
-    </dependency>
 
     <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-hazelcast</artifactId>
-      <scope>test</scope>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-vertx-web</artifactId>
     </dependency>
 
   </dependencies>

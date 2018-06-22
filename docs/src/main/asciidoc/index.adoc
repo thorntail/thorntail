@@ -13,7 +13,7 @@ image::thorntail-logo.png[]
 
 .About
 
-_{project_name}_ is the new name of _WildFly Swarm_. 
+_{project_name}_ is the new name of _WildFly Swarm_.
 This documentation applies to the _proof of concept_ for v4.x of the project.
 
 .Other Formats
@@ -81,7 +81,7 @@ include::components/microprofile/opentracing.adoc[leveloffset=+2]
 
 ## Other
 
-include::components/other/vertx.adoc[leveloffset=+2]
+include::components/other/vertx-jca.adoc[leveloffset=+2]
 include::components/other/hibernate-ogm.adoc[leveloffset=+2]
 include::components/other/hibernate-search.adoc[leveloffset=+2]
 
