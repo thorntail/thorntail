@@ -25,6 +25,8 @@ public class KeycloakDeploymentsCustomizer {
 
     void customize(DeploymentMetaData deployment) {
         if (deployment.getAuthMethods().contains("KEYCLOAK")) {
+            SecurityKeycloakMessages.MESSAGES
+                .configResolverForDeployment(deployment.getName() == null ? "" : deployment.getName());
             deployment.addInitParam("keycloak.config.resolver", ConfigResolver.class.getName());
             deployment.setRealm("");
         }
