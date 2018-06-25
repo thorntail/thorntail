@@ -99,7 +99,7 @@
     <version.mp-restclient>1.0.1</version.mp-restclient>
     <version.mp-jwt-auth>1.0</version.mp-jwt-auth>
 
-    <version.smallrye-open-api>1.0.0-SNAPSHOT</version.smallrye-open-api>
+    <version.smallrye-open-api>1.0.0</version.smallrye-open-api>
 
     <version.arquillian-core>1.2.1.Final</version.arquillian-core>
     <version.assertj>3.10.0</version.assertj>
