@@ -2,34 +2,30 @@ package io.thorntail.tracing.impl;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Priority;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import io.opentracing.ActiveSpan;
-import io.opentracing.Tracer;
 import org.eclipse.microprofile.opentracing.Traced;
+import org.jboss.weld.inject.WeldInstance;
+
+import io.opentracing.ActiveSpan;
 import io.thorntail.tracing.SpanHandler;
 import io.thorntail.util.Annotations;
-import io.thorntail.util.Priorities;
 
 /**
  * @author Pavol Loffay
+ * @author Martin Kouba
  */
 @Traced
 @Interceptor
 @Priority(value = Interceptor.Priority.LIBRARY_BEFORE + 1)
 public class TracingInterceptor {
-
-
-    List<SpanHandler> sortedHandlers() {
-        return Priorities.highToLow(this.handlers);
-    }
 
     @AroundInvoke
     public Object interceptTraced(InvocationContext ctx) throws Exception {
@@ -46,23 +42,20 @@ public class TracingInterceptor {
     protected ActiveSpan spanFor(InvocationContext ctx) {
         if (!isTraced(ctx.getTarget(), ctx.getMethod())) {
             return null;
-
         }
         SpanHandler handler = spanHandlerFor(ctx);
         if (handler == null) {
             return null;
         }
-
         return handler.handle(ctx);
     }
 
     protected SpanHandler spanHandlerFor(InvocationContext ctx) {
-        for (SpanHandler handler : sortedHandlers()) {
+        for (SpanHandler handler : spanHandlers()) {
             if (handler.canHandle(ctx)) {
                 return handler;
             }
         }
-
         return null;
     }
 
@@ -82,10 +75,23 @@ public class TracingInterceptor {
         return classTraced.value();
     }
 
-    @Inject
-    @Any
-    Instance<SpanHandler> handlers;
+    private List<SpanHandler> spanHandlers() {
+        List<SpanHandler> handlers = spanHandlers;
+        if (handlers == null) {
+            synchronized (this) {
+                if (spanHandlers == null) {
+                    handlers = spanHandlersInstance.handlersStream().sorted(spanHandlersInstance.getPriorityComparator()).map(h -> h.get())
+                            .collect(Collectors.toList());
+                    spanHandlers = handlers;
+                }
+            }
+        }
+        return handlers;
+    }
 
     @Inject
-    private Tracer tracer;
+    @Any
+    private WeldInstance<SpanHandler> spanHandlersInstance;
+
+    private volatile List<SpanHandler> spanHandlers;
 }
