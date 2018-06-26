@@ -19,6 +19,7 @@
    </resources>
    <dependencies>
       <module name="javax.enterprise.api" />
+      <module name="javax.annotation.api" export="true" />
       <module name="javax.json.api" export="true" />
    </dependencies>
 </module>
