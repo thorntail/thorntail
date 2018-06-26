@@ -78,4 +78,8 @@ public interface VertxLogger extends BasicLogger {
     @LogMessage(level = DEBUG)
     @Message(id = 13 + OFFSET, value = "Failure during observer notification")
     void observerNotificationFailure(@Cause Throwable cause);
+
+    @LogMessage(level = DEBUG)
+    @Message(id = 14 + OFFSET, value = "Starting span for VertxMessage observer: %s")
+    void startSpanForVertxMessageObserver(Object observer);
 }

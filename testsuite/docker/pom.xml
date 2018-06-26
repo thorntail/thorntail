@@ -19,6 +19,7 @@
     <module>docker-thin-layers</module>
     <module>jms</module>
     <module>opentracing-jaeger</module>
+    <module>opentracing-jaeger-vertx</module>
   </modules>
 
 </project>

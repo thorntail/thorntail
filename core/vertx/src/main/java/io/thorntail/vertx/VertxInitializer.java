@@ -4,14 +4,19 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.Config;
 import org.jboss.weld.exceptions.IllegalStateException;
 
+import io.thorntail.TraceMode;
 import io.thorntail.events.LifecycleEvent;
+import io.thorntail.vertx.tracing.VertxEventBusInterceptor;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -31,10 +36,17 @@ import io.vertx.core.VertxOptions;
 @ApplicationScoped
 public class VertxInitializer {
 
+    private TraceMode traceMode;
+
     private Vertx vertx;
 
-    void init(@Observes LifecycleEvent.Bootstrap event, Config config, BeanManager beanManager) throws InstantiationException, IllegalAccessException {
+    @Inject
+    @Any
+    private Instance<Object> instance;
 
+    void init(@Observes LifecycleEvent.Bootstrap bootstrap, Config config, BeanManager beanManager) throws InstantiationException, IllegalAccessException {
+
+        traceMode = VertxProperties.getTraceMode(config);
         VertxOptions options = VertxProperties.createOptions(VertxOptions.class, config, VertxProperties.PROPERTY_PREFIX);
         VertxLogger.LOG.usingOptions(options);
 
@@ -67,16 +79,26 @@ public class VertxInitializer {
         }
 
         VertxExtension extension = beanManager.getExtension(VertxExtension.class);
-        extension.registerComponents(vertx, beanManager.getEvent(), beanManager);
+        Event<Object> event = beanManager.getEvent();
+        extension.registerComponents(vertx, event, beanManager);
 
         // Deploy Verticles registered as beans
-        for (Verticle verticle : beanManager.createInstance().select(Verticle.class, Any.Literal.INSTANCE)) {
+        for (Verticle verticle : instance.select(Verticle.class)) {
             VertxLogger.LOG.deployVerticle(verticle.getClass().getName());
             vertx.deployVerticle(verticle);
         }
 
+        // Intercept EventBus send operations if tracing is enabled
+        if (!TraceMode.OFF.equals(traceMode)) {
+            vertx.eventBus().addInterceptor(instance.select(VertxEventBusInterceptor.class).get());
+        }
+
         // Make it possible to init dependent components, e.g. create an HTTP server
-        beanManager.getEvent().select(Vertx.class).fire(vertx);
+        event.select(Vertx.class).fire(vertx);
+    }
+
+    public TraceMode getTraceMode() {
+        return traceMode;
     }
 
 }
