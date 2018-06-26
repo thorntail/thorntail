@@ -35,6 +35,7 @@ public class PrincipalInjectionEndpoint {
     public JsonObject verifyInjectedPrincipal() {
         boolean pass = false;
         String msg;
+        System.out.printf("verifyInjectedPrincipal, principal=%s, principal2=%s\n", principal, principal2);
         if (principal == null) {
             msg = "principal value is null, FAIL";
         }
@@ -44,6 +45,15 @@ public class PrincipalInjectionEndpoint {
         }
         else {
             msg = String.format("principal: JsonWebToken != %s", principal.getClass().getCanonicalName());
+        }
+        if (pass) {
+            if (principal2 == null) {
+                msg = "principal2 value is null, FAIL";
+                pass = false;
+            } else if (!principal2.getName().equals(principal.getName())) {
+                msg = "principal2.name != principal.name, FAIL";
+                pass = false;
+            }
         }
         JsonObject result = Json.createObjectBuilder()
                 .add("pass", pass)
