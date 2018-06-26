@@ -76,7 +76,6 @@ public class MPJWTExtension implements Extension {
         log.debugf("MPJWTExtension(), adding producers");
         bbd.addAnnotatedType(beanManager.createAnnotatedType(JWTAuthContextInfoProvider.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(MPJWTProducer.class));
-        //bbd.addAnnotatedType(beanManager.createAnnotatedType(JWTProducer.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(PrincipalProducer.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(RawClaimTypeProducer.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(ClaimValueProducer.class));
