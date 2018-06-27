@@ -17,6 +17,7 @@ import javax.resource.spi.ActivationSpec;
 import javax.resource.spi.ResourceAdapter;
 import javax.resource.spi.endpoint.MessageEndpointFactory;
 
+import io.smallrye.config.SmallRyeConfig;
 import io.thorntail.Thorntail;
 import io.thorntail.jca.ext.MessageDrivenExtension;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
@@ -24,7 +25,6 @@ import org.jboss.jca.core.spi.rar.Activation;
 import org.jboss.jca.core.spi.rar.MessageListener;
 import org.jboss.jca.core.spi.rar.NotFoundException;
 import org.jboss.jca.core.spi.rar.ResourceAdapterRepository;
-import io.thorntail.config.impl.ConfigImpl;
 import io.thorntail.events.LifecycleEvent;
 
 /**
@@ -99,7 +99,7 @@ public class MessageDrivenDeployer {
     }
 
     private Object coerce(String value, Class<?> propertyType) {
-        return ((ConfigImpl) ConfigProviderResolver.instance().getConfig()).convert(value, propertyType).get();
+        return ((SmallRyeConfig) ConfigProviderResolver.instance().getConfig()).convert(value, propertyType);
     }
 
     String findResourceAdapterId(Class<?> driven) throws NotFoundException {

@@ -1,0 +1,3 @@
+io.thorntail.config.impl.sources.FrameworkDefaultsConfigSourceProvider
+io.thorntail.config.impl.sources.ApplicationConfigSourceProvider
+io.thorntail.config.impl.sources.ApplicationProfileConfigSourceProvider

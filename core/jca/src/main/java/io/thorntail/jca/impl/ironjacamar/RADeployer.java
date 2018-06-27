@@ -15,6 +15,7 @@ import javax.naming.InitialContext;
 import javax.resource.spi.ResourceAdapter;
 import javax.transaction.TransactionManager;
 
+import io.smallrye.config.SmallRyeConfig;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.jca.common.api.metadata.common.SecurityMetadata;
 import org.jboss.jca.common.api.metadata.resourceadapter.Activation;
@@ -32,7 +33,6 @@ import org.jboss.jca.deployers.common.AbstractResourceAdapterDeployer;
 import org.jboss.jca.deployers.common.CommonDeployment;
 import org.jboss.jca.deployers.common.DeployException;
 import org.jboss.logging.Logger;
-import io.thorntail.config.impl.ConfigImpl;
 import io.thorntail.jca.impl.JCAMessages;
 import io.thorntail.jca.ResourceAdapterDeployment;
 import io.thorntail.logging.impl.LoggingUtil;
@@ -195,7 +195,7 @@ public class RADeployer extends AbstractResourceAdapterDeployer {
     }
 
     private Object coerce(String value, Class<?> targetType) {
-        return ((ConfigImpl) ConfigProviderResolver.instance().getConfig()).convert(value, targetType).get();
+        return ((SmallRyeConfig) ConfigProviderResolver.instance().getConfig()).convert(value, targetType);
     }
 
     @Override

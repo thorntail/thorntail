@@ -1,5 +1,6 @@
 package io.thorntail.test.impl;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -8,7 +9,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 /**
  * Created by bob on 1/23/18.
  */
-public class EphemeralPortsConfigSource implements ConfigSource {
+public class EphemeralPortsConfigSource implements ConfigSource, Serializable {
 
     public static final EphemeralPortsConfigSource INSTANCE = new EphemeralPortsConfigSource();
 

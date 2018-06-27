@@ -5,6 +5,7 @@ import javax.enterprise.inject.UnsatisfiedResolutionException;
 import io.thorntail.Thorntail;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
