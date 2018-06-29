@@ -43,6 +43,12 @@
          <groupId>io.thorntail</groupId>
          <artifactId>microprofile-fault-tolerance</artifactId>
          <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>org.jboss.arquillian.junit</groupId>
+               <artifactId>arquillian-junit-container</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <dependency>

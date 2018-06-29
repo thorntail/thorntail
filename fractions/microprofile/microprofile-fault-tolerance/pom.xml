@@ -35,6 +35,7 @@
     <swarm.fraction.tags>Eclipse MicroProfile,MicroServices,Fault Tolerance</swarm.fraction.tags>
     <version.arquillian-weld-embedded>2.0.0.Beta5</version.arquillian-weld-embedded>
     <version.awaitility>3.1.0</version.awaitility>
+    <version.smallrye-fault-tolerance>1.0.0</version.smallrye-fault-tolerance>
   </properties>
 
   <build>
@@ -83,14 +84,9 @@
       <artifactId>microprofile-config</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
-      <artifactId>microprofile-fault-tolerance-api</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.osgi</groupId>
-          <artifactId>org.osgi.annotation.versioning</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-fault-tolerance</artifactId>
+      <version>${version.smallrye-fault-tolerance}</version>
     </dependency>
     <!-- See also THORN-2027 -->
     <dependency>
