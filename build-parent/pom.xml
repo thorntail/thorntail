@@ -111,6 +111,9 @@
     <!-- MP Config implementation -->
     <version.wildfly-microprofile-config>1.2.1</version.wildfly-microprofile-config>
 
+    <!-- SmallRye -->
+    <version.smallrye.metrics>1.1-SNAPSHOT</version.smallrye.metrics>
+
   </properties>
 
   <build>
@@ -400,6 +403,14 @@
         <groupId>org.eclipse.microprofile.jwt</groupId>
         <artifactId>microprofile-jwt-auth-api</artifactId>
         <version>${version.microprofile-jwt-auth}</version>
+      </dependency>
+
+      <!-- SmallRye -->
+
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-metrics</artifactId>
+        <version>${version.smallrye.metrics}</version>
       </dependency>
 
       <!-- The following are not used, they are here to make PME align proper versions-->

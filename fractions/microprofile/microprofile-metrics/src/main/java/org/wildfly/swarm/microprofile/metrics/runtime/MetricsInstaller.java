@@ -32,7 +32,7 @@ import org.wildfly.swarm.undertow.UndertowFraction;
  */
 @Post
 @ApplicationScoped
-public class InUndertowInstaller implements Customizer {
+public class MetricsInstaller implements Customizer {
 
     @Inject
     Instance<UndertowFraction> undertowFractionInstance;

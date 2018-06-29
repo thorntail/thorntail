@@ -105,9 +105,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.yaml</groupId>
-      <artifactId>snakeyaml</artifactId>
-      <scope>provided</scope>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-metrics</artifactId>
     </dependency>
 
     <dependency>
