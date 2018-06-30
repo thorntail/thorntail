@@ -35,7 +35,8 @@ public class PrincipalInjectionEndpoint {
     public JsonObject verifyInjectedPrincipal() {
         boolean pass = false;
         String msg;
-        System.out.printf("verifyInjectedPrincipal, principal=%s, principal2=%s\n", principal, principal2);
+        System.out.printf("verifyInjectedPrincipal, principal=%s, class=%s\n", principal, principal.getClass());
+        System.out.printf("verifyInjectedPrincipal, principal2=%s, class=%s\n", principal, principal2.getClass());
         if (principal == null) {
             msg = "principal value is null, FAIL";
         }

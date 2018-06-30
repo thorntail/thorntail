@@ -16,6 +16,8 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth.deployment.auth;
 
+import io.smallrye.jwt.KeyUtils;
+import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import io.undertow.security.api.AuthenticationMechanism;
 import io.undertow.security.api.AuthenticationMechanismFactory;
 import io.undertow.server.handlers.form.FormParserFactory;
@@ -32,7 +34,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 import org.jboss.logging.Logger;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTAuthContextInfo;
 
 /**
  * An AuthenticationMechanismFactory for the MicroProfile JWT RBAC

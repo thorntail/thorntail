@@ -24,40 +24,30 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.DeploymentException;
 import javax.inject.Inject;
+
+import io.smallrye.jwt.KeyUtils;
+import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.KeyUtils;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTAuthContextInfo;
 
 /**
- * A CDI provider for the JWTAuthContextInfo that obtains the necessary information from
- * MP config properties.
+ * An extension of the Smallrey CDI provider for the JWTAuthContextInfo that extends the information from
+ * MP-JWT config properties with legacy fraction properties as well as properties for features not
+ * convered by MP-JWT settings.
  */
 @Dependent
-public class JWTAuthContextInfoProvider {
+public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthContextInfoProvider {
     private static final String NONE = "NONE";
     private static final Logger log = Logger.getLogger(JWTAuthContextInfoProvider.class);
 
-    // The MP-JWT spec defined configuration properties
-    @Inject
-    @ConfigProperty(name = "mp.jwt.verify.publickey", defaultValue = NONE)
-    private Optional<String> mpJwtublicKey;
-    @Inject
-    @ConfigProperty(name = "mp.jwt.verify.issuer", defaultValue = NONE)
-    private String mpJwtIssuer;
-    @Inject
-    @ConfigProperty(name = "mp.jwt.verify.publickey.location", defaultValue = NONE)
-    private Optional<String> mpJwtLocation;
-    @Inject
-    @ConfigProperty(name = "mp.jwt.verify.requireiss", defaultValue = "true")
-    private Optional<Boolean> mpJwtRequireIss;
-    // Swarm fraction defined properties
+    // Legacy fraction properties that have MP-JWT equivalents that take precedence
     @Inject
     @ConfigProperty(name = "mpjwt.signerPublicKey", defaultValue = NONE)
     private Optional<String> publicKeyPemEnc;
     @Inject
     @ConfigProperty(name = "mpjwt.issuedBy", defaultValue = NONE)
     private String issuedBy;
+    // Fraction properties that don't have MP-JWT equivalents
     @Inject
     @ConfigProperty(name = "mpjwt.expGracePeriodSecs", defaultValue = "60")
     private Optional<Integer> expGracePeriodSecs;
@@ -68,11 +58,14 @@ public class JWTAuthContextInfoProvider {
     @ConfigProperty(name = "mpjwt.jwksRefreshInterval", defaultValue = "60")
     private Optional<Integer> jwksRefreshInterval;
 
+    /**
+     * Produce the JWTAuthContextInfo from a combination of the MP-JWT properties and the extended
+     * fraction defined properties.
+     * @return an Optional wrapper for the configured JWTAuthContextInfo
+     */
     @Produces
     Optional<JWTAuthContextInfo> getOptionalContextInfo() {
         // Log the config values
-        log.debugf("init, mpJwtublicKey=%s, mpJwtIssuer=%s, mpJwtLocation=%s",
-                   mpJwtublicKey.orElse("missing"), mpJwtIssuer, mpJwtLocation.orElse("missing"));
         log.debugf("init, publicKeyPemEnc=%s, issuedBy=%s, expGracePeriodSecs=%d, jwksRefreshInterval=%d",
                    publicKeyPemEnc.orElse("missing"), issuedBy, expGracePeriodSecs.get(), jwksRefreshInterval.get());
 
@@ -81,13 +74,15 @@ public class JWTAuthContextInfoProvider {
         values to "NONE" as Optional Strings are populated with a ConfigProperty.defaultValue if they are absent. Fix this when MP-Config
         is repaired.
          */
-        if (NONE.equals(publicKeyPemEnc.get()) && NONE.equals(jwksUri.get()) && NONE.equals(mpJwtublicKey.get()) && NONE.equals(mpJwtLocation.get())) {
+        if (NONE.equals(publicKeyPemEnc.get()) && NONE.equals(jwksUri.get()) &&
+                NONE.equals(super.getMpJwtublicKey().get()) && NONE.equals(super.getMpJwtLocation().get())) {
             return Optional.empty();
         }
         JWTAuthContextInfo contextInfo = new JWTAuthContextInfo();
         // Look to MP-JWT values first
-        if (mpJwtublicKey.isPresent() && !NONE.equals(mpJwtublicKey.get())) {
+        if (super.getMpJwtublicKey().isPresent() && !NONE.equals(super.getMpJwtublicKey().get())) {
             // Need to decode what this is...
+            Optional<String> mpJwtublicKey = super.getMpJwtublicKey();
             try {
                 RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodeJWKSPublicKey(mpJwtublicKey.get());
                 contextInfo.setSignerKey(pk);
@@ -112,6 +107,7 @@ public class JWTAuthContextInfoProvider {
             }
         }
 
+        String mpJwtIssuer = super.getMpJwtIssuer();
         if (mpJwtIssuer != null && !mpJwtIssuer.equals(NONE)) {
             contextInfo.setIssuedBy(mpJwtIssuer);
         } else if (issuedBy != null && !issuedBy.equals(NONE)) {
@@ -121,6 +117,7 @@ public class JWTAuthContextInfoProvider {
             contextInfo.setRequireIssuer(false);
         }
 
+        Optional<Boolean> mpJwtRequireIss = super.getMpJwtRequireIss();
         if (mpJwtRequireIss != null && mpJwtRequireIss.isPresent()) {
             contextInfo.setRequireIssuer(mpJwtRequireIss.get());
         } else {
@@ -132,6 +129,7 @@ public class JWTAuthContextInfoProvider {
             contextInfo.setExpGracePeriodSecs(expGracePeriodSecs.get());
         }
         // The MP-JWT location can be a PEM, JWK or JWKS
+        Optional<String> mpJwtLocation = super.getMpJwtLocation();
         if (mpJwtLocation.isPresent() && !NONE.equals(mpJwtLocation.get())) {
             contextInfo.setJwksUri(mpJwtLocation.get());
             contextInfo.setFollowMpJwt11Rules(true);
@@ -146,7 +144,7 @@ public class JWTAuthContextInfoProvider {
     }
 
     @Produces
-    JWTAuthContextInfo getContextInfo() {
+    JWTAuthContextInfo getJWTAuthContextInfo() {
         return getOptionalContextInfo().get();
     }
 }
