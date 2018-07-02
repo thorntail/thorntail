@@ -58,6 +58,8 @@ public class KeycloakCacheCustomizer implements Customizer {
                     .localCache("sessions")
                     .localCache("authenticationSessions")
                     .localCache("offlineSessions")
+                    .localCache("clientSessions")
+                    .localCache("offlineClientSessions")
                     .localCache("loginFailures")
                     .localCache("work")
                     .localCache("authorization", (localCache) -> {

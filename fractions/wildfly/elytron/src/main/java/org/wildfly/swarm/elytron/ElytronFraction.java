@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.wildfly.swarm.config.Elytron;
-import org.wildfly.swarm.config.elytron.Format;
 import org.wildfly.swarm.config.elytron.SimplePermissionMapper;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
@@ -80,11 +79,7 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
             providers.provider(ELYTRON);
             providers.provider(OPENSSL);
         });
-        fileAuditLog(LOCAL_AUDIT, (log) -> {
-            log.path("audit.log");
-            log.relativeTo("jboss.server.log.dir");
-            log.format(Format.JSON);
-        });
+        // Local audit.log is no longer created by default, please see https://issues.jboss.org/browse/THORN-2084
         securityDomain(APPLICATION_DOMAIN, (domain) -> {
             domain.defaultRealm(APPLICATION_REALM);
             domain.permissionMapper("default-permission-mapper");
