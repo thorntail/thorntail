@@ -67,4 +67,8 @@ public interface VertxWebLogger extends BasicLogger {
     @Message(id = 10 + OFFSET, value = "HttpServer listening on %s")
     void httpServerListening(int port);
 
+    @LogMessage(level = DEBUG)
+    @Message(id = 11 + OFFSET, value = "Starting span for WebRoute: %s")
+    void startSpanForWebRoute(Object observer);
+
 }

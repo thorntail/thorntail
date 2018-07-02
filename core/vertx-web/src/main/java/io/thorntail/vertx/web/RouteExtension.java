@@ -1,6 +1,7 @@
 package io.thorntail.vertx.web;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -33,7 +34,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
 /**
- * This extensions allows to register {@link Route} handlers and observers discovered during container initialization.
+ * Collects and registers {@link Route} handlers and observers discovered during container initialization.
  *
  * @author Martin Kouba
  * @see WebRoute
@@ -69,7 +70,7 @@ public class RouteExtension implements Extension {
                     }
                     VertxWebLogger.LOG.routeObserverFound(method.getJavaMember().toGenericString());
                     RouteObserverId id = RouteObserverId.Literal.of(UUID.randomUUID().toString());
-                    routeObservers.add(new RouteObserver(id, webRoutes));
+                    routeObservers.add(new RouteObserver(id, webRoutes, method));
                     routes.put(method.getJavaMember().toGenericString(), id);
                 }
             }
@@ -108,6 +109,24 @@ public class RouteExtension implements Extension {
         for (RouteObserver routeObserver : routeObservers) {
             routeObserver.process(router);
         }
+    }
+
+    public boolean isHandlerType(Class<?> clazz) {
+        for (AnnotatedType<? extends Handler<RoutingContext>> handlerType : handlerTypes) {
+            if (handlerType.getJavaClass().equals(clazz)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isRouteObserver(Method method) {
+        for (RouteObserver observer : routeObservers) {
+            if (observer.matches(method)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void processHandlerType(AnnotatedType<? extends Handler<RoutingContext>> annotatedType, Router router) {
@@ -260,9 +279,12 @@ public class RouteExtension implements Extension {
 
         private final WebRoute[] webRoutes;
 
-        public RouteObserver(RouteObserverId id, WebRoute[] webRoutes) {
+        private final AnnotatedMethod<?> annotatedMethod;
+
+        RouteObserver(RouteObserverId id, WebRoute[] webRoutes, AnnotatedMethod<?> annotatedMethod) {
             this.id = id;
             this.webRoutes = webRoutes;
+            this.annotatedMethod = annotatedMethod;
         }
 
         void process(Router router) {
@@ -270,6 +292,10 @@ public class RouteExtension implements Extension {
             for (WebRoute webRoute : webRoutes) {
                 addRoute(router, handler, webRoute);
             }
+        }
+
+        boolean matches(Method method) {
+            return annotatedMethod.getJavaMember().equals(method);
         }
 
     }

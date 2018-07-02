@@ -1,6 +1,7 @@
 package io.thorntail.vertx;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -58,12 +59,19 @@ public class VertxExtension implements Extension {
 
     private final List<InjectionPoint> eventInjectionPoints;
 
+    private final Set<Method> vertxMessageObservers;
+
     private final AtomicReference<Vertx> vertx;
 
     public VertxExtension() {
         this.consumerAddressToBlocking = new HashMap<>();
         this.eventInjectionPoints = new ArrayList<>();
+        this.vertxMessageObservers = new HashSet<>();
         this.vertx = new AtomicReference<>(null);
+    }
+
+    public boolean isVertxMessageObserver(Method method) {
+        return vertxMessageObservers.contains(method);
     }
 
     void processVertxEventObserver(@Observes ProcessObserverMethod<VertxMessage, ?> event) {
@@ -73,6 +81,7 @@ public class VertxExtension implements Extension {
             return;
         }
         VertxLogger.LOG.vertxMessageObserverFound(event.getObserverMethod());
+        vertxMessageObservers.add(event.getAnnotatedMethod().getJavaMember());
         consumerAddressToBlocking.compute(consume.value(), (k, v) -> v == null ? consume.blocking() : v || consume.blocking());
     }
 
