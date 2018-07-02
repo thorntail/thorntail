@@ -8,11 +8,23 @@ import java.util.Optional;
 
 import org.eclipse.microprofile.config.Config;
 
+import io.thorntail.TraceMode;
+
+/**
+ *
+ * @author Martin Kouba
+ */
 public final class VertxProperties {
 
     public static final String PROPERTY_PREFIX = "vertx";
 
+    public static final String PROPERTY_TRACE_MODE = PROPERTY_PREFIX + ".trace";
+
     private VertxProperties() {
+    }
+
+    public static TraceMode getTraceMode(Config config) {
+        return config.getOptionalValue(PROPERTY_TRACE_MODE, TraceMode.class).orElse(TraceMode.OFF);
     }
 
     public static <T> T createOptions(Class<T> optionsClazz, Config config, String prefix) throws InstantiationException, IllegalAccessException {
@@ -36,7 +48,7 @@ public final class VertxProperties {
         return options;
     }
 
-    public static String getPropertyName(String setterName, String prefix) {
+    static String getPropertyName(String setterName, String prefix) {
         StringBuilder name = new StringBuilder(prefix);
         for (String part : VertxProperties.splitByCamelCase(setterName.substring(3))) {
             name.append(".");
@@ -45,7 +57,7 @@ public final class VertxProperties {
         return name.toString();
     }
 
-    public static String[] splitByCamelCase(String value) {
+    static String[] splitByCamelCase(String value) {
         Objects.requireNonNull(value);
         char[] chars = value.toCharArray();
         List<String> parts = new ArrayList<>();
