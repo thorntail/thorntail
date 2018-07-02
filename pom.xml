@@ -964,9 +964,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>jose</artifactId>
-        <version>2018.6.0-SNAPSHOT</version>
+        <version>2.0.1.Final-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
