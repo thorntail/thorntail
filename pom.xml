@@ -1319,6 +1319,7 @@
 
         <!-- This testsuite needs to be in a profile that comes after the profiles that build the BOMs as they are a dependency -->
         <module>testsuite/testsuite-maven-plugin</module>
+        <module>testsuite/testsuite-maven-plugin-migration</module>
       </modules>
     </profile>
 
