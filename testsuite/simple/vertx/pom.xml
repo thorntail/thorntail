@@ -20,26 +20,16 @@
         <artifactId>thorntail-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>integration-test</id>
-            <phase>integration-test</phase>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-            <configuration>
-              <testSourceDirectory>src/it/java</testSourceDirectory>
-            </configuration>
-          </execution>
-          <execution>
-            <id>verify-integration-test</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <property>
+              <name>java.util.logging.config.file</name>
+              <value>${project.build.testOutputDirectory}/logging.properties</value>
+            </property>
+          </systemProperties>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -49,5 +39,13 @@
       <groupId>io.thorntail</groupId>
       <artifactId>thorntail-vertx</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-hazelcast</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
+
 </project>

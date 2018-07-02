@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.thorntail.testsuite</groupId>
+    <artifactId>thorntail-testsuite-docker-parent</artifactId>
+    <version>4.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>thorntail-testsuite-opentracing-jaeger-vertx</artifactId>
+  <name>Testsuite: OpenTracing - Jaeger, Vertx</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <configuration>
+          <images>
+            <image>
+              <name>jaegertracing/all-in-one</name>
+              <alias>jaeger</alias>
+              <run>
+                <env>
+                  <COLLECTOR_ZIPKIN_HTTP_PORT>9411</COLLECTOR_ZIPKIN_HTTP_PORT>
+                </env>
+                <ports>
+                  <port>5775:5775/udp</port>
+                  <port>6831:6831/udp</port>
+                  <port>6832:6832/udp</port>
+                  <port>5778:5778</port>
+                  <port>16686:16686</port>
+                  <port>14268:14268</port>
+                  <port>9411:9411</port>
+                </ports>
+                <wait>
+                  <tcp>
+                    <mode>mapped</mode>
+                    <ports>
+                      <port>16686</port>
+                    </ports>
+                  </tcp>
+                  <time>10000</time>
+                </wait>
+              </run>
+            </image>
+          </images>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-jpa</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-vertx-web</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.uber.jaeger</groupId>
+      <artifactId>jaeger-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-testutils-opentracing-jaeger</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+</project>

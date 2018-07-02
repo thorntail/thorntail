@@ -13,17 +13,20 @@
   <name>Vert.x</name>
 
   <dependencies>
+
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>thorntail-kernel</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>thorntail-jca</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>vertx-jca-adapter</artifactId>
+      <artifactId>vertx-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
 
   </dependencies>

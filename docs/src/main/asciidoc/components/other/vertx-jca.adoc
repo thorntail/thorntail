@@ -1,0 +1,78 @@
+[#component-vertx-jca]
+= Vert.x JCA
+
+The Vert.x component provides access to the Vert.x event-bus and message-driven consumers.
+
+.Maven Coordinates
+
+[source,xml,subs="verbatim,attributes"]
+----
+<dependency>
+  <groupId>{groupId}</groupId>
+  <artifactId>{project_key}-vertx</artifactId>
+</dependency>
+----
+
+.Configuration
+
+`vertx.cluster-host`::
+The host for clustering Vert.x.
+Defaults to `localhost`.
+
+`vertx.cluster-port`::
+The port for clustering Vert.x.
+Defaults to `0`.
+
+.@MessageDriven Components
+
+Any implementation of the `VertxListener` with the appropriate `@MessageDriven` annotation will be registered with the Vert.x resource adapter to consume inbound messages.
+These components are short-lived and may _not_ be injected into other components.
+They are managed by the CDI container, though, and may have other components inject into them.
+
+[source,java]
+----
+package com.mycorp;
+
+import javax.ejb.ActivationConfigProperty;
+import javax.ejb.MessageDriven;
+import javax.inject.Inject;
+
+import io.vertx.core.eventbus.Message;
+import io.vertx.resourceadapter.inflow.VertxListener;
+
+@MessageDriven(
+    activationConfig = {
+        @ActivationConfigProperty(
+          propertyName = "address",
+          propertyValue = "driven.event.address"
+        )
+    }
+)
+public class Receiver implements VertxListener {
+
+    @Override
+    public <T> void onMessage(Message<T> message) {
+      // handle inbound message here.
+    }
+
+    @Inject
+    private MyOtherComponent component;
+}
+----
+
+.CDI Components
+
+`VertxEventBus`::
+The Vert.x event bus.
+
+`VertxConnectionFactory`::
+The Vert.x connection factory.
+
+.JNDI Bindings
+
+`java:jboss/vertx/connection-factory`::
+The `VertxConnectionFactory`.
+
+.Related Information
+
+* xref:component-jca[]
