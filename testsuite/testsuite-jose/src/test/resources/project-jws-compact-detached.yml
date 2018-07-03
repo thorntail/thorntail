@@ -1,6 +1,6 @@
 swarm:
   jose:
     keystore:
-      path: keystore.jks
+      path: keystore-detached.jks
     signature:
       data-detached: true  

@@ -40,7 +40,7 @@ public class JoseJwsCompactDetachedTest {
         deployment.addResource(SecuredApplication.class);
         deployment.addResource(JoseExceptionMapper.class); 
         deployment.addAllDependencies();
-        deployment.addAsResource("keystore.jks");
+        deployment.addAsResource("keystore.jks", "keystore-detached.jks");
         deployment.addAsResource("project-jws-compact-detached.yml", "project-defaults.yml");
         return deployment;
     }

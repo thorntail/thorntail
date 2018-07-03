@@ -44,7 +44,7 @@ public class JoseJwsJsonDetachedTest {
         deployment.addResource(SecuredApplication.class);
         deployment.addResource(JoseExceptionMapper.class); 
         deployment.addAllDependencies();
-        deployment.addAsResource("keystore.jks");
+        deployment.addAsResource("keystore.jks", "keystore-json-detached.jks");
         deployment.addAsResource("project-jws-json-detached.yml", "project-defaults.yml");
         return deployment;
     }

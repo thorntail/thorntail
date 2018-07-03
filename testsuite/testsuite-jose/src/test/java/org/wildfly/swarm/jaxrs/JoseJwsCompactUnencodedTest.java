@@ -40,7 +40,7 @@ public class JoseJwsCompactUnencodedTest {
         deployment.addResource(SecuredApplication.class);
         deployment.addResource(JoseExceptionMapper.class); 
         deployment.addAllDependencies();
-        deployment.addAsResource("keystore.jks");
+        deployment.addAsResource("keystore.jks", "keystore-unencoded.jks");
         deployment.addAsResource("project-jws-compact-unencoded.yml", "project-defaults.yml");
         return deployment;
     }

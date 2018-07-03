@@ -44,7 +44,7 @@ public class JoseJwsJsonUnencodedTest {
         deployment.addResource(SecuredApplication.class);
         deployment.addResource(JoseExceptionMapper.class); 
         deployment.addAllDependencies();
-        deployment.addAsResource("keystore.jks");
+        deployment.addAsResource("keystore.jks", "keystore-json-unencoded.jks");
         deployment.addAsResource("project-jws-json-unencoded.yml", "project-defaults.yml");
         return deployment;
     }

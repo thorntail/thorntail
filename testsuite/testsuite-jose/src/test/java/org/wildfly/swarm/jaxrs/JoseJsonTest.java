@@ -45,7 +45,7 @@ public class JoseJsonTest {
         deployment.addResource(SecuredApplication.class);
         deployment.addResource(JoseExceptionMapper.class); 
         deployment.addAllDependencies();
-        deployment.addAsResource("keystore.jks");
+        deployment.addAsResource("keystore.jks", "keystore-jose-json.jks");
         deployment.addAsResource("project-jose-json.yml", "project-defaults.yml");
         return deployment;
     }
