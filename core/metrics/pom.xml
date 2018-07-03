@@ -14,6 +14,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-metrics</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>thorntail-kernel</artifactId>
     </dependency>
@@ -26,16 +31,6 @@
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>thorntail-jsonp</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>io.smallrye</groupId>
-      <artifactId>smallrye-metrics</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.microprofile.metrics</groupId>
-      <artifactId>microprofile-metrics-api</artifactId>
     </dependency>
 
   </dependencies>
