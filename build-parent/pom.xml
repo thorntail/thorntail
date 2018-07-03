@@ -410,6 +410,7 @@
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-metrics</artifactId>
         <version>${version.smallrye.metrics}</version>
+      </dependency>
 
       <dependency>
         <groupId>io.smallrye</groupId>
