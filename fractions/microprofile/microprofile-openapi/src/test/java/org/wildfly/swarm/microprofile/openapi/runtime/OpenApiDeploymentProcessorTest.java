@@ -37,16 +37,18 @@ import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
-import org.wildfly.swarm.microprofile.openapi.api.OpenApiConfig;
-import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
-import org.wildfly.swarm.microprofile.openapi.api.models.OpenAPIImpl;
-import org.wildfly.swarm.microprofile.openapi.api.models.info.ContactImpl;
-import org.wildfly.swarm.microprofile.openapi.api.models.info.InfoImpl;
 import org.wildfly.swarm.microprofile.openapi.deployment.OpenApiServletContextListener;
 import org.wildfly.swarm.microprofile.openapi.runtime.app.HelloResource;
 import org.wildfly.swarm.microprofile.openapi.runtime.app.TestApplication;
-import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer;
-import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Format;
+
+import io.smallrye.openapi.api.OpenApiConfig;
+import io.smallrye.openapi.api.OpenApiConfigImpl;
+import io.smallrye.openapi.api.OpenApiDocument;
+import io.smallrye.openapi.api.models.OpenAPIImpl;
+import io.smallrye.openapi.api.models.info.ContactImpl;
+import io.smallrye.openapi.api.models.info.InfoImpl;
+import io.smallrye.openapi.runtime.io.OpenApiSerializer;
+import io.smallrye.openapi.runtime.io.OpenApiSerializer.Format;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -89,10 +91,10 @@ public class OpenApiDeploymentProcessorTest {
         System.setProperty(OASConfig.FILTER, filterClass != null ? filterClass.getName() : "");
 
         TestConfig cfg = new TestConfig();
-        OpenApiConfig config = new OpenApiConfig(cfg);
+        OpenApiConfig oaiConfig = new OpenApiConfigImpl(cfg);
         Archive archive = archive(staticResource);
         OpenApiDocument.INSTANCE.reset();
-        OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(config, archive);
+        OpenApiDeploymentProcessor processor = new OpenApiDeploymentProcessor(oaiConfig, archive);
         processor.process();
         new OpenApiServletContextListener(cfg).contextInitialized(null);
 

@@ -21,10 +21,9 @@ import java.util.Deque;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
-import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer;
-import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Format;
-
+import io.smallrye.openapi.api.OpenApiDocument;
+import io.smallrye.openapi.runtime.io.OpenApiSerializer;
+import io.smallrye.openapi.runtime.io.OpenApiSerializer.Format;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderMap;
