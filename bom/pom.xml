@@ -99,6 +99,7 @@
     <version.mp-restclient>1.0.1</version.mp-restclient>
     <version.mp-jwt-auth>1.0</version.mp-jwt-auth>
 
+    <version.smallrye-open-api>1.0.0</version.smallrye-open-api>
     <version.smallrye.restclient>1.0.0</version.smallrye.restclient>
 
     <version.arquillian-core>1.2.1.Final</version.arquillian-core>
@@ -762,6 +763,11 @@
         <version>${version.mp-restclient}</version>
       </dependency>
 
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-open-api</artifactId>
+        <version>${version.smallrye-open-api}</version>
+      </dependency>
       <dependency>
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-rest-client</artifactId>
