@@ -112,7 +112,7 @@
     <version.wildfly-microprofile-config>1.2.1</version.wildfly-microprofile-config>
 
     <!-- SmallRye -->
-    <version.smallrye.metrics>1.1-SNAPSHOT</version.smallrye.metrics>
+    <version.smallrye.metrics>1.1.0</version.smallrye.metrics>
 
   </properties>
 
