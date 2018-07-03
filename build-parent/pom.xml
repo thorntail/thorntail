@@ -110,9 +110,8 @@
     <version.microprofile-opentracing>1.1</version.microprofile-opentracing>
     <!-- MP Config implementation -->
     <version.wildfly-microprofile-config>1.2.1</version.wildfly-microprofile-config>
-
-    <!-- SmallRye -->
     <version.smallrye.metrics>1.1.0</version.smallrye.metrics>
+    <version.smallrye.restclient>1.0.0</version.smallrye.restclient>
 
   </properties>
 
@@ -411,6 +410,11 @@
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-metrics</artifactId>
         <version>${version.smallrye.metrics}</version>
+
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-rest-client</artifactId>
+        <version>${version.smallrye.restclient}</version>
       </dependency>
 
       <!-- The following are not used, they are here to make PME align proper versions-->

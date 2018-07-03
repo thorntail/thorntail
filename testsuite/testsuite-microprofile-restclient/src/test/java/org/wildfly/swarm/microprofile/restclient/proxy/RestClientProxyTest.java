@@ -38,7 +38,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.microprofile.restclient.Counter;
 import org.wildfly.swarm.microprofile.restclient.HelloResource;
-import org.wildfly.swarm.microprofile.restclient.RestClientProxy;
+
+import io.smallrye.restclient.RestClientProxy;
 
 /**
  *
