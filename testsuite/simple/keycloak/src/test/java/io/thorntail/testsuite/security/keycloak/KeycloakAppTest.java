@@ -12,7 +12,11 @@ public class KeycloakAppTest {
 
     @Test
     public void test() {
-        when().get("/").then()
+        // 401 would be better but at the moment returning null from KeycloakConfigResolver causes KC NPE and 500
+        when().get("/secured").then()
+                .statusCode(500);
+        
+        when().get("/unsecured").then()
                 .statusCode(200)
                 .body(containsString("Hello from JAX-RS"));
     }

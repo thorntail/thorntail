@@ -3,14 +3,12 @@ package io.thorntail.testsuite.security.keycloak;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-import io.thorntail.Thorntail;
+import org.eclipse.microprofile.auth.LoginConfig;
 
 /**
  * @author Ken Finnigan
  */
-@ApplicationPath("/")
+@ApplicationPath("/secured")
+@LoginConfig(authMethod = "KEYCLOAK")
 public class MyJaxrsApplication extends Application {
-    public static void main(String... args) throws Exception {
-        Thorntail.run();
-    }
 }
