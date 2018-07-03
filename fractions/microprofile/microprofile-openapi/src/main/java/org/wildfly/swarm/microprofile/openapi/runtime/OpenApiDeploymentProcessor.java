@@ -16,25 +16,19 @@
 
 package org.wildfly.swarm.microprofile.openapi.runtime;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import javax.inject.Inject;
 
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.openapi.models.OpenAPI;
-import org.jboss.logging.Logger;
+import org.jboss.jandex.IndexView;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.api.classloader.ShrinkWrapClassLoader;
-import org.wildfly.swarm.microprofile.openapi.api.OpenApiConfig;
-import org.wildfly.swarm.microprofile.openapi.api.OpenApiDocument;
-import org.wildfly.swarm.microprofile.openapi.api.models.OpenAPIImpl;
-import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiParser;
-import org.wildfly.swarm.microprofile.openapi.runtime.io.OpenApiSerializer.Format;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
+
+import io.smallrye.openapi.api.OpenApiConfig;
+import io.smallrye.openapi.api.OpenApiDocument;
+import io.smallrye.openapi.api.util.ArchiveUtil;
+import io.smallrye.openapi.runtime.OpenApiProcessor;
+import io.smallrye.openapi.runtime.OpenApiStaticFile;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -43,13 +37,13 @@ import org.wildfly.swarm.undertow.WARArchive;
 @DeploymentScoped
 public class OpenApiDeploymentProcessor implements DeploymentProcessor {
 
-    private static final Logger LOGGER = Logger.getLogger(OpenApiDeploymentProcessor.class);
-
     private static final String LISTENER_CLASS = "org.wildfly.swarm.microprofile.openapi.deployment.OpenApiServletContextListener";
 
     private final OpenApiConfig config;
 
     private final Archive archive;
+
+    private final IndexView index;
 
     /**
      * Constructor for testing purposes.
@@ -60,6 +54,7 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
     public OpenApiDeploymentProcessor(OpenApiConfig config, Archive archive) {
         this.config = config;
         this.archive = archive;
+        this.index = ArchiveUtil.archiveToIndex(config, archive);
     }
 
     /**
@@ -69,8 +64,9 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
      */
     @Inject
     public OpenApiDeploymentProcessor(Archive archive) {
-        this.config = initConfigFromArchive(archive);
+        this.config = ArchiveUtil.archiveToConfig(archive);
         this.archive = archive;
+        this.index = ArchiveUtil.archiveToIndex(config, archive);
     }
 
     /**
@@ -87,78 +83,14 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
         } catch (Exception e) {
             throw new RuntimeException("Failed to register OpenAPI listener", e);
         }
+
+        OpenApiStaticFile staticFile = ArchiveUtil.archiveToStaticFile(archive);
+
         // Set models from annotations and static file
         OpenApiDocument openApiDocument = OpenApiDocument.INSTANCE;
         openApiDocument.config(config);
-        openApiDocument.modelFromStaticFile(modelFromStaticFile());
-        openApiDocument.modelFromAnnotations(modelFromAnnotations());
-    }
-
-    /**
-     * Find a static file located in the deployment and, if it exists, parse it and
-     * return the resulting model.  If no static file is found, returns null.  If an
-     * error is encountered while parsing the file then a runtime exception is
-     * thrown.
-     */
-    private OpenAPIImpl modelFromStaticFile() {
-        Format format = Format.YAML;
-
-        // Check for the file in both META-INF and WEB-INF/classes/META-INF
-        Node node = archive.get("/META-INF/openapi.yaml");
-        if (node == null) {
-            node = archive.get("/WEB-INF/classes/META-INF/openapi.yml");
-        }
-        if (node == null) {
-            node = archive.get("/META-INF/openapi.yml");
-        }
-        if (node == null) {
-            node = archive.get("/WEB-INF/classes/META-INF/openapi.yml");
-        }
-        if (node == null) {
-            node = archive.get("/META-INF/openapi.json");
-            format = Format.JSON;
-        }
-        if (node == null) {
-            node = archive.get("/WEB-INF/classes/META-INF/openapi.json");
-            format = Format.JSON;
-        }
-
-        if (node == null) {
-            return null;
-        }
-
-        try (InputStream stream = node.getAsset().openStream()) {
-            return OpenApiParser.parse(stream, format);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Create an {@link OpenAPI} model by scanning the deployment for relevant JAX-RS and
-     * OpenAPI annotations.  If scanning is disabled, this method returns null.  If scanning
-     * is enabled but no relevant annotations are found, an empty OpenAPI model is returned.
-     */
-    private OpenAPIImpl modelFromAnnotations() {
-        if (this.config.scanDisable()) {
-            return null;
-        }
-
-        OpenApiAnnotationScanner scanner = new OpenApiAnnotationScanner(config, archive);
-        return scanner.scan();
-    }
-
-    private static OpenApiConfig initConfigFromArchive(Archive<?> archive) {
-        ShrinkWrapClassLoader cl = new ShrinkWrapClassLoader(archive);
-        try {
-            return new OpenApiConfig(ConfigProvider.getConfig(cl));
-        } finally {
-            try {
-                cl.close();
-            } catch (IOException e) {
-                LOGGER.warnv("Could not close ShrinkWrapClassLoader for {0}", archive.getName());
-            }
-        }
+        openApiDocument.modelFromStaticFile(OpenApiProcessor.modelFromStaticFile(staticFile));
+        openApiDocument.modelFromAnnotations(OpenApiProcessor.modelFromAnnotations(config, index));
     }
 
 }
