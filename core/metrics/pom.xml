@@ -31,7 +31,6 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-metrics</artifactId>
-      <version>1.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
