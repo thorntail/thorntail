@@ -26,14 +26,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import io.thorntail.openapi.impl.api.OpenApiDocument;
-import io.thorntail.openapi.impl.io.OpenApiSerializer;
+import io.smallrye.openapi.api.OpenApiDocument;
+import io.smallrye.openapi.runtime.io.OpenApiSerializer;
 
 /**
  * @author Marc Savy {@literal marc@rhymewithgravy.com}
  * @author Ken Finnigan
  */
 public class OpenApiServlet extends HttpServlet {
+
+    private static final long serialVersionUID = -4753434466731911287L;
 
     private static final String ALLOWED_METHODS = "GET, HEAD, OPTIONS";
 
