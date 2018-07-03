@@ -1304,8 +1304,6 @@
         <module>testsuite/testsuite-jdr</module>
         <module>testsuite/testsuite-jgroups</module>
         <module>testsuite/testsuite-jolokia</module>
-        <module>testsuite/testsuite-jolokia-keycloak</module>
-        <module>testsuite/testsuite-keycloak-server</module>
         <module>testsuite/testsuite-logstash</module>
         <module>testsuite/testsuite-mail</module>
         <module>testsuite/testsuite-mail-cdi</module>
@@ -1331,7 +1329,8 @@
         <module>testsuite/testsuite-zipkin-jaxrs</module>
         <module>testsuite/testsuite-jose</module>
         <module>testsuite/testsuite-jose-jose4j</module>
-
+        <module>testsuite/testsuite-jolokia-keycloak</module>
+        <module>testsuite/testsuite-keycloak-server</module> 
         <!-- This testsuite needs to be in a profile that comes after the profiles that build the BOMs as they are a dependency -->
         <module>testsuite/testsuite-maven-plugin</module>
       </modules>
