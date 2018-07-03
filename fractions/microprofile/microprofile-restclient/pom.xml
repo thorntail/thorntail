@@ -14,11 +14,8 @@
     <relativePath>../../../build-parent/pom.xml</relativePath>
   </parent>
 
-  <groupId>io.thorntail</groupId>
   <artifactId>microprofile-restclient</artifactId>
-
   <name>MicroProfile Rest Client</name>
-
   <packaging>jar</packaging>
 
   <properties>
@@ -53,46 +50,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.eclipse.microprofile.rest.client</groupId>
-      <artifactId>microprofile-rest-client-api</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.osgi</groupId>
-          <artifactId>org.osgi.annotation.versioning</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>microprofile-restclient-api</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.resteasy</groupId>
-          <artifactId>resteasy-jaxrs</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jboss.resteasy</groupId>
-          <artifactId>resteasy-client</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-rest-client</artifactId>
     </dependency>
 
     <dependency>
@@ -139,7 +98,5 @@
     </dependency>
 
   </dependencies>
-
-
 
 </project>
