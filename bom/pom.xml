@@ -101,6 +101,7 @@
 
     <version.smallrye-open-api>1.0.0</version.smallrye-open-api>
     <version.smallrye.restclient>1.0.0</version.smallrye.restclient>
+    <version.smallrye.metrics>1.1.0</version.smallrye.metrics>
 
     <version.arquillian-core>1.2.1.Final</version.arquillian-core>
     <version.assertj>3.10.0</version.assertj>
@@ -772,6 +773,11 @@
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-rest-client</artifactId>
         <version>${version.smallrye.restclient}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-metrics</artifactId>
+        <version>${version.smallrye.metrics}</version>
       </dependency>
 
       <dependency>
