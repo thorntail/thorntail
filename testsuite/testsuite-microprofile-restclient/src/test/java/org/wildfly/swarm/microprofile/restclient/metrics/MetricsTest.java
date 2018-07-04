@@ -61,7 +61,9 @@ public class MetricsTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml").addPackage(HelloResource.class.getPackage())
+        return ShrinkWrap.create(WebArchive.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addPackage(HelloResource.class.getPackage())
                 .addPackage(MetricsTest.class.getPackage());
     }
 
