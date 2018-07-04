@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.thorntail.test</groupId>
+  <artifactId>testing-project</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <version.org.wildfly.swarm>2.0.0.Final</version.org.wildfly.swarm>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>bom</artifactId>
+        <version>${version.org.wildfly.swarm}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>undertow</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>jaxrs</artifactId>
+      <version>${version.org.wildfly.swarm}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>cdi</artifactId>
+      <version>2.0.0.Final</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.thorntail</groupId>
+          <artifactId>cdi-config</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.wildfly</groupId>
+          <artifactId>wildfly-weld</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.19.1</version>
+        <dependencies>
+          <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>management</artifactId>
+            <version>${version.org.wildfly.swarm}</version>
+          </dependency>
+          <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>management-console</artifactId>
+            <version>2.0.0.Final</version>
+            <exclusions>
+              <exclusion>
+                <groupId>io.thorntail</groupId>
+                <artifactId>spi</artifactId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
+        <version>${version.org.wildfly.swarm}</version>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>my-profile</id>
+
+      <properties>
+        <version.wildfly-swarm>2.0.0.Final</version.wildfly-swarm>
+      </properties>
+
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>bean-validation</artifactId>
+            <version>2.0.0.Final</version>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+
+      <dependencies>
+        <dependency>
+          <groupId>io.thorntail</groupId>
+          <artifactId>jsf</artifactId>
+          <version>${version.wildfly-swarm}</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>io.thorntail</groupId>
+              <artifactId>thorntail-maven-plugin</artifactId>
+              <version>${version.org.wildfly.swarm}</version>
+              <dependencies>
+                <dependency>
+                  <groupId>io.thorntail</groupId>
+                  <artifactId>jpa</artifactId>
+                  <exclusions>
+                    <exclusion>
+                      <groupId>io.thorntail</groupId>
+                      <artifactId>datasources</artifactId>
+                    </exclusion>
+                  </exclusions>
+                </dependency>
+              </dependencies>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+
+        <plugins>
+          <plugin>
+            <groupId>io.thorntail</groupId>
+            <artifactId>thorntail-maven-plugin</artifactId>
+            <configuration>
+              <hollow>true</hollow>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>io.thorntail</groupId>
+                <artifactId>logging</artifactId>
+                <version>2.0.0.Final</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>

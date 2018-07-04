@@ -81,6 +81,11 @@
       <artifactId>aether-util</artifactId>
       <version>1.0.0.v20140518</version>
     </dependency>
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>joox-java-6</artifactId>
+      <version>1.6.0</version>
+    </dependency>
   </dependencies>
 
 </project>
