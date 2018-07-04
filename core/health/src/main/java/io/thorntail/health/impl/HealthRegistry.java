@@ -8,6 +8,8 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
+
+import io.smallrye.health.SmallRyeHealthServlet;
 import io.thorntail.servlet.DeploymentMetaData;
 import io.thorntail.servlet.ServletMetaData;
 
@@ -28,7 +30,7 @@ public class HealthRegistry {
     }
 
     ServletMetaData servlet() {
-        ServletMetaData servlet = new ServletMetaData("endpoint", HealthServlet.class);
+        ServletMetaData servlet = new ServletMetaData("endpoint", SmallRyeHealthServlet.class);
         servlet.addUrlPattern("/");
         return servlet;
     }
