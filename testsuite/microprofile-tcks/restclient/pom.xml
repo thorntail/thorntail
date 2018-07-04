@@ -58,16 +58,7 @@
          <scope>test</scope>
       </dependency>
 
-      <!-- some weird testng classpath issues with @BeforeTests scopes requires this explicit dependency -->
-      <dependency>
-         <groupId>io.thorntail</groupId>
-         <artifactId>microprofile-restclient-api</artifactId>
-         <scope>test</scope>
-      </dependency>
-
-
       <!-- TCK Support -->
-
       <dependency>
          <groupId>commons-logging</groupId>
          <artifactId>commons-logging</artifactId>
@@ -185,7 +176,7 @@
 
                   <!-- [hb] Challenged, see  https://github.com/eclipse/microprofile-rest-client/pull/69 -->
                   <exclude>org.eclipse.microprofile.rest.client.tck.InvokeWithJsonPProviderTest</exclude>
-                  
+
                </excludes>
             </configuration>
          </plugin>

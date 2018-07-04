@@ -466,11 +466,6 @@
       </dependency>
       <dependency>
         <groupId>io.thorntail</groupId>
-        <artifactId>microprofile-restclient-api</artifactId>
-        <version>2.0.1.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
         <artifactId>cdi-jaxrsapi</artifactId>
         <version>2.0.1.Final-SNAPSHOT</version>
       </dependency>
@@ -1144,7 +1139,6 @@
         <module>fractions/wildfly/jgroups</module>
 
         <!-- MP 1.3 -->
-        <module>client-apis/microprofile-restclient</module>
         <module>fractions/microprofile/microprofile-restclient</module>
 
         <module>fractions/asciidoctorj</module>
@@ -1334,6 +1328,7 @@
 
         <!-- This testsuite needs to be in a profile that comes after the profiles that build the BOMs as they are a dependency -->
         <module>testsuite/testsuite-maven-plugin</module>
+        <module>testsuite/testsuite-maven-plugin-migration</module>
       </modules>
     </profile>
 
