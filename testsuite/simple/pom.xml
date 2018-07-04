@@ -25,6 +25,7 @@
     <module>jpa-contracts</module>
     <module>jpa-jta</module>
     <module>jpa-opentracing</module>
+    <module>jpa-wrapping</module>
     <module>keycloak</module>
     <module>ogm</module>
     <module>openapi</module>

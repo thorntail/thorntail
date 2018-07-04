@@ -1,9 +1,10 @@
 package io.thorntail.jpa.impl;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import io.thorntail.jpa.EntityManagerWrapperFactory;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -22,9 +23,7 @@ public class EntityManagerResourceProvider implements ResourceReferenceFactory<E
 
     private EntityManagerFactory entityManagerFactory;
 
-    protected final boolean useFullTextEntityManager;
-
-    protected Class<?> hibernateSearchClazz = null;
+    protected LinkedList<EntityManagerWrapperFactory> wrappers;
 
     protected EntityManagerResourceProvider(String unitName) {
         this(unitName, Collections.emptyMap());
@@ -33,7 +32,15 @@ public class EntityManagerResourceProvider implements ResourceReferenceFactory<E
     protected EntityManagerResourceProvider(String unitName, Map<String, String> properties) {
         this.unitName = unitName;
         this.properties = properties;
-        this.useFullTextEntityManager = isHibernateSearchPresent();
+        this.wrappers = loadWrappers();
+        Collections.sort(wrappers);
+    }
+
+    protected LinkedList<EntityManagerWrapperFactory> loadWrappers() {
+        LinkedList<EntityManagerWrapperFactory> wrappers = new LinkedList<>();
+        ServiceLoader.load(EntityManagerWrapperFactory.class)
+                         .forEach(wrappers::add);
+        return wrappers;
     }
 
     @Override
@@ -52,9 +59,6 @@ public class EntityManagerResourceProvider implements ResourceReferenceFactory<E
 
                 if (null == entityManager) {
                     entityManager = wrap( entityManagerFactory.createEntityManager(properties) );
-                    if (useFullTextEntityManager) {
-                        entityManager = wrapWithSearch(entityManager);
-                    }
                 }
 
                 return entityManager;
@@ -70,24 +74,10 @@ public class EntityManagerResourceProvider implements ResourceReferenceFactory<E
     }
 
     protected EntityManager wrap(EntityManager em) {
-        return em;
-    }
-
-    protected EntityManager wrapWithSearch(EntityManager em) {
-        try{
-            Method fullTextWrapper = this.hibernateSearchClazz.getMethod("getFullTextEntityManager", EntityManager.class);
-            return (EntityManager)fullTextWrapper.invoke(null, em);
-        } catch (NoSuchMethodException|SecurityException|IllegalAccessException|IllegalArgumentException|InvocationTargetException ex) {
-            throw JpaMessages.MESSAGES.errorWrappingEntityManagerForSearch(ex);
+        EntityManager currentEm = em;
+        for(EntityManagerWrapperFactory emwf : wrappers) {
+            currentEm = emwf.wrap(currentEm);
         }
-    }
-
-    private boolean isHibernateSearchPresent() {
-        try{
-            this.hibernateSearchClazz = Class.forName("org.hibernate.search.jpa.Search");
-            return true;
-        } catch (ClassNotFoundException ex) {
-            return false;
-        }
+        return currentEm;
     }
 }
