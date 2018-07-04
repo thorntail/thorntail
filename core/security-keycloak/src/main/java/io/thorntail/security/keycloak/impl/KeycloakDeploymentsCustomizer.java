@@ -48,25 +48,24 @@ public class KeycloakDeploymentsCustomizer {
     Deployments deployments;
 
     @Inject
-    @ConfigProperty(name = "keycloak.json.path")
+    @ConfigProperty(name = "keycloak.json.path", defaultValue = "keycloak.json")
     String keycloakJsonPath;
 
     @Inject
     @ConfigProperty(name = "keycloak.multitenancy.paths")
-    Map<String, String> keycloakMultitenancyPaths;
+    Optional<Map<String, String>> keycloakMultitenancyPaths;
 
     @Produces
     public KeycloakConfigResolver staticResolver() {
-        String path = keycloakJsonPath == null ? "keycloak.json" : keycloakJsonPath;
-        KeycloakDeployment dep = loadKeycloakDeployment(path);
+        KeycloakDeployment dep = loadKeycloakDeployment(keycloakJsonPath);
         return dep != null ? new StaticKeycloakConfigResolver(dep) : null; 
     }
     
     @Produces
     public KeycloakConfigResolver multitenancyResolver() {
-        if (keycloakMultitenancyPaths != null) {
+        if (keycloakMultitenancyPaths.isPresent()) {
             Map<String, KeycloakDeployment> pathDeployments = new HashMap<>();
-            for (Map.Entry<String, String> entry : keycloakMultitenancyPaths.entrySet()) {
+            for (Map.Entry<String, String> entry : keycloakMultitenancyPaths.get().entrySet()) {
                 KeycloakDeployment dep = loadKeycloakDeployment(entry.getKey());
                 if (dep != null) {
                     pathDeployments.put(entry.getKey(), dep);
