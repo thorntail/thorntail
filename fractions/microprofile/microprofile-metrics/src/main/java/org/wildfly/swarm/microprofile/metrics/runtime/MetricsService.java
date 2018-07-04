@@ -16,16 +16,9 @@
  */
 package org.wildfly.swarm.microprofile.metrics.runtime;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.metrics.Metric;
+import io.smallrye.metrics.setup.JmxRegistrar;
 import org.jboss.as.controller.ModelController;
 import org.jboss.as.server.ServerEnvironment;
-import org.jboss.logging.Logger;
 import org.jboss.msc.inject.Injector;
 import org.jboss.msc.service.Service;
 import org.jboss.msc.service.ServiceName;
@@ -33,15 +26,13 @@ import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
-import org.wildfly.swarm.microprofile.metrics.runtime.mbean.MGaugeImpl;
-import org.wildfly.swarm.microprofile.metrics.runtime.mbean.MCounterImpl;
+
+import java.io.IOException;
 
 /**
  * @author Heiko W. Rupp
  */
 public class MetricsService implements Service<MetricsService> {
-
-    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.microprofile.metrics");
 
     public static final ServiceName SERVICE_NAME = ServiceName.of("swarm", "mp-metrics");
 
@@ -51,75 +42,12 @@ public class MetricsService implements Service<MetricsService> {
 
     @Override
     public void start(StartContext context) throws StartException {
-        initBaseAndVendorConfiguration();
-
-        LOG.info("MicroProfile-Metrics started");
-    }
-
-    /**
-     * Read a list of mappings that contains the base and vendor metrics
-     * along with their metadata.
-     */
-    private void initBaseAndVendorConfiguration() {
-        InputStream is = getClass().getResourceAsStream("mapping.yml");
-
-        if (is != null) {
-            ConfigReader cr = new ConfigReader();
-            MetadataList ml = cr.readConfig(is);
-
-            Config config = ConfigProvider.getConfig();
-
-            Optional<String> globalTagsFromConfig = config.getOptionalValue("mp.metrics.tags", String.class);
-            List<Tag> globalTags = convertToTags(globalTagsFromConfig);
-
-            // Turn the multi-entry query expressions into concrete entries.
-            JmxWorker.instance().expandMultiValueEntries(ml.getBase());
-            JmxWorker.instance().expandMultiValueEntries(ml.getVendor());
-
-            for (ExtendedMetadata em : ml.getBase()) {
-                em.processTags(globalTags);
-                Metric type = getType(em);
-                MetricRegistries.getBaseRegistry().register(em, type);
-            }
-            for (ExtendedMetadata em : ml.getVendor()) {
-                em.processTags(globalTags);
-                Metric type = getType(em);
-                MetricRegistries.getVendorRegistry().register(em, type);
-            }
-        } else {
-            throw new IllegalStateException("Was not able to find the mapping file 'mapping.yml'");
+        JmxRegistrar jmxRegistrar = new JmxRegistrar();
+        try {
+            jmxRegistrar.init();
+        } catch (IOException e) {
+            throw new StartException("Failed to initialize metrics", e);
         }
-    }
-
-    private Metric getType(ExtendedMetadata em) {
-        Metric out;
-        switch (em.getTypeRaw()) {
-            case GAUGE:
-                out = new MGaugeImpl(em.getMbean());
-                break;
-            case COUNTER:
-                out = new MCounterImpl(em.getMbean());
-                break;
-            default:
-                throw new IllegalStateException("Not yet supported: " + em);
-        }
-        return out;
-    }
-
-    private List<Tag> convertToTags(Optional<String> globalTags) {
-        List<Tag> tags = new ArrayList<>();
-
-        if (!globalTags.isPresent()) {
-            return tags;
-        }
-        String globalTagsString = globalTags.get();
-        if (!globalTagsString.equals("")) {
-            String[] singleTags = globalTagsString.split(",");
-            for (String singleTag : singleTags) {
-                tags.add(new Tag(singleTag.trim()));
-            }
-        }
-        return tags;
     }
 
     @Override

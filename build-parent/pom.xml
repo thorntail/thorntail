@@ -110,7 +110,7 @@
     <version.microprofile-opentracing>1.1</version.microprofile-opentracing>
     <!-- MP Config implementation -->
     <version.wildfly-microprofile-config>1.2.1</version.wildfly-microprofile-config>
-
+    <version.smallrye.metrics>1.1.0</version.smallrye.metrics>
     <version.smallrye.restclient>1.0.0</version.smallrye.restclient>
 
   </properties>
@@ -402,6 +402,14 @@
         <groupId>org.eclipse.microprofile.jwt</groupId>
         <artifactId>microprofile-jwt-auth-api</artifactId>
         <version>${version.microprofile-jwt-auth}</version>
+      </dependency>
+
+      <!-- SmallRye -->
+
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-metrics</artifactId>
+        <version>${version.smallrye.metrics}</version>
       </dependency>
 
       <dependency>
