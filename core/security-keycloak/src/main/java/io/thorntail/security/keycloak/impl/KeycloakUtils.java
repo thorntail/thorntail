@@ -27,12 +27,6 @@ public final class KeycloakUtils {
         if (url == null) {
             url = KeycloakUtils.class.getClassLoader().getResource("META-INF/" + path);
         }
-        if (url == null) {
-            url = KeycloakUtils.class.getClassLoader().getResource("WEB-INF/" + path);
-        }
-        if (url == null) {
-            url = KeycloakUtils.class.getClassLoader().getResource("WEB-INF/classes" + path);
-        }
         if (url != null) {
             try (InputStream in = url.openStream()) {
                 AdapterConfig adapterConfig = KeycloakDeploymentBuilder.loadAdapterConfig(in);
