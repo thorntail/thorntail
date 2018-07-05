@@ -210,10 +210,7 @@ public class MPJWTExtension implements Extension {
      */
     void observesAfterBeanDiscovery(@Observes final AfterBeanDiscovery event, final BeanManager beanManager) {
         log.debugf("observesAfterBeanDiscovery, %s", claims);
-        //event.addBean(new JWTPrincipalBean());
         installClaimValueProducerMethodsViaSyntheticBeans(event, beanManager);
-
-        //installClaimValueProducesViaTemplateType(event, beanManager);
     }
 
     /**
