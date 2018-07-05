@@ -760,6 +760,12 @@
 
       <dependency>
         <groupId>io.thorntail</groupId>
+        <artifactId>opentracing-tracerresolver</artifactId>
+        <version>2.0.1.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.thorntail</groupId>
         <artifactId>microprofile-opentracing</artifactId>
         <version>2.0.1.Final-SNAPSHOT</version>
       </dependency>
@@ -1057,6 +1063,7 @@
     <module>fractions/topology-openshift</module>
     <module>fractions/topology-webapp</module>
 
+    <module>fractions/opentracing-tracerresolver</module>
     <module>fractions/opentracing</module>
 
     <module>fractions/jaeger</module>
@@ -1303,6 +1310,8 @@
         <module>testsuite/testsuite-microprofile-restclient</module>
         <module>testsuite/testsuite-mod_cluster</module>
         <module>testsuite/testsuite-mvc</module>
+        <module>testsuite/testsuite-jaeger-opentracing</module>
+        <module>testsuite/testsuite-jaeger-microprofile-opentracing</module>
         <module>testsuite/testsuite-opentracing</module>
         <module>testsuite/testsuite-resource-adapters</module>
         <module>testsuite/testsuite-spring</module>

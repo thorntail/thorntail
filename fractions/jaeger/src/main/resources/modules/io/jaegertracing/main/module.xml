@@ -7,7 +7,7 @@
 
   <dependencies>
     <module name="org.slf4j"/>
-    <module name="io.opentracing"/>
+    <module name="io.opentracing.tracer"/>
     <module name="org.apache.thrift" slot="jaeger"/>
     <module name="com.squareup.okhttp3"/>
     <module name="com.google.code.gson" slot="jaeger"/>
