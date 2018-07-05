@@ -1,15 +1,8 @@
 package io.thorntail.health.impl;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 
-import org.eclipse.microprofile.health.Health;
-import org.eclipse.microprofile.health.HealthCheck;
-
-import io.smallrye.health.SmallRyeHealthServlet;
 import io.thorntail.servlet.DeploymentMetaData;
 import io.thorntail.servlet.ServletMetaData;
 
@@ -30,13 +23,9 @@ public class HealthRegistry {
     }
 
     ServletMetaData servlet() {
-        ServletMetaData servlet = new ServletMetaData("endpoint", SmallRyeHealthServlet.class);
+        ServletMetaData servlet = new ServletMetaData("endpoint", HealthServlet.class);
         servlet.addUrlPattern("/");
         return servlet;
     }
 
-    @Inject
-    @Any
-    @Health
-    Instance<HealthCheck> healthChecks;
 }
