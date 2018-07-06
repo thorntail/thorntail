@@ -24,10 +24,6 @@ public class JWTAccount implements Account {
         return principal;
     }
 
-    /**
-     * TODO: this does not handle the EE role mapping requirements
-     * @return
-     */
     @Override
     public Set<String> getRoles() {
         //System.err.println( "--> " + this.principal.getGroups() );
