@@ -22,7 +22,6 @@ import org.eclipse.microprofile.health.HealthCheckResponse.State;
 import org.junit.Assert;
 import org.junit.Test;
 import org.wildfly.swarm.microprofile.health.runtime.HealthAnnotationProcessor;
-import org.wildfly.swarm.microprofile.health.runtime.HttpContexts;
 
 /**
  * @author Heiko Braun
@@ -86,20 +85,6 @@ public class ParserTest {
         HealthAnnotationProcessor.safeAppend(sb, "/app/");
         Assert.assertEquals("/jboss-web/webcontext/app", sb.toString());
 
-
-    }
-
-    @Test
-    public void testJsonEncoding() {
-        HealthCheckResponse healthStatus = HealthCheckResponse
-                .named("test")
-                .withData("a", "b")
-                .withData("c", "d")
-                .up()
-                .build();
-
-        String s = HttpContexts.toJson(healthStatus);
-        Assert.assertEquals("{\"name\":\"test\",\"state\":\"UP\",\"data\": {\"a\":\"b\",\"c\":\"d\"}}", s);
 
     }
 }

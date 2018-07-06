@@ -17,13 +17,11 @@ package org.wildfly.swarm.microprofile.health.runtime;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.enterprise.inject.Vetoed;
 import javax.naming.NamingException;
 
-import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.wildfly.swarm.microprofile.health.api.Monitor;
 
 import io.smallrye.health.SmallRyeHealth;
@@ -124,42 +122,6 @@ public class HttpContexts implements HttpHandler {
         exchange.getResponseSender().send(monitor.threads().toJSONString(false));
     }
 
-    public static String toJson(HealthCheckResponse status) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(LCURL);
-        sb.append(QUOTE).append("name").append("\":\"").append(status.getName()).append("\",");
-        sb.append(QUOTE).append("state").append("\":\"").append(status.getState().name()).append(QUOTE);
-        if (status.getData().isPresent()) {
-            sb.append(",");
-            sb.append(QUOTE).append(DATA).append("\": {");
-            Map<String, Object> atts = status.getData().get();
-            int i = 0;
-            for (String key : atts.keySet()) {
-                sb.append(QUOTE).append(key).append("\":").append(encode(atts.get(key)));
-                if (i < atts.keySet().size() - 1) {
-                    sb.append(",");
-                }
-                i++;
-            }
-            sb.append(RCURL);
-        }
-
-        sb.append(RCURL);
-        return sb.toString();
-    }
-
-    private static String encode(Object o) {
-        String res = null;
-        if (o instanceof String) {
-            res = "\"" + o.toString() + "\"";
-        } else {
-            res = o.toString();
-        }
-
-        return res;
-    }
-
-
     public static List<String> getDefaultContextNames() {
         return Arrays.asList(NODE, HEAP, HEALTH, THREADS);
     }
@@ -177,9 +139,4 @@ public class HttpContexts implements HttpHandler {
     private final Monitor monitor;
 
     private final HttpHandler next;
-
-    private static final String DATA = "data";
-
-    public static final String QUOTE = "\"";
-
 }
