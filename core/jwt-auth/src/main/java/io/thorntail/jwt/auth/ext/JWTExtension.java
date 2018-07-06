@@ -30,6 +30,8 @@ import io.thorntail.jwt.auth.impl.undertow.JWTAuthMechanism;
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.Claims;
 import org.jboss.logging.Logger;
+//import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.JWTAuthMechanism;
+//import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.config.JWTAuthContextInfoProvider;
 
 /**
  * A CDI extension that provides a producer for the current authenticated JsonWebToken based on a thread

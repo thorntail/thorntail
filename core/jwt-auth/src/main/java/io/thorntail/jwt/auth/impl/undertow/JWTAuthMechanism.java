@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import javax.security.auth.Subject;
 
-import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
+import io.thorntail.jwt.auth.impl.JWTAuthContextInfo;
 import io.thorntail.jwt.auth.impl.JsonWebTokenProducer;
 import io.thorntail.jwt.auth.impl.jaas.JWTCredential;
 import io.undertow.UndertowLogger;
@@ -19,6 +19,9 @@ import io.undertow.security.idm.Account;
 import io.undertow.security.idm.IdentityManager;
 import io.undertow.server.HttpServerExchange;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+//import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTAuthContextInfo;
+//import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.cdi.MPJWTProducer;
+//import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.jaas.JWTCredential;
 import org.jboss.security.SecurityConstants;
 import org.jboss.security.identity.RoleGroup;
 import org.jboss.security.identity.plugins.SimpleRoleGroup;

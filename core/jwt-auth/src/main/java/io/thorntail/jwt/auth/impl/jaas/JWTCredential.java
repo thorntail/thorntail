@@ -1,7 +1,7 @@
 package io.thorntail.jwt.auth.impl.jaas;
 
-import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import io.undertow.security.idm.Credential;
+import io.thorntail.jwt.auth.impl.JWTAuthContextInfo;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
