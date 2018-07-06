@@ -10,6 +10,6 @@ import static io.thorntail.Info.ROOT_PACKAGE;
  * @author Ken Finnigan
  */
 @ApplicationScoped
-@RequiredClassNotPresent(ROOT_PACKAGE + ".config.impl.ConfigImpl")
+@RequiredClassNotPresent(ROOT_PACKAGE + ".config.impl.InterpolatingConfig")
 public class OneMissingFailBean {
 }

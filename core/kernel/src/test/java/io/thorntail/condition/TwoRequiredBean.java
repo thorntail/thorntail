@@ -11,6 +11,6 @@ import static io.thorntail.Info.ROOT_PACKAGE;
  */
 @ApplicationScoped
 @RequiredClassPresent("io.restassured.RestAssured")
-@RequiredClassPresent(ROOT_PACKAGE + ".config.impl.ConfigImpl")
+@RequiredClassPresent(ROOT_PACKAGE + ".config.impl.InterpolatingConfig")
 public class TwoRequiredBean {
 }

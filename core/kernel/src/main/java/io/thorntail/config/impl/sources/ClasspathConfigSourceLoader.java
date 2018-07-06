@@ -10,9 +10,9 @@ import java.util.Set;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
-public class ClasspathConfigSourceLoader {
+class ClasspathConfigSourceLoader {
 
-    public static List<ConfigSource> of(ClassLoader classLoader, int defaultOrdinal, String... paths) throws IOException {
+    static List<ConfigSource> of(ClassLoader classLoader, int defaultOrdinal, String... paths) throws IOException {
         Set<URL> seenUrls = new HashSet<>();
         List<ConfigSource> sources = new ArrayList<>();
 

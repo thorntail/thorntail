@@ -10,6 +10,6 @@ import io.thorntail.condition.annotation.RequiredClassNotPresent;
  */
 @ApplicationScoped
 @RequiredClassNotPresent("io.thorntail.servlet.Primary")
-@RequiredClassPresent("io.thorntail.config.impl.ConfigImpl")
+@RequiredClassPresent("io.thorntail.config.impl.InterpolatingConfig")
 public class OneNeededOneMissingBean {
 }
