@@ -24,9 +24,10 @@ import javax.enterprise.inject.Vetoed;
 import javax.naming.NamingException;
 
 import org.eclipse.microprofile.health.HealthCheckResponse;
-import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile.health.api.Monitor;
 
+import io.smallrye.health.SmallRyeHealth;
+import io.smallrye.health.SmallRyeHealthReporter;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.AttachmentKey;
@@ -67,6 +68,9 @@ public class HttpContexts implements HttpHandler {
         } else if (THREADS.equals(exchange.getRequestPath())) {
             threads(exchange);
             return;
+        } else if (HEALTH.equals(exchange.getRequestPath())) {
+            health(exchange);
+            return;
         }
 
         next.handleRequest(exchange);
@@ -81,7 +85,24 @@ public class HttpContexts implements HttpHandler {
         exchange.getResponseHeaders().put(new HttpString("Access-Control-Max-Age"), "1209600");
     }
 
-    private void noHealthEndpoints(HttpServerExchange exchange) {
+    private void health(HttpServerExchange exchange) {
+        if (monitor.getHealthReporter() != null) {
+            SmallRyeHealthReporter reporter = (SmallRyeHealthReporter)monitor.getHealthReporter();
+            SmallRyeHealth health = reporter.getHealth();
+            if (health.isDown()) {
+                exchange.setStatusCode(503);
+            } else {
+                exchange.setStatusCode(200);
+            }
+            responseHeaders(exchange);
+            exchange.getResponseSender().send(health.getPayload().toString());
+            exchange.endExchange();
+        } else {
+            defaultHealthInfo(exchange);
+        }
+    }
+
+    private void defaultHealthInfo(HttpServerExchange exchange) {
         exchange.setStatusCode(200);
         responseHeaders(exchange);
         exchange.getResponseSender().send("{\"outcome\":\"UP\", \"checks\":[]}");
@@ -142,8 +163,6 @@ public class HttpContexts implements HttpHandler {
     public static List<String> getDefaultContextNames() {
         return Arrays.asList(NODE, HEAP, HEALTH, THREADS);
     }
-
-    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.health");
 
     public static final String NODE = "/node";
 

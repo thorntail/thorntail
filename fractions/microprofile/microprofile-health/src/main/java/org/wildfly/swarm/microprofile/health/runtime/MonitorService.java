@@ -204,6 +204,22 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         return this.securityRealmServiceValue;
     }
 
+    @Override
+    public void registerHealthReporter(Object healthReporter) {
+        this.healthReporter = healthReporter;
+    }
+
+    @Override
+    public void unregisterHealthReporter() {
+        healthReporter = null;
+    }
+
+    @Override
+    public Object getHealthReporter() {
+        return healthReporter;
+    }
+
+
     private static final long DEFAULT_PROBE_TIMEOUT_SECONDS = 2;
 
     private final InjectedValue<ServerEnvironment> serverEnvironmentValue = new InjectedValue<ServerEnvironment>();
@@ -222,4 +238,5 @@ public class MonitorService implements Monitor, Service<MonitorService> {
 
     private CopyOnWriteArrayList<HealthMetaData> endpoints = new CopyOnWriteArrayList<HealthMetaData>();
 
+    private Object healthReporter;
 }

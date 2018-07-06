@@ -48,6 +48,12 @@ public interface Monitor {
 
     void registerHealth(HealthMetaData metaData);
 
+    void registerHealthReporter(Object healthReporter);
+
+    void unregisterHealthReporter();
+
+    Object getHealthReporter();
+
     List<HealthMetaData> getHealthURIs();
 
     Optional<SecurityRealm> getSecurityRealm();

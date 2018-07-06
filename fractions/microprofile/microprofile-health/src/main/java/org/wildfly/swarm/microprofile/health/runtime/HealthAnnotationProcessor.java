@@ -28,17 +28,12 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.jandex.MethodInfo;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.api.asset.Asset;
 import org.wildfly.swarm.microprofile.health.HealthMetaData;
 import org.wildfly.swarm.microprofile.health.api.Monitor;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
-import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.descriptors.JBossWebContainer;
-import org.wildfly.swarm.undertow.descriptors.Servlet;
-import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
 /**
  * @author Ken Finnigan
@@ -138,27 +133,6 @@ public class HealthAnnotationProcessor implements DeploymentProcessor {
 
             }
         }
-        addHealthServlet();
-    }
-
-
-    private void addHealthServlet() {
-        WebXmlAsset webXmlAsset = null;
-        Node node = archive.as(JARArchive.class).get("WEB-INF/web.xml");
-        if (node == null) {
-            webXmlAsset = new WebXmlAsset();
-            archive.as(JARArchive.class).add(webXmlAsset);
-        } else {
-            Asset asset = node.getAsset();
-            if (!(asset instanceof WebXmlAsset)) {
-                webXmlAsset = new WebXmlAsset(asset.openStream());
-                archive.as(JARArchive.class).add(webXmlAsset);
-            } else {
-                webXmlAsset = (WebXmlAsset) asset;
-            }
-        }
-        Servlet servlet = webXmlAsset.addServlet("HealthServlet", "io.smallrye.health.SmallRyeHealthServlet");
-        servlet.withUrlPattern("/health").withLoadOnStartup(1);
     }
 
     public static void safeAppend(StringBuilder sb, String pathToken) {
