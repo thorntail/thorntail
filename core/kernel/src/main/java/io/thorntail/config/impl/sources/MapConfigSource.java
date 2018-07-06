@@ -1,12 +1,13 @@
 package io.thorntail.config.impl.sources;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
-public class MapConfigSource implements ConfigSource {
+public class MapConfigSource implements ConfigSource, Serializable {
 
     public MapConfigSource(String name) {
         this(name, new HashMap<>(), 100);

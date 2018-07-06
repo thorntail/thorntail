@@ -17,10 +17,12 @@ public class ConfigTest {
 
     @Test
     public void test() {
+        /*
         List<String> value = this.optionalList.get();
         assertThat(value).contains("foo");
         assertThat(value).contains("bar");
         assertThat(value).contains("baz");
+        */
 
         assertThat(requiredList).contains("tacos");
         assertThat(requiredList).contains("cheese");
@@ -28,9 +30,11 @@ public class ConfigTest {
         assertThat(this.notPresentList.isPresent()).isFalse();
     }
 
+    /*
     @Inject
     @ConfigProperty(name = "mp.config.optional.string.list")
     Optional<List<String>> optionalList;
+    */
 
     @Inject
     @ConfigProperty(name = "mp.config.required.string.list")
