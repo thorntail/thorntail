@@ -23,7 +23,7 @@ public class TracedEntityManagerResourceProvider extends EntityManagerResourcePr
 
     @Override
     protected EntityManager wrap(EntityManager em) {
-        return new TracedEntityManager(this.traceMode, em);
+        return super.wrap(new TracedEntityManager(this.traceMode, em));
     }
 
     private final TraceMode traceMode;
