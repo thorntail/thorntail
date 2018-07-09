@@ -1,0 +1,35 @@
+
+[id='default-thorntail-yaml-files_{context}']
+= Default {Thorntail} YAML Files
+
+By default, {Thorntail} looks up permanent configuration in files with specific names to put on the classpath.
+
+[discrete]
+== project-defaults.yml
+
+If the original `.war` file with your application contains a file named `project-defaults.yml`, that file represents the defaults applied over the absolute defaults that {Thorntail} provides.
+
+[discrete]
+== Other default file names
+
+In addition to the `project-defaults.yml` file, you can provide specific configuration files using the `-S <name>` command-line option.
+The specified files are loaded, in the order you provided them, before `project-defaults.yml`.
+A name provided in the `-S <name>` argument specifies the `project-<name>.yml` file on your classpath.
+
+.Specifying configuration files on the command line
+====
+
+Consider the following application execution:
+
+[source,bash]
+----
+$ java -jar myapp-thorntail.jar -Stesting -Scloud
+----
+
+The following YAML files are loaded, in this order. The first file containing a given configuration item takes precedence over others:
+
+. `project-testing.yml`
+. `project-cloud.yml`
+. `project-defaults.yml`
+====
+

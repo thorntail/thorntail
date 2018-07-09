@@ -1,0 +1,35 @@
+
+[id='configuring-a-thorntail-application_{context}']
+= Configuring a {Thorntail} application
+
+You can configure numerous options with applications built with {Thorntail}.
+For most options, reasonable defaults are already applied, so you do not have to change any options unless you explicitly want to.
+
+This reference is a complete list of all configurable items, grouped by the fraction that introduces them.
+Only the items related to the fractions that your application uses are relevant to you.
+
+[id='configuring-a-thorntail-application-using-system-properties_{context}']
+== System properties
+
+Using system properties for configuring your application is advantageous for experimenting, debugging, and other short-term activities.
+
+include::../concepts/con_application-configuration-using-system-properties.adoc[leveloffset=+2]
+
+include::../howto/proc_setting-system-properties-using-the-maven-plugin.adoc[leveloffset=+2]
+
+include::../howto/proc_setting-system-properties-using-the-command-line.adoc[leveloffset=+2]
+
+include::../howto/proc_specifying-jdbc-drivers-for-hollow-jars.adoc[leveloffset=+2]
+
+[id='configuring-a-thorntail-application-using-yaml-files_{context}']
+== YAML files
+
+YAML is the preferred method for long-term configuration of your application.
+In addition to that, the YAML strategy provides grouping of environment-specific configurations, which you can selectively enable when executing the application.
+
+include::../concepts/con_general-yaml-file-format.adoc[leveloffset=+2]
+
+include::../concepts/con_default-thorntail-yaml-configuration-files.adoc[leveloffset=+2]
+
+include::../concepts/con_non-default-thorntail-yaml-configuration-files.adoc[leveloffset=+2]
+

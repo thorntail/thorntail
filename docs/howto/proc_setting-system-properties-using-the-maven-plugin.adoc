@@ -1,0 +1,45 @@
+
+[id='setting-system-properties-using-the-maven-plugin_{context}']
+= Setting system properties using the Maven plugin
+
+Setting properties using the Maven plugin is useful for temporarily changing a configuration item for a single execution of your {Thorntail} application.
+
+NOTE: Even though the configuration in the POM file of your application is persistent, it is not recommended to use it for long-term configuration of your application.
+Instead, use the xref:configuring-a-thorntail-application-using-yaml-files_{context}[YAML configuration files].
+
+If you want to set explicit configuration values as defaults through the Maven plugin, add a `<properties>` section to the `<configuration>` block of the plugin in the `pom.xml` file in your application.
+
+[discrete]
+== Prerequisites
+
+* Your {Thorntail}-based application with a POM file
+
+[discrete]
+== Procedure
+
+. In the POM file of your application, locate the configuration you want to modify.
+. Insert a block with configuration of the `io.thorntail:thorntail-maven-plugin` artifact, for example:
++
+--
+[source,xml,subs=+attributes]
+----
+<build>
+  <plugins>
+    <plugin>
+      <groupId>io.thorntail</groupId>
+      <artifactId>thorntail-maven-plugin</artifactId>
+      <version>{version}</version>
+      <configuration>
+        <properties>
+          <swarm.bind.address>127.0.0.1</swarm.bind.address>
+          <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+        </properties>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+----
+
+In the example above, the `swarm.bind.address` property is set to `127.0.0.1` and the `java.net.preferIPv4Stack` property is set to `true`.
+--
+

@@ -1,0 +1,26 @@
+
+[id='specifying-jdbc-drivers-for-hollow-jars_{context}']
+= Specifying JDBC drivers for hollow JARs
+
+When executing a hollow JAR, you can specify a JDBC Driver JAR using the `swarm.classpath` property.
+This way, you do not need to package the driver in the hollow JAR.
+
+The `swarm.classpath` property accepts one or more paths to JAR files separated by `;` (a semicolon).
+The specified JAR files are added to the classpath of the application.
+
+[discrete]
+== Prerequisites
+
+* A JAR file with your application
+
+[discrete]
+== Procedure
+
+. In a terminal application, navigate to the directory with your application JAR file.
+. Execute your application JAR file using the Java binary and specify the JDBC driver:
++
+[source,bash]
+----
+$ java -Dswarm.classpath=./h2-1.4.196.jar -jar microprofile-jpa-hollow-thorntail.jar example-jpa-jaxrs-cdi.war
+----
+
