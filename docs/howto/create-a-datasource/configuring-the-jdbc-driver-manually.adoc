@@ -1,13 +1,17 @@
-[#configuring-the-jdbc-driver-manually]
+
+[id='configuring-the-jdbc-driver-manually_{context}']
 = Configuring the JDBC driver manually
 
-.Prerequisites
+[discrete]
+== Prerequisites
 
 * A Maven-based application.
 * The `module.xml` file created according to relevant {WildFly} instructions.
   This file is necessary to expose the driver through JBoss Modules.
 
-.Procedure
+[discrete]
+== Procedure
+
 . Edit the `project-defaults.yml` file to define the driver information.
 +
 In the `swarm` -> `datasources` -> `jdbc-drivers` tree, define the driver by

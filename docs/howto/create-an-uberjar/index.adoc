@@ -1,14 +1,17 @@
-[#creating-an-uberjar]
-= Creating an Uberjar
+
+[id='creating-an-uberjar_{context}']
+= Creating an uberjar
 
 One method of packaging an application for execution
 with {Thorntail} is as an _uberjar_.
 
-.Prerequisites
+[discrete]
+== Prerequisites
 
 * A Maven-based application with a `pom.xml` file.
 
-.Procedure
+[discrete]
+== Procedure
 
 . Add the `thorntail-maven-plugin` to your `pom.xml` in a `<plugin>` block,
   with an `<execution>` specifying the `package` goal.
@@ -33,10 +36,4 @@ $ mvn package
 ----
 $ java -jar ./target/myapp-thorntail.jar
 ----
-
-ifndef::product[]
-.Related Information
-
-* xref:creating-a-hollow-jar[]
-endif::[]
 

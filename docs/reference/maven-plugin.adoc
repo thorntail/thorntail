@@ -32,7 +32,7 @@ The {Thorntail} Maven plugin is used like any other Maven plugin, that is throug
 The {Thorntail} Maven plugin provides several goals:
 
 package::
-Creates the executable package (see xref:creating-an-uberjar[]).
+Creates the executable package (see xref:creating-an-uberjar_{context}[]).
 
 run::
 Executes your application in the Maven process. The application is stopped if the Maven build is interrupted, for example when you press Ctrl + C.

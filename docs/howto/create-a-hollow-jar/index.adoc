@@ -1,13 +1,16 @@
-[#creating-a-hollow-jar]
+
+[id='creating-a-hollow-jar_{context}']
 = Creating a hollow JAR
 
 The xref:hollow-jar[hollow JAR] is one method of packaging an application for execution with {Thorntail}.
 
-.Prerequisites
+[discrete]
+== Prerequisites
 
 * A Maven-based application with a `pom.xml` file.
 
-.Procedure
+[discrete]
+== Procedure
 
 . Add the `thorntail-maven-plugin` to your `pom.xml` in a `<plugin>` block, with an `<execution>` specifying the `package` goal.
 In addition to that, put `true` in the `hollow` property of the `<configuration>` element:
@@ -38,10 +41,4 @@ Execute the resulting `-hollow-thorntail.jar` file using the Java binary and pas
 ----
 $ java -jar ./target/myapp-hollow-thorntail.jar ./target/myapp.war
 ----
-
-.Related Information
-
-* xref:hollow-jar[]
-* xref:creating-an-uberjar[]
-* xref:hollow-jar-limitations[Limitations of using hollow JARs]
 

@@ -6,6 +6,8 @@
 
 :ndash: &#x2013;
 
+:context: thorntail
+
 = {Thorntail} Documentation
 The {Thorntail} Team
 v{version}
@@ -48,7 +50,6 @@ endif::product[]
 # Reference
 
 ## General
-:context: general
 
 include::reference/maven-plugin.adoc[leveloffset=+2]
 
