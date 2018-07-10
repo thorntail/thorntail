@@ -2,7 +2,7 @@
 [id='creating-a-hollow-jar_{context}']
 = Creating a hollow JAR
 
-The xref:hollow-jar[hollow JAR] is one method of packaging an application for execution with {Thorntail}.
+The xref:hollow-jar_{context}[hollow JAR] is one method of packaging an application for execution with {Thorntail}.
 
 [discrete]
 == Prerequisites
@@ -41,4 +41,9 @@ Execute the resulting `-hollow-thorntail.jar` file using the Java binary and pas
 ----
 $ java -jar ./target/myapp-hollow-thorntail.jar ./target/myapp.war
 ----
+
+[discrete]
+== Related information
+
+* For more information about hollow JARs and their limitations, see xref:hollow-jar_{context}[].
 

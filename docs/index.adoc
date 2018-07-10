@@ -17,7 +17,7 @@ include::introduction.adoc[]
 # Concepts
 
 include::concepts/fractions.adoc[leveloffset=+1]
-include::concepts/packaging-types.adoc[leveloffset=+1]
+include::assemblies/assembly_packaging-types.adoc[leveloffset=+1]
 
 # HOWTO
 
