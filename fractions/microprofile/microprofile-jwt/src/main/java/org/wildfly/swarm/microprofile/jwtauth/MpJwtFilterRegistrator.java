@@ -21,7 +21,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.ext.Provider;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +36,6 @@ import static java.util.Arrays.asList;
  * <br>
  * Date: 5/30/18
  */
-@Provider
 public class MpJwtFilterRegistrator implements DynamicFeature {
 
     private static final DenyAllFilter denyAllFilter = new DenyAllFilter();

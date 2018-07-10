@@ -43,8 +43,8 @@ import java.util.Collection;
  * A DeploymentProcessor implementation for the MP-JWT custom authentication mechanism that adds support
  * for that mechanism to any war the declares a login-config/auth-method = MP-JWT.
  *
- * This also handles the mapping of the javax.annotation security annotations to WebXml security
- * constraints.
+ * This register a dynamic feature that provides support for javax.annotation security annotations
+ *
  */
 @DeploymentScoped
 public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
@@ -52,21 +52,7 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
     private static Logger log = Logger.getLogger(MPJWTAuthExtensionArchivePreparer.class);
 
     private static final DotName LOGIN_CONFIG = DotName.createSimple("org.eclipse.microprofile.auth.LoginConfig");
-    private static final DotName ROLES_ALLOWED = DotName.createSimple("javax.annotation.security.RolesAllowed");
-    private static final DotName DENY_ALL = DotName.createSimple("javax.annotation.security.DenyAll");
-    private static final DotName PERMIT_ALL = DotName.createSimple("javax.annotation.security.PermitAll");
-    private static final DotName PATH = DotName.createSimple("javax.ws.rs.Path");
     private static final DotName APP_PATH = DotName.createSimple("javax.ws.rs.ApplicationPath");
-
-    private static final DotName HTTP_METHOD = DotName.createSimple("javax.ws.rs.HttpMethod");
-    private static final DotName GET = DotName.createSimple("javax.ws.rs.GET");
-    private static final DotName POST = DotName.createSimple("javax.ws.rs.POST");
-    private static final DotName PUT = DotName.createSimple("javax.ws.rs.PUT");
-    private static final DotName DELETE = DotName.createSimple("javax.ws.rs.DELETE");
-    private static final DotName HEAD = DotName.createSimple("javax.ws.rs.HEAD");
-    private static final DotName OPTIONS = DotName.createSimple("javax.ws.rs.OPTIONS");
-
-    private static final String[] EMPTY_ROLES = new String[0];
 
     private final Archive archive;
 
