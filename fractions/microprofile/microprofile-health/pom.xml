@@ -63,7 +63,6 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-health</artifactId>
-      <version>${version.smallrye.health}</version>
     </dependency>
 
     <dependency>
