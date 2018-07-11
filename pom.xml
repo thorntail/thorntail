@@ -31,7 +31,7 @@
   <properties>
     <version.wildfly.swarm.checkstyle>3</version.wildfly.swarm.checkstyle>
 
-    <version.certified-community>2017.10.1</version.certified-community>
+    <version.certified-community>2.0.0.Final</version.certified-community>
     <version.wildfly.swarm>${project.version}</version.wildfly.swarm>
 
     <version.org.arquillian>1.1.15.Final</version.org.arquillian>
