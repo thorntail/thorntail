@@ -1,0 +1,17 @@
+[id='using-thorntail-maven-plugin_{context}']
+= Using {Thorntail} Maven Plugin
+
+:parent-context: {context}
+
+{Thorntail} provides a Maven plugin to accomplish most of the work of building xref:uberjar_{context}[uberjar] packages.
+
+include::../concepts/con_thorntail-maven-plugin-general-usage.adoc[leveloffset=+1]
+
+include::../reference/ref_thorntail-maven-plugin-goals.adoc[leveloffset=+1]
+
+include::../reference/ref_thorntail-maven-plugin-configuration-options.adoc[leveloffset=+1]
+
+include::../concepts/con_thorntail-maven-plugin-configuration-properties.adoc[leveloffset=+1]
+
+:context: {parent-context}
+

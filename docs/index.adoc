@@ -51,7 +51,7 @@ endif::product[]
 
 ## General
 
-include::reference/maven-plugin.adoc[leveloffset=+2]
+include::assemblies/assembly_using-thorntail-maven-plugin.adoc[leveloffset=+2]
 
 include::assemblies/assembly_configuring-a-thorntail-application.adoc[leveloffset=+2]
 include::reference/network.adoc[leveloffset=+2]

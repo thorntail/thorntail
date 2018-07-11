@@ -1,0 +1,22 @@
+
+[id='thorntail-maven-plugin-goals_{context}']
+= {Thorntail} Maven plugin goals
+
+The {Thorntail} Maven plugin provides several goals:
+
+package::
+Creates the executable package (see xref:creating-an-uberjar_{context}[]).
+
+run::
+Executes your application in the Maven process. The application is stopped if the Maven build is interrupted, for example when you press Ctrl + C.
+
+[#maven-plugin-multistart-goal]
+start and multistart::
+Executes your application in a forked process. Generally, it is only useful for running integration tests using a plugin, such as the `maven-failsafe-plugin`.
+The `multistart` variant allows starting multiple {Thorntail}{ndash}built applications using Maven GAVs to support complex testing scenarios.
+
+stop::
+Stops any previously started applications.
++
+NOTE: The `stop` goal can only stop applications that were started _in the same Maven execution_.
+

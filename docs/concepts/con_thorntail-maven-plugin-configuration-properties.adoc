@@ -1,0 +1,21 @@
+
+[id='thorntail-maven-plugin-configuration-properties_{context}']
+= {Thorntail} Maven plugin configuration properties
+
+Properties can be used to configure the execution and affect the packaging or running of your application.
+
+If you add a `<properties>` or `<propertiesFile>` section to the `<configuration>` of the plugin, the properties are used when executing your application using the `mvn thorntail:run` command.
+In addition to that, the same properties are added to your `_myapp_-thorntail.jar` file to affect subsequent executions of the uberjar.
+Any properties loaded from the `<propertiesFile>` override identically-named properties in the `<properties>` section.
+
+Any properties added to the uberjar can be overridden at runtime using the traditional `-Dname=value` mechanism of the `java` binary, or using the YAML-based configuration files.
+
+Only the following properties are added to the uberjar at package time:
+
+* The properties specified outside of the `<properties>` section or the `<propertiesFile>`, whose path starts with one of the following:
+** `jboss.`
+** `wildfly.`
+** `swarm.`
+** `maven.`
+* The properties that override a property specified in the `<properties>` section or the `<propertiesFile>`.
+
