@@ -1,4 +1,6 @@
-[#creating-a-datasource]
+
+// This is an assembly
+[id='creating-a-datasource_{context}']
 = Creating a datasource
 
 When working with Java applications, a _datasource_ has
@@ -15,7 +17,7 @@ driver; instead, the underlying runtime manages creating a datasource,
 which provides an efficient way to share and manage a discrete connection or
 a pool of connections to a particular database using the driver.
 
-== Configuring a JDBC Driver
+== Configuring a JDBC driver
 
 There are two options how to configure JDBC drivers:
 

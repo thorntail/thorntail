@@ -1,4 +1,5 @@
-[#testing-in-a-container]
+
+[id='testing-in-a-container_{context}']
 = Testing in a container
 
 Using Arquillian, you have the capability of injecting unit tests into a
@@ -6,11 +7,13 @@ running application. This allows you to verify your application is behaving
 correctly. There is an adapter for {Thorntail} that makes Arquillian-based
 testing work well with {Thorntail}{ndash}based applications.
 
-.Prerequisites
+[discrete]
+== Prerequisites
 
 * A Maven-based application with a `pom.xml` file.
 
-.Procedure
+[discrete]
+== Procedure
 
 . Include the {Thorntail} BOM as described in xref:using-a-bom[]:
 +
@@ -131,8 +134,4 @@ $ mvn install
 ----
 +
 NOTE: In many IDEs, execute a test class by right-clicking it and selecting `Run`.
-
-.Related Information
-
-* xref:using-a-bom[]
 

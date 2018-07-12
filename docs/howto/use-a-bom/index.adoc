@@ -158,5 +158,5 @@ include::pom.xml[tag=plugin,indent=4]
 
 .Related Information
 
-* xref:creating-an-uberjar[]
+* xref:creating-an-uberjar_{context}[]
 

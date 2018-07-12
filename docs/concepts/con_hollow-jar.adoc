@@ -1,0 +1,61 @@
+
+[id='hollow-jar_{context}']
+= Hollow JAR
+
+A _hollow JAR_ is similar to an uberjar, but includes only the runtime components, and does not include your application code.
+
+A hollow jar is suitable for deployment processes that involve Linux containers such as Docker.
+When using containers, place the runtime components in a container image lower in the image hierarchy--which means it changes less often--so that the higher layer which contains only your application code can be rebuilt more quickly.
+
+The names of the hollow JARs that {Thorntail} produces include the name of your application, and the `-hollow-thorntail.jar` suffix.
+You must package the `.war` file of your application separately in order to benefit from the hollow
+JAR.
+
+[NOTE]
+====
+Using hollow JARs has certain limitations:
+
+* To enable {Thorntail} to autodetect a JDBC driver, you must add the JAR with the driver to the `swarm.classpath` system property, for example:
++
+[source,bash,options="nowrap"]
+----
+$ java -Dswarm.classpath=./h2-1.4.196.jar -jar my-hollow-thorntail.jar myApp.war
+----
+
+* YAML configuration files in your application are not automatically applied.
+You must specify them manually, for example:
++
+[source,bash,options="nowrap"]
+----
+$ java -jar my-hollow-thorntail.jar myApp.war -s ./project-defaults.yml
+----
+====
+
+When executing the hollow JAR, provide the application `.war` file as an argument to the Java binary:
+
+[source]
+----
+$ java -jar myapp-hollow-thorntail.jar myapp.war
+----
+
+== Pre-Built Hollow JARs
+
+{Thorntail} ships the following pre-built hollow JARs:
+
+ifndef::product[]
+full:: The main Java EE related capabilities
+endif::[]
+web:: Functionality focused on web technologies
+microprofile:: Functionality defined by all Eclipse MicroProfile specifications
+
+The hollow JARs are available under the following coordinates:
+
+[source,xml,options="nowrap",subs="attributes+"]
+----
+<dependency>
+    <groupId>io.thorntail.servers</groupId>
+ifndef::product[    <artifactId>[full|web|microprofile]</artifactId>]
+ifdef::product[    <artifactId>[web|microprofile]</artifactId>]
+</dependency>
+----
+

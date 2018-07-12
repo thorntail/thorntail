@@ -1,4 +1,5 @@
-[#auto-detecting-jdbc-drivers]
+
+[id='auto-detecting-jdbc-drivers_{context}']
 = Auto-detecting JDBC drivers
 
 {Thorntail} has the capability to detect, install, and register
@@ -16,13 +17,15 @@ The drivers that {Thorntail} auto-detects include:
 * Sybase
 * DB2
 
-.Prerequisites
+[discrete]
+== Prerequisites
 
 * A Maven-based application.
 * A database to connect to.
 * The Maven coordinates of the JDBC driver you want to use.
 
-.Procedure
+[discrete]
+== Procedure
 
 . Add the appropriate dependency (with the default `<scope>compile</scope>`
 scope) to your application:

@@ -1,4 +1,5 @@
-[#auto-detecting-fractions]
+
+[id='auto-detecting-fractions_{context}']
 = Auto-detecting fractions
 
 Migrating existing legacy applications to benefit from {Thorntail} is simple when using fraction auto-detection.
@@ -17,11 +18,13 @@ include::pom.xml[tag=jaxrs,index=2]
 
 {Thorntail} then includes the `jaxrs` fraction during the build automatically.
 
-.Prerequisites
+[discrete]
+== Prerequisites
 
 * An existing Maven-based application with a `pom.xml` file.
 
-.Procedure
+[discrete]
+== Procedure
 
 . Add the `thorntail-maven-plugin` to your `pom.xml` in a `<plugin>` block,
   with an `<execution>` specifying the `package` goal.
@@ -49,6 +52,6 @@ $ java -jar ./target/myapp-thorntail.jar
 
 .Related Information
 
-* xref:fractions[]
-* xref:creating-an-uberjar[]
+* xref:fractions_{context}[]
+* xref:creating-an-uberjar_{context}[]
 
