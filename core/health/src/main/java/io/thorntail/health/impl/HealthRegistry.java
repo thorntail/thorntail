@@ -1,13 +1,8 @@
 package io.thorntail.health.impl;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 
-import org.eclipse.microprofile.health.Health;
-import org.eclipse.microprofile.health.HealthCheck;
 import io.thorntail.servlet.DeploymentMetaData;
 import io.thorntail.servlet.ServletMetaData;
 
@@ -33,8 +28,4 @@ public class HealthRegistry {
         return servlet;
     }
 
-    @Inject
-    @Any
-    @Health
-    Instance<HealthCheck> healthChecks;
 }

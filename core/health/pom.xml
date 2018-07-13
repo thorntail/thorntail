@@ -20,16 +20,17 @@
 
     <dependency>
       <groupId>io.thorntail</groupId>
-      <artifactId>thorntail-jsonp</artifactId>
+      <artifactId>thorntail-servlet</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-health</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>thorntail-servlet</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.microprofile.health</groupId>
-      <artifactId>microprofile-health-api</artifactId>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.json</artifactId>
     </dependency>
 
 
