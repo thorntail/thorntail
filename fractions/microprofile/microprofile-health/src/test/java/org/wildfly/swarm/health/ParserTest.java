@@ -15,29 +15,34 @@
  */
 package org.wildfly.swarm.health;
 
+import java.util.Map;
+
+import org.eclipse.microprofile.health.HealthCheckResponse;
+import org.eclipse.microprofile.health.HealthCheckResponse.State;
 import org.junit.Assert;
 import org.junit.Test;
 import org.wildfly.swarm.microprofile.health.runtime.HealthAnnotationProcessor;
-import org.wildfly.swarm.microprofile.health.runtime.HttpContexts;
 
 /**
  * @author Heiko Braun
  */
 public class ParserTest {
 
-    // see https://issues.jboss.org/browse/SWARM-505
     @Test
     public void testAttributes() {
 
-        HealthStatus healthStatus = HealthStatus.named("test")
+        HealthCheckResponse healthStatus = HealthCheckResponse.named("test")
                 .up()
-                .withAttribute("a", "b")
-                .withAttribute("c", "d");
+                .withData("a", "b")
+                .withData("c", "d")
+                .build();
 
-        String message = healthStatus.getMessage().get();
-        Assert.assertTrue("Expected a", message.contains("a"));
-        Assert.assertTrue("Expected c", message.contains("c"));
-        System.out.println(message);
+        Assert.assertEquals("test", healthStatus.getName());
+        Assert.assertSame(State.UP, healthStatus.getState());
+        Map<String, Object> data = healthStatus.getData().get();
+        Assert.assertEquals(2, data.size());
+        Assert.assertEquals("Expected a", "b", data.get("a"));
+        Assert.assertEquals("Expected c", "d", data.get("c"));
     }
 
     @Test
@@ -81,18 +86,5 @@ public class ParserTest {
         Assert.assertEquals("/jboss-web/webcontext/app", sb.toString());
 
 
-    }
-
-    @Test
-    public void testJsonEncoding() {
-        org.eclipse.microprofile.health.HealthCheckResponse healthStatus = org.eclipse.microprofile.health.HealthCheckResponse
-                .named("test")
-                .withData("a", "b")
-                .withData("c", "d")
-                .up()
-                .build();
-
-        String s = HttpContexts.toJson(healthStatus);
-        System.out.println(s);
     }
 }

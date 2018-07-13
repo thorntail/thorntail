@@ -15,13 +15,18 @@
  */
 package org.wildfly.swarm.microprofile.health.runtime;
 
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.FAILURE_DESCRIPTION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OUTCOME;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUCCESS;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -41,15 +46,8 @@ import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
 import org.jboss.msc.value.InjectedValue;
 import org.wildfly.swarm.SwarmInfo;
-import org.wildfly.swarm.microprofile.health.api.Monitor;
 import org.wildfly.swarm.microprofile.health.HealthMetaData;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADDRESS;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.FAILURE_DESCRIPTION;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OUTCOME;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUCCESS;
+import org.wildfly.swarm.microprofile.health.api.Monitor;
 
 /**
  * @author Heiko Braun
@@ -169,25 +167,8 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     }
 
     @Override
-    public void registerHealthBean(Object healthCheck) {
-        LOG.info("Adding health bean: " + healthCheck.getClass().getName());
-        this.beans.add(healthCheck);
-    }
-
-    @Override
-    public void unregisterHealthBean(Object healthCheck) {
-        this.beans.remove(healthCheck);
-        LOG.info("Removed health bean: " + healthCheck.getClass().getName());
-    }
-
-    @Override
     public List<HealthMetaData> getHealthURIs() {
         return Collections.unmodifiableList(this.endpoints);
-    }
-
-    @Override
-    public Set<Object> getHealthDelegates() {
-        return this.beans;
     }
 
     @Override
@@ -223,6 +204,22 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         return this.securityRealmServiceValue;
     }
 
+    @Override
+    public void registerHealthReporter(Object healthReporter) {
+        this.healthReporter = healthReporter;
+    }
+
+    @Override
+    public void unregisterHealthReporter() {
+        healthReporter = null;
+    }
+
+    @Override
+    public Object getHealthReporter() {
+        return healthReporter;
+    }
+
+
     private static final long DEFAULT_PROBE_TIMEOUT_SECONDS = 2;
 
     private final InjectedValue<ServerEnvironment> serverEnvironmentValue = new InjectedValue<ServerEnvironment>();
@@ -241,5 +238,5 @@ public class MonitorService implements Monitor, Service<MonitorService> {
 
     private CopyOnWriteArrayList<HealthMetaData> endpoints = new CopyOnWriteArrayList<HealthMetaData>();
 
-    private CopyOnWriteArraySet<Object> beans = new CopyOnWriteArraySet<Object>();
+    private Object healthReporter;
 }

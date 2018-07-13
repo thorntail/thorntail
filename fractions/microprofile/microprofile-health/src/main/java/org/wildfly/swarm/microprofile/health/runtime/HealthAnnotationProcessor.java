@@ -135,7 +135,6 @@ public class HealthAnnotationProcessor implements DeploymentProcessor {
         }
     }
 
-
     public static void safeAppend(StringBuilder sb, String pathToken) {
 
         // normalise the token to '/foobar'

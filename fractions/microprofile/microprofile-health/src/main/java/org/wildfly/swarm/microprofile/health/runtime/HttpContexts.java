@@ -15,25 +15,22 @@
  */
 package org.wildfly.swarm.microprofile.health.runtime;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.enterprise.inject.Vetoed;
 import javax.naming.NamingException;
 
+import org.wildfly.swarm.microprofile.health.api.Monitor;
+
+import io.smallrye.health.SmallRyeHealth;
+import io.smallrye.health.SmallRyeHealthReporter;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.AttachmentKey;
 import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
-import org.eclipse.microprofile.health.HealthCheck;
-import org.eclipse.microprofile.health.HealthCheckResponse;
-import org.jboss.logging.Logger;
-import org.wildfly.swarm.microprofile.health.api.Monitor;
 
 /**
  * The actual monitoring HTTP endpoints. These are wrapped by {@link SecureHttpContexts}.
@@ -70,63 +67,11 @@ public class HttpContexts implements HttpHandler {
             threads(exchange);
             return;
         } else if (HEALTH.equals(exchange.getRequestPath())) {
-            proxyRequestsCDI(exchange);
+            health(exchange);
             return;
         }
 
         next.handleRequest(exchange);
-    }
-
-    private void proxyRequestsCDI(HttpServerExchange exchange) {
-
-        Set<Object> procedures = monitor.getHealthDelegates();
-
-        if (procedures.isEmpty()) {
-            noHealthEndpoints(exchange);
-            return;
-        }
-
-        List<org.eclipse.microprofile.health.HealthCheckResponse> responses = new ArrayList<>();
-
-        for (Object procedure : procedures) {
-            org.eclipse.microprofile.health.HealthCheckResponse status = ((HealthCheck)procedure).call();
-            responses.add(status);
-        }
-
-        StringBuilder sb = new StringBuilder(LCURL);
-        sb.append("\"checks\": [\n");
-
-        int i = 0;
-        boolean failed = false;
-
-        for (org.eclipse.microprofile.health.HealthCheckResponse resp : responses) {
-
-            sb.append(toJson(resp));
-
-            if (!failed) {
-                failed = resp.getState() != HealthCheckResponse.State.UP;
-            }
-
-            if (i < responses.size() - 1) {
-                sb.append(",\n");
-            }
-            i++;
-        }
-        sb.append("],\n");
-
-        String outcome = failed ? "DOWN" : "UP";
-        sb.append("\"outcome\": \"" + outcome + "\"\n");
-        sb.append("}\n");
-
-        // send a response
-        if (failed) {
-            exchange.setStatusCode(503);
-        }
-
-        responseHeaders(exchange);
-        exchange.getResponseSender().send(sb.toString());
-        exchange.endExchange();
-
     }
 
     private void responseHeaders(HttpServerExchange exchange) {
@@ -138,7 +83,24 @@ public class HttpContexts implements HttpHandler {
         exchange.getResponseHeaders().put(new HttpString("Access-Control-Max-Age"), "1209600");
     }
 
-    private void noHealthEndpoints(HttpServerExchange exchange) {
+    private void health(HttpServerExchange exchange) {
+        if (monitor.getHealthReporter() != null) {
+            SmallRyeHealthReporter reporter = (SmallRyeHealthReporter)monitor.getHealthReporter();
+            SmallRyeHealth health = reporter.getHealth();
+            if (health.isDown()) {
+                exchange.setStatusCode(503);
+            } else {
+                exchange.setStatusCode(200);
+            }
+            responseHeaders(exchange);
+            exchange.getResponseSender().send(health.getPayload().toString());
+            exchange.endExchange();
+        } else {
+            defaultHealthInfo(exchange);
+        }
+    }
+
+    private void defaultHealthInfo(HttpServerExchange exchange) {
         exchange.setStatusCode(200);
         responseHeaders(exchange);
         exchange.getResponseSender().send("{\"outcome\":\"UP\", \"checks\":[]}");
@@ -160,47 +122,9 @@ public class HttpContexts implements HttpHandler {
         exchange.getResponseSender().send(monitor.threads().toJSONString(false));
     }
 
-    public static String toJson(HealthCheckResponse status) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(LCURL);
-        sb.append(QUOTE).append("name").append("\":\"").append(status.getName()).append("\",");
-        sb.append(QUOTE).append("state").append("\":\"").append(status.getState().name()).append(QUOTE);
-        if (status.getData().isPresent()) {
-            sb.append(",");
-            sb.append(QUOTE).append(DATA).append("\": {");
-            Map<String, Object> atts = status.getData().get();
-            int i = 0;
-            for (String key : atts.keySet()) {
-                sb.append(QUOTE).append(key).append("\":").append(encode(atts.get(key)));
-                if (i < atts.keySet().size() - 1) {
-                    sb.append(",");
-                }
-                i++;
-            }
-            sb.append(RCURL);
-        }
-
-        sb.append(RCURL);
-        return sb.toString();
-    }
-
-    private static String encode(Object o) {
-        String res = null;
-        if (o instanceof String) {
-            res = "\"" + o.toString() + "\"";
-        } else {
-            res = o.toString();
-        }
-
-        return res;
-    }
-
-
     public static List<String> getDefaultContextNames() {
         return Arrays.asList(NODE, HEAP, HEALTH, THREADS);
     }
-
-    private static Logger LOG = Logger.getLogger("org.wildfly.swarm.health");
 
     public static final String NODE = "/node";
 
@@ -215,9 +139,4 @@ public class HttpContexts implements HttpHandler {
     private final Monitor monitor;
 
     private final HttpHandler next;
-
-    private static final String DATA = "data";
-
-    public static final String QUOTE = "\"";
-
 }

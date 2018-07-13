@@ -97,7 +97,8 @@
     <version.maven.aether>3.2.5</version.maven.aether>
 
     <version.resteasy>3.0.24.Final</version.resteasy>
-
+    <version.org.glassfish.javax.json>1.0.4</version.org.glassfish.javax.json>
+  
     <!-- MicroProfile APIs -->
     <!-- NOTE: we cannot use MP BOM as it does not define dependencyManagement -->
     <version.microprofile-config>1.2</version.microprofile-config>
@@ -110,9 +111,10 @@
     <version.microprofile-opentracing>1.1</version.microprofile-opentracing>
     <!-- MP Config implementation -->
     <version.wildfly-microprofile-config>1.2.1</version.wildfly-microprofile-config>
+    <version.smallrye.health>1.0.1</version.smallrye.health>
     <version.smallrye.metrics>1.1.0</version.smallrye.metrics>
     <version.smallrye.restclient>1.0.0</version.smallrye.restclient>
-
+    
   </properties>
 
   <build>
@@ -405,6 +407,11 @@
       </dependency>
 
       <!-- SmallRye -->
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-health</artifactId>
+        <version>${version.smallrye.health}</version>
+      </dependency>
 
       <dependency>
         <groupId>io.smallrye</groupId>

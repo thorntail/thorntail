@@ -15,11 +15,6 @@
  */
 package org.wildfly.swarm.microprofile.health.deployment;
 
-import org.eclipse.microprofile.health.Health;
-import org.eclipse.microprofile.health.HealthCheck;
-import org.jboss.logging.Logger;
-import org.wildfly.swarm.microprofile.health.api.Monitor;
-
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.AnnotatedType;
@@ -28,10 +23,12 @@ import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.Unmanaged;
-import javax.enterprise.inject.spi.WithAnnotations;
 import javax.naming.NamingException;
-import java.util.ArrayList;
-import java.util.Collection;
+
+import org.jboss.logging.Logger;
+import org.wildfly.swarm.microprofile.health.api.Monitor;
+
+import io.smallrye.health.SmallRyeHealthReporter;
 
 /**
  * Created by hbraun on 28.06.17.
@@ -40,9 +37,9 @@ public class HealthExtension implements Extension {
     private static Logger log = Logger.getLogger(HealthExtension.class);
 
     private final Monitor monitor;
-    private Collection<AnnotatedType> delegates = new ArrayList<>();
-    private Collection<HealthCheck> healthChecks = new ArrayList<>();
-    private Collection<Unmanaged.UnmanagedInstance<HealthCheck>> healthCheckInstances = new ArrayList<>();
+    private AnnotatedType<?> delegate;
+    private Unmanaged.UnmanagedInstance<SmallRyeHealthReporter> reporterInstance;
+    private SmallRyeHealthReporter reporter;
 
     public HealthExtension() {
         try {
@@ -52,55 +49,44 @@ public class HealthExtension implements Extension {
         }
     }
 
-    public <T> void observeResources(@Observes @WithAnnotations({Health.class}) ProcessAnnotatedType<T> event) {
+    public <T> void observeResources(@Observes ProcessAnnotatedType<T> event) {
 
         AnnotatedType<T> annotatedType = event.getAnnotatedType();
-        Class<T> javaClass = annotatedType.getJavaClass();
-        for (Class<?> intf : javaClass.getInterfaces()) {
-            if (intf.getName().equals(HealthCheck.class.getName())) {
-                log.info(">> Discovered health check procedure " + javaClass);
-                delegates.add(annotatedType);
-            }
+
+        if (SmallRyeHealthReporter.class == annotatedType.getJavaClass()) {
+            delegate = annotatedType;
         }
     }
 
-    /**
-     * Instantiates <em>unmanaged instances</em> of HealthCheckProcedure and
-     * handle manually their CDI creation lifecycle.
-     * Add them to the {@link Monitor}.
-     */
-    private void afterDeploymentValidation(@Observes final AfterDeploymentValidation abd, BeanManager beanManager) {
+    public void afterDeploymentValidation(@Observes final AfterDeploymentValidation abd, BeanManager beanManager) {
         try {
-            for (AnnotatedType delegate : delegates) {
-                Unmanaged<HealthCheck> unmanagedHealthCheck = new Unmanaged<HealthCheck>(beanManager, delegate.getJavaClass());
-                Unmanaged.UnmanagedInstance<HealthCheck> healthCheckInstance = unmanagedHealthCheck.newInstance();
-                HealthCheck healthCheck =  healthCheckInstance.produce().inject().postConstruct().get();
-                healthChecks.add(healthCheck);
-                healthCheckInstances.add(healthCheckInstance);
+            if (delegate != null) {
+                Unmanaged<SmallRyeHealthReporter> unmanagedHealthCheck =
+                    new Unmanaged<SmallRyeHealthReporter>(beanManager, SmallRyeHealthReporter.class);
+                reporterInstance = unmanagedHealthCheck.newInstance();
+                reporter =  reporterInstance.produce().inject().postConstruct().get();
+                monitor.registerHealthReporter(reporter);
 
-                monitor.registerHealthBean(healthCheck);
-
-                log.info(">> Added health bean impl " + healthCheck);
+                log.info(">> Added health reporter bean " + reporter);
+                delegate = null;
             }
 
-            // we don't need the references anymore
-            delegates.clear();
-
         } catch (Exception e) {
-            throw new RuntimeException("Failed to register health bean", e);
+            throw new RuntimeException("Failed to register health reporter bean", e);
         }
     }
 
     /**
      * Called when the deployment is undeployed.
      *
-     * Remove all the instances of {@link HealthCheck} from the {@link Monitor}.
+     * Remove the reporter instance of {@link SmallRyeHealthReporter} from the {@link Monitor}.
      * Handle manually their CDI destroy lifecycle.
      */
     public void beforeShutdown(@Observes final BeforeShutdown bs) {
-        healthChecks.forEach(healthCheck -> monitor.unregisterHealthBean(healthCheck));
-        healthChecks.clear();
-        healthCheckInstances.forEach(instance -> instance.preDestroy().dispose());
-        healthCheckInstances.clear();
+        monitor.unregisterHealthReporter();
+        reporter = null;
+        reporterInstance.preDestroy().dispose();
+        reporterInstance = null;
     }
 }
+

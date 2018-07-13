@@ -17,7 +17,6 @@ package org.wildfly.swarm.microprofile.health.api;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -49,13 +48,13 @@ public interface Monitor {
 
     void registerHealth(HealthMetaData metaData);
 
-    void registerHealthBean(Object healthCheck);
+    void registerHealthReporter(Object healthReporter);
 
-    void unregisterHealthBean(Object healthCheck);
+    void unregisterHealthReporter();
+
+    Object getHealthReporter();
 
     List<HealthMetaData> getHealthURIs();
-
-    Set<Object> getHealthDelegates();
 
     Optional<SecurityRealm> getSecurityRealm();
 
