@@ -1,0 +1,18 @@
+
+[id='uberjar_{context}']
+= Uberjar
+
+An _uberjar_ is a single Java `.jar` file that includes everything you need to execute your application.
+This means both the runtime components you have selected--you can understand that as the app server--along with the application components (your `.war` file).
+
+An uberjar is useful for many continuous integration and continuous deployment (CI/CD) pipeline styles, in which a single executable binary artifact is produced and moved through the testing, validation, and production environments in your organization.
+
+The names of the uberjars that {Thorntail} produces include the name of your application and the `-thorntail.jar` suffix.
+
+An uberjar can be executed like any executable JAR:
+
+[source]
+----
+$ java -jar myapp-thorntail.jar
+----
+

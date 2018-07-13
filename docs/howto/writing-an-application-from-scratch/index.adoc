@@ -1,5 +1,5 @@
 
-[id='writing-an-application-from-scratch_{context}']
+[id='creating-an-application-from-scratch_{context}']
 = Creating an application from scratch
 
 Creating a simple {Thorntail}{ndash}based application with a REST endpoint from scratch.
@@ -92,10 +92,4 @@ myApp
                         ├── HelloWorldEndpoint.java
                         └── RestApplication.java
 ----
-
-[discrete]
-== Next steps
-
-ifdef::product[* xref:deploying-an-application-to-openshift[Deploy the application to Openshift]]
-* Package the application in an xref:creating-an-uberjar[uberjar].
 
