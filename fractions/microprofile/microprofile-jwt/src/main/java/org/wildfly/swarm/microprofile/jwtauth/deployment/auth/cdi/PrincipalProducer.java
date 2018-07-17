@@ -8,14 +8,14 @@ import javax.enterprise.inject.Produces;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 /**
- * Override the
+ * Override the default CDI Principal bean to allow the injection of a Principal to be a JsonWebToken
  */
 @Priority(1)
 @Alternative
 public class PrincipalProducer {
 
     /**
-     * The @RequestScoped producer method for the current JsonWebToken
+     * The producer method for the current JsonWebToken
      *
      * @return
      */
