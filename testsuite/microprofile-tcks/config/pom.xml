@@ -88,19 +88,18 @@
                <suiteXmlFiles>
                   <suiteXmlFile>src/test/tck-suite.xml</suiteXmlFile>
                </suiteXmlFiles>
+               <environmentVariables>
+                  <my_int_property>45</my_int_property>
+                  <MY_BOOLEAN_PROPERTY>true</MY_BOOLEAN_PROPERTY>
+                  <my_string_property>haha</my_string_property>
+                  <MY_STRING_PROPERTY>woohoo</MY_STRING_PROPERTY>
+               </environmentVariables>
                <!-- This workaround allows to run a single test using "test"
                   system property -->
                <!-- https://issues.apache.org/jira/browse/SUREFIRE-569 -->
                <dependenciesToScan>
                   <dependency>org.eclipse.microprofile.config:microprofile-config-tck</dependency>
                </dependenciesToScan>
-
-               <properties>
-                  <property>
-                     <name>listener</name>
-                     <value>org.wildfly.swarm.microprofile.config.tck.TestNGAnnotationTransformer</value>
-                  </property>
-               </properties>
             </configuration>
          </plugin>
       </plugins>
