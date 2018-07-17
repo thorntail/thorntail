@@ -31,9 +31,9 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 /**
- * An extension of the Smallrey CDI provider for the JWTAuthContextInfo that extends the information from
+ * An extension of the SmallRey CDI provider for the JWTAuthContextInfo that extends the information from
  * MP-JWT config properties with legacy fraction properties as well as properties for features not
- * convered by MP-JWT settings.
+ * covered by MP-JWT settings.
  */
 @Dependent
 public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthContextInfoProvider {
@@ -112,9 +112,6 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
             contextInfo.setIssuedBy(mpJwtIssuer);
         } else if (issuedBy != null && !issuedBy.equals(NONE)) {
             contextInfo.setIssuedBy(issuedBy);
-        } else {
-            // If there is no expected issuer configured, don't validate it; new in MP-JWT 1.1
-            contextInfo.setRequireIssuer(false);
         }
 
         Optional<Boolean> mpJwtRequireIss = super.getMpJwtRequireIss();
