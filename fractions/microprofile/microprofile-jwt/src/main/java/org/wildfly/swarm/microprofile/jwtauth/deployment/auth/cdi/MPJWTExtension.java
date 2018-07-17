@@ -117,7 +117,7 @@ public class MPJWTExtension implements Extension {
     }
 
     void doProcessProducers(@Observes ProcessProducer pp) {
-        log.infof("doProcessProducer, pp=%s", pp.getProducer());
+        log.tracef("doProcessProducer, pp=%s", pp.getProducer());
     }
 
     /**
