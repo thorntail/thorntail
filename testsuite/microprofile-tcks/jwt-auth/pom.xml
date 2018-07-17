@@ -57,9 +57,22 @@
       <dependency>
          <groupId>io.thorntail</groupId>
          <artifactId>microprofile-jwt</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>io.thorntail</groupId>
+         <artifactId>cdi</artifactId>
          <scope>test</scope>
       </dependency>
-
+      <dependency>
+         <groupId>io.thorntail</groupId>
+         <artifactId>jaxrs</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>io.thorntail</groupId>
+         <artifactId>jaxrs-jsonp</artifactId>
+         <scope>test</scope>
+      </dependency>
       <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
