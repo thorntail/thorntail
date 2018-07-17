@@ -25,6 +25,7 @@
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Eclipse MicroProfile,JWT,Security,Web</swarm.fraction.tags>
     <version.jose4j>0.6.0</version.jose4j>
+    <version.smallrye.jwt>1.1.0</version.smallrye.jwt>
   </properties>
 
   <build>
@@ -38,6 +39,62 @@
 
   <dependencies>
     <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>spi</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>cdi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>management</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>msc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>undertow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-undertow</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.wildfly.core</groupId>
+      <artifactId>wildfly-server</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>microprofile-config</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
       <artifactId>microprofile-jwt-auth-api</artifactId>
       <exclusions>
@@ -48,17 +105,14 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-jwt</artifactId>
+      <version>${version.smallrye.jwt}</version>
+    </dependency>
+    <dependency>
       <groupId>org.bitbucket.b_c</groupId>
       <artifactId>jose4j</artifactId>
       <version>${version.jose4j}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>microprofile-config</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>container</artifactId>
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>
@@ -68,22 +122,7 @@
       <groupId>io.thorntail</groupId>
       <artifactId>jaxrs</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>cdi</artifactId>
-    </dependency>
 
-    <!-- Provided APIs -->
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>spi</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>meta-spi</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-api</artifactId>
@@ -132,7 +171,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
   </dependencies>
 </project>
 

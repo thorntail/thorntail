@@ -73,9 +73,10 @@ public class MPJWTExtension implements Extension {
      * @param beanManager cdi bean manager
      */
     public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager beanManager) {
-        log.debugf("MPJWTExtension(), added JWTPrincipalProducer");
+        log.debugf("MPJWTExtension(), adding producers");
         bbd.addAnnotatedType(beanManager.createAnnotatedType(JWTAuthContextInfoProvider.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(MPJWTProducer.class));
+        bbd.addAnnotatedType(beanManager.createAnnotatedType(PrincipalProducer.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(RawClaimTypeProducer.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(ClaimValueProducer.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(JsonValueProducer.class));
@@ -116,6 +117,7 @@ public class MPJWTExtension implements Extension {
     }
 
     void doProcessProducers(@Observes ProcessProducer pp) {
+        log.tracef("doProcessProducer, pp=%s", pp.getProducer());
     }
 
     /**
@@ -209,8 +211,6 @@ public class MPJWTExtension implements Extension {
     void observesAfterBeanDiscovery(@Observes final AfterBeanDiscovery event, final BeanManager beanManager) {
         log.debugf("observesAfterBeanDiscovery, %s", claims);
         installClaimValueProducerMethodsViaSyntheticBeans(event, beanManager);
-
-        //installClaimValueProducesViaTemplateType(event, beanManager);
     }
 
     /**
