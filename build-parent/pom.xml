@@ -104,7 +104,7 @@
     <version.microprofile-config>1.2</version.microprofile-config>
     <version.microprofile-health>1.0</version.microprofile-health>
     <version.microprofile-fault-tolerance>1.0</version.microprofile-fault-tolerance>
-    <version.microprofile-jwt-auth>1.0</version.microprofile-jwt-auth>
+    <version.microprofile-jwt-auth>1.1</version.microprofile-jwt-auth>
     <version.microprofile-metrics>1.1</version.microprofile-metrics>
     <version.microprofile.restclient>1.0</version.microprofile.restclient>
     <version.microprofile-openapi>1.0.1</version.microprofile-openapi>
