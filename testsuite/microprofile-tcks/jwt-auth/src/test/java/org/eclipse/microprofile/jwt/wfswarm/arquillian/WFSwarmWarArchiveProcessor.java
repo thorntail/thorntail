@@ -1,5 +1,10 @@
 package org.eclipse.microprofile.jwt.wfswarm.arquillian;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -8,6 +13,7 @@ import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+
 
 /**
  * An ApplicationArchiveProcessor for the MP-JWT TCK that includes:
@@ -23,14 +29,40 @@ public class WFSwarmWarArchiveProcessor implements ApplicationArchiveProcessor {
         if (!(appArchive instanceof WebArchive)) {
             return;
         }
-        log.info("Preparing archive: " + appArchive);
+        log.info("Preparing archive: "+appArchive);
         // Only augment archives with a publicKey indicating a MP-JWT test
         WebArchive war = WebArchive.class.cast(appArchive);
+        Node configProps = war.get("/META-INF/microprofile-config.properties");
         Node publicKeyNode = war.get("/WEB-INF/classes/publicKey.pem");
-        if (publicKeyNode == null) {
+        Node publicKey4kNode = war.get("/WEB-INF/classes/publicKey4k.pem");
+        Node mpJWT = war.get("MP-JWT");
+        if (configProps == null && publicKeyNode == null && publicKey4kNode == null && mpJWT == null) {
             return;
         }
 
+        if (configProps != null) {
+            StringWriter sw = new StringWriter();
+            InputStream is = configProps.getAsset().openStream();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+                String line = reader.readLine();
+                while(line != null) {
+                    sw.write(line);
+                    sw.write('\n');
+                    line = reader.readLine();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            log.info("mp-config.props: "+sw.toString());
+        } else {
+            log.info("NO mp-config.props, adding /META-INF/MP-JWT-SIGNER");
+            if(publicKey4kNode != null) {
+                war.addAsManifestResource(publicKey4kNode.getAsset(), "MP-JWT-SIGNER");
+            } else if(publicKeyNode != null) {
+                war.addAsManifestResource(publicKeyNode.getAsset(), "MP-JWT-SIGNER");
+            }
+        }
         // This allows for test specific web.xml files. Generally this should not be needed.
         String warName = war.getName();
         String webXmlName = "/WEB-INF/" + warName + ".xml";
@@ -38,11 +70,11 @@ public class WFSwarmWarArchiveProcessor implements ApplicationArchiveProcessor {
         if (webXml != null) {
             war.setWebXML(webXml);
         }
-        if (!war.contains("/WEB-INF/classes/project-defaults.yml")) {
-            war.addAsResource("project-defaults.yml", "/project-defaults.yml");
-        }
-
-        war.addAsWebInfResource("jwt-roles.properties", "classes/jwt-roles.properties").addAsManifestResource(publicKeyNode.getAsset(), "/MP-JWT-SIGNER");
-        log.fine("Augmented war: \n" + war.toString(true));
+        //
+        String projectDefaults = "project-defaults.yml";
+        war.addAsResource(projectDefaults, "/project-defaults.yml")
+                .addAsWebInfResource("jwt-roles.properties", "classes/jwt-roles.properties")
+        ;
+        log.info("Augmented war: \n"+war.toString(true));
     }
 }
