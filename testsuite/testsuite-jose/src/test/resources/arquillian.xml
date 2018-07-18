@@ -3,6 +3,9 @@
   <extension qualifier="webdriver">
     <property name="browser">phantomjs</property>
   </extension>
+  <extension qualifier="systemproperties">
+     <property name="enforcer.skip">true</property>
+  </extension>
 
   <container qualifier="daemon" default="true">
     <configuration>
