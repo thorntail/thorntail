@@ -33,7 +33,6 @@ public class OpenTracingCDIExtension implements Extension {
   public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager manager) {
     logger.info("Registering Tracer CDI producer");
     bbd.addAnnotatedType(manager.createAnnotatedType(TracerProducer.class));
-    bbd.addAnnotatedType(manager.createAnnotatedType(SmallRyeTracingCDIInterceptor.class),
-        SmallRyeTracingCDIInterceptor.class.getName());
+    bbd.addAnnotatedType(manager.createAnnotatedType(SmallRyeTracingCDIInterceptor.class));
   }
 }
