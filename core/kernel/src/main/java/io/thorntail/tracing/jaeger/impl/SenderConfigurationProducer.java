@@ -1,7 +1,6 @@
 package io.thorntail.tracing.jaeger.impl;
 
 import io.jaegertracing.Configuration.SenderConfiguration;
-import io.jaegertracing.thrift.internal.senders.HttpSender;
 import io.jaegertracing.thrift.internal.senders.UdpSender;
 import java.util.Optional;
 
@@ -11,7 +10,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.thorntail.condition.annotation.RequiredClassPresent;
-import io.thorntail.tracing.jaeger.Http;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
@@ -23,7 +21,6 @@ public class SenderConfigurationProducer {
 
     @Produces
     @Singleton
-    @Http
     public SenderConfiguration get() {
         return new SenderConfiguration()
             .withEndpoint(this.endpoint.orElse("http://localhost:14268/api/traces"))
