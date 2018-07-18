@@ -1,12 +1,12 @@
 package io.thorntail.testsuite.tracing;
 
+import io.opentracing.Scope;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.InvocationContext;
 
-import io.opentracing.ActiveSpan;
 import io.thorntail.tracing.SpanHandler;
 
 @Priority(2)
@@ -21,7 +21,7 @@ public class BravoHandler extends SpanHandler {
     }
 
     @Override
-    public ActiveSpan handle(InvocationContext ctx) {
+    public Scope handle(InvocationContext ctx) {
         HANDLED_COUNTER.incrementAndGet();
         return null;
     }

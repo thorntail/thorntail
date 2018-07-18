@@ -50,8 +50,14 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>com.uber.jaeger</groupId>
+      <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-core</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.jaegertracing</groupId>
+      <artifactId>jaeger-thrift</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
@@ -78,7 +84,8 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <classpathDependencyExcludes>
-              <classpathDependencyExclude>com.uber.jaeger:jaeger-core</classpathDependencyExclude>
+              <classpathDependencyExclude>io.jaegertracing:jaeger-core</classpathDependencyExclude>
+              <classpathDependencyExclude>io.jaegertracing:jaeger-thrift</classpathDependencyExclude>
               <classpathDependencyExclude>io.opentracing:opentracing-mock</classpathDependencyExclude>
             </classpathDependencyExcludes>
           </configuration>

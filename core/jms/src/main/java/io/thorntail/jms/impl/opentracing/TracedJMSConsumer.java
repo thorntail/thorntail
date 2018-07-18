@@ -36,7 +36,7 @@ public class TracedJMSConsumer extends SimpleWrappedJMSConsumer {
                 //builder.addReference(References.FOLLOWS_FROM, parent);
             }
             builder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER);
-            builder.startActive().deactivate();
+            builder.startActive(true).close();
         }
         return message;
     }

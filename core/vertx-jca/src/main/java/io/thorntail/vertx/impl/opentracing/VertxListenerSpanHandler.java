@@ -1,10 +1,10 @@
 package io.thorntail.vertx.impl.opentracing;
 
+import io.opentracing.Scope;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.InvocationContext;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.vertx.core.eventbus.Message;
@@ -23,13 +23,13 @@ public class VertxListenerSpanHandler extends OneArgSpanHandler<Message<?>> {
         return VertxListener.class.isAssignableFrom(ctx.getTarget().getClass());
     }
 
-    public ActiveSpan handle(Message message) {
+    public Scope handle(Message message) {
         SpanContext parent = TraceUtils.extract(message);
         Tracer.SpanBuilder builder = TraceUtils.build("vertx-receive", message);
         if (parent != null) {
             builder.asChildOf(parent);
         }
-        return builder.startActive();
+        return builder.startActive(true);
     }
 
 }

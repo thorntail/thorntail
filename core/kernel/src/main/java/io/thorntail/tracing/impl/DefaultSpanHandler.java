@@ -1,5 +1,6 @@
 package io.thorntail.tracing.impl;
 
+import io.opentracing.Scope;
 import java.lang.reflect.Method;
 
 import javax.annotation.Priority;
@@ -7,7 +8,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.interceptor.InvocationContext;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import org.eclipse.microprofile.opentracing.Traced;
 import io.thorntail.tracing.SpanHandler;
@@ -24,8 +24,8 @@ public class DefaultSpanHandler extends SpanHandler {
     }
 
     @Override
-    public ActiveSpan handle(InvocationContext context) {
-        return this.tracer.buildSpan(getOperationName(context.getMethod())).startActive();
+    public Scope handle(InvocationContext context) {
+        return this.tracer.buildSpan(getOperationName(context.getMethod())).startActive(true);
     }
 
     protected String getOperationName(Method method) {

@@ -1,5 +1,6 @@
 package io.thorntail.tracing.impl;
 
+import io.opentracing.Scope;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +15,6 @@ import javax.interceptor.InvocationContext;
 import org.eclipse.microprofile.opentracing.Traced;
 import org.jboss.weld.inject.WeldInstance;
 
-import io.opentracing.ActiveSpan;
 import io.thorntail.tracing.SpanHandler;
 import io.thorntail.util.Annotations;
 
@@ -29,17 +29,17 @@ public class TracingInterceptor {
 
     @AroundInvoke
     public Object interceptTraced(InvocationContext ctx) throws Exception {
-        ActiveSpan span = spanFor(ctx);
+        Scope scope = spanFor(ctx);
         try {
             return ctx.proceed();
         } finally {
-            if (span != null) {
-                span.deactivate();
+            if (scope != null) {
+                scope.close();
             }
         }
     }
 
-    protected ActiveSpan spanFor(InvocationContext ctx) {
+    protected Scope spanFor(InvocationContext ctx) {
         if (!isTraced(ctx.getTarget(), ctx.getMethod())) {
             return null;
         }

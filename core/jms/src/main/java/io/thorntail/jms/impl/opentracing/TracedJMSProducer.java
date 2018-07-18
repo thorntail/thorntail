@@ -1,10 +1,10 @@
 package io.thorntail.jms.impl.opentracing;
 
+import io.opentracing.Scope;
 import javax.jms.Destination;
 import javax.jms.JMSProducer;
 import javax.jms.Message;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 import io.thorntail.jms.SimpleWrappedJMSProducer;
@@ -24,10 +24,10 @@ public class TracedJMSProducer extends SimpleWrappedJMSProducer {
 
     public JMSProducer send(Destination destination, Message message) {
         Tracer.SpanBuilder builder = TraceUtils.build("jms-send", message, destination);
-        ActiveSpan sendSpan = null;
+        Scope sendSpan = null;
         if (builder != null) {
             builder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_PRODUCER);
-            sendSpan = builder.startActive();
+            sendSpan = builder.startActive(true);
             TraceUtils.inject(message);
         }
         try {

@@ -19,7 +19,7 @@ public class TracedTypedQuery<T> extends TracedQuery implements TypedQuery<T> {
 
     public TracedTypedQuery(TraceInfo traceInfo, String name, Class<T> resultClass, TypedQuery<T> delegate) {
         super( traceInfo.withDecorator((span) -> {
-            span.setTag("class", resultClass.getName());
+            span.span().setTag("class", resultClass.getName());
         }), delegate );
         this.name = name;
         this.resultClass = resultClass;

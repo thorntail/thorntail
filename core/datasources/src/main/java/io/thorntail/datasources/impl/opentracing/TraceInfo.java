@@ -1,8 +1,9 @@
 package io.thorntail.datasources.impl.opentracing;
 
+import io.opentracing.Scope;
+import io.opentracing.Span;
 import java.sql.SQLException;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 import io.opentracing.util.GlobalTracer;
@@ -23,7 +24,7 @@ public interface TraceInfo {
             return code.execute();
         }
         Tracer tracer = GlobalTracer.get();
-        ActiveSpan parent = tracer.activeSpan();
+        Span parent = tracer.activeSpan();
         if (traceMode() == TraceMode.ACTIVE) {
             if (parent == null) {
                 return code.execute();
@@ -43,14 +44,8 @@ public interface TraceInfo {
         builder.withTag(Tags.DB_TYPE.getKey(), "sql");
         builder.withTag(Tags.DB_USER.getKey(), userName());
 
-        ActiveSpan span = builder.startActive();
-
-        try {
+        try (Scope scope = builder.startActive(true)) {
             return code.execute();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            span.deactivate();
         }
     }
 

@@ -55,32 +55,32 @@ public class TracedEntityManager implements EntityManager, TraceInfo {
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey) {
         return withDecorator((span) -> {
-            span.setTag("class", entityClass.getName());
-            span.setTag("pk", primaryKey.toString());
+            span.span().setTag("class", entityClass.getName());
+            span.span().setTag("pk", primaryKey.toString());
         }).trace("find", () -> delegate.find(entityClass, primaryKey));
     }
 
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey, Map<String, Object> properties) {
         return withDecorator((span) -> {
-            span.setTag("class", entityClass.getName());
-            span.setTag("pk", primaryKey.toString());
+            span.span().setTag("class", entityClass.getName());
+            span.span().setTag("pk", primaryKey.toString());
         }).trace("find", () -> delegate.find(entityClass, primaryKey, properties));
     }
 
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode) {
         return withDecorator((span) -> {
-            span.setTag("class", entityClass.getName());
-            span.setTag("pk", primaryKey.toString());
+            span.span().setTag("class", entityClass.getName());
+            span.span().setTag("pk", primaryKey.toString());
         }).trace("find", () -> delegate.find(entityClass, primaryKey, lockMode));
     }
 
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode, Map<String, Object> properties) {
         return withDecorator((span) -> {
-            span.setTag("class", entityClass.getName());
-            span.setTag("pk", primaryKey.toString());
+            span.span().setTag("class", entityClass.getName());
+            span.span().setTag("pk", primaryKey.toString());
         }).trace("find", () -> delegate.find(entityClass, primaryKey, lockMode, properties));
     }
 

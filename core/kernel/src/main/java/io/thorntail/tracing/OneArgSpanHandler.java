@@ -1,8 +1,8 @@
 package io.thorntail.tracing;
 
+import io.opentracing.Scope;
 import javax.interceptor.InvocationContext;
 
-import io.opentracing.ActiveSpan;
 
 /**
  * Simplified one-argument {@link SpanHandler} abstract class.
@@ -12,7 +12,7 @@ import io.opentracing.ActiveSpan;
  */
 public abstract class OneArgSpanHandler<P1> extends SpanHandler {
 
-    public ActiveSpan handle(InvocationContext ctx) {
+    public Scope handle(InvocationContext ctx) {
         Object[] parameters = ctx.getParameters();
         if ( parameters.length != 1 ) {
             throw new RuntimeException("Too many parameters for " + this.getClass().getName());
@@ -22,5 +22,5 @@ public abstract class OneArgSpanHandler<P1> extends SpanHandler {
         return handle(param);
     }
 
-    public abstract ActiveSpan handle(P1 param);
+    public abstract Scope handle(P1 param);
 }

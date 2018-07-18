@@ -1,11 +1,11 @@
 package io.thorntail.vertx.web.tracing;
 
+import io.opentracing.Scope;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.interceptor.InvocationContext;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.Tracer.SpanBuilder;
@@ -41,7 +41,7 @@ public class WebRouteSpanHandler extends SpanHandler {
     }
 
     @Override
-    public ActiveSpan handle(InvocationContext ctx) {
+    public Scope handle(InvocationContext ctx) {
         RoutingContext routingContext = null;
         for (Object param : ctx.getParameters()) {
             if (param instanceof RoutingContext) {
@@ -62,7 +62,7 @@ public class WebRouteSpanHandler extends SpanHandler {
         if (parent != null) {
             builder.asChildOf(parent);
         }
-        return builder.startActive();
+        return builder.startActive(true);
     }
 
 }

@@ -1,6 +1,6 @@
 package io.thorntail.vertx.impl.opentracing;
 
-import io.opentracing.ActiveSpan;
+import io.opentracing.Scope;
 import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 import io.opentracing.util.GlobalTracer;
@@ -26,16 +26,11 @@ public class TracedEventBus implements VertxEventBus {
     @Override
     public VertxEventBus send(String address, Object o, DeliveryOptions deliveryOptions) {
         Tracer tracer = GlobalTracer.get();
-        ActiveSpan span = tracer.buildSpan("vertx-send").startActive();
-        try {
-            Tags.MESSAGE_BUS_DESTINATION.set(span, address);
-            Tags.SPAN_KIND.set(span, Tags.SPAN_KIND_PRODUCER);
+        try (Scope scope = tracer.buildSpan("vertx-send").startActive(true)) {
+            Tags.MESSAGE_BUS_DESTINATION.set(scope.span(), address);
+            Tags.SPAN_KIND.set(scope.span(), Tags.SPAN_KIND_PRODUCER);
             TraceUtils.inject(deliveryOptions);
             delegate.send(address, o, deliveryOptions);
-        } finally {
-            if ( span != null ) {
-                span.deactivate();
-            }
         }
         return this;
     }
@@ -49,16 +44,16 @@ public class TracedEventBus implements VertxEventBus {
     @Override
     public VertxEventBus publish(String address, Object o, DeliveryOptions deliveryOptions) {
         Tracer tracer = GlobalTracer.get();
-        ActiveSpan span = tracer.buildSpan("vertx-send").startActive();
+        Scope span = tracer.buildSpan("vertx-send").startActive(true);
         try {
-            Tags.MESSAGE_BUS_DESTINATION.set(span, address);
-            Tags.SPAN_KIND.set(span, Tags.SPAN_KIND_PRODUCER);
+            Tags.MESSAGE_BUS_DESTINATION.set(span.span(), address);
+            Tags.SPAN_KIND.set(span.span(), Tags.SPAN_KIND_PRODUCER);
             TraceUtils.inject(deliveryOptions);
             delegate.publish(address, o, deliveryOptions);
             return this;
         } finally {
             if ( span != null ) {
-                span.deactivate();
+                span.close();
             }
         }
     }

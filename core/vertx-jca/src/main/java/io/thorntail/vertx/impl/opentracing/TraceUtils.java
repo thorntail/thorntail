@@ -1,6 +1,6 @@
 package io.thorntail.vertx.impl.opentracing;
 
-import io.opentracing.ActiveSpan;
+import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
@@ -41,7 +41,7 @@ class TraceUtils {
         }
 
         DeliveryOptionsAdapter carrier = new DeliveryOptionsAdapter(options);
-        ActiveSpan span = tracer.activeSpan();
+        Span span = tracer.activeSpan();
         if ( span != null ) {
             SpanContext context = span.context();
             tracer.inject(context, Format.Builtin.HTTP_HEADERS, carrier);
