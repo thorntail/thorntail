@@ -38,16 +38,14 @@
                   <port>5778:5778</port>
                   <port>16686:16686</port>
                   <port>14268:14268</port>
+                  <port>14269:14269</port>
                   <port>9411:9411</port>
                 </ports>
                 <wait>
-                  <tcp>
-                    <mode>mapped</mode>
-                    <ports>
-                      <port>16686</port>
-                    </ports>
-                  </tcp>
-                  <time>10000</time>
+                  <http>
+                    <url>http://localhost:14269</url>
+                    <status>204</status>
+                  </http>
                 </wait>
               </run>
             </image>
@@ -70,8 +68,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.uber.jaeger</groupId>
-      <artifactId>jaeger-core</artifactId>
+      <groupId>io.jaegertracing</groupId>
+      <artifactId>jaeger-client</artifactId>
     </dependency>
 
     <dependency>

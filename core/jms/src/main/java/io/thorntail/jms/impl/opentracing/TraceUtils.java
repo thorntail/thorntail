@@ -1,12 +1,12 @@
 package io.thorntail.jms.impl.opentracing;
 
+import io.opentracing.Span;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
@@ -46,7 +46,7 @@ class TraceUtils {
     static void inject(Message message) {
         Tracer tracer = GlobalTracer.get();
         JMSMessageAdapter carrier = new JMSMessageAdapter(message);
-        ActiveSpan span = tracer.activeSpan();
+        Span span = tracer.activeSpan();
         if (span != null) {
             SpanContext context = tracer.activeSpan().context();
             tracer.inject(context, Format.Builtin.HTTP_HEADERS, carrier);

@@ -1,9 +1,9 @@
 package io.thorntail.jaxrs.impl;
 
+import io.opentracing.Scope;
 import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.InvocationContext;
 
-import io.opentracing.ActiveSpan;
 import io.thorntail.tracing.SpanHandler;
 
 import static io.thorntail.util.Annotations.hasAnnotation;
@@ -22,7 +22,7 @@ public class JaxRsSpanHandler extends SpanHandler {
     }
 
     @Override
-    public ActiveSpan handle(InvocationContext ctx) {
+    public Scope handle(InvocationContext ctx) {
         // defer to the other server features.
         return null;
     }

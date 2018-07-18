@@ -20,7 +20,7 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.ext.ExceptionMapper;
 
-import com.uber.jaeger.SpanContext;
+import io.jaegertracing.internal.JaegerSpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.util.GlobalTracer;
 import org.eclipse.microprofile.opentracing.Traced;
@@ -61,7 +61,7 @@ public class Employees {
 
     private String currentTraceId() {
         Tracer tracer = GlobalTracer.get();
-        SpanContext ctx = (SpanContext) tracer.activeSpan().context();
+        JaegerSpanContext ctx = (JaegerSpanContext) tracer.activeSpan().context();
         return Long.toHexString(ctx.getTraceId());
     }
 

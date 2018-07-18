@@ -1,8 +1,7 @@
 package io.thorntail.tracing;
 
+import io.opentracing.Scope;
 import javax.interceptor.InvocationContext;
-
-import io.opentracing.ActiveSpan;
 
 /**
  * Tracing interceptor span-starting handler.
@@ -32,5 +31,5 @@ public abstract class SpanHandler {
      * @param ctx The invocation context.
      * @return The new span, or {@code null} is no span should be created.
      */
-    public abstract ActiveSpan handle(InvocationContext ctx);
+    public abstract Scope handle(InvocationContext ctx);
 }

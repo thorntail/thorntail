@@ -36,7 +36,6 @@ public class OpenTracingJaegerVertxAppIT {
         assertNames(data, "Penny", "Sheldon", "Amy", "Leonard", "Bernadette", "Raj", "Howard", "Priya");
 
         RestAssured.baseURI = "http://localhost:16686/";
-
         response = when()
                 .get("/api/traces/" + traceId)
                 .then()

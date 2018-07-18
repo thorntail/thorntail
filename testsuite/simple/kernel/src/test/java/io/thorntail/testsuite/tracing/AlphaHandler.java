@@ -1,5 +1,6 @@
 package io.thorntail.testsuite.tracing;
 
+import io.opentracing.Scope;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.PostConstruct;
@@ -7,7 +8,6 @@ import javax.annotation.Priority;
 import javax.enterprise.context.Dependent;
 import javax.interceptor.InvocationContext;
 
-import io.opentracing.ActiveSpan;
 import io.thorntail.tracing.SpanHandler;
 
 @Priority(1)
@@ -24,7 +24,7 @@ public class AlphaHandler extends SpanHandler {
     }
 
     @Override
-    public ActiveSpan handle(InvocationContext ctx) {
+    public Scope handle(InvocationContext ctx) {
         HANDLED_COUNTER.incrementAndGet();
         return null;
     }

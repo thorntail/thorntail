@@ -5,7 +5,6 @@ import javax.enterprise.context.ApplicationScoped;
 
 import io.opentracing.Tracer;
 import io.opentracing.mock.MockTracer;
-import io.opentracing.util.ThreadLocalActiveSpanSource;
 import io.thorntail.condition.annotation.RequiredClassPresent;
 import io.thorntail.tracing.TracerProvider;
 
@@ -19,7 +18,7 @@ public class MockTracerProvider implements TracerProvider {
 
     @Override
     public Tracer get() {
-        return new MockTracer(new ThreadLocalActiveSpanSource(), MockTracer.Propagator.TEXT_MAP);
+        return new MockTracer();
     }
 
 }

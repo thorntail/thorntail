@@ -1,10 +1,10 @@
 package io.thorntail.tracing.jaeger.impl;
 
+import io.jaegertracing.Configuration;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.uber.jaeger.Configuration;
 import io.opentracing.Tracer;
 import io.thorntail.condition.annotation.RequiredClassPresent;
 import io.thorntail.tracing.TracerProvider;
@@ -13,7 +13,7 @@ import io.thorntail.tracing.TracerProvider;
  * Created by bob on 2/22/18.
  */
 @ApplicationScoped
-@RequiredClassPresent("com.uber.jaeger.Configuration")
+@RequiredClassPresent("io.jaegertracing.Configuration")
 @Priority(1000)
 public class JaegerTracerProvider implements TracerProvider {
     @Override
@@ -23,5 +23,4 @@ public class JaegerTracerProvider implements TracerProvider {
 
     @Inject
     Configuration configuration;
-
 }

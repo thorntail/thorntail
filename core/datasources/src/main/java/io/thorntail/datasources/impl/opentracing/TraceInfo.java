@@ -1,8 +1,9 @@
 package io.thorntail.datasources.impl.opentracing;
 
+import io.opentracing.Scope;
+import io.opentracing.Span;
 import java.sql.SQLException;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 import io.opentracing.util.GlobalTracer;
@@ -23,34 +24,24 @@ public interface TraceInfo {
             return code.execute();
         }
         Tracer tracer = GlobalTracer.get();
-        ActiveSpan parent = tracer.activeSpan();
-        if (traceMode() == TraceMode.ACTIVE) {
-            if (parent == null) {
-                return code.execute();
-            }
+        // skip if there is no active parent
+        if (traceMode() == TraceMode.ACTIVE && tracer.activeSpan() == null) {
+            return code.execute();
         }
 
-        Tracer.SpanBuilder builder = tracer.buildSpan(operationName);
-        if (parent != null) {
-            builder.asChildOf(parent);
-        }
+        Tracer.SpanBuilder builder = tracer.buildSpan(operationName)
+            .withTag(Tags.DB_TYPE.getKey(), "sql")
+            .withTag(Tags.DB_USER.getKey(), userName());
+
         if (sql != null) {
             builder.withTag(Tags.DB_STATEMENT.getKey(), sql);
         }
         if (dbInstance() != null ) {
             builder.withTag(Tags.DB_INSTANCE.getKey(), dbInstance());
         }
-        builder.withTag(Tags.DB_TYPE.getKey(), "sql");
-        builder.withTag(Tags.DB_USER.getKey(), userName());
 
-        ActiveSpan span = builder.startActive();
-
-        try {
+        try (Scope scope = builder.startActive(true)) {
             return code.execute();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            span.deactivate();
         }
     }
 

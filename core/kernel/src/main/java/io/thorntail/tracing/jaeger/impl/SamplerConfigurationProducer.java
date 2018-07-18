@@ -1,5 +1,6 @@
 package io.thorntail.tracing.jaeger.impl;
 
+import io.jaegertracing.internal.samplers.ProbabilisticSampler;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -7,8 +8,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.uber.jaeger.Configuration;
-import com.uber.jaeger.samplers.RemoteControlledSampler;
+import io.jaegertracing.Configuration;
 import io.thorntail.condition.annotation.RequiredClassPresent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -16,18 +16,15 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  * Created by bob on 2/22/18.
  */
 @ApplicationScoped
-@RequiredClassPresent("com.uber.jaeger.Configuration")
+@RequiredClassPresent("io.jaegertracing.Configuration")
 public class SamplerConfigurationProducer {
 
     @Produces
     @Singleton
     Configuration.SamplerConfiguration samplerConfiguration() {
-        Configuration.SamplerConfiguration config = new Configuration.SamplerConfiguration(
-                this.type.orElse(RemoteControlledSampler.TYPE),
-                this.param.orElse(Configuration.DEFAULT_SAMPLING_PROBABILITY),
-                this.managerHostPort.orElse(null)
-        );
-        return config;
+        return new Configuration.SamplerConfiguration()
+            .withType(this.type.orElse(ProbabilisticSampler.TYPE))
+            .withParam(this.param.orElse(ProbabilisticSampler.DEFAULT_SAMPLING_PROBABILITY));
     }
 
     @Inject
@@ -37,8 +34,4 @@ public class SamplerConfigurationProducer {
     @Inject
     @ConfigProperty(name="jaeger.sampler.param")
     Optional<Double> param;
-
-    @Inject
-    @ConfigProperty(name="jaeger.sampler.manager.host-port")
-    Optional<String> managerHostPort;
 }

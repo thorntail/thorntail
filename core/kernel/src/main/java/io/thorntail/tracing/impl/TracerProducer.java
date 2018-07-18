@@ -1,5 +1,6 @@
 package io.thorntail.tracing.impl;
 
+import io.opentracing.noop.NoopTracerFactory;
 import java.lang.reflect.Field;
 
 import javax.annotation.PostConstruct;
@@ -10,7 +11,6 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
-import io.opentracing.NoopTracerFactory;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.util.GlobalTracer;
@@ -46,7 +46,7 @@ public class TracerProducer {
 
     /**
      * Resolves tracer instance to be used. It is using {@link TracerResolver} service loader to find
-     * the tracer. It tracer is not resolved it will use {@link io.opentracing.NoopTracer}.
+     * the tracer. It tracer is not resolved it will use {@link io.opentracing.noop.NoopTracer}.
      *
      * @return tracer instance
      */

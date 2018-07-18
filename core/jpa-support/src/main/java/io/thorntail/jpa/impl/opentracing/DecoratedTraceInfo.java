@@ -1,8 +1,9 @@
 package io.thorntail.jpa.impl.opentracing;
 
+import io.opentracing.Scope;
+import io.opentracing.Span;
 import java.util.function.Consumer;
 
-import io.opentracing.ActiveSpan;
 import io.thorntail.TraceMode;
 
 /**
@@ -10,7 +11,7 @@ import io.thorntail.TraceMode;
  */
 public class DecoratedTraceInfo implements TraceInfo {
 
-    public DecoratedTraceInfo(TraceInfo delegate, Consumer<ActiveSpan> decorator) {
+    public DecoratedTraceInfo(TraceInfo delegate, Consumer<Span> decorator) {
         this.delegate = delegate;
         this.decorator = decorator;
     }
@@ -21,11 +22,11 @@ public class DecoratedTraceInfo implements TraceInfo {
     }
 
     @Override
-    public Consumer<ActiveSpan> decorator() {
+    public Consumer<Span> decorator() {
         return delegate.decorator().andThen(this.decorator);
     }
 
     private final TraceInfo delegate;
 
-    private final Consumer<ActiveSpan> decorator;
+    private final Consumer<Span> decorator;
 }

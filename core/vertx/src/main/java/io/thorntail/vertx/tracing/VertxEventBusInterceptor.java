@@ -1,9 +1,10 @@
 package io.thorntail.vertx.tracing;
 
+import io.opentracing.Scope;
+import io.opentracing.Span;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.Tracer.SpanBuilder;
 import io.opentracing.propagation.Format;
@@ -34,7 +35,7 @@ public class VertxEventBusInterceptor implements Handler<SendContext> {
 
     @Override
     public void handle(SendContext sendContext) {
-        ActiveSpan parent = tracer.activeSpan();
+        Span parent = tracer.activeSpan();
         if (TraceMode.ACTIVE.equals(vertxInitializer.getTraceMode()) && parent == null) {
             sendContext.next();
         } else {
@@ -44,8 +45,8 @@ public class VertxEventBusInterceptor implements Handler<SendContext> {
             }
             spanBuilder.withTag(Tags.MESSAGE_BUS_DESTINATION.getKey(), sendContext.message().address());
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_PRODUCER);
-            try (ActiveSpan activeSpan = spanBuilder.startActive()) {
-                tracer.inject(activeSpan.context(), Format.Builtin.HTTP_HEADERS, new HeadersTextMap(sendContext.message().headers()));
+            try (Scope scope = spanBuilder.startActive(true)) {
+                tracer.inject(scope.span().context(), Format.Builtin.HTTP_HEADERS, new HeadersTextMap(sendContext.message().headers()));
                 sendContext.next();
             }
         }

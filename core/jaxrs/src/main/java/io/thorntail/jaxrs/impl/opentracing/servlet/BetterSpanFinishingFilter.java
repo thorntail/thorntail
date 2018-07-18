@@ -1,5 +1,7 @@
 package io.thorntail.jaxrs.impl.opentracing.servlet;
 
+import io.opentracing.Scope;
+import io.opentracing.Span;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +18,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import io.opentracing.ActiveSpan;
-import io.opentracing.BaseSpan;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.jaxrs2.internal.CastUtils;
 import io.opentracing.contrib.jaxrs2.internal.SpanWrapper;
@@ -85,12 +85,11 @@ public class BetterSpanFinishingFilter implements Filter {
     }
 
     private void deactivateWithoutFinish() {
-        ActiveSpan activeSpan = tracer.activeSpan();
+        Scope activeSpan = tracer.scopeManager().active();
         // for async requests this is executed in a different thread than requestFilter
         if (activeSpan != null) {
             // hack capture to prevent finish - it's finished in filter
-            activeSpan.capture();
-            activeSpan.deactivate();
+            activeSpan.close();
         }
     }
 
@@ -129,7 +128,7 @@ public class BetterSpanFinishingFilter implements Filter {
         }
     }
 
-    private static void addExceptionLogs(BaseSpan<?> span, Throwable throwable) {
+    private static void addExceptionLogs(Span span, Throwable throwable) {
         Tags.ERROR.set(span, true);
         Map<String, Object> errorLogs = new HashMap<>(2);
         errorLogs.put("event", Tags.ERROR.getKey());
