@@ -1,6 +1,7 @@
 package io.thorntail.jpa.impl.opentracing;
 
 import io.opentracing.Scope;
+import io.opentracing.Span;
 import java.util.function.Consumer;
 
 import io.opentracing.Tracer;
@@ -14,11 +15,11 @@ public interface TraceInfo {
 
     TraceMode traceMode();
 
-    default TraceInfo withDecorator(Consumer<Scope> decorator) {
+    default TraceInfo withDecorator(Consumer<Span> decorator) {
         return new DecoratedTraceInfo(this, decorator );
     }
 
-    default Consumer<Scope> decorator() {
+    default Consumer<Span> decorator() {
         return (in)->{};
     }
 
@@ -27,25 +28,19 @@ public interface TraceInfo {
             return code.execute();
         }
         Tracer tracer = GlobalTracer.get();
-        Scope parent = tracer.scopeManager().active();
-        if (traceMode() == TraceMode.ACTIVE) {
-            if (parent == null) {
-                return code.execute();
-            }
+        if (traceMode() == TraceMode.ACTIVE && tracer.activeSpan() == null) {
+              return code.execute();
         }
 
-        Tracer.SpanBuilder builder = tracer.buildSpan(operationName);
-        if (parent != null) {
-            builder.asChildOf(parent.span());
-        }
-        Scope span = builder.startActive(true);
+        Scope scope = tracer.buildSpan(operationName)
+            .startActive(true);
 
-        decorator().accept(span);
+        decorator().accept(scope.span());
 
         try {
             return code.execute();
         } finally {
-            span.close();
+            scope.close();
         }
     }
 }

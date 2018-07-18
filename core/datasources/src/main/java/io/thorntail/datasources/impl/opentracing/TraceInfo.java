@@ -24,25 +24,21 @@ public interface TraceInfo {
             return code.execute();
         }
         Tracer tracer = GlobalTracer.get();
-        Span parent = tracer.activeSpan();
-        if (traceMode() == TraceMode.ACTIVE) {
-            if (parent == null) {
-                return code.execute();
-            }
+        // skip if there is no active parent
+        if (traceMode() == TraceMode.ACTIVE && tracer.activeSpan() == null) {
+            return code.execute();
         }
 
-        Tracer.SpanBuilder builder = tracer.buildSpan(operationName);
-        if (parent != null) {
-            builder.asChildOf(parent);
-        }
+        Tracer.SpanBuilder builder = tracer.buildSpan(operationName)
+            .withTag(Tags.DB_TYPE.getKey(), "sql")
+            .withTag(Tags.DB_USER.getKey(), userName());
+
         if (sql != null) {
             builder.withTag(Tags.DB_STATEMENT.getKey(), sql);
         }
         if (dbInstance() != null ) {
             builder.withTag(Tags.DB_INSTANCE.getKey(), dbInstance());
         }
-        builder.withTag(Tags.DB_TYPE.getKey(), "sql");
-        builder.withTag(Tags.DB_USER.getKey(), userName());
 
         try (Scope scope = builder.startActive(true)) {
             return code.execute();

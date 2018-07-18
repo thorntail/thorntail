@@ -26,11 +26,9 @@ public class MessageListenerSpanHandler extends OneArgSpanHandler<Message> {
 
     public Scope handle(Message message) {
         SpanContext parent = TraceUtils.extract(message);
-        Tracer.SpanBuilder builder = TraceUtils.build("jms-receive", message);
-        if (parent != null) {
-            builder.asChildOf(parent);
-        }
-        builder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER);
+        Tracer.SpanBuilder builder = TraceUtils.build("jms-receive", message)
+            .withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER)
+            .asChildOf(parent);
         return builder.startActive(true);
     }
 

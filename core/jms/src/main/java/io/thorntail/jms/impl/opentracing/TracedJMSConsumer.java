@@ -1,5 +1,6 @@
 package io.thorntail.jms.impl.opentracing;
 
+import io.opentracing.References;
 import javax.jms.Destination;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSException;
@@ -7,7 +8,6 @@ import javax.jms.JMSRuntimeException;
 import javax.jms.Message;
 
 import io.opentracing.SpanContext;
-import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 import io.thorntail.jms.SimpleWrappedJMSConsumer;
 
@@ -29,15 +29,11 @@ public class TracedJMSConsumer extends SimpleWrappedJMSConsumer {
             return message;
         }
         SpanContext parent = TraceUtils.extract(message);
-        Tracer.SpanBuilder builder = TraceUtils.build("jms-receive", message);
-        if (builder != null) {
-            if (parent != null) {
-                builder.asChildOf(parent);
-                //builder.addReference(References.FOLLOWS_FROM, parent);
-            }
-            builder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER);
-            builder.startActive(true).close();
-        }
+        TraceUtils.build("jms-receive", message)
+            .addReference(References.FOLLOWS_FROM, parent)
+            .asChildOf(parent)
+            .withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER)
+            .start().finish();
         return message;
     }
 
