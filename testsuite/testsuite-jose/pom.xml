@@ -49,7 +49,26 @@
       <scope>test</scope>
     </dependency>
 
-
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-enforcer-plugin</artifactId>
+         <executions>
+          <execution>
+            <id>enforce</id>
+            <phase>verify</phase>
+            <configuration>
+               <skip>true</skip>  
+            </configuration>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
