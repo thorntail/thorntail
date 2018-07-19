@@ -181,9 +181,9 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
      *
      * @param webXml - the deployment web.xml metadata to add the security constraints to
      * @param classInfo - the class to scan for security constraints
-     * @param roles - class level roles if any
      * @param appPath - the @ApplicationPath if any
-     * @param httpMethods
+     * @param httpMethods - JAX-RS HTTP method annotations
+     * @param scannedClasses - set of classes that have been scanned to avoid duplicate scanning
      */
     private void generateSecurityConstraints(WebXmlAsset webXml, ClassInfo classInfo, String appPath, Iterable<DotName> httpMethods,
             Set<DotName> scannedClasses) {

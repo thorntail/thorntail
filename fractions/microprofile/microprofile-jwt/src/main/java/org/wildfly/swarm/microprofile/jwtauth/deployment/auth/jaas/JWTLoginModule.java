@@ -25,14 +25,14 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginException;
 
+import io.smallrye.jwt.auth.principal.JWTCallerPrincipal;
+import io.smallrye.jwt.auth.principal.JWTCallerPrincipalFactory;
+import io.smallrye.jwt.auth.principal.ParseException;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.security.SimpleGroup;
 import org.jboss.security.SimplePrincipal;
 import org.jboss.security.auth.callback.SecurityAssociationCallback;
 import org.jboss.security.auth.spi.RoleMappingLoginModule;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTCallerPrincipal;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTCallerPrincipalFactory;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.ParseException;
 
 /**
  *
