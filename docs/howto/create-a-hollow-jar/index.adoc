@@ -23,7 +23,7 @@ include::pom.xml[tag=plugin,indent=2]
 </plugins>
 ----
 
-You can also execute the Maven binary with the system property `-Dswarm.hollow=true` instead. For more information, see the xref:maven-plugin-configuration[Maven plugin configuration reference].
+You can also execute the Maven binary with the system property `-Dswarm.hollow=true` instead. For more information, see the xref:thorntail-maven-plugin-configuration-options_{context}[Maven plugin configuration reference].
 --
 
 . Perform a normal Maven build:

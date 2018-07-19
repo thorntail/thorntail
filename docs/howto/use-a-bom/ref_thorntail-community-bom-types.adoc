@@ -1,0 +1,20 @@
+
+[id='thorntail-community-bom-types_{context}']
+= {Thorntail} community BOM types
+
+{Thorntail} is described as _just enough app-server,_ which means it comprises of multiple pieces.  Your application includes only the pieces it needs.
+
+Over time, some of these pieces reach the _stable_ status, while some are classified as _unstable_ or _experimental._
+
+When using {Thorntail}, you can specify the following Maven BOMs:
+
+bom-all:: All fractions: stable, unstable, experimental, and even deprecated.
+
+bom-deprecated:: Fractions that have been deprecated.
+
+bom-experimental:: Fractions that are considered experimental, which means they can disappear or radically change between releases.
+
+bom-unstable:: Fractions that do not change as often as the experimental ones.  However, unstable fractions can still change their behavior or contain bugs, even dangerous ones.
+
+bom-stable or bom:: Fractions recommended for daily use.
+
