@@ -1,0 +1,1 @@
+io.thorntail.jaxrs.impl.opentracing.jaxrs.ResteasyClientTracingRegistrarProvider

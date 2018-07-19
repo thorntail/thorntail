@@ -1,16 +1,14 @@
 package io.thorntail.testsuite.opentracing.jaeger;
 
+import io.opentracing.util.GlobalTracer;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSProducer;
-import javax.jms.Message;
 import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.client.Client;
@@ -18,11 +16,10 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
-import javax.ws.rs.ext.ExceptionMapper;
 
 import io.jaegertracing.internal.JaegerSpanContext;
 import io.opentracing.Tracer;
-import io.opentracing.util.GlobalTracer;
+import org.eclipse.microprofile.opentracing.ClientTracingRegistrar;
 import org.eclipse.microprofile.opentracing.Traced;
 
 /**
@@ -34,7 +31,7 @@ public class Employees {
     @Path("/start")
     @GET
     public String start() {
-        Client client = ClientBuilder.newClient();
+        Client client = ClientTracingRegistrar.configure(ClientBuilder.newBuilder()).build();
         WebTarget target = client.target("http://localhost:8080/").path("/employees");
 
         String response = target.request().get(String.class);
