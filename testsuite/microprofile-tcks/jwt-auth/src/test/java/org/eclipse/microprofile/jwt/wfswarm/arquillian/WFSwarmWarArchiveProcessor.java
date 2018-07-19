@@ -19,7 +19,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
  * An ApplicationArchiveProcessor for the MP-JWT TCK that includes:
  * - an appropriate project-defaults.yml that sets up the required security domain supporting MP-JWT auth
  * - a jwt-roles.properties that does the group1 to Group1MappedRole mapping
- * - copies /WEB-INF/classes/publicKey.pem to /MP-JWT-SIGNER
+ * - copies /WEB-INF/classes/publicKey.pem to /MP-JWT-SIGNER if there are no microprofile-config.properties
  */
 public class WFSwarmWarArchiveProcessor implements ApplicationArchiveProcessor {
     private static Logger log = Logger.getLogger(WFSwarmWarArchiveProcessor.class.getName());
@@ -30,7 +30,7 @@ public class WFSwarmWarArchiveProcessor implements ApplicationArchiveProcessor {
             return;
         }
         log.info("Preparing archive: " + appArchive);
-        // Only augment archives with a publicKey indicating a MP-JWT test
+        // Only augment archives with a node indicating a MP-JWT test
         WebArchive war = WebArchive.class.cast(appArchive);
         Node configProps = war.get("/META-INF/microprofile-config.properties");
         Node publicKeyNode = war.get("/WEB-INF/classes/publicKey.pem");
