@@ -1,5 +1,6 @@
 package io.thorntail.testsuite.opentracing.jaeger;
 
+import io.opentracing.tag.Tags;
 import java.util.List;
 import java.util.Map;
 
@@ -64,42 +65,42 @@ public class OpenTracingJaegerAppIT {
         System.err.println(tree);
         System.err.println("---");
 
-        assertThat(tree).hasRootSpans(2);
+        assertThat(tree).hasRootSpans(1);
 
         SpanNode start = tree.getRootNodes().get(0);
         assertThat(start)
                 .hasChildSpans(1)
                 .hasOperationName("GET:io.thorntail.testsuite.opentracing.jaeger.Employees.start")
-                .hasTag("http.status_code", 200)
-                .hasTag("span.kind", "server");
+                .hasTag(Tags.HTTP_STATUS.getKey(), 200)
+                .hasTag(Tags.SPAN_KIND.getKey(), "server");
 
         SpanNode client = start.getChildren().get(0);
         assertThat(client).hasChildSpans(1)
                 .hasOperationName("GET")
-                .hasTag("span.kind", "client")
-                .hasTag("http.status_code", 200)
-                .hasTag("http.url", "http://localhost:8080/employees");
+                .hasTag(Tags.SPAN_KIND.getKey(), "client")
+                .hasTag(Tags.HTTP_STATUS.getKey(), 200)
+                .hasTag(Tags.HTTP_URL.getKey(), "http://localhost:8080/employees");
 
         SpanNode employees = client.getChildren().get(0);
         assertThat(employees)
                 .hasChildSpans(1)
                 .hasOperationName("GET:io.thorntail.testsuite.opentracing.jaeger.Employees.getEmployees")
-                .hasTag("span.kind", "server")
-                .hasTag("http.status_code", 200);
+                .hasTag(Tags.SPAN_KIND.getKey(), "server")
+                .hasTag(Tags.HTTP_STATUS.getKey(), 200);
 
         SpanNode send = employees.getChildren().get(0);
         assertThat(send)
                 .hasChildSpans(1)
                 .hasOperationName("jms-send")
-                .hasTag("message_bus.destination", "employees")
-                .hasTag("span.kind", "producer");
+                .hasTag(Tags.MESSAGE_BUS_DESTINATION.getKey(), "employees")
+                .hasTag(Tags.SPAN_KIND.getKey(), "producer");
 
         SpanNode receive = send.getChildren().get(0);
         assertThat(receive)
                 .hasChildSpans(3)
                 .hasOperationName("jms-receive")
-                .hasTag("message_bus.destination", "employees")
-                .hasTag("span.kind", "consumer");
+                .hasTag(Tags.MESSAGE_BUS_DESTINATION.getKey(), "employees")
+                .hasTag(Tags.SPAN_KIND.getKey(), "consumer");
 
         SpanNode jpa = receive.getChildren().get(0);
         assertThat(jpa)
@@ -111,38 +112,38 @@ public class OpenTracingJaegerAppIT {
         assertThat(ds)
                 .hasChildSpans(0)
                 .hasOperationName("executeQuery")
-                .hasTag("db.instance", "mem:")
-                .hasTag("db.user", "sa")
-                .hasTag("db.type", "sql");
+                .hasTag(Tags.DB_INSTANCE.getKey(), "mem:")
+                .hasTag(Tags.DB_USER.getKey(), "sa")
+                .hasTag(Tags.DB_TYPE.getKey(), "sql");
 
         SpanNode reply = receive.getChildren().get(1);
         assertThat(reply)
                 .hasChildSpans(1)
                 .hasOperationName("jms-send")
-                .hasTag("span.kind", "producer")
-                .hasTag("message_bus.destination");
+                .hasTag(Tags.SPAN_KIND.getKey(), "producer")
+                .hasTag(Tags.MESSAGE_BUS_DESTINATION.getKey());
 
         SpanNode receiveReply = reply.getChildren().get(0);
         assertThat( receiveReply )
                 .hasChildSpans(0)
                 .hasOperationName("jms-receive")
-                .hasTag("span.kind", "consumer")
+                .hasTag(Tags.SPAN_KIND.getKey(), "consumer")
                 .hasTag("jms.message.id" )
-                .hasTag("message_bus.destination", (String) reply.getTags().get("message_bus.destination"));
+                .hasTag(Tags.MESSAGE_BUS_DESTINATION.getKey(), (String) reply.getTags().get(Tags.MESSAGE_BUS_DESTINATION.getKey()));
 
         SpanNode loggerSend = receive.getChildren().get(2);
         assertThat(loggerSend)
                 .hasChildSpans(1)
                 .hasOperationName("vertx-send")
-                .hasTag("span.kind", "producer")
-                .hasTag("message_bus.destination", "fetch-logger");
+                .hasTag(Tags.SPAN_KIND.getKey(), "producer")
+                .hasTag(Tags.MESSAGE_BUS_DESTINATION.getKey(), "fetch-logger");
 
         SpanNode loggerReceive = loggerSend.getChildren().get(0);
         assertThat(loggerReceive)
                 .hasChildSpans(0)
                 .hasOperationName("vertx-receive")
-                .hasTag("span.kind", "consumer")
-                .hasTag("message_bus.destination", "fetch-logger");
+                .hasTag(Tags.SPAN_KIND.getKey(), "consumer")
+                .hasTag(Tags.MESSAGE_BUS_DESTINATION.getKey(), "fetch-logger");
 
 
 
