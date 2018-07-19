@@ -86,7 +86,7 @@
     <version.opentracing.servlet>0.1.0</version.opentracing.servlet>
     <version.jaeger>0.27.0</version.jaeger>
     <version.opentracing.concurrent>0.1.0</version.opentracing.concurrent>
-    <version.opentracing.jaxrs>0.1.5</version.opentracing.jaxrs>
+    <version.opentracing.jaxrs>0.1.6</version.opentracing.jaxrs>
     <version.jaeger.apache.thrift>0.9.2</version.jaeger.apache.thrift>
     <version.jaeger.apache.httpclient>4.2.5</version.jaeger.apache.httpclient>
     <version.jaeger.commons.logging>1.1.1</version.jaeger.commons.logging>
@@ -112,7 +112,7 @@
     <!-- MP Config implementation -->
     <version.wildfly-microprofile-config>1.2.1</version.wildfly-microprofile-config>
     <version.smallrye.health>1.0.1</version.smallrye.health>
-    <version.smallrye.opentracing>1.0.0-SNAPSHOT</version.smallrye.opentracing>
+    <version.smallrye.opentracing>1.1.0-SNAPSHOT</version.smallrye.opentracing>
     <version.smallrye.metrics>1.1.0</version.smallrye.metrics>
     <version.smallrye.restclient>1.0.0</version.smallrye.restclient>
     <version.smallrye.jwt>1.1.0</version.smallrye.jwt>
