@@ -1,4 +1,6 @@
-= Network
+
+[id='configuring-network_{context}']
+= Configuring network
 
 For network configuration, create or adjust _interfaces,_ _socket-bindings,_ and _outbound-socket-bindings._
 The networking configuration is stored under the `network` -> `swarm` key.

@@ -17,11 +17,16 @@
 package org.wildfly.swarm.microprofile.metrics;
 
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.Module;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 /**
  * @author Heiko W. Rupp
  */
-@DeploymentModule(name = "org.wildfly.swarm.microprofile.metrics", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
+@DeploymentModule(
+        name = "io.smallrye.metrics",
+        metaInf = DeploymentModule.MetaInfDisposition.IMPORT,
+        export = true,
+        services = Module.ServiceHandling.IMPORT)
 public class MicroprofileMetricsFraction implements Fraction<MicroprofileMetricsFraction> {
 }

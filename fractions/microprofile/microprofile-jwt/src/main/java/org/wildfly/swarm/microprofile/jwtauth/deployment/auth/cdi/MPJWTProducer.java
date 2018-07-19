@@ -28,7 +28,6 @@ import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -71,17 +70,6 @@ public class MPJWTProducer {
 
     void observeRequestDestroyed(@Observes @Destroyed(RequestScoped.class) Object event) {
         log.tracef("observeRequestDestroyed, event=%s", event);
-    }
-
-    /**
-     * The @RequestScoped producer method for the current JsonWebToken
-     *
-     * @return
-     */
-    @Produces
-    @RequestScoped
-    JsonWebToken currentPrincipalOrNull() {
-        return currentPrincipal.get();
     }
 
     /**

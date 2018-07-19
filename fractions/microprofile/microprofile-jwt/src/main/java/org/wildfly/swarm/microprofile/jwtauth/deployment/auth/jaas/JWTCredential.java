@@ -17,8 +17,8 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth.deployment.auth.jaas;
 
+import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import io.undertow.security.idm.Credential;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.principal.JWTAuthContextInfo;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;

@@ -1,4 +1,5 @@
-[#fractions]
+
+[id='fractions_{context}']
 = Fractions
 
 {Thorntail} is defined by an unbounded set of capabilities.
@@ -6,7 +7,7 @@ Each piece of functionality is called a _fraction._
 Some fractions provide only access to APIs, such as JAX-RS or CDI; other fractions provide higher-level capabilities, such as integration with RHSSO (Keycloak).
 
 The typical method for consuming {Thorntail} fractions is through Maven coordinates, which you add to the `pom.xml` file in your application.
-The functionality the fraction provides is then packaged with your application (see xref:creating-an-uberjar[]).
+The functionality the fraction provides is then packaged with your application (see xref:creating-an-uberjar_{context}[]).
 
 To enable easier consumption of {Thorntail} fractions, a bill of materials (BOM) is available. For more information, see xref:using-a-bom[].
 

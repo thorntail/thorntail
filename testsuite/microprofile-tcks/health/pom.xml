@@ -33,6 +33,16 @@
    <artifactId>thorntail-microprofile-tck-health</artifactId>
    <name>MicroProfile TCK: Health</name>
 
+   <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly.swarm</groupId>
+        <artifactId>config-api-runtime</artifactId>
+        <version>1.3.1</version>
+      </dependency>
+    </dependencies>
+   </dependencyManagement>
+
    <dependencies>
 
       <dependency>
@@ -48,6 +58,13 @@
       <dependency>
          <groupId>io.thorntail</groupId>
          <artifactId>microprofile-health</artifactId>
+         <!-- workaround for https://issues.jboss.org/browse/THORN-2015 -->
+         <exclusions>
+          <exclusion>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>config-api-runtime</artifactId>
+          </exclusion>
+         </exclusions>
          <scope>test</scope>
       </dependency>
 

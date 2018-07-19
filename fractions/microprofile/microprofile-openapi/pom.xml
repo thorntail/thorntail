@@ -27,6 +27,7 @@
 
     <!-- Dependencies -->
     <version.com.fasterxml.jackson.dataformat>2.9.2</version.com.fasterxml.jackson.dataformat>
+    <version.io.smallrye.smallrye-open-api>1.0.0</version.io.smallrye.smallrye-open-api>
   </properties>
 
   <build>
@@ -63,10 +64,11 @@
       <artifactId>microprofile-config</artifactId>
     </dependency>
 
-    <!-- OpenAPI Spec -->
+    <!-- SmallRye OpenAPI -->
     <dependency>
-      <groupId>org.eclipse.microprofile.openapi</groupId>
-      <artifactId>microprofile-openapi-api</artifactId>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api</artifactId>
+      <version>${version.io.smallrye.smallrye-open-api}</version>
     </dependency>
 
     <!-- Third Party Libs -->

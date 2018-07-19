@@ -52,6 +52,10 @@
       <groupId>io.thorntail</groupId>
       <artifactId>cdi</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>opentracing-tracerresolver</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -64,26 +68,6 @@
       <groupId>org.eclipse.microprofile.opentracing</groupId>
       <artifactId>microprofile-opentracing-api</artifactId>
       <version>${version.microprofile-opentracing}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.opentracing</groupId>
-      <artifactId>opentracing-api</artifactId>
-      <version>${version.opentracing}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.opentracing</groupId>
-      <artifactId>opentracing-util</artifactId>
-      <version>${version.opentracing}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.opentracing</groupId>
-      <artifactId>opentracing-noop</artifactId>
-      <version>${version.opentracing}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.opentracing.contrib</groupId>
-      <artifactId>opentracing-tracerresolver</artifactId>
-      <version>${version.opentracing.tracerresolver}</version>
     </dependency>
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
