@@ -1,0 +1,26 @@
+
+[id='thorntail-maven-plugin-general-usage_{context}']
+= {Thorntail} Maven plugin general usage
+
+The {Thorntail} Maven plugin is used like any other Maven plugin, that is through editing the `pom.xml` file in your application and adding a `<plugin>` section:
+
+[source,xml]
+----
+<plugin>
+  <groupId>io.thorntail</groupId>
+  <artifactId>thorntail-maven-plugin</artifactId>
+  <version>${version.thorntail}</version>
+  <executions>
+    ...
+    <execution>
+      <goals>
+        ...
+      </goals>
+      <configuration>
+        ...
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+----
+

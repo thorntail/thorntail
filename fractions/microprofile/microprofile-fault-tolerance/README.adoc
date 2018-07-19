@@ -3,7 +3,7 @@
 
 This fraction implements the https://github.com/eclipse/microprofile-fault-tolerance[Eclipse MicroProfile Fault Tolerance API^].
 The implementation depends on the xref:_hystrix[Hystrix fraction], which is added transitively into your application.
-Use xref:configuring-a-wildfly-swarm-application[standard configuration mechanisms] to configure Hystrix properties in your application.
+Use xref:configuring-a-thorntail-application_{context}[standard configuration mechanisms] to configure Hystrix properties in your application.
 
 == Bulkhead fallback rejection
 

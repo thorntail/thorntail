@@ -10,7 +10,7 @@ When writing your application from scratch, ensure it compiles correctly and use
 
 .Procedure
 
-. Add the BOM to your `pom.xml`. For more information, see xref:using-a-bom[].
+. Add the BOM to your `pom.xml`. For more information, see xref:using-a-bom_{context}[].
 
 . Add the {Thorntail} Maven plugin to your `pom.xml`. For more information, see xref:creating-an-uberjar_{context}[].
 

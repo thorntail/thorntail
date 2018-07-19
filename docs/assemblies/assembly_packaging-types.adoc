@@ -6,9 +6,9 @@
 
 When using {Thorntail}, there are the following ways to package your runtime and application, depending on how you intend to use and deploy it:
 
-include::../concepts/con_uberjar.adoc[leveloffset=+1]
+include::../modules/con_uberjar.adoc[leveloffset=+1]
 
-include::../concepts/con_hollow-jar.adoc[leveloffset=+1]
+include::../modules/con_hollow-jar.adoc[leveloffset=+1]
 
 :context: {parent-context}
 

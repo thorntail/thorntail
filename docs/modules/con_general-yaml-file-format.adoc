@@ -1,0 +1,20 @@
+
+[id='the-general-yaml-file-format_{context}']
+= The general YAML file format
+
+The {Thorntail} configuration item names correspond to the YAML configuration structure.
+
+.YAML configuration
+====
+For example, a configuration item documented as `swarm.undertow.servers.KEY.default-host` translates to the following YAML structure, substituting the `KEY` segment with the `default` identifier:
+
+[source,yaml]
+----
+swarm:
+  undertow:
+    servers:
+      default:
+        default-host: <myhost>
+----
+====
+

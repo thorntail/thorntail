@@ -1,0 +1,30 @@
+
+[id='setting-system-properties-using-the-command-line_{context}']
+= Setting system properties using the command line
+
+Setting properties using the Maven plugin is useful for temporarily changing a configuration item for a single execution of your {Thorntail} application.
+
+You can customize an environment-specific setting or experiment with configuration items before setting them in a YAML configuration file.
+
+To use a property on the command line, pass it as a command-line parameter to the Java binary:
+
+[discrete]
+== Prerequisites
+
+* A JAR file with your application
+
+[discrete]
+== Procedure
+
+. In a terminal application, navigate to the directory with your application JAR file.
+. Execute your application JAR file using the Java binary and specify the property and its value:
++
+--
+[source,shell]
+----
+$ java -Dswarm.bind.address=127.0.0.1 -jar myapp-thorntail.jar
+----
+
+In this example, you assing the value `127.0.0.1` to the property called `swarm.bind.address`.
+--
+

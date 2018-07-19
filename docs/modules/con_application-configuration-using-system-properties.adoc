@@ -1,0 +1,15 @@
+
+[id='application-configuration-using-system-properties_{context}']
+= Application configuration using system properties
+
+Configuration properties are presented using dotted notation, and are suitable for use as Java system property names, which your application consumes through explicit setting in the Maven plugin configuration, or through the command line when your application is being executed.
+
+Any property that has the _KEY_ parameter in its name indicates that you must supply a key or identifier in that segment of the name.
+
+[discrete]
+== Configuration of items with the KEY parameter
+
+A configuration item documented as `swarm.undertow.servers.KEY.default-host` indicates that the configuration applies to a particular named server.
+
+In practical usage, the property would be, for example, `swarm.undertow.servers.default.default-host` for a server known as `default`.
+

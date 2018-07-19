@@ -1,0 +1,79 @@
+
+[id='application-configuration-using-environment-variables']
+== Application configuration using environment variables
+
+Use environment variables to configure your application in various deployments--especially in a containerized environment, such as Docker.
+
+.Environment variables configuration
+====
+A property documented as `swarm.undertow.servers.KEY.default-host` translates to the following environment variable (substituting the `KEY` segment with the `default` identifier):
+
+[source,bash]
+----
+export SWARM.UNDERTOW.SERVERS.DEFAULT.DEFAULT_DASH_HOST=<myhost>
+----
+====
+
+Unlike other configuration options, properties defined as environment variables in Linux-based containers do not allow defining non-alphanumeric characters like _dot_ (.), _dash/hyphen_ (-) or any other characters not in the `[A-Za-z0-9_]` range.
+Many configuration properties in {Thorntail} contain these characters, so you must follow these rules when defining the environment variables in the following environments:
+
+.Linux-based container rules
+* It is a naming convention that all environment properties are defined using uppercase letters.
+For example, define the `serveraddress` property as `SERVERADDRESS`.
+* All the _dot_ (.) characters must be replaced with _underscore_ (_).
+For example, define the `swarm.bind.address=127.0.0.1` property as `SWARM_BIND_ADDRESS=127.0.0.1`.
+* All _dash/hyphen_ (-) characters must be replaced with the `_DASH_` string.
+For example, define the `swarm.data-sources.foo.url=<url>` property as `SWARM_DATA_DASH_SOURCES_FOO_URL=<url>`.
+* If the property name contains underscores, all _underscore_ (\_) characters must be replaced with the `_UNDERSCORE_` string.
+For example, define the `swarm.data_sources.foo.url=<url>` property as `SWARM_DATA_UNDERSCORE_SOURCES_FOO_URL=<url>`.
+
+.An example data source configuration
+====
+[cols="1,5"]
+|===
+| System property
+| `-Dswarm.datasources.data-sources.devwf.connection-url=
+jdbc:postgresql://localhost:5432/sampledb`
+
+| Env. variable
+| `SWARM_DATASOURCES_DATA_DASH_SOURCES_DEVWF_CONNECTION_DASH_URL=
+'jdbc:postgresql://localhost:5432/sampledb'`
+|===
+
+[cols="1,5"]
+|===
+| System property
+| `-Dswarm.datasources.data-sources.devwf.driver-name=postgresql`
+
+| Env. variable
+| `SWARM_DATASOURCES_DATA_DASH_SOURCES_DEVWF_DRIVER_DASH_NAME='postgresql'`
+|===
+
+[cols="1,5"]
+|===
+| System property
+| `-Dswarm.datasources.data-sources.devwf.jndiname=java:/jboss/datasources/devwf`
+
+| Env. variable
+| `SWARM_DATASOURCES_DATA_DASH_SOURCES_DEVWF_JNDI_DASH_NAME='java:/jboss/datasources/devwf'`
+|===
+
+[cols="1,5"]
+|===
+| System property
+| `-Dswarm.datasources.data-sources.devwf.user-name=postgres`
+
+| Env. variable
+| `SWARM_DATASOURCES_DATA_DASH_SOURCES_DEVWF_USER_DASH_NAME='postgres'`
+|===
+
+[cols="1,5"]
+|===
+| System property
+| `-Dswarm.datasources.data-sources.devwf.password=admin`
+
+| Env. variable
+| `SWARM_DATASOURCES_DATA_DASH_SOURCES_DEVWF_PASSWORD='admin'`
+|===
+====
+

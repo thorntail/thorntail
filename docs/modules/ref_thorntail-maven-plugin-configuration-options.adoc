@@ -1,56 +1,8 @@
-[#maven-plugin]
-= Maven Plugin
 
-{Thorntail} provides a Maven plugin to accomplish most of the work of building xref:uberjar_{context}[uberjar] packages.
+[id='thorntail-maven-plugin-configuration-options_{context}']
+= {Thorntail} Maven plugin configuration options
 
-.General Usage
-
-The {Thorntail} Maven plugin is used like any other Maven plugin, that is through editing the `pom.xml` file in your application and adding a `<plugin>` section:
-
-[source,xml]
-----
-<plugin>
-  <groupId>io.thorntail</groupId>
-  <artifactId>thorntail-maven-plugin</artifactId>
-  <version>${version.thorntail}</version>
-  <executions>
-    ...
-    <execution>
-      <goals>
-        ...
-      </goals>
-      <configuration>
-        ...
-      </configuration>
-    </execution>
-  </executions>
-</plugin>
-----
-
-== Goals
-
-The {Thorntail} Maven plugin provides several goals:
-
-package::
-Creates the executable package (see xref:creating-an-uberjar_{context}[]).
-
-run::
-Executes your application in the Maven process. The application is stopped if the Maven build is interrupted, for example when you press Ctrl + C.
-
-[#maven-plugin-multistart-goal]
-start and multistart::
-Executes your application in a forked process. Generally, it is only useful for running integration tests using a plugin, such as the `maven-failsafe-plugin`.
-The `multistart` variant allows starting multiple {Thorntail}{ndash}built applications using Maven GAVs to support complex testing scenarios.
-
-stop::
-Stops any previously started applications.
-+
-NOTE: The `stop` goal can only stop applications that were started _in the same Maven execution_.
-
-[#maven-plugin-configuration]
-== Configuration Options
-
-The plugin accepts the following options:
+The {Thorntail} Maven plugin accepts the following configuration options:
 
 bundleDependencies::
 If true, dependencies will be included in the `-thorntail.jar` file.
@@ -250,7 +202,7 @@ Application configurations to start (see xref:maven-plugin-multistart-goal[multi
 |===
 
 properties::
-See xref:maven-plugin-properties[].
+See xref:thorntail-maven-plugin-configuration-properties_{context}[].
 +
 [cols="1,2a"]
 |===
@@ -265,7 +217,7 @@ See xref:maven-plugin-properties[].
 |===
 
 propertiesFile::
-See xref:maven-plugin-properties[].
+See xref:thorntail-maven-plugin-configuration-properties_{context}[].
 +
 [cols="1,2a"]
 |===
@@ -324,25 +276,4 @@ This JAR is not created automatically, so make sure you execute the `package` go
 |Used by
 |`run`, `start`
 |===
-
-[#maven-plugin-properties]
-== Configuration Properties
-
-Properties can be used to configure execution and affect the packaging
-or running of your application.
-
-If you add a `<properties>` or `<propertiesFile>` section to the `<configuration>` of the plugin, the properties are used when executing your application using the `mvn thorntail:run` command.
-In addition to that, the same properties are added to your `_myapp_-thorntail.jar` file to affect subsequent executions of the uberjar.
-Any properties loaded from the `<propertiesFile>` override identically-named properties in the `<properties>` section.
-
-Any properties added to the uberjar can be overridden at runtime using the traditional `-Dname=value` mechanism of the `java` binary, or using the YAML-based configuration files.
-
-Only the following properties are added to the uberjar at package time:
-
-* The properties specified outside of the `<properties>` section or the `<propertiesFile>`, whose path starts with one of the following:
-** `jboss.`
-** `wildfly.`
-** `swarm.`
-** `maven.`
-* The properties that override a property specified in the `<properties>` section or the `<propertiesFile>`.
 
