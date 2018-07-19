@@ -16,7 +16,7 @@ include::introduction.adoc[]
 
 # Concepts
 
-include::concepts/fractions.adoc[leveloffset=+1]
+include::modules/con_fractions.adoc[leveloffset=+1]
 include::assemblies/assembly_packaging-types.adoc[leveloffset=+1]
 
 # HOWTO
@@ -54,9 +54,10 @@ endif::product[]
 include::assemblies/assembly_using-thorntail-maven-plugin.adoc[leveloffset=+2]
 
 include::assemblies/assembly_configuring-a-thorntail-application.adoc[leveloffset=+2]
-include::reference/network.adoc[leveloffset=+2]
-include::reference/usage.adoc[leveloffset=+2]
+include::modules/ref_network-configuration.adoc[leveloffset=+2]
+include::modules/ref_the-usage-txt-file.adoc[leveloffset=+2]
 
 ## Fractions
 
 include::reference/index.adoc[leveloffset=+2]
+
