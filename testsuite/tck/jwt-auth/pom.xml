@@ -12,7 +12,11 @@
 
   <artifactId>thorntail-tck-jwt-auth</artifactId>
   <name>TCK: MicroProfile JWT Auth</name>
-  
+
+  <properties>
+    <version.mp-jwt-auth.tck>1.1</version.mp-jwt-auth.tck>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -52,13 +56,13 @@
     <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
       <artifactId>microprofile-jwt-auth-tck</artifactId>
-      <version>1.0</version>
+      <version>${version.mp-jwt-auth.tck}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
       <artifactId>microprofile-jwt-auth-tck</artifactId>
-      <version>1.0</version>
+      <version>${version.mp-jwt-auth.tck}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

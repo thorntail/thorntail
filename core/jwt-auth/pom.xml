@@ -29,8 +29,18 @@
     </dependency>
 
     <dependency>
-      <groupId>org.eclipse.microprofile.jwt</groupId>
-      <artifactId>microprofile-jwt-auth-api</artifactId>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-jwt</artifactId>
+       <exclusions>
+         <exclusion>
+           <groupId>javax.enterprise</groupId>
+           <artifactId>cdi-api</artifactId>
+         </exclusion>
+         <exclusion>
+           <groupId>javax.annotation</groupId>
+           <artifactId>javax.annotation-api</artifactId>
+         </exclusion>
+       </exclusions>
     </dependency>
 
     <dependency>
