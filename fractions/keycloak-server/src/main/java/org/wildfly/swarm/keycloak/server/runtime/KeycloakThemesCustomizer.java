@@ -57,19 +57,19 @@ public class KeycloakThemesCustomizer implements Customizer {
                 Theme<?> theme = this.keycloakServer.subresources().themes().get(0);
                 theme.modules().add("org.keycloak.keycloak-themes");
             }
-            return;
+        } else {
+
+            this.keycloakServer.theme("defaults", (theme) -> {
+                theme.module("org.keycloak.keycloak-themes")
+                    .staticmaxage(2592000L)
+                    .cachethemes(true)
+                    .cachetemplates(true)
+                    .dir(".");
+            });
         }
 
-        this.keycloakServer.theme("defaults", (theme) -> {
-            theme.module("org.keycloak.keycloak-themes")
-                .staticmaxage(2592000L)
-                .cachethemes(true)
-                .cachetemplates(true)
-                .dir(".");
-        });
-
     }
-    
+
     /**
      * Whether or not to use the embedded default themes when the custom themes are also available
      */
