@@ -81,10 +81,7 @@ public class JWTAuthTCKArchiveProcessor implements ApplicationArchiveProcessor {
         if (webXml != null) {
             war.setWebXML(webXml);
         }
-        //
-        String projectDefaults = "project-defaults.yml";
-        war.addAsResource(projectDefaults, "/project-defaults.yml")
-                .addAsWebInfResource("jwt-roles.properties", "classes/jwt-roles.properties")
+        war.addAsWebInfResource("jwt-roles.properties", "classes/jwt-roles.properties")
         ;
         log.info("Augmented war: \n"+war.toString(true));
     }
