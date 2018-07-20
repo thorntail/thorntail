@@ -1,0 +1,38 @@
+
+[id='non-default-thorntail-yaml-configuration-files_{context}']
+= Non-default {Thorntail} YAML configuration files
+
+In addition to default configuration files for your {Thorntail}-based application, you can specify YAML files outside of your application. Use the `-s <path>` command-line option to load the desired file.
+
+Both the `-s <path>` and `-S <name>` command-line options can be used at the same time, but files specified using the `-s <path>` option take precedence over YAML files contained in your application.
+
+.Specifying configuration files inside and outside of the application
+====
+
+Consider the following application execution:
+
+[source,bash]
+----
+$ java -jar myapp-thorntail.jar -s/home/app/openshift.yml -Scloud -Stesting
+----
+
+The following YAML files are loaded, in this order:
+
+. `/home/app/openshift.yml`
+. `project-cloud.yml`
+. `project-testing.yml`
+. `project-defaults.yml`
+
+The same order of preference is applied even if you invoke the application as follows:
+
+[source,bash]
+----
+$ java -jar myapp-thorntail.jar -Scloud -Stesting -s/home/app/openshift.yml
+----
+====
+
+[discrete]
+== Related information
+
+* xref:default-thorntail-yaml-files_{context}[]
+

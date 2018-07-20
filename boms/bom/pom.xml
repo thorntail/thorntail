@@ -90,7 +90,7 @@
                            <analyzeRuntimeDependencies>true</analyzeRuntimeDependencies>
                            <!-- Use custom settings to point to the local maven repo cache -->
                            <userSettings>${project.parent.build.directory}/custom-settings.xml</userSettings>
-                           <additionalBom>org.wildfly.swarm:bom-certified:pom:${project.version}</additionalBom>
+                           <additionalBom>io.thorntail:bom-certified:pom:${project.version}</additionalBom>
                            <excludes>
                              <exclude>org/codehaus/plexus/plexus/1.0.4/.*</exclude>
                            </excludes>

@@ -1,162 +1,21 @@
-[#using-a-bom]
+
+// This is an assembly
+[id='using-a-bom_{context}']
 = Using a BOM
 
-To explicitly specify the {Thorntail}
-fractions your application uses, instead of relying
-on auto-detection, {Thorntail} includes a set of
-BOMs (bill of materials) which you can use instead of
-having to track and update Maven artifact versions
-in several places.
+:parent-context: {context}
+
+To explicitly specify the {Thorntail} fractions your application uses, instead of relying on auto-detection, {Thorntail} includes a set of BOMs (bill of materials) which you can use instead of having to track and update Maven artifact versions in several places.
 
 ifndef::product[]
-== Different types of BOMs
-
-{Thorntail} is described as _just enough app-server,_
-which means it comprises of multiple pieces.  Your application
-includes only the pieces it needs.
-
-Over time, some of these pieces reach the _stable_ status,
-while some are classified as _unstable_ or _experimental._
-To help separate the stable pieces from the less stable ones,
-the following Maven BOMs can be used:
-
-bom-all:: All fractions: stable, unstable, experimental, and
-even deprecated.
-
-bom-deprecated:: Fractions that have been deprecated.
-
-bom-experimental:: Fractions that are considered experimental, which
-means they can disappear or radically change between releases.
-
-bom-unstable:: Fractions that do not change as often as the experimental ones.
-However, unstable fractions can still change their behavior or contain bugs,
-even dangerous ones.
-
-bom-stable or bom:: Fractions recommended for daily use.
+include::ref_thorntail-community-bom-types.adoc[leveloffset=+1]
 endif::[]
 
 ifdef::product[]
-== Available BOMs
-
-You can use the following Maven BOMs:
-
-bom:: All fractions available in the product.
-
-bom-certified:: All _community_ fractions that have been certified against the
-product. Any fraction used from `bom-certified` is unsupported.
+include::ref_thorntail-product-bom-types.adoc[leveloffset=+1]
 endif::[]
 
-.Prerequisites
+include::proc_specifying-a-bom-in-your-application.adoc[leveloffset=+1]
 
-* Your application as a Maven-based project with a `pom.xml` file.
-
-.Procedure
-
-. Include a `bom` artifact in your `pom.xml`.
-+
---
-Tracking the current version of {Thorntail} through a property in your
-`pom.xml` is recommended.
-
-[source,xml,subs="+attributes"]
-----
-<properties>
-  <version.thorntail>{version}</version.thorntail>
-</properties>
-----
-
-Import BOMs in the `<dependencyManagement>` section. Specify the
-`<type>pom</type>` and `<scope>import</scope>`.
-
-[source,xml]
-----
-<dependencyManagement>
-  <dependencies>
-include::pom.xml[tag=bom-dependency,indent=4]
-  </dependencies>
-</dependencyManagement>
-----
-
-In the example above, the `bom` artifact is imported to ensure that
-only stable fractions are available.
-
-
-ifndef::product[]
-If you want to experiment with some unstable fractions in addition to the
-stable ones, uncomment the `<dependency>` for `bom-unstable`:
-
-[source,xml]
-----
-<dependencyManagement>
-  <dependencies>
-include::pom.xml[tag=bom-dependency,indent=4]
-include::pom.xml[tag=bom-unstable-dependency,indent=4]
-  </dependencies>
-</dependencyManagement>
-----
-
-Remember, each flavor of `bom`, with the exception of `bom-all`
-contains only the type of fractions indicated.  This allows mixing
-and matching the combination of fraction stability that you want
-with fine granularity. If you want both stable and unstable, you
-would need to include both `bom-stable` (or `bom`) and `bom-unstable`.
-endif::[]
-
-By including the BOMs of your choice in the `<dependencyManagement>` section,
-you have:
-
-* Provided version-management for any {Thorntail} artifacts you
-subsequently *choose* to use.
-* Provided support to your IDE for auto-completing known artifacts
-when you edit your the `pom.xml` file of your application.
---
-
-. Include {Thorntail} dependencies.
-+
---
-Even though you imported the {Thorntail} BOMs in the `<dependencyManagement>`
-section, your application still has no dependencies on {Thorntail}
-artifacts.
-
-To include {Thorntail} artifact dependencies based on the capabilities your
-application, enter the relevant artifacts as `<dependency>` elements:
-
-NOTE: You do not have to specify the version of the artifacts because the BOM
-imported in `<dependencyManagement>` handles that.
-
-[source,xml]
-----
-<dependencies>
-include::pom.xml[tag=fraction-dependencies,indent=2]
-</dependencies>
-----
-
-In the example above, we include explicit dependencies on the `jaxrs` and
-`datasources` fractions, which will provide transitive inclusion of others,
-for example `undertow`.
---
-
-== Caveats
-
-One shortcoming of importing a Maven BOM import is that it does not
-handle the configuration on the level of `<pluginManagement>`. When you use the
-{Thorntail} Maven Plugin, you must specify the version of the plugin to use.
-
-Thanks to the property you use in your `pom.xml` file, you can easily ensure
-that your plugin usage matches the release of {Thorntail} that you are
-targeting with the BOM import.
-
-[source,xml]
-----
-<plugins>
-  <plugin>
-include::pom.xml[tag=plugin,indent=4]
-      ...
-  </plugin>
-</plugins>
-----
-
-.Related Information
-
-* xref:creating-an-uberjar_{context}[]
+:context: {parent-context}
 

@@ -15,7 +15,7 @@ testing work well with {Thorntail}{ndash}based applications.
 [discrete]
 == Procedure
 
-. Include the {Thorntail} BOM as described in xref:using-a-bom[]:
+. Include the {Thorntail} BOM as described in xref:using-a-bom_{context}[]:
 +
 [source,xml]
 ----
