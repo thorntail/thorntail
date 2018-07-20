@@ -14,14 +14,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 
-import io.thorntail.jwt.auth.impl.KeyUtils;
+import io.smallrye.jwt.KeyUtils;
+import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import io.undertow.security.api.AuthenticationMechanism;
 import io.undertow.security.api.AuthenticationMechanismFactory;
 import io.undertow.server.handlers.form.FormParserFactory;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.jboss.logging.Logger;
-import io.thorntail.jwt.auth.impl.JWTAuthContextInfo;
 
 /**
  * An AuthenticationMechanismFactory for the MicroProfile JWT RBAC

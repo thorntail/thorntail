@@ -30,8 +30,6 @@ import io.thorntail.jwt.auth.impl.undertow.JWTAuthMechanism;
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.Claims;
 import org.jboss.logging.Logger;
-//import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.JWTAuthMechanism;
-//import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.config.JWTAuthContextInfoProvider;
 
 /**
  * A CDI extension that provides a producer for the current authenticated JsonWebToken based on a thread
@@ -58,7 +56,7 @@ public class JWTExtension implements Extension {
      */
     /*
     public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager beanManager) {
-        log.debugf("MPJWTExtension(), added JWTPrincipalProducer");
+        log.debugf("MPJWTExtension(), adding producers");
         bbd.addAnnotatedType(beanManager.createAnnotatedType(JWTAuthContextInfoProvider.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(MPJWTProducer.class));
         bbd.addAnnotatedType(beanManager.createAnnotatedType(RawClaimTypeProducer.class));
@@ -105,9 +103,9 @@ public class JWTExtension implements Extension {
     /**
      * Handle the non-{@linkplain Provider}, {@linkplain org.eclipse.microprofile.jwt.ClaimValue}, and
      * {@linkplain javax.json.JsonValue} claim injection types.
+     * @see RawClaimTypeProducer
      *
      * @param pip - the injection point event information
-     * @see RawClaimTypeProducer
      */
     void processClaimInjections(@Observes ProcessInjectionPoint pip) {
         log.debugf("pipRaw: %s", pip.getInjectionPoint());
@@ -193,8 +191,6 @@ public class JWTExtension implements Extension {
     void observesAfterBeanDiscovery(@Observes final AfterBeanDiscovery event, final BeanManager beanManager) {
         log.debugf("observesAfterBeanDiscovery, %s", claims);
         installClaimValueProducerMethodsViaSyntheticBeans(event, beanManager);
-
-        //installClaimValueProducesViaTemplateType(event, beanManager);
     }
 
     /**
