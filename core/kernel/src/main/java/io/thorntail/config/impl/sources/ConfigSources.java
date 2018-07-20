@@ -3,8 +3,7 @@ package io.thorntail.config.impl.sources;
 /**
  * Created by bob on 2/7/18.
  */
-class
-ConfigSources {
+class ConfigSources {
 
     public static int FRAMEWORK_DEFAULTS_ORDINAL = -1000;
 
