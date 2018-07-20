@@ -53,9 +53,9 @@ public class KeycloakThemesCustomizer implements Customizer {
                 .forEach((t) -> {
                 t.dir(".");
             });
-            if (alwaysUseDefaultThemes.get()) {
+            if (combineDefaultAndCustomThemes.get()) {
                 Theme<?> theme = this.keycloakServer.subresources().themes().get(0);
-                theme.modules().add("org.keycloak.keycloak-themes");
+                theme.modules().add(0, "org.keycloak.keycloak-themes");
             }
         } else {
 
@@ -71,9 +71,9 @@ public class KeycloakThemesCustomizer implements Customizer {
     }
 
     /**
-     * Whether or not to use the embedded default themes when the custom themes are also available
+     * Whether or not to combine the default themes when the custom themes are also available.
      */
-    @Configurable("swarm.keycloak.server.alwaysUseDefaultThemes")
-    @AttributeDocumentation("Use the default themes evem when the custom themes are available")
-    private Defaultable<Boolean> alwaysUseDefaultThemes = bool(true);
+    @Configurable("swarm.keycloak-server.combineDefaultAndCustomThemes")
+    @AttributeDocumentation("Combine the default themes with the custom themes")
+    private Defaultable<Boolean> combineDefaultAndCustomThemes = bool(false);
 }
