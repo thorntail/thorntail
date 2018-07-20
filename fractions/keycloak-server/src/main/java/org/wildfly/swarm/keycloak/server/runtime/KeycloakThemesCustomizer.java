@@ -15,14 +15,20 @@
  */
 package org.wildfly.swarm.keycloak.server.runtime;
 
+import static org.wildfly.swarm.spi.api.Defaultable.bool;
+
 import java.io.IOException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.modules.ModuleLoadException;
+import org.wildfly.swarm.config.keycloak.server.Theme;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.keycloak.server.KeycloakServerFraction;
 import org.wildfly.swarm.spi.api.Customizer;
+import org.wildfly.swarm.spi.api.Defaultable;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 
 /**
@@ -47,6 +53,10 @@ public class KeycloakThemesCustomizer implements Customizer {
                 .forEach((t) -> {
                 t.dir(".");
             });
+            if (alwaysUseDefaultThemes.get()) {
+                Theme<?> theme = this.keycloakServer.subresources().themes().get(0);
+                theme.modules().add("org.keycloak.keycloak-themes");
+            }
             return;
         }
 
@@ -59,4 +69,11 @@ public class KeycloakThemesCustomizer implements Customizer {
         });
 
     }
+    
+    /**
+     * Whether or not to use the embedded default themes when the custom themes are also available
+     */
+    @Configurable("swarm.keycloak.server.alwaysUseDefaultThemes")
+    @AttributeDocumentation("Use the default themes evem when the custom themes are available")
+    private Defaultable<Boolean> alwaysUseDefaultThemes = bool(true);
 }
