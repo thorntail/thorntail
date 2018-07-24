@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.microprofile.jwtauth;
+package org.wildfly.swarm.microprofile.jwtauth.providers;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -25,8 +26,8 @@ import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.microprofile.jwtauth.roles.TestApplication;
-import org.wildfly.swarm.undertow.WARArchive;
 
 import javax.ws.rs.core.MediaType;
 
@@ -35,19 +36,21 @@ import static org.wildfly.swarm.microprofile.jwtauth.utils.TokenUtils.createToke
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
  * <br>
- * Date: 6/13/18
+ * Date: 7/10/18
  */
 @RunWith(Arquillian.class)
-public class ContentTypesTest {
+public class ProvidersMergingTest {
 
     @Deployment
     public static Archive<?> createDeployment() {
         return initDeployment().addAsResource("project-no-roles-props.yml", "project-defaults.yml");
     }
-    
-    protected static WARArchive initDeployment() {
-        WARArchive deployment = ShrinkWrap.create(WARArchive.class);
-        deployment.addClass(ContentTypesResource.class);
+
+    protected static JAXRSArchive initDeployment() {
+        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class);
+        deployment.addClass(ProvidersMergingResource.class);
+        deployment.addClass(CustomJaxrsProvider.class);
+        deployment.setWebXML("web-with-user-provider.xml");
         deployment.addClass(TestApplication.class);
         deployment.addAsManifestResource(new ClassLoaderAsset("keys/public-key.pem"), "/MP-JWT-SIGNER");
         return deployment;
@@ -55,41 +58,31 @@ public class ContentTypesTest {
 
     @RunAsClient
     @Test
-    public void shouldGetHtmlForAllowedUser() throws Exception {
-        String response = Request.Get("http://localhost:8080/mpjwt/content-types")
-                .setHeader("Authorization", "Bearer " + createToken("MappedRole2"))
-                .setHeader("Accept", MediaType.TEXT_HTML)
-                .execute().returnContent().asString();
-        Assert.assertEquals(ContentTypesResource.HTML_RESPONSE, response);
-    }
-
-    @RunAsClient
-    @Test
-    public void shouldNotGetHtmlForForbiddenUser() throws Exception {
-        int statusCode = Request.Get("http://localhost:8080/mpjwt/content-types")
-                .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
-                .setHeader("Accept", MediaType.TEXT_HTML)
-                .execute().returnResponse().getStatusLine().getStatusCode();
-        Assert.assertEquals(403, statusCode);
-    }
-    @RunAsClient
-    @Test
-    public void shouldGetPlainForAllowedUser() throws Exception {
-        String response = Request.Get("http://localhost:8080/mpjwt/content-types")
+    public void shouldOverrideGetResponseWithUsersProvider() throws Exception {
+        String response = Request.Get("http://localhost:8080/mpjwt/providers")
                 .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
                 .setHeader("Accept", MediaType.TEXT_PLAIN)
                 .execute().returnContent().asString();
-        Assert.assertEquals(ContentTypesResource.PLAIN_RESPONSE, response);
+        Assert.assertEquals("overriden get response", response);
     }
 
     @RunAsClient
     @Test
-    public void shouldNotGetPlainForForbiddenUser() throws Exception {
-        int statusCode = Request.Get("http://localhost:8080/mpjwt/content-types")
-                .setHeader("Authorization", "Bearer " + createToken("MappedRole2"))
+    public void shouldRejectPostWithRBACFilter() throws Exception {
+        HttpResponse response = Request.Post("http://localhost:8080/mpjwt/providers")
                 .setHeader("Accept", MediaType.TEXT_PLAIN)
-                .execute().returnResponse().getStatusLine().getStatusCode();
-        Assert.assertEquals(403, statusCode);
+                .execute()
+                .returnResponse();
+        Assert.assertEquals(401, response.getStatusLine().getStatusCode());
     }
 
+    @RunAsClient
+    @Test
+    public void shouldWorkWithAuthedPost() throws Exception {
+        String response = Request.Post("http://localhost:8080/mpjwt/providers")
+                .setHeader("Authorization", "Bearer " + createToken("MappedRole2"))
+                .setHeader("Accept", MediaType.TEXT_PLAIN)
+                .execute().returnContent().asString();
+        Assert.assertEquals("original POST response", response);
+    }
 }

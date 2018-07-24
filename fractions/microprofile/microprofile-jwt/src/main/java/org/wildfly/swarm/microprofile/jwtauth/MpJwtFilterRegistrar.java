@@ -36,7 +36,7 @@ import static java.util.Arrays.asList;
  * <br>
  * Date: 5/30/18
  */
-public class MpJwtFilterRegistrator implements DynamicFeature {
+public class MpJwtFilterRegistrar implements DynamicFeature {
 
     private static final DenyAllFilter denyAllFilter = new DenyAllFilter();
     private final Set<Class<? extends Annotation>> mpJwtAnnotations =
@@ -87,8 +87,6 @@ public class MpJwtFilterRegistrator implements DynamicFeature {
             case 1:
                 return annotations.iterator().next();
             default:
-                // mstodo: what kind of exception should we throw here?
-                // mstodo check if annotation names are printed properly or need to be mapped to class names
                 throw new RuntimeException("Duplicate MicroProfile JWT annotations found on "
                         + annotationPlacementDescriptor.get() +
                         ". Expected at most 1 annotation, found: " + annotations);

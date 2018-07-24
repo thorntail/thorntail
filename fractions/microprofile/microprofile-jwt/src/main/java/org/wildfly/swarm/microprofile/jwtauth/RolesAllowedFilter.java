@@ -17,6 +17,8 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth;
 
+import javax.annotation.Priority;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.SecurityContext;
@@ -30,6 +32,7 @@ import static java.util.Arrays.asList;
  * <br>
  * Date: 6/12/18
  */
+@Priority(Priorities.AUTHORIZATION)
 public class RolesAllowedFilter implements ContainerRequestFilter {
 
     private final Set<String> allowedRoles;

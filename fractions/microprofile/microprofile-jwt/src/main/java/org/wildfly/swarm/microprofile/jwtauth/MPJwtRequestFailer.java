@@ -30,9 +30,17 @@ public class MPJwtRequestFailer {
 
     public static void fail(ContainerRequestContext requestContext) {
         if (requestContext.getSecurityContext().getUserPrincipal() == null) {
-            requestContext.abortWith(Response.status(401).build());
+            respond(requestContext, 401, "Not authorized");
         } else {
-            requestContext.abortWith(Response.status(403).build());
+            respond(requestContext, 403, "Access forbidden: role not allowed");
         }
+    }
+
+    private static void respond(ContainerRequestContext context, int status, String message) {
+        Response response = Response.status(status)
+                .entity(message)
+                .type("text/html;charset=UTF-8")
+                .build();
+        context.abortWith(response);
     }
 }

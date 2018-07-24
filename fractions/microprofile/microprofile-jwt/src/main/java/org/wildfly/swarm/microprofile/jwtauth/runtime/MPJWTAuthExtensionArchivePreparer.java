@@ -28,7 +28,7 @@ import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.microprofile.jwtauth.MicroProfileJWTAuthFraction;
-import org.wildfly.swarm.microprofile.jwtauth.MpJwtFilterRegistrator;
+import org.wildfly.swarm.microprofile.jwtauth.MpJwtFilterRegistrar;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
@@ -43,12 +43,13 @@ import java.util.Collection;
  * A DeploymentProcessor implementation for the MP-JWT custom authentication mechanism that adds support
  * for that mechanism to any war the declares a login-config/auth-method = MP-JWT.
  *
- * This register a dynamic feature that provides support for javax.annotation security annotations
+ * This registers a dynamic feature that provides support for javax.annotation security annotations
  *
  */
 @DeploymentScoped
 public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
 
+    public static final String RESTEASY_PROVIDERS = "resteasy.providers";
     private static Logger log = Logger.getLogger(MPJWTAuthExtensionArchivePreparer.class);
 
     private static final DotName LOGIN_CONFIG = DotName.createSimple("org.eclipse.microprofile.auth.LoginConfig");
@@ -128,8 +129,21 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             log.trace("war: " + war.toString(true));
         }
 
+        addFilterRegistrar();
+    }
+
+    private void addFilterRegistrar() {
         JAXRSArchive jaxrsArchive = archive.as(JAXRSArchive.class);
-        jaxrsArchive.findWebXmlAsset()
-                .setContextParam("resteasy.providers", MpJwtFilterRegistrator.class.getName());
+        WebXmlAsset webXmlAsset = jaxrsArchive.findWebXmlAsset();
+        String userProviders = webXmlAsset.getContextParam(RESTEASY_PROVIDERS);
+
+        String filterRegistrar = MpJwtFilterRegistrar.class.getName();
+
+        String providers =
+                userProviders == null
+                        ? filterRegistrar
+                        : userProviders + "," + filterRegistrar;
+
+        webXmlAsset.setContextParam(RESTEASY_PROVIDERS, providers);
     }
 }

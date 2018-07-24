@@ -15,12 +15,12 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth.utils;
 
+import io.smallrye.jwt.KeyUtils;
 import org.jboss.shrinkwrap.impl.base.io.IOUtil;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.wildfly.swarm.microprofile.jwtauth.ContentTypesTest;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.KeyUtils;
 
 import java.io.InputStream;
 import java.security.PrivateKey;
