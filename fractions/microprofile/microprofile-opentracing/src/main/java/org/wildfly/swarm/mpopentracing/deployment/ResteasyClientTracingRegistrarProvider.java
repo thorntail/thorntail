@@ -18,9 +18,10 @@ package org.wildfly.swarm.mpopentracing.deployment;
 
 import io.opentracing.contrib.jaxrs2.client.ClientTracingFeature.Builder;
 import java.util.concurrent.Executors;
+import javax.enterprise.inject.spi.CDI;
 import org.eclipse.microprofile.opentracing.ClientTracingRegistrarProvider;
 import io.opentracing.contrib.concurrent.TracedExecutorService;
-import io.opentracing.util.GlobalTracer;
+import io.opentracing.Tracer;
 import java.util.concurrent.ExecutorService;
 import javax.ws.rs.client.ClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -37,8 +38,9 @@ public class ResteasyClientTracingRegistrarProvider implements ClientTracingRegi
 
   public ClientBuilder configure(ClientBuilder clientBuilder, ExecutorService executorService) {
     ResteasyClientBuilder resteasyClientBuilder = (ResteasyClientBuilder)clientBuilder;
-    return resteasyClientBuilder.asyncExecutor(new TracedExecutorService(executorService, GlobalTracer.get()))
-      .register(new Builder(GlobalTracer.get())
+    Tracer tracer = CDI.current().select(Tracer.class).get();
+    return resteasyClientBuilder.asyncExecutor(new TracedExecutorService(executorService, tracer))
+      .register(new Builder(tracer)
           .withTraceSerialization(false)
           .build());
   }
