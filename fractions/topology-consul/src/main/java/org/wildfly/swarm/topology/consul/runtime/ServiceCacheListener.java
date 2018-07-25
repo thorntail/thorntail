@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.net.HostAndPort;
 import com.orbitz.consul.cache.ConsulCache.Listener;
+import com.orbitz.consul.cache.ServiceHealthKey;
 import com.orbitz.consul.model.health.ServiceHealth;
 import org.wildfly.swarm.topology.runtime.TopologyManager;
 import org.wildfly.swarm.topology.runtime.Registration;
@@ -35,7 +35,7 @@ import org.wildfly.swarm.topology.runtime.Registration;
  * @author John Hovell
  * @author Bob McWhirter
  */
-public class ServiceCacheListener implements Listener<HostAndPort, ServiceHealth> {
+public class ServiceCacheListener implements Listener<ServiceHealthKey, ServiceHealth> {
 
     public ServiceCacheListener(String name, TopologyManager topologyManager) {
         this.name = name;
@@ -43,7 +43,7 @@ public class ServiceCacheListener implements Listener<HostAndPort, ServiceHealth
     }
 
     @Override
-    public void notify(Map<HostAndPort, ServiceHealth> newValues) {
+    public void notify(Map<ServiceHealthKey, ServiceHealth> newValues) {
         Set<Registration> previousEntries = topologyManager.registrationsForService(this.name);
 
         Set<Registration> newEntries = newValues.values().stream()

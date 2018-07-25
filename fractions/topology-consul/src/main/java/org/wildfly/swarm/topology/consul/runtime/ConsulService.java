@@ -24,7 +24,6 @@ import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.StartContext;
 import org.jboss.msc.service.StartException;
 import org.jboss.msc.service.StopContext;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
 /**
  * MSC service providing the root Consul client.
@@ -47,12 +46,6 @@ public class ConsulService implements Service<Consul> {
 
         Consul.Builder builder = Consul.builder();
 
-
-        // pool because of multiple threads.
-        ResteasyClientBuilder clientBuilder = new ResteasyClientBuilder();
-        clientBuilder = clientBuilder.connectionPoolSize(20);
-
-        builder.withClientBuilder(clientBuilder);
         builder.withUrl(this.url);
 
         try {

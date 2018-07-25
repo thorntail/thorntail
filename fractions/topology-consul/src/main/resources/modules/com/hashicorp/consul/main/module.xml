@@ -2,7 +2,8 @@
   <resources>
     <artifact name="com.orbitz.consul:consul-client:${version.com.orbitz.consul}"/>
     <!-- does not appear there is a Wildfly Module for jackson-datatype-guava -->
-    <artifact name="com.fasterxml.jackson.datatype:jackson-datatype-guava:2.5.4"/>
+    <artifact name="com.fasterxml.jackson.datatype:jackson-datatype-guava:2.9.5"/>
+    <artifact name="com.google.guava:guava:22.0"/>
   </resources>
 
   <dependencies>
@@ -14,6 +15,9 @@
     <module name="com.fasterxml.jackson.core.jackson-core"/>
     <module name="com.fasterxml.jackson.core.jackson-databind"/>
     <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
+    <module name="com.fasterxml.jackson.datatype.jackson-datatype-jdk8"/>
+    <module name="com.squareup.okhttp3"/>
+    <module name="com.squareup.retrofit2"/>
   </dependencies>
 
 </module>
