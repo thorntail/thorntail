@@ -19,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author Heiko Braun
@@ -27,8 +26,11 @@ import java.nio.file.Paths;
  */
 public class MavenFileSystemLayout extends FileSystemLayout {
 
-    MavenFileSystemLayout(String root) {
-        this.rootPath = Paths.get(root);
+    private final Path pomFile;
+
+    public MavenFileSystemLayout(Path pomFile) {
+        this.rootPath = pomFile.getParent();
+        this.pomFile = pomFile;
     }
 
     @Override
@@ -52,7 +54,7 @@ public class MavenFileSystemLayout extends FileSystemLayout {
     public String determinePackagingType() {
         String type = null;
         try {
-            try (BufferedReader in = new BufferedReader(new FileReader(rootPath.resolve(POM_XML).toFile()))) {
+            try (BufferedReader in = new BufferedReader(new FileReader(pomFile.toFile()))) {
                 String line;
 
                 while ((line = in.readLine()) != null) {

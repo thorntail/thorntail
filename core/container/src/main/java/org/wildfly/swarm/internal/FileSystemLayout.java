@@ -1,12 +1,12 @@
 /**
  * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,6 @@ package org.wildfly.swarm.internal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -28,8 +27,6 @@ import java.util.UUID;
  * @since 02/08/16
  */
 public abstract class FileSystemLayout {
-
-    public static final String MAVEN_CMD_LINE_ARGS = "MAVEN_CMD_LINE_ARGS";
 
     public abstract String determinePackagingType();
 
@@ -76,10 +73,10 @@ public abstract class FileSystemLayout {
      */
     public static FileSystemLayout create(String root) {
 
-        String mavenBuildFile = resolveMavenBuildFileName();
+        Path mavenBuildFile = MavenBuildFileResolver.resolveMavenBuildFileName(root);
 
-        if (Files.exists(Paths.get(root, mavenBuildFile))) {
-            return new MavenFileSystemLayout(root);
+        if (Files.exists(mavenBuildFile)) {
+            return new MavenFileSystemLayout(mavenBuildFile);
         } else if (Files.exists(Paths.get(root, BUILD_GRADLE))) {
             return new GradleFileSystemLayout(root);
         }
@@ -87,23 +84,9 @@ public abstract class FileSystemLayout {
         throw SwarmMessages.MESSAGES.cannotIdentifyFileSystemLayout(root);
     }
 
-    public static String resolveMavenBuildFileName() {
-        String cmdLine = System.getenv(MAVEN_CMD_LINE_ARGS);
-        String buildFileName = POM_XML;
 
-        if (cmdLine != null) {
-            MavenArgsParser args = MavenArgsParser.parse(cmdLine);
-            Optional<String> f_arg = args.get(MavenArgsParser.ARG.F);
-            if (f_arg.isPresent()) {
-                buildFileName = f_arg.get();
-            }
-        }
-        return buildFileName;
-    }
 
     public abstract Path getRootPath();
-
-    private static final String POM_XML = "pom.xml";
 
     private static final String BUILD_GRADLE = "build.gradle";
 

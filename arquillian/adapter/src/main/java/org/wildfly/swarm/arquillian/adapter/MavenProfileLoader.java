@@ -15,12 +15,13 @@
  */
 package org.wildfly.swarm.arquillian.adapter;
 
-import java.util.Optional;
-
 import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
-import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.internal.MavenArgsParser;
+import org.wildfly.swarm.internal.MavenBuildFileResolver;
+
+import java.nio.file.Paths;
+import java.util.Optional;
 
 /**
  * @author Ken Finnigan
@@ -28,6 +29,7 @@ import org.wildfly.swarm.internal.MavenArgsParser;
 public final class MavenProfileLoader {
 
     public static final String ENV_MAVEN_CMD_LINE_ARGS = "env.MAVEN_CMD_LINE_ARGS";
+
     private static String[] profiles = new String[0];
 
     private static boolean profilesDiscovered = false;
@@ -36,7 +38,8 @@ public final class MavenProfileLoader {
     }
 
     public static PomEquippedResolveStage loadPom(ConfigurableMavenResolverSystem resolver) {
-        return resolver.loadPomFromFile(FileSystemLayout.resolveMavenBuildFileName(), determineProfiles());
+        final String projectRoot = Paths.get("").toAbsolutePath().toString();
+        return resolver.loadPomFromFile(MavenBuildFileResolver.resolveMavenBuildFileName(projectRoot).toFile(), determineProfiles());
     }
 
     public static String[] determineProfiles() {
