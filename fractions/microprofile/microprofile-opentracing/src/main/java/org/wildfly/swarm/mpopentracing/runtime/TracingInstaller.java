@@ -29,7 +29,7 @@ import org.wildfly.swarm.undertow.WARArchive;
 @DeploymentScoped
 public class TracingInstaller implements DeploymentProcessor {
   private static final String DEPLOYMENT_PACKAGE = "org.wildfly.swarm.mpopentracing.deployment";
-  private static final String RESTEASY_PROVIDERS = DEPLOYMENT_PACKAGE + ".MicroprofileServerTracingFeature";
+  private static final String RESTEASY_PROVIDERS = "io.smallrye.opentracing.SmallRyeTracingDynamicFeature";
   private static final String CONTEXT_LISTENER = DEPLOYMENT_PACKAGE + ".OpenTracingContextInitializer";
 
   private final Archive<?> archive;
