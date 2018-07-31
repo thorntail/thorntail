@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Default JOSE provider -->
+<module xmlns="urn:jboss:module:1.3" name="org.wildfly.swarm.jose.provider">
+  <resources>
+    <artifact name="org.apache.cxf:cxf-rt-security:${version.cxf}"/>
+    <artifact name="org.apache.cxf:cxf-rt-rs-security-jose:${version.cxf}"/>
+    <artifact name="org.apache.cxf:cxf-rt-rs-json-basic:${version.cxf}"/>
+    <artifact name="org.apache.cxf:cxf-core:${version.cxf}"/>
+  </resources>
+  <dependencies>
+    <module name="javax.api"/>
+  </dependencies>
+</module>

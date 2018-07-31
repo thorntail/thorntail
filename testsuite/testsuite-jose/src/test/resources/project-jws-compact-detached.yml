@@ -1,0 +1,6 @@
+swarm:
+  jose:
+    keystore:
+      path: keystore-detached.jks
+    signature:
+      data-detached: true  
