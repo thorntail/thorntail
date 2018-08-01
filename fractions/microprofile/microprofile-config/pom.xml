@@ -73,12 +73,12 @@
             <artifactId>meta-spi</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wildfly.swarm</groupId>
+            <groupId>io.thorntail</groupId>
             <artifactId>microprofile-config-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-microprofile-config-implementation</artifactId>
+            <groupId>io.smallrye</groupId>
+            <artifactId>smallrye-config</artifactId>
         </dependency>
         <!-- CDI fraction is required to be able to inject Config -->
         <dependency>
