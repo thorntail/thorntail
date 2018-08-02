@@ -44,10 +44,10 @@
     <version.snakeyaml>1.19</version.snakeyaml>
 
     <version.arjuna>5.7.1.Final</version.arjuna>
-    <version.hibernate>5.3.1.Final</version.hibernate>
-    <version.hibernate-ogm>5.4.0.Beta1</version.hibernate-ogm>
+    <version.hibernate>5.3.2.Final</version.hibernate>
+    <version.hibernate-ogm>5.4.0.Beta2</version.hibernate-ogm>
     <version.hibernate-validator>6.0.10.Final</version.hibernate-validator>
-    <version.hibernate-search>5.10.1.Final</version.hibernate-search>
+    <version.hibernate-search>5.10.2.Final</version.hibernate-search>
     <version.ironjacamar>1.4.7.Final</version.ironjacamar>
     <version.keycloak>3.4.3.Final</version.keycloak>
     <version.resteasy>3.1.4.Final</version.resteasy>
