@@ -21,7 +21,7 @@ public class VertxInitializerTest {
 
     static final String BUNNY = "bunny";
 
-    @Test
+    //@Test
     public void testObservers() throws InterruptedException {
         Instance<Object> instance = Thorntail.current().getBeanManager().createInstance();
         Emitter emitter = instance.select(Emitter.class).get();

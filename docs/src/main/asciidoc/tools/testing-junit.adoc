@@ -21,7 +21,7 @@ Write your JUnit test as usual, but include a class-level annotation of `@RunWit
 
 [source,java]
 ----
-@RunWith(ThorntailRunner.class)
+@RunWith(ThorntailTestRunner.class)
 public class MyTest {
   // tests go here 
 }
