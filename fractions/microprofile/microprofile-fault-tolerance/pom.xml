@@ -83,14 +83,8 @@
       <artifactId>microprofile-config</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
-      <artifactId>microprofile-fault-tolerance-api</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.osgi</groupId>
-          <artifactId>org.osgi.annotation.versioning</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-fault-tolerance</artifactId>
     </dependency>
     <!-- See also THORN-2027 -->
     <dependency>

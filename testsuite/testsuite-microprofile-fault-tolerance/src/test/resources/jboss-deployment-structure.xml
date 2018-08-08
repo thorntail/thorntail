@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure
+  xmlns="urn:jboss:deployment-structure:1.2">
+  <deployment>
+    <dependencies>
+      <module name="com.netflix.hystrix" />
+      <module name="com.netflix.archaius" />
+    </dependencies>
+  </deployment>
+</jboss-deployment-structure>
