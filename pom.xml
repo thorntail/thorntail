@@ -1245,6 +1245,7 @@
         <module>testsuite/testsuite-jsp</module>
         <module>testsuite/testsuite-microprofile-jwt</module>
         <module>testsuite/testsuite-microprofile-metrics</module>
+        <module>testsuite/testsuite-microprofile-fault-tolerance</module>
         <module>testsuite/testsuite-keycloak</module>
         <module>testsuite/testsuite-local-dependencies</module>
         <module>testsuite/testsuite-logging</module>
@@ -1308,7 +1309,7 @@
         <module>testsuite/testsuite-jgroups</module>
         <module>testsuite/testsuite-jolokia</module>
         <module>testsuite/testsuite-jolokia-keycloak</module>
-        <module>testsuite/testsuite-keycloak-server</module> 
+        <module>testsuite/testsuite-keycloak-server</module>
         <module>testsuite/testsuite-logstash</module>
         <module>testsuite/testsuite-mail</module>
         <module>testsuite/testsuite-mail-cdi</module>
