@@ -1,0 +1,7 @@
+swarm:
+  jose:
+    keystore:
+      path: keystore-unencoded.jks
+    signature:
+      data-detached: true
+      data-encoding: false

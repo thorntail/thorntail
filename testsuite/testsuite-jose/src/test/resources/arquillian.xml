@@ -1,0 +1,14 @@
+<arquillian>
+
+  <extension qualifier="webdriver">
+    <property name="browser">phantomjs</property>
+  </extension>
+  
+  <container qualifier="daemon" default="true">
+    <configuration>
+      <property name="host">localhost</property>
+      <property name="port">${swarm.arquillian.daemon.port:12345}</property>
+    </configuration>
+  </container>
+
+</arquillian>

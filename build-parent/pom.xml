@@ -35,7 +35,7 @@
     <version.cassandra.config-api>1.3.0</version.cassandra.config-api>
     <version.neo4j.config-api>1.3.0</version.neo4j.config-api>
     <version.orientdb.config-api>1.3.0</version.orientdb.config-api>
-    <version.wildfly.nosql.feature-pack>1.0.0.Beta1</version.wildfly.nosql.feature-pack>
+    <version.wildfly.nosql.feature-pack>1.0.0.Final</version.wildfly.nosql.feature-pack>
 
     <version.wildfly>11.0.0.Final</version.wildfly>
     <version.org.wildfly.core>3.0.8.Final</version.org.wildfly.core>
@@ -101,7 +101,7 @@
   
     <!-- MicroProfile APIs -->
     <!-- NOTE: we cannot use MP BOM as it does not define dependencyManagement -->
-    <version.microprofile-config>1.2</version.microprofile-config>
+    <version.microprofile-config>1.3</version.microprofile-config>
     <version.microprofile-health>1.0</version.microprofile-health>
     <version.microprofile-fault-tolerance>1.0</version.microprofile-fault-tolerance>
     <version.microprofile-jwt-auth>1.1</version.microprofile-jwt-auth>
@@ -110,7 +110,8 @@
     <version.microprofile-openapi>1.0.1</version.microprofile-openapi>
     <version.microprofile-opentracing>1.1</version.microprofile-opentracing>
     <!-- MP Config implementation -->
-    <version.wildfly-microprofile-config>1.2.1</version.wildfly-microprofile-config>
+    <version.wildfly-microprofile-config>1.3.0</version.wildfly-microprofile-config>
+    <version.smallrye.config>1.3.2</version.smallrye.config>
     <version.smallrye.health>1.0.1</version.smallrye.health>
     <version.smallrye.opentracing>1.1.0</version.smallrye.opentracing>
     <version.smallrye.metrics>1.1.0</version.smallrye.metrics>
@@ -373,13 +374,13 @@
       </dependency>
 
       <dependency>
-        <groupId>org.wildfly</groupId>
-        <artifactId>wildfly-microprofile-config-implementation</artifactId>
-        <version>${version.wildfly-microprofile-config}</version>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-config</artifactId>
+        <version>${version.smallrye.config}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.wildfly.swarm</groupId>
+        <groupId>io.thorntail</groupId>
         <artifactId>microprofile-config-api</artifactId>
         <version>${version.wildfly-microprofile-config}</version>
       </dependency>
