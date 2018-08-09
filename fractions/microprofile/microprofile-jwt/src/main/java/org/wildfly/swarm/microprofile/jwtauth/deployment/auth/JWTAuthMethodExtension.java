@@ -22,7 +22,8 @@ import io.undertow.servlet.ServletExtension;
 import io.undertow.servlet.api.DeploymentInfo;
 
 /**
- * An extension that add support for the MP-JWT custom authentication mechanism
+ * An extension that adds support for the MP-JWT custom authentication mechanism
+ * Additionally, registers an Undertow handler that cleans up MP JWT principal
  */
 public class JWTAuthMethodExtension implements ServletExtension {
     /**
@@ -34,5 +35,6 @@ public class JWTAuthMethodExtension implements ServletExtension {
     @Override
     public void handleDeployment(DeploymentInfo deploymentInfo, ServletContext servletContext) {
         deploymentInfo.addAuthenticationMechanism("MP-JWT", new JWTAuthMechanismFactory());
+        deploymentInfo.addInnerHandlerChainWrapper(MpJwtPrincipalCleanupHandler::new);
     }
 }
