@@ -15,7 +15,7 @@
   <description>OpenTracing integration for Microprofile</description>
 
   <properties>
-    <swarm.fraction.stability>experimental</swarm.fraction.stability>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Microprofile, OpenTracing, Monitoring</swarm.fraction.tags>
   </properties>
 
