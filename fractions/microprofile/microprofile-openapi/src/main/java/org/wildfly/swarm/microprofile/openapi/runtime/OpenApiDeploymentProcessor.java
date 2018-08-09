@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import org.jboss.jandex.IndexView;
 import org.jboss.shrinkwrap.api.Archive;
+import org.wildfly.swarm.container.runtime.cdi.DeploymentContext;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
@@ -44,6 +45,9 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
     private final Archive archive;
 
     private final IndexView index;
+
+    @Inject
+    DeploymentContext deploymentContext;
 
     /**
      * Constructor for testing purposes.
@@ -76,6 +80,10 @@ public class OpenApiDeploymentProcessor implements DeploymentProcessor {
      */
     @Override
     public void process() throws Exception {
+        // if the deployment is Implicit, we don't want to process it
+        if (deploymentContext != null && deploymentContext.isImplicit()) {
+            return;
+        }
         try {
             // First register OpenApiServletContextListener which triggers the final init
             WARArchive warArchive = archive.as(WARArchive.class);
