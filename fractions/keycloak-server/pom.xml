@@ -26,6 +26,15 @@
     <swarm.fraction.tags>Security</swarm.fraction.tags>
   </properties>
 
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>io.thorntail</groupId>
