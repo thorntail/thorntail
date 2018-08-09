@@ -1,0 +1,4 @@
+swarm:
+  jose:
+    keystore:
+      path: keystore-compact.jks

@@ -37,6 +37,7 @@ pom.xml.versionsBackup
 /*.hprof
 # H2 databases produced by tests
 *.h2.db
+*.mv.db
 *.trace.db
 *.lock.db
 # JBoss transaction generated files

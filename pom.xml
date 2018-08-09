@@ -963,6 +963,12 @@
         <artifactId>zipkin-jaxrs</artifactId>
         <version>2.0.1.Final-SNAPSHOT</version>
       </dependency>
+
+      <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>jose</artifactId>
+        <version>2.0.1.Final-SNAPSHOT</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -1157,6 +1163,7 @@
         <module>fractions/topology-jgroups</module>
         <module>fractions/vertx</module>
         <module>fractions/zipkin-jaxrs</module>
+        <module>fractions/jose</module>
 
         <module>fractions/wildfly/cli</module>
         <module>fractions/wildfly/hibernate-search</module>
@@ -1238,6 +1245,7 @@
         <module>testsuite/testsuite-jsp</module>
         <module>testsuite/testsuite-microprofile-jwt</module>
         <module>testsuite/testsuite-microprofile-metrics</module>
+        <module>testsuite/testsuite-microprofile-fault-tolerance</module>
         <module>testsuite/testsuite-keycloak</module>
         <module>testsuite/testsuite-local-dependencies</module>
         <module>testsuite/testsuite-logging</module>
@@ -1277,6 +1285,8 @@
       </properties>
 
       <modules>
+        <module>testsuite/testsuite-jose-jose4j</module>
+        <module>testsuite/testsuite-jose</module>
         <module>testsuite/testsuite-asciidoctorj</module>
         <module>testsuite/testsuite-batch-jberet</module>
         <module>testsuite/testsuite-camel-cdi</module>
@@ -1325,7 +1335,6 @@
         <module>testsuite/testsuite-vertx</module>
         <module>testsuite/testsuite-webservices</module>
         <module>testsuite/testsuite-zipkin-jaxrs</module>
-
         <!-- This testsuite needs to be in a profile that comes after the profiles that build the BOMs as they are a dependency -->
         <module>testsuite/testsuite-maven-plugin</module>
         <module>testsuite/testsuite-maven-plugin-migration</module>

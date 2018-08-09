@@ -29,7 +29,7 @@ import org.wildfly.swarm.microprofile.health.runtime.HealthAnnotationProcessor;
 public class ParserTest {
 
     @Test
-    public void testAttributes() {
+    public void testHealthCheckResponseBuild() {
 
         HealthCheckResponse healthStatus = HealthCheckResponse.named("test")
                 .up()
@@ -43,6 +43,16 @@ public class ParserTest {
         Assert.assertEquals(2, data.size());
         Assert.assertEquals("Expected a", "b", data.get("a"));
         Assert.assertEquals("Expected c", "d", data.get("c"));
+    }
+
+    @Test
+    public void testHealthCheckResponseBuildWithDefaultStatus() {
+
+        HealthCheckResponse healthStatus = HealthCheckResponse.named("test").build();
+
+        Assert.assertEquals("test", healthStatus.getName());
+        Assert.assertSame(State.DOWN, healthStatus.getState());
+        Assert.assertFalse(healthStatus.getData().isPresent());
     }
 
     @Test

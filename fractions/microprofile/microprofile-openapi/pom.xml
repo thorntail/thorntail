@@ -22,7 +22,7 @@
   <packaging>jar</packaging>
 
   <properties>
-    <swarm.fraction.stability>experimental</swarm.fraction.stability>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>MicroProfile,OpenAPI,JaxRs,Web</swarm.fraction.tags>
 
     <!-- Dependencies -->
@@ -69,6 +69,16 @@
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api</artifactId>
       <version>${version.io.smallrye.smallrye-open-api}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss</groupId>
+          <artifactId>jandex</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.shrinkwrap</groupId>
+          <artifactId>shrinkwrap-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Third Party Libs -->
