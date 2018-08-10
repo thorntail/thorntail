@@ -8,14 +8,20 @@ to your application.
 
 The drivers that {Thorntail} auto-detects include:
 
-* H2
-* MySQL
-* PostgreSQL
-* EnterpriseDB
-* SQLServer
-* Oracle
-* Sybase
-* DB2
+* H2 - "h2"
+* MySQL - "mysql"
+* PostgreSQL - "postgresql"
+* Apache Derby - "derby"
+* Apache Derby Embedded - "derby-embedded"
+* Apache Hive - "hive2"
+* MariaDB - "mariadb"
+* PrestoDB - "prestodb"
+* EnterpriseDB - "edb"
+* SQLServer - "sqlserver"
+* Oracle - "oracle"
+* Sybase - "sybase"
+* DB2 - "ibmdb2"
+* Teiid - "teiid"
 
 [discrete]
 == Prerequisites

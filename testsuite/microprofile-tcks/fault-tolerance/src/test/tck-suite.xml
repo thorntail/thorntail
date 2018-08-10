@@ -36,6 +36,7 @@
                <exclude name="testBulkheadQueReplacesDueToClassRetryFailures" />
                <exclude name="testBulkheadRetryClassSynchronous55" />
                <exclude name="testBulkheadQueReplacesDueToClassRetryFailures" />
+               <exclude name="testNoRetriesBulkhead" />
             </methods>
          </class>
          <class

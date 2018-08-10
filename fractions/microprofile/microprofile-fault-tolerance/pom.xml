@@ -33,8 +33,6 @@
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Eclipse MicroProfile,MicroServices,Fault Tolerance</swarm.fraction.tags>
-    <version.arquillian-weld-embedded>2.0.0.Beta5</version.arquillian-weld-embedded>
-    <version.awaitility>3.1.0</version.awaitility>
   </properties>
 
   <build>
@@ -83,49 +81,9 @@
       <artifactId>microprofile-config</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
-      <artifactId>microprofile-fault-tolerance-api</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.osgi</groupId>
-          <artifactId>org.osgi.annotation.versioning</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-fault-tolerance</artifactId>
     </dependency>
-    <!-- See also THORN-2027 -->
-    <dependency>
-      <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-api</artifactId>
-    </dependency>
-
-   <!-- Test dependencies -->
-   <dependency>
-      <groupId>org.jboss.arquillian.container</groupId>
-      <artifactId>arquillian-weld-embedded</artifactId>
-      <version>${version.arquillian-weld-embedded}</version>
-      <scope>test</scope>
-   </dependency>
-   <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
-   </dependency>
-   <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-weld</artifactId>
-      <scope>test</scope>
-   </dependency>
-   <dependency>
-     <groupId>org.slf4j</groupId>
-     <artifactId>slf4j-simple</artifactId>
-   </dependency>
-   <dependency>
-     <groupId>org.awaitility</groupId>
-     <artifactId>awaitility</artifactId>
-     <version>${version.awaitility}</version>
-     <scope>test</scope>
-   </dependency>
-
   </dependencies>
 
 </project>
