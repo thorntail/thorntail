@@ -78,18 +78,6 @@
       <artifactId>undertow</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-undertow</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.wildfly.core</groupId>
-      <artifactId>wildfly-server</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>microprofile-config</artifactId>
     </dependency>
