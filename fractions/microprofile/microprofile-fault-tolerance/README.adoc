@@ -3,10 +3,19 @@
 
 This fraction implements the https://github.com/eclipse/microprofile-fault-tolerance[Eclipse MicroProfile Fault Tolerance API^].
 The implementation depends on the xref:_hystrix[Hystrix fraction], which is added transitively into your application.
-Use xref:configuring-a-thorntail-application_{context}[standard configuration mechanisms] to configure Hystrix properties in your application.
+Use xref:configuring-a-thorntail-application_{context}[standard configuration mechanisms] to configure https://github.com/Netflix/Hystrix/wiki/Configuration[Hystrix properties] in your application.
 
 == Bulkhead fallback rejection
 
-If you use the semaphore-style `@Bulkhead` pattern with a `@Fallback` logic to limit the number of concurrent requests, the invocation may still result in a `BulkheadException` if the maximum concurrent limit for the `HystrixCommand.getFallback()` method is reached.
+If you use the `@Bulkhead` pattern together with some `@Fallback` logic to limit the number of concurrent requests, an invocation may still result in an exception.
+
+=== Semaphore Isolation
+
+For semaphore-style `@Bulkhead` a `BulkheadException` may be thrown if the maximum concurrent limit is reached.
 To avoid that, set the `swarm.hystrix.command.default.fallback.isolation.semaphore.maxConcurrentRequests` property to increase the limit.
 
+=== Thread Isolation
+
+For `@Bulkhead` used together with `@Asynchronous` a `RejectedExecutionException` may be thrown if the maximum concurrent limit is reached.
+To avoid that, set the `swarm.hystrix.threadpool.default.maximumSize` property to increase the limit.
+Also don't forget to set the `swarm.hystrix.threadpool.default.allowMaximumSizeToDivergeFromCoreSize` property to `true`.
