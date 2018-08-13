@@ -1257,6 +1257,7 @@
         <module>testsuite/testsuite-project-stages</module>
         <module>testsuite/testsuite-remoting</module>
         <module>testsuite/testsuite-request-controller</module>
+        <module>testsuite/testsuite-resource-adapters</module>
         <module>testsuite/testsuite-ribbon</module>
         <module>testsuite/testsuite-ribbon-secured</module>
         <module>testsuite/testsuite-security</module>
@@ -1323,7 +1324,6 @@
         <module>testsuite/testsuite-jaeger-opentracing</module>
         <module>testsuite/testsuite-jaeger-microprofile-opentracing</module>
         <module>testsuite/testsuite-opentracing</module>
-        <module>testsuite/testsuite-resource-adapters</module>
         <module>testsuite/testsuite-spring</module>
         <module>testsuite/testsuite-swagger</module>
         <module>testsuite/testsuite-swagger-customized</module>
