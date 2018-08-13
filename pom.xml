@@ -1039,6 +1039,7 @@
     <module>fractions/javaee/jsonp</module>
     <module>fractions/javaee/naming</module>
     <module>fractions/javaee/remoting</module>
+    <module>fractions/javaee/resource-adapters</module>
     <module>fractions/javaee/transactions</module>
     <module>fractions/javaee/undertow</module>
     <module>fractions/javaee/web</module>
@@ -1138,7 +1139,6 @@
         <module>fractions/javaee/full</module>
         <module>fractions/javaee/mail</module>
         <module>fractions/javaee/messaging</module>
-        <module>fractions/javaee/resource-adapters</module>
         <module>fractions/javaee/webservices</module>
 
         <module>fractions/wildfly/infinispan</module>
@@ -1257,6 +1257,7 @@
         <module>testsuite/testsuite-project-stages</module>
         <module>testsuite/testsuite-remoting</module>
         <module>testsuite/testsuite-request-controller</module>
+        <module>testsuite/testsuite-resource-adapters</module>
         <module>testsuite/testsuite-ribbon</module>
         <module>testsuite/testsuite-ribbon-secured</module>
         <module>testsuite/testsuite-security</module>
@@ -1323,7 +1324,6 @@
         <module>testsuite/testsuite-jaeger-opentracing</module>
         <module>testsuite/testsuite-jaeger-microprofile-opentracing</module>
         <module>testsuite/testsuite-opentracing</module>
-        <module>testsuite/testsuite-resource-adapters</module>
         <module>testsuite/testsuite-spring</module>
         <module>testsuite/testsuite-swagger</module>
         <module>testsuite/testsuite-swagger-customized</module>
