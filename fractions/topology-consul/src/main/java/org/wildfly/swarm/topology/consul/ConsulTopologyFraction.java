@@ -89,6 +89,10 @@ public class ConsulTopologyFraction implements Fraction<ConsulTopologyFraction> 
         return this.url.get();
     }
 
+    public Long ttl() {
+        return this.ttl.get();
+    }
+
     /**
      * The default consul Agent URL (http://localhost:8500/)
      */
@@ -106,5 +110,8 @@ public class ConsulTopologyFraction implements Fraction<ConsulTopologyFraction> 
 
     @AttributeDocumentation("URL of the Consul server")
     private Defaultable<URL> url = Defaultable.url(DEFAULT_URL);
+
+    @AttributeDocumentation("TTL for the consul health check for each service. Default 3s")
+    private Defaultable<Long> ttl = Defaultable.longInteger(3);
 
 }

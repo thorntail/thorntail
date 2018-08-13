@@ -50,6 +50,7 @@ public class AgentActivator implements ServiceActivator {
                 .install();
 
         Advertiser advertiser = new Advertiser();
+        advertiser.setCheckTTL(fraction.ttl());
         target.addService(Advertiser.SERVICE_NAME, advertiser)
                 .addDependency(AgentClientService.SERVICE_NAME, AgentClient.class, advertiser.getAgentClientInjector())
                 .install();
