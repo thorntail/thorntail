@@ -25,6 +25,7 @@ import org.jboss.jandex.IndexView;
 
 import io.smallrye.openapi.api.OpenApiConfig;
 import io.smallrye.openapi.runtime.OpenApiProcessor;
+import io.smallrye.openapi.runtime.scanner.FilteredIndexView;
 
 /**
  * Scans a deployment (using the archive and jandex annotation index) for JAX-RS and
