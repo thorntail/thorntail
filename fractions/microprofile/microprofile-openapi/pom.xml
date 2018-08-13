@@ -27,7 +27,7 @@
 
     <!-- Dependencies -->
     <version.com.fasterxml.jackson.dataformat>2.9.2</version.com.fasterxml.jackson.dataformat>
-    <version.io.smallrye.smallrye-open-api>1.0.0</version.io.smallrye.smallrye-open-api>
+    <version.io.smallrye.smallrye-open-api>1.0.1</version.io.smallrye.smallrye-open-api>
   </properties>
 
   <build>
