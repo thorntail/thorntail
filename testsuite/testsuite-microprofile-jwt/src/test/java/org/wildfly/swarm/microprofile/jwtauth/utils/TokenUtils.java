@@ -31,10 +31,16 @@ import java.security.PrivateKey;
  * Date: 7/9/18
  */
 public class TokenUtils {
+
+    private TokenUtils() {
+    }
+
+    public static final String SUBJECT = "24400320";
+
     public static String createToken(String groupName) throws Exception {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer("http://testsuite-jwt-issuer.io");
-        claims.setSubject("24400320");
+        claims.setSubject(SUBJECT);
         claims.setStringListClaim("groups", groupName);
         claims.setClaim("upn", "jdoe@example.com");
         claims.setExpirationTimeMinutesInTheFuture(1);

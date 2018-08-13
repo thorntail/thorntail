@@ -87,13 +87,6 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
                 jBossWeb.setSecurityDomain(realm);
             }
         }
-        // Get the @ApplicationPath setting
-        WebXmlAsset webXml = war.findWebXmlAsset();
-        String appPath = "/";
-        Collection<AnnotationInstance> appPaths = index.getAnnotations(APP_PATH);
-        if (!appPaths.isEmpty()) {
-            appPath = appPaths.iterator().next().value().asString();
-        }
 
         // Handle the verification configuration on the fraction
         if (fraction.getTokenIssuer().isPresent()) {
