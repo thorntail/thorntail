@@ -15,22 +15,20 @@
  */
 package org.wildfly.swarm.keycloak.server.runtime;
 
-import java.io.File;
+import static org.wildfly.swarm.spi.api.Defaultable.bool;
+
 import java.io.IOException;
-import java.net.URL;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.modules.Module;
 import org.jboss.modules.ModuleLoadException;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.wildfly.swarm.bootstrap.util.TempFileManager;
+import org.wildfly.swarm.config.keycloak.server.Theme;
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.keycloak.server.KeycloakServerFraction;
 import org.wildfly.swarm.spi.api.Customizer;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.spi.api.Defaultable;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 
 /**
@@ -55,25 +53,27 @@ public class KeycloakThemesCustomizer implements Customizer {
                 .forEach((t) -> {
                 t.dir(".");
             });
-            return;
+            if (combineDefaultAndCustomThemes.get()) {
+                Theme<?> theme = this.keycloakServer.subresources().themes().get(0);
+                theme.modules().add(0, "org.keycloak.keycloak-themes");
+            }
+        } else {
+
+            this.keycloakServer.theme("defaults", (theme) -> {
+                theme.module("org.keycloak.keycloak-themes")
+                    .staticmaxage(2592000L)
+                    .cachethemes(true)
+                    .cachetemplates(true)
+                    .dir(".");
+            });
         }
 
-        Module module = Module.getBootModuleLoader().loadModule("org.keycloak.keycloak-themes");
-        URL resource = module.getExportedResource("keycloak-themes.jar");
-
-        JARArchive themesArtifact = ShrinkWrap.create(JARArchive.class);
-        themesArtifact.as(ZipImporter.class).importFrom(resource.openStream());
-
-        File root = TempFileManager.INSTANCE.newTempDirectory("keycloak-themes", ".d");
-        File exportedDir = themesArtifact.as(ExplodedExporter.class).exportExplodedInto(root);
-        File themeDir = new File(exportedDir, "theme");
-
-        this.keycloakServer.theme("defaults", (theme) -> {
-            theme.dir(themeDir.getAbsolutePath());
-            theme.staticmaxage(2592000L);
-            theme.cachethemes(true);
-            theme.cachetemplates(true);
-        });
-
     }
+
+    /**
+     * Whether or not to combine the default themes when the custom themes are also available.
+     */
+    @Configurable("swarm.keycloak-server.combine-default-and-custom-themes")
+    @AttributeDocumentation("Combine the default themes with the custom themes")
+    private Defaultable<Boolean> combineDefaultAndCustomThemes = bool(false);
 }

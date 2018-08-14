@@ -16,6 +16,7 @@
 package org.wildfly.swarm.keycloak.server;
 
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -26,7 +27,6 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 /**
@@ -45,7 +45,9 @@ public class KeycloakServerArquillianTest {
     @Test
     @RunAsClient
     public void testKeycloakServerIsUp() throws Exception {
-        Assert.assertEquals(200,  ClientBuilder.newClient().target("http://localhost:8080/auth/").request().get().getStatus());
+        Response r = ClientBuilder.newClient().target("http://localhost:8080/auth/").request().get();
+        Assert.assertEquals(200, r.getStatus());
+        Assert.assertTrue(r.readEntity(String.class).contains("<title>Welcome to Keycloak</title>"));
     }
 
 }

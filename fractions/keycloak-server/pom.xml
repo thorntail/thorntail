@@ -27,26 +27,12 @@
   </properties>
 
   <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>swagger-ui</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <includeGroupIds>org.keycloak</includeGroupIds>
-              <includeArtifactIds>keycloak-themes</includeArtifactIds>
-              <outputDirectory>${project.build.directory}/classes/modules/org/keycloak/keycloak-themes/main/</outputDirectory>
-              <stripVersion>true</stripVersion>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
   </build>
 
   <dependencies>
@@ -54,12 +40,12 @@
       <groupId>io.thorntail</groupId>
       <artifactId>container</artifactId>
     </dependency>
+
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>spi</artifactId>
       <scope>provided</scope>
     </dependency>
-
 
     <dependency>
       <groupId>io.thorntail</groupId>
