@@ -74,6 +74,7 @@
       <groupId>io.thorntail</groupId>
       <artifactId>microprofile-metrics</artifactId>
     </dependency>
+    <!-- Fractions introduced by MicroProfile 1.3 -->
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>microprofile-openapi</artifactId>
@@ -82,7 +83,11 @@
       <groupId>io.thorntail</groupId>
       <artifactId>microprofile-opentracing</artifactId>
     </dependency>
-    
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>microprofile-restclient</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>
@@ -120,22 +125,5 @@
       </exclusions>
     </dependency>
   </dependencies>
-
-  <profiles>
-    <profile>
-      <id>unsupported</id>
-      <activation>
-        <property>
-          <name>!swarm.product.build</name>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-         <groupId>io.thorntail</groupId>
-         <artifactId>microprofile-restclient</artifactId>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
 
 </project>
