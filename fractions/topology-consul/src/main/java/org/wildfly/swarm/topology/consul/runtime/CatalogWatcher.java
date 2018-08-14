@@ -25,8 +25,6 @@ import com.orbitz.consul.CatalogClient;
 import com.orbitz.consul.HealthClient;
 import com.orbitz.consul.cache.ServiceHealthCache;
 import com.orbitz.consul.model.ConsulResponse;
-import com.orbitz.consul.option.CatalogOptions;
-import com.orbitz.consul.option.ImmutableCatalogOptions;
 import com.orbitz.consul.option.ImmutableQueryOptions;
 import com.orbitz.consul.option.QueryOptions;
 import org.jboss.msc.inject.Injector;
@@ -135,8 +133,7 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
         if (watchers.containsKey(serviceName)) {
             return;
         }
-
-        CatalogOptions options = ImmutableCatalogOptions.builder()
+        QueryOptions options = ImmutableQueryOptions.builder()
                 .build();
 
         ServiceHealthCache healthCache = ServiceHealthCache.newCache(
@@ -146,7 +143,6 @@ public class CatalogWatcher implements Service<CatalogWatcher>, Runnable {
                 options,
                 5
         );
-
 
         try {
             healthCache.addListener(new ServiceCacheListener(serviceName, this.topologyManagerInjector.getValue()));

@@ -1,0 +1,13 @@
+<module xmlns="urn:jboss:module:1.3" name="com.squareup.retrofit2">
+  <resources>
+    <artifact name="com.squareup.retrofit2:retrofit:2.3.0"/>
+    <artifact name="com.squareup.retrofit2:converter-jackson:2.3.0"/>
+  </resources>
+
+  <dependencies>
+    <module name="com.fasterxml.jackson.core.jackson-databind"/>
+    <module name="com.squareup.okhttp3"/>
+    <module name="com.squareup.okio"/>
+  </dependencies>
+
+</module>
