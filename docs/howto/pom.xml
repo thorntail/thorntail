@@ -9,13 +9,13 @@
 
   <groupId>io.thorntail.howto</groupId>
   <artifactId>howto-parent</artifactId>
-  <version>2.1.0.Final</version>
+  <version>2.2.0.Final-SNAPSHOT</version>
 
   <name>Thorntail HOWTO: Parent</name>
   <packaging>pom</packaging>
 
   <properties>
-    <version.thorntail>2.1.0.Final</version.thorntail>
+    <version.thorntail>2.2.0.Final-SNAPSHOT</version.thorntail>
     <version.maven-war-plugin>2.2</version.maven-war-plugin>
     <version.maven-failsafe-plugin>2.19.1</version.maven-failsafe-plugin>
     <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>

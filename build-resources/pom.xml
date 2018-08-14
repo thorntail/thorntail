@@ -11,12 +11,8 @@
 
   <groupId>io.thorntail</groupId>
   <artifactId>build-resources</artifactId>
-  <version>2.1.0.Final</version>
+  <version>2.2.0.Final-SNAPSHOT</version>
 
   <name>Thorntail Build Resources</name>
   <description>Resources that are necessary for building Thorntail</description>
-
-  <scm>
-    <tag>2.1.0.Final</tag>
-  </scm>
 </project>
