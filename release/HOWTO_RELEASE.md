@@ -2,6 +2,8 @@
 
 * Login to https://ci.wildfly-swarm.io/
 
+* Ensure "thorntail-linux", "thorntail-windows", "thorntail-deploy", "thorntail-examples-linux" and "thorntail-examples-windows" are all passing before continuing with release.
+
 * Trigger a build of https://ci.wildfly-swarm.io/view/Release/job/thorntail-release/build?delay=0sec
     * Specifying release and next version (with -SNAPSHOT suffix), for example, 2.0.0.Final and 2.0.1.Final-SNAPSHOT.
 
@@ -27,6 +29,8 @@
 
 * If successful, commit the version change.
 
+        mvn versions:commit
+
         git commit -a -m 'Prepare for 2.0.0.Final release'
 
 * And tag it
@@ -41,13 +45,15 @@
 
 * And commit, and push it all
 
+        mvn versions:commit
+
         git commit -a -m 'Prepare for next development version'
 
         git push origin master --tags
 
 # JIRA Releasing
 
-* Go to https://issues.jboss.org/projects/SWARM?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=unreleased and select `...` under Actions for the row matching the release we are performing.
+* Go to https://issues.jboss.org/projects/THORN?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=unreleased and select `...` under Actions for the row matching the release we are performing.
 
 * Select `Release` from the drop down.
 
