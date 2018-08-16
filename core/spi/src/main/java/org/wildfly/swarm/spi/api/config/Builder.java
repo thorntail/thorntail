@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  */
@@ -57,6 +58,8 @@ public class Builder<T> implements Resolver<T> {
         if (originalValue instanceof ConfigTree) {
             if (List.class.isAssignableFrom(this.targetType)) {
                 return (T) ((ConfigTree) originalValue).asList();
+            } else if (Properties.class.isAssignableFrom(this.targetType)) {
+                return (T) ((ConfigTree) originalValue).asProperties();
             } else if (Map.class.isAssignableFrom(this.targetType)) {
                 return (T) ((ConfigTree) originalValue).asMap();
             } else {

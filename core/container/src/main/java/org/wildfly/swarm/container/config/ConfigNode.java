@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -253,6 +254,20 @@ public class ConfigNode implements ConfigTree {
                 });
 
         return map;
+    }
+
+    @Override
+    public Properties asProperties() {
+        Properties properties = new Properties();
+
+        this.children.entrySet()
+            .stream()
+            .filter(entry -> entry.getValue().value != null)
+            .forEach(entry -> {
+                properties.setProperty(entry.getKey().toString(), entry.getValue().value.toString());
+            });
+
+        return properties;
     }
 
     public String toString() {
