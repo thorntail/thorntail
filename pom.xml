@@ -1044,7 +1044,7 @@
     <module>fractions/javaee/undertow</module>
     <module>fractions/javaee/web</module>
 
-    <!-- required by MP 1.2 FT, but only hystrix. See the netflix pom.xml for further details -->
+    <!-- Hystrix and Archaius fractions are required by MP FT. See the netflix pom.xml for further details -->
     <module>fractions/netflix</module>
 
     <module>fractions/wildfly/elytron</module>
