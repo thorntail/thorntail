@@ -67,7 +67,6 @@ public class ConfigurableManager implements AutoCloseable {
     private static final Set<Class<?>> BLACKLISTED_CLASSES = new HashSet<Class<?>>() {{
         add(List.class);
         add(Map.class);
-        add(Properties.class);
     }};
 
     private static final Set<Class<?>> CONFIGURABLE_VALUE_TYPES = new HashSet<Class<?>>() {{
@@ -130,12 +129,12 @@ public class ConfigurableManager implements AutoCloseable {
             } else if (List.class.isAssignableFrom(resolvedType)) {
                 isList = true;
                 resolver = listResolver((Resolver<String>) resolver, configurable.key());
-            } else if (Map.class.isAssignableFrom(resolvedType)) {
-                isMap = true;
-                resolver = mapResolver((Resolver<String>) resolver, configurable.key());
             } else if (Properties.class.isAssignableFrom(resolvedType)) {
                 isProperties = true;
                 resolver = propertiesResolver((Resolver<String>) resolver, configurable.key());
+            } else if (Map.class.isAssignableFrom(resolvedType)) {
+                isMap = true;
+                resolver = mapResolver((Resolver<String>) resolver, configurable.key());
             } else {
                 resolver = resolver.as(resolvedType);
             }
