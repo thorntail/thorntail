@@ -37,6 +37,7 @@
     <version.orientdb.config-api>1.3.0</version.orientdb.config-api>
     <version.wildfly.nosql.feature-pack>1.0.0.Final</version.wildfly.nosql.feature-pack>
 
+    <version.jboss-modules>1.6.4.Final</version.jboss-modules>
     <version.wildfly>11.0.0.Final</version.wildfly>
     <version.org.wildfly.core>3.0.8.Final</version.org.wildfly.core>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
@@ -177,7 +178,7 @@
       <dependency>
         <groupId>org.jboss.modules</groupId>
         <artifactId>jboss-modules</artifactId>
-        <version>1.6.4.Final</version>
+        <version>${version.jboss-modules}</version>
       </dependency>
 
 
