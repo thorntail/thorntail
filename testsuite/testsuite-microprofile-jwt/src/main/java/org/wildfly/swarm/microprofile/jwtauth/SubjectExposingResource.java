@@ -18,6 +18,7 @@ package org.wildfly.swarm.microprofile.jwtauth;
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.Claims;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -44,6 +45,7 @@ public class SubjectExposingResource {
 
     @GET
     @Path("unsecured")
+    @PermitAll
     public String getSubjectUnsecured() {
         return subject;
     }

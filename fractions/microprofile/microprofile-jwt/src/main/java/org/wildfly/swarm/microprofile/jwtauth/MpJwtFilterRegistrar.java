@@ -18,10 +18,13 @@ package org.wildfly.swarm.microprofile.jwtauth;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.FeatureContext;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,10 +50,16 @@ public class MpJwtFilterRegistrar implements DynamicFeature {
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
         Annotation mpJwtAnnotation = getMpJwtAnnotation(resourceInfo);
         if (mpJwtAnnotation != null) {
-            if (DenyAll.class.isInstance(mpJwtAnnotation)) {
+            if (mpJwtAnnotation instanceof DenyAll) {
                 configureDenyAll(context);
-            } else if (RolesAllowed.class.isInstance(mpJwtAnnotation)) {
+            } else if (mpJwtAnnotation instanceof RolesAllowed) {
                 configureRolesAllowed((RolesAllowed) mpJwtAnnotation, context);
+            }
+        } else {
+            // the resource method is not annotated and the class is not annotated either
+            if (hasSecurityAnnotations(resourceInfo) && shouldNonannotatedMethodsBeDenied()) {
+                // some other method has a security annotation and this one doesn't, it should be @DenyAll by default
+                configureDenyAll(context);
             }
         }
     }
@@ -91,5 +100,32 @@ public class MpJwtFilterRegistrar implements DynamicFeature {
                         + annotationPlacementDescriptor.get() +
                         ". Expected at most 1 annotation, found: " + annotations);
         }
+    }
+
+    private boolean hasSecurityAnnotations(ResourceInfo resource) {
+        // resource methods are inherited (see JAX-RS spec, chapter 3.6)
+        // resource methods must be `public` (see JAX-RS spec, chapter 3.3.1)
+        // hence `resourceClass.getMethods` -- returns public methods, including inherited ones
+        return Stream.of(resource.getResourceClass().getMethods())
+                .filter(this::isResourceMethod)
+                .anyMatch(this::hasSecurityAnnotations);
+    }
+
+    private boolean hasSecurityAnnotations(Method method) {
+        return Stream.of(method.getAnnotations())
+                .anyMatch(annotation -> mpJwtAnnotations.contains(annotation.annotationType()));
+    }
+
+    private boolean isResourceMethod(Method method) {
+        // resource methods are methods annotated with an annotation that is itself annotated with @HttpMethod
+        // (see JAX-RS spec, chapter 3.3)
+        return Stream.of(method.getAnnotations())
+                .anyMatch(annotation -> annotation.annotationType().getAnnotation(HttpMethod.class) != null);
+    }
+
+    private boolean shouldNonannotatedMethodsBeDenied() {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        URL resource = loader.getResource("/META-INF/MP-JWT-DENY-NONANNOTATED-METHODS");
+        return resource != null;
     }
 }
