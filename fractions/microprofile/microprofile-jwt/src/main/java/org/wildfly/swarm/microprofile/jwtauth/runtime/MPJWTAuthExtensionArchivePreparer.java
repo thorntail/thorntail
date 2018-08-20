@@ -111,6 +111,8 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             }
         }
 
+        war.addAsManifestResource(new StringAsset("" + fraction.getExpGracePeriodSecs().get()), "MP-JWT-EXP-GRACE");
+
         if (fraction.isDefaultMissingMethodPermissionsDenyAccess()) {
             war.addAsManifestResource(EmptyAsset.INSTANCE, "MP-JWT-DENY-NONANNOTATED-METHODS");
         }
