@@ -94,7 +94,7 @@
     <version.jaeger.commons.logging>1.1.1</version.jaeger.commons.logging>
     <version.jaeger.commons.codec>1.6</version.jaeger.commons.codec>
     <version.jaeger.apache.httpcore>4.2.4</version.jaeger.apache.httpcore>
-    <version.jaeger.gson>2.8.0</version.jaeger.gson>
+    <version.jaeger.gson>2.8.2</version.jaeger.gson>
 
     <version.maven.aether>3.2.5</version.maven.aether>
 
