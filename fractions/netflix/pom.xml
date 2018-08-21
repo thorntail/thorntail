@@ -27,7 +27,7 @@
     <version.archaius>0.6.6</version.archaius>
     <version.ribbon>2.1.0</version.ribbon>
     <version.hystrix>1.5.12</version.hystrix>
-    <version.rxjava>1.2.5</version.rxjava>
+    <version.rxjava>1.3.0</version.rxjava>
     <version.rxnetty>0.4.9</version.rxnetty>
     <version.netty>4.0.26.Final</version.netty>
     <version.guava>14.0.1</version.guava>
