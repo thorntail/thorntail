@@ -25,7 +25,7 @@ import org.wildfly.swarm.container.DeploymentException;
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSDEPLOY", length = 4)
+@MessageLogger(projectCode = "TTDEPLOY", length = 4)
 public interface DeployerMessages extends BasicLogger {
 
     DeployerMessages MESSAGES = Logger.getMessageLogger(DeployerMessages.class, "org.wildfly.swarm.deployer");

@@ -25,7 +25,7 @@ import org.jboss.logging.annotations.MessageLogger;
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSWARM", length = 4)
+@MessageLogger(projectCode = "THORN", length = 4)
 public interface DatasourcesMessages extends BasicLogger {
 
     DatasourcesMessages MESSAGES = Logger.getMessageLogger(DatasourcesMessages.class, "org.wildfly.swarm.datasources");

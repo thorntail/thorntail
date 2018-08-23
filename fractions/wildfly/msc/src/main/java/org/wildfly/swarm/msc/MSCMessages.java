@@ -25,7 +25,7 @@ import org.jboss.logging.annotations.MessageLogger;
 /**
  * @author Bob McWhirter
  */
-@MessageLogger(projectCode = "WFSMSC", length = 4)
+@MessageLogger(projectCode = "TTMSC", length = 4)
 public interface MSCMessages extends BasicLogger {
     MSCMessages MESSAGES = Logger.getMessageLogger(MSCMessages.class, "org.wildfly.swarm.msc");
 

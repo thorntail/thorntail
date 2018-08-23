@@ -29,7 +29,7 @@ import org.jboss.logging.annotations.MessageLogger;
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSCNSL", length = 4)
+@MessageLogger(projectCode = "TTCNSL", length = 4)
 public interface ConsulTopologyMessages extends BasicLogger {
 
     ConsulTopologyMessages MESSAGES = Logger.getMessageLogger(ConsulTopologyMessages.class, "org.wildfly.swarm.topology.consul");

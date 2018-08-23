@@ -24,7 +24,7 @@ import org.jboss.logging.annotations.MessageLogger;
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSMETRICS", length = 4)
+@MessageLogger(projectCode = "TTMETRICS", length = 4)
 public interface SwarmMetricsMessages extends BasicLogger {
 
     SwarmMetricsMessages MESSAGES = Logger.getMessageLogger(SwarmMetricsMessages.class, "org.wildfly.swarm.metrics");

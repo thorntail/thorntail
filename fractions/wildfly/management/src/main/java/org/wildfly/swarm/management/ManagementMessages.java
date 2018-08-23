@@ -25,7 +25,7 @@ import org.jboss.logging.annotations.MessageLogger;
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSMGMT", length = 4)
+@MessageLogger(projectCode = "TTMGMT", length = 4)
 public interface ManagementMessages extends BasicLogger {
 
     ManagementMessages MESSAGES = Logger.getMessageLogger(ManagementMessages.class, "org.wildfly.swarm.management");

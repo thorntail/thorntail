@@ -22,7 +22,7 @@ import org.jboss.logging.annotations.LogMessage;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
 
-@MessageLogger(projectCode = "TEIID", length = 4)
+@MessageLogger(projectCode = "TTTEIID", length = 4)
 public interface TeiidMessages extends BasicLogger {
 
     TeiidMessages MESSAGES = Logger.getMessageLogger(TeiidMessages.class, "org.wildfly.swarm.teiid");
