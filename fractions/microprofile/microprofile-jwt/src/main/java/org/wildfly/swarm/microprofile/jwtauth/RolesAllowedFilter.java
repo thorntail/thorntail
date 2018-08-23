@@ -36,15 +36,22 @@ import static java.util.Arrays.asList;
 public class RolesAllowedFilter implements ContainerRequestFilter {
 
     private final Set<String> allowedRoles;
+    private final boolean allRolesAllowed;
 
     public RolesAllowedFilter(String[] allowedRoles) {
         this.allowedRoles = new HashSet<>(asList(allowedRoles));
+        this.allRolesAllowed = this.allowedRoles.stream().anyMatch("*"::equals);
     }
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
         SecurityContext securityContext = requestContext.getSecurityContext();
-        boolean isForbidden = allowedRoles.stream().noneMatch(securityContext::isUserInRole);
+        boolean isForbidden;
+        if (allRolesAllowed) {
+            isForbidden = securityContext.getUserPrincipal() == null;
+        } else {
+            isForbidden = allowedRoles.stream().noneMatch(securityContext::isUserInRole);
+        }
         if (isForbidden) {
             MPJwtRequestFailer.fail(requestContext);
         }

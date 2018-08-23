@@ -55,25 +55,16 @@ public class PrincipalLeakTest {
     @RunAsClient
     @Test
     public void subjectShouldNotLeakToNonSecuredRequest() throws Exception {
-        long start = System.currentTimeMillis();
-        try {
-            // By default, there are 64 threads/tasks
-            // tests suggest they are assigned in a round-robin fashion.
-            // Therefore 65 requests are used to test if there's no leak.
-            for (int i = 0; i < 33; i++) {
-                String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
-                        .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
-                        .execute().returnContent().asString();
-                assertThat(response).isEqualTo(TokenUtils.SUBJECT);
-            }
-            for (int i = 0; i < 32; i++) {
-                Content content = Request.Get("http://localhost:8080/mpjwt/subject/unsecured")
-                        .execute().returnContent();
-                assertThat(content).isNull();
-            }
-        } finally {
-            System.out.println("subjectShouldNotLeakToNonSecuredRequest time: " + (System.currentTimeMillis() - start));
-        }
-    }
+        // project-no-roles-props.yml restricts the number of worker threads to 1,
+        // that is, all requests are processed by the same single thread
 
+        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+                .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
+                .execute().returnContent().asString();
+        assertThat(response).isEqualTo(TokenUtils.SUBJECT);
+
+        Content content = Request.Get("http://localhost:8080/mpjwt/subject/unsecured")
+                .execute().returnContent();
+        assertThat(content).isNull();
+    }
 }

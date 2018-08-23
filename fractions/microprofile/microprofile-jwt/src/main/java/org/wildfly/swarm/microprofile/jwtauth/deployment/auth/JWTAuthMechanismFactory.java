@@ -101,6 +101,17 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
                 }
             }
 
+            String expGracePeriod = properties.get("expGracePeriod");
+            if (expGracePeriod == null) {
+                URL expGracePeriodUrl = loader.getResource("/META-INF/MP-JWT-EXP-GRACE");
+                if (expGracePeriodUrl != null) {
+                    expGracePeriod = readURLContent(expGracePeriodUrl);
+                }
+            }
+            if (expGracePeriod != null) {
+                contextInfo.setExpGracePeriodSecs(Integer.parseInt(expGracePeriod.trim()));
+            }
+
             if (publicKeyPemEnc == null) { // signerPubKey and MP-JWT-Signer was empty, now trying for JWKS URI.
                 String jwksUri = properties.get("jwksUri");
                 if (jwksUri == null) {

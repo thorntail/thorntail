@@ -1,4 +1,8 @@
 swarm:
+  io:
+    workers:
+      default:
+        task-max-threads: 1 # required for PrincipalLeakTest
   microprofile:
     jwtauth:
       token:

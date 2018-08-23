@@ -24,6 +24,7 @@ import org.jboss.jandex.IndexView;
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
@@ -109,6 +110,13 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
                 war.addAsManifestResource(new StringAsset(publicKey), "MP-JWT-SIGNER");
             }
         }
+
+        war.addAsManifestResource(new StringAsset("" + fraction.getExpGracePeriodSecs().get()), "MP-JWT-EXP-GRACE");
+
+        if (fraction.isDefaultMissingMethodPermissionsDenyAccess()) {
+            war.addAsManifestResource(EmptyAsset.INSTANCE, "MP-JWT-DENY-NONANNOTATED-METHODS");
+        }
+
         if (fraction.getJwksUri() != null) {
             log.debugf("JwksUri: %s", fraction.getJwksUri());
             war.addAsManifestResource(new StringAsset(fraction.getJwksUri()), "MP-JWT-JWKS");
