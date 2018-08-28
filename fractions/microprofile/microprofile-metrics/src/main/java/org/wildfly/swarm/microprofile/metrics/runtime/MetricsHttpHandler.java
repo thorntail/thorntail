@@ -60,7 +60,7 @@ public class MetricsHttpHandler implements HttpHandler {
 
         String method = exchange.getRequestMethod().toString();
         HeaderValues acceptHeaders = exchange.getRequestHeaders().get(Headers.ACCEPT);
-        metricsHandler.handleRequest(requestPath, method, acceptHeaders.stream(), (status, message, headers) -> {
+        metricsHandler.handleRequest(requestPath, method, acceptHeaders == null ? null : acceptHeaders.stream(), (status, message, headers) -> {
             exchange.setStatusCode(status);
             headers.forEach(
                     (key, value) -> exchange.getResponseHeaders().put(new HttpString(key), value)
