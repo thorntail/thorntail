@@ -27,7 +27,7 @@ import org.jboss.logging.annotations.MessageLogger;
  * <br>
  * Date: 3/15/18
  */
-@MessageLogger(projectCode = "WFSISPN", length = 4)
+@MessageLogger(projectCode = "TTISPN", length = 4)
 public interface InfinispanMessages extends BasicLogger {
 
     InfinispanMessages MESSAGES = Logger.getMessageLogger(InfinispanMessages.class, "org.wildfly.swarm.infinispan");

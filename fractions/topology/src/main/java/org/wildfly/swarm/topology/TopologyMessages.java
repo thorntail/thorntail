@@ -25,7 +25,7 @@ import org.jboss.logging.annotations.MessageLogger;
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSTOPO", length = 4)
+@MessageLogger(projectCode = "TTTOPO", length = 4)
 public interface TopologyMessages extends BasicLogger {
 
     TopologyMessages MESSAGES = Logger.getMessageLogger(TopologyMessages.class, "org.wildfly.swarm.topology");

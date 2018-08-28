@@ -24,7 +24,7 @@ import org.jboss.logging.annotations.MessageLogger;
 /**
  * @author Martin Kouba
  */
-@MessageLogger(projectCode = " WFSJAXRS", length = 4)
+@MessageLogger(projectCode = "TTJAXRS", length = 4)
 public interface JAXRSMessages extends BasicLogger {
 
     JAXRSMessages MESSAGES = Logger.getMessageLogger(JAXRSMessages.class, "org.wildfly.swarm.jaxrs");

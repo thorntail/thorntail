@@ -31,7 +31,7 @@ import org.jboss.logging.annotations.MessageLogger;
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSSWGR", length = 4)
+@MessageLogger(projectCode = "TTSWGR", length = 4)
 public interface SwaggerMessages extends BasicLogger {
 
     SwaggerMessages MESSAGES = Logger.getMessageLogger(SwaggerMessages.class, "org.wildfly.swarm.swagger");

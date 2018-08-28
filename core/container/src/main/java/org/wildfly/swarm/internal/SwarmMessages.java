@@ -33,7 +33,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSWARM", length = 4)
+@MessageLogger(projectCode = "THORN", length = 4)
 public interface SwarmMessages extends BasicLogger {
 
     SwarmMessages MESSAGES = Logger.getMessageLogger(SwarmMessages.class, "org.wildfly.swarm");

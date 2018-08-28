@@ -26,7 +26,7 @@ import org.jboss.logging.annotations.MessageLogger;
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSKCSRV", length = 4)
+@MessageLogger(projectCode = "TTKCSRV", length = 4)
 public interface KeycloakServerMessages extends BasicLogger {
 
     KeycloakServerMessages MESSAGES = Logger.getMessageLogger(KeycloakServerMessages.class, "org.wildfly.swarm.keycloak.server");

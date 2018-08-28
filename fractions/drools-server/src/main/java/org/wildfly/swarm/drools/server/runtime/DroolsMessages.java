@@ -28,7 +28,7 @@ import org.jboss.logging.annotations.MessageLogger;
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
  */
-@MessageLogger(projectCode = "WFSDROOLS", length = 4)
+@MessageLogger(projectCode = "TTDROOLS", length = 4)
 public interface DroolsMessages extends BasicLogger {
 
     DroolsMessages MESSAGES = Logger.getMessageLogger(DroolsMessages.class, "org.wildfly.swarm.drools");
