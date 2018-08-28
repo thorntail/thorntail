@@ -52,7 +52,11 @@ public class ConfigNode implements ConfigTree {
         if (value instanceof ConfigNode) {
             this.children.put(key, (ConfigNode) value);
         } else {
-            this.children.put(key, new ConfigNode(value));
+            if (this.children.containsKey(key)) {
+                this.children.get(key).value = value;
+            } else {
+                this.children.put(key, new ConfigNode(value));
+            }
         }
     }
 

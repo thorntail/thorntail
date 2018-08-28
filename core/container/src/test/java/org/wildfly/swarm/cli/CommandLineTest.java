@@ -16,10 +16,17 @@
 package org.wildfly.swarm.cli;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.net.URL;
 
 import org.junit.Test;
+import org.wildfly.swarm.Swarm;
+import org.wildfly.swarm.spi.api.config.ConfigView;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.wildfly.swarm.cli.CommandLine.HELP;
 import static org.wildfly.swarm.cli.CommandLine.PROPERTIES_URL;
 import static org.wildfly.swarm.cli.CommandLine.PROPERTY;
@@ -136,6 +143,23 @@ public class CommandLineTest {
         assertThat(cmd.get(PROPERTY).get("bar")).isEqualTo("cheese");
 
 
+    }
+
+    @Test
+    public void testApplyPropertiesWithPropertiesHierarchy() throws Exception {
+        // Given
+        URL props = getClass().getClassLoader().getResource("hierarchy.properties");
+        CommandLine cmd = CommandLine.parse("--properties", props.toExternalForm());
+        Swarm swarm = mock(Swarm.class);
+
+        // When
+        cmd.applyProperties(swarm);
+
+        // Then
+        verify(swarm).withProperty("parent.children", "child1,child2");
+        verify(swarm).withProperty("parent.children.child1.name", "Jack");
+        verify(swarm).withProperty("parent.children.child2.name", "Jill");
+        verifyNoMoreInteractions(swarm);
     }
 
 }

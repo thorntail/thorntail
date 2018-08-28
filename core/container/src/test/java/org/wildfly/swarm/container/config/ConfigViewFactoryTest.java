@@ -20,11 +20,14 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.junit.Test;
-
+import static org.junit.Assert.assertTrue;
 /**
  * Created by bob on 4/3/17.
  */
@@ -56,7 +59,6 @@ public class ConfigViewFactoryTest {
         assertThat( keysIter.next() ).isEqualTo("1-JWT");
     }
 
-
     @Test
     public void testYamlWithEnvProperties() {
         InputStream in = getClass().getResourceAsStream("/withenvvalues.yml");
@@ -70,4 +72,39 @@ public class ConfigViewFactoryTest {
         assertThat( on.get("somestring") ).isEqualTo("http://someurl");
     }
 
+    @Test
+    public void testPropertyHierarchy() {
+        // Given
+        ConfigViewFactory configViewFactory = new ConfigViewFactory(new Properties());
+
+        // When
+        configViewFactory.withProperty("parent.children", "child1,child2");
+        configViewFactory.withProperty("parent.children.child1.name", "Jill");
+        configViewFactory.withProperty("parent.children.child2.name", "Jack");
+
+        // Then
+        List<String> keys = new LinkedList<>();
+        configViewFactory.get().allKeysRecursively().forEach(key -> keys.add(key.name()));
+        assertTrue("parent.children not found in properties", keys.contains("parent.children"));
+        assertTrue("parent.children.child1.name not found in properties", keys.contains("parent.children.child1.name"));
+        assertTrue("parent.children.child2.name not found in properties", keys.contains("parent.children.child2.name"));
+    }
+
+    @Test
+    public void testPropertyHierarchy_reverseOrder() {
+        // Given
+        ConfigViewFactory configViewFactory = new ConfigViewFactory(new Properties());
+
+        // When
+        configViewFactory.withProperty("parent.children.child1.name", "Jill");
+        configViewFactory.withProperty("parent.children.child2.name", "Jack");
+        configViewFactory.withProperty("parent.children", "child1,child2");
+
+        // Then
+        List<String> keys = new LinkedList<>();
+        configViewFactory.get().allKeysRecursively().forEach(key -> keys.add(key.name()));
+        assertTrue("parent.children not found in properties", keys.contains("parent.children"));
+        assertTrue("parent.children.child1.name not found in properties", keys.contains("parent.children.child1.name"));
+        assertTrue("parent.children.child2.name not found in properties", keys.contains("parent.children.child2.name"));
+    }
 }
