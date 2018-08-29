@@ -10,6 +10,14 @@
 
   <artifactId>opentracing-tracerresolver</artifactId>
 
+  <name>OpenTracing TracerResolver</name>
+  <description>OpenTracing TracerResolver</description>
+
+  <properties>
+    <swarm.fraction.internal>true</swarm.fraction.internal>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
+  </properties>
+
   <build>
     <resources>
       <resource>
