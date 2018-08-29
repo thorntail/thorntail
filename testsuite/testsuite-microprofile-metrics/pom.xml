@@ -25,6 +25,11 @@
          <artifactId>arquillian</artifactId>
          <scope>test</scope>
       </dependency>
+      <dependency>
+         <groupId>org.apache.httpcomponents</groupId>
+         <artifactId>fluent-hc</artifactId>
+         <scope>test</scope>
+      </dependency>
    </dependencies>
 
 </project>
