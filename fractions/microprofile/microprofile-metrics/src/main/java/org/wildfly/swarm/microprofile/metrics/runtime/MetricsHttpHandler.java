@@ -25,6 +25,7 @@ import io.undertow.util.HttpString;
 import org.jboss.logging.Logger;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Stream;
 
 /**
  * @author hrupp
@@ -60,7 +61,8 @@ public class MetricsHttpHandler implements HttpHandler {
 
         String method = exchange.getRequestMethod().toString();
         HeaderValues acceptHeaders = exchange.getRequestHeaders().get(Headers.ACCEPT);
-        metricsHandler.handleRequest(requestPath, method, acceptHeaders.stream(), (status, message, headers) -> {
+        Stream<String> acceptHeadersStream = acceptHeaders != null ? acceptHeaders.stream() : null;
+        metricsHandler.handleRequest(requestPath, method, acceptHeadersStream, (status, message, headers) -> {
             exchange.setStatusCode(status);
             headers.forEach(
                     (key, value) -> exchange.getResponseHeaders().put(new HttpString(key), value)
