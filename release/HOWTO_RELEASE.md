@@ -114,6 +114,7 @@ Go to the local `wildfly-swarm.io`.
 
 Create wildfly-swarm.io/src/posts/announce-2.0.0.Final.adoc, replace 2.0.0.Final with the new version.
 Copy the fetched contributors and change log into this document.
+Make sure at least the breaking changes, as listed in the output of `fetch-notes.js`, are documented in detail.
 
 # Update Che image
 
