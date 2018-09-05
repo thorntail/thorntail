@@ -10,6 +10,7 @@ https.get( 'https://issues.jboss.org/rest/api/latest/search?maxResults=100&jql=p
   var buf = "";
 
   var partitions = {};
+  var breaking = [];
 
   result.on( 'data', function(d) {
     buf = buf + d.toString();
@@ -28,6 +29,9 @@ https.get( 'https://issues.jboss.org/rest/api/latest/search?maxResults=100&jql=p
         partitions[e.fields.issuetype.name] = members;
       }
       members.push( e );
+      if (e.fields.labels && e.fields.labels.indexOf('breaking_change') >= 0) {
+        breaking.push(e);
+      }
     } );
 
     console.log( "== Changelog" );
@@ -43,6 +47,12 @@ https.get( 'https://issues.jboss.org/rest/api/latest/search?maxResults=100&jql=p
       } );
       console.log( " " );
     } );
+    if (breaking.length > 0) {
+      console.log("== Breaking changes");
+      breaking.forEach(function(e) {
+        console.log('* [https://issues.jboss.org/browse/' + e.key + '[' + e.key + ']] ' + e.fields.summary);
+      });
+    }
   } );
 
   result.resume();
