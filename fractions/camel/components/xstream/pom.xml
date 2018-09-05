@@ -24,7 +24,7 @@
   <parent>
     <groupId>io.thorntail</groupId>
     <artifactId>camel-components</artifactId>
-    <version>2.2.0.Final</version>
+    <version>2.3.0.Final-SNAPSHOT</version>
   </parent>
 
   <name>Camel Component :: Xstream</name>
