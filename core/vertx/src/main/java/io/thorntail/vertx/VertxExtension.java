@@ -99,15 +99,15 @@ public class VertxExtension implements Extension {
         for (InjectionPoint injectionPoint : eventInjectionPoints) {
             VertxPublish publish = getVertxPublish(injectionPoint.getQualifiers());
             if (publish != null) {
+                VertxLogger.LOG.addPublishObserver(injectionPoint);
                 event.addObserverMethod().addQualifier(publish).observedType(getFacadeType(injectionPoint)).notifyWith(ctx -> {
-                    VertxLogger.LOG.addPublishObserver(injectionPoint);
                     this.vertx.get().eventBus().publish(publish.value(), ctx.getEvent());
                 });
             } else {
                 VertxSend send = getVertxSend(injectionPoint.getQualifiers());
                 if (send != null) {
+                    VertxLogger.LOG.addSendObserver(injectionPoint);
                     event.addObserverMethod().addQualifier(send).observedType(getFacadeType(injectionPoint)).notifyWith(ctx -> {
-                        VertxLogger.LOG.addSendObserver(injectionPoint);
                         this.vertx.get().eventBus().send(send.value(), ctx.getEvent());
                     });
                 }

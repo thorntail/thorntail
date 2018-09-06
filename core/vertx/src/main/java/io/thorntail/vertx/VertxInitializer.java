@@ -3,6 +3,7 @@ package io.thorntail.vertx;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -95,6 +96,13 @@ public class VertxInitializer {
 
         // Make it possible to init dependent components, e.g. create an HTTP server
         event.select(Vertx.class).fire(vertx);
+    }
+
+    @PreDestroy
+    void destroy() {
+        if (vertx != null) {
+            vertx.close();
+        }
     }
 
     public TraceMode getTraceMode() {
