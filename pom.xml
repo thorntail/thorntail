@@ -341,22 +341,22 @@
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>arquillian</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>arquillian-daemon</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>arquillian-adapter</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>arquillian-resolver</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -858,13 +858,13 @@
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>ribbon</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>ribbon-secured</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
 
       <dependency>
