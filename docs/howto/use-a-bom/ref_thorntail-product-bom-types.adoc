@@ -2,7 +2,7 @@
 [id='thorntail-product-bom-types_{context}']
 = {Thorntail} product BOM types
 
-{Thorntail} is described as _just enough app-server,_ which means it comprises of multiple pieces.  Your application includes only the pieces it needs.
+{Thorntail} is described as _just enough app-server,_ which means it consists of multiple pieces.  Your application includes only the pieces it needs.
 
 When using the {Thorntail} product, you can specify the following Maven BOMs:
 
