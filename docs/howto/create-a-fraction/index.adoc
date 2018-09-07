@@ -128,7 +128,7 @@ org.wildfly.swarm.undertow
 
 ### The `*Fraction.java`
 
-If the fraction includes configuration capabilities, or otherwise alters
+If the fraction includes configuration capabilities, or otherwise modifies
 the runtime system through deployments or adjustments to the server, it
 may include an implementation of `org.wildfly.swarm.spi.api.Fraction`.
 

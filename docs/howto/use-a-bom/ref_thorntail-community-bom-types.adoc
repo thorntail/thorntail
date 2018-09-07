@@ -2,7 +2,7 @@
 [id='thorntail-community-bom-types_{context}']
 = {Thorntail} community BOM types
 
-{Thorntail} is described as _just enough app-server,_ which means it comprises of multiple pieces.  Your application includes only the pieces it needs.
+{Thorntail} is described as _just enough app-server,_ which means it consists of multiple pieces.  Your application includes only the pieces it needs.
 
 Over time, some of these pieces reach the _stable_ status, while some are classified as _unstable_ or _experimental._
 
