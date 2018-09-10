@@ -32,13 +32,6 @@
       <plugin>
         <groupId>io.thorntail</groupId>
         <artifactId>thorntail-fraction-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>io.thorntail</groupId>
-            <artifactId>fraction-metadata</artifactId>
-            <version>${version.certified-community}</version>
-          </dependency>
-        </dependencies>
         <executions>
           <execution>
             <id>generate-certified-bom</id>
@@ -48,6 +41,7 @@
             </goals>
             <configuration>
               <template>${project.basedir}/../target/bom-template.xml</template>
+              <certifiedVersion>${version.certified-community}</certifiedVersion>
             </configuration>
           </execution>
           <execution>
