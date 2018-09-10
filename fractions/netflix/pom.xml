@@ -33,7 +33,7 @@
     <version.guava>14.0.1</version.guava>
     <version.servo>0.9.2</version.servo>
 
-    <version.commons-configuration>1.8</version.commons-configuration>
+    <version.commons-configuration>1.10</version.commons-configuration>
 
   </properties>
 

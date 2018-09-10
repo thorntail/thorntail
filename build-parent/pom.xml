@@ -109,7 +109,7 @@
     <version.microprofile-fault-tolerance>1.0</version.microprofile-fault-tolerance>
     <version.microprofile-jwt-auth>1.1</version.microprofile-jwt-auth>
     <version.microprofile-metrics>1.1</version.microprofile-metrics>
-    <version.microprofile.restclient>1.0</version.microprofile.restclient>
+    <version.microprofile.restclient>1.0.1</version.microprofile.restclient>
     <version.microprofile-openapi>1.0.1</version.microprofile-openapi>
     <version.microprofile-opentracing>1.1</version.microprofile-opentracing>
     <!-- MP Config implementation -->
@@ -459,6 +459,16 @@
         <groupId>com.squareup.okio</groupId>
         <artifactId>okio</artifactId>
         <version>${version.com.squareup.okio}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.thrift</groupId>
+          <artifactId>libthrift</artifactId>
+          <version>${version.jaeger.apache.thrift}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>${version.jaeger.gson}</version>
       </dependency>
       <!-- end of unused dependencies -->
 
