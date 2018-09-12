@@ -1,6 +1,6 @@
 <module xmlns="urn:jboss:module:1.3" name="com.squareup.okhttp3">
   <resources>
-    <artifact name="com.squareup.okhttp3:okhttp:${version.com.squareup.okhttp}"/>
+    <artifact name="com.squareup.okhttp3:okhttp:${version.com.squareup.okhttp-openshift}"/>
     <artifact name="com.squareup.okhttp3:okhttp-ws:${version.com.squareup.okhttp-ws}"/>
   </resources>
 
