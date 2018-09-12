@@ -34,6 +34,7 @@
     <version.servo>0.9.2</version.servo>
 
     <version.commons-configuration>1.10</version.commons-configuration>
+    <version.findbugs>2.0.3</version.findbugs>
 
   </properties>
 
@@ -95,6 +96,12 @@
         <groupId>commons-configuration</groupId>
         <artifactId>commons-configuration</artifactId>
         <version>${version.commons-configuration}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>annotations</artifactId>
+        <version>${version.findbugs}</version>
       </dependency>
 
       <dependency>
