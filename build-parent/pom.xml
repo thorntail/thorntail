@@ -67,6 +67,7 @@
 
     <version.openshift.client>5.6.0.Final</version.openshift.client>
     <version.com.squareup.okhttp>3.9.0</version.com.squareup.okhttp>
+    <version.com.squareup.okhttp-openshift>3.4.2</version.com.squareup.okhttp-openshift>
     <version.com.squareup.okhttp-ws>3.4.2</version.com.squareup.okhttp-ws>
     <version.com.squareup.okio>1.9.0</version.com.squareup.okio>
 
