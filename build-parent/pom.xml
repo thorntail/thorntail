@@ -67,7 +67,8 @@
 
     <version.openshift.client>5.6.0.Final</version.openshift.client>
     <version.com.squareup.okhttp>3.9.0</version.com.squareup.okhttp>
-    <version.com.squareup.okhttp-ws>3.4.2</version.com.squareup.okhttp-ws>
+    <!-- THORN-2165 Align okhttp and okhttp-ws for topology-openshift as there is API dependency and okhttp-ws has older version -->
+    <version.com.squareup.okhttp-openshift>3.4.2</version.com.squareup.okhttp-openshift>
     <version.com.squareup.okio>1.9.0</version.com.squareup.okio>
 
     <version.vertx>3.3.3</version.vertx>
@@ -453,7 +454,7 @@
       <dependency>
         <groupId>com.squareup.okhttp3</groupId>
         <artifactId>okhttp-ws</artifactId>
-        <version>${version.com.squareup.okhttp-ws}</version>
+        <version>${version.com.squareup.okhttp-openshift}</version>
       </dependency>
       <dependency>
         <groupId>com.squareup.okio</groupId>
