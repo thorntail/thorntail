@@ -38,4 +38,22 @@
 
    </dependencies>
 
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <systemProperties>
+                  <!-- Set the log level for smallrye  -->
+                  <property>
+                     <name>swarm.logging.loggers.[io.smallrye].level</name>
+                     <value>INFO</value>
+                  </property>
+               </systemProperties>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
 </project>
