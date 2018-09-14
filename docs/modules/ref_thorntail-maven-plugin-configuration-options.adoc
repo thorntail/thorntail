@@ -277,4 +277,5 @@ This JAR is not created automatically, so make sure you execute the `package` go
 |`run`, `start`
 |===
 +
-NOTE: Up to version 2.2.0.Final, the property was called `wildfly-swarm.useUberJar` and only the value `true` enabled this behavior: `-Dwildfly-swarm.useUberJar=true`. You can continue to use the old name without change, but we encourage you to migrate to the new variant which doesn't require setting any value: `-Dswarm.useUberJar`.
+NOTE: Before version 2.3.0.Final, this property was called `wildfly-swarm.useUberJar`, and only setting it to `true` enabled this behavior: `-Dwildfly-swarm.useUberJar=true`.
+You can continue using the old name, but consider using the new variant, which does not require setting a value: `-Dswarm.useUberJar`.
