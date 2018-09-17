@@ -262,18 +262,20 @@ A file path where to store the `stdout` output instead of sending it to the `std
 |===
 
 useUberJar::
-If true, the `-thorntail.jar` file specified at `${project.build.directory}` is used.
+If specified, the `-thorntail.jar` file located in `${project.build.directory}` is used.
 This JAR is not created automatically, so make sure you execute the `package` goal first.
 +
 [cols="1,2a"]
 |===
 |Property
-|`wildfly-swarm.useUberJar`
+|`swarm.useUberJar`
 
 |Default
-|false
+|
 
 |Used by
 |`run`, `start`
 |===
-
++
+NOTE: Before version 2.3.0.Final, this property was called `wildfly-swarm.useUberJar`, and only setting it to `true` enabled this behavior: `-Dwildfly-swarm.useUberJar=true`.
+You can continue using the old name, but consider using the new variant, which does not require setting a value: `-Dswarm.useUberJar`.
