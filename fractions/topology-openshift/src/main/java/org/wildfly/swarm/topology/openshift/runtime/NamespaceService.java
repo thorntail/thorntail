@@ -69,7 +69,7 @@ public class NamespaceService implements Service<String> {
                                                  "Kubernetes namespace to use. Set the environment " +
                                                  "variable KUBERNETES_NAMESPACE and try again.");
             }
-            this.namespace = projects.get(0).getNamespace();
+            this.namespace = projects.get(0).getNamespace().getNamespaceName();
         }
     }
 

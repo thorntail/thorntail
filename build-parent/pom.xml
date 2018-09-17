@@ -65,7 +65,7 @@
 
     <version.com.orbitz.consul>1.2.1</version.com.orbitz.consul>
 
-    <version.openshift.client>5.6.0.Final</version.openshift.client>
+    <version.openshift.client>6.1.2.Final</version.openshift.client>
     <version.com.squareup.okhttp>3.9.0</version.com.squareup.okhttp>
     <!-- THORN-2165 Align okhttp and okhttp-ws for topology-openshift as there is API dependency and okhttp-ws has older version -->
     <version.com.squareup.okhttp-openshift>3.4.2</version.com.squareup.okhttp-openshift>
