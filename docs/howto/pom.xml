@@ -29,16 +29,17 @@
     <version.mysql>5.1.38</version.mysql>
   </properties>
 
-   <modules>
-      <module>use-a-bom</module>
-      <module>create-an-uberjar</module>
-      <module>create-a-hollow-jar</module>
-      <module>autodetect-fractions</module>
-      <module>explicit-fractions</module>
-      <module>create-a-datasource</module>
-      <module>create-a-fraction</module>
-      <module>test-in-container</module>
-   </modules>
+  <modules>
+    <module>use-a-bom</module>
+    <module>create-an-uberjar</module>
+    <module>create-a-hollow-jar</module>
+    <module>autodetect-fractions</module>
+    <module>explicit-fractions</module>
+    <module>create-a-datasource</module>
+    <module>create-a-fraction</module>
+    <module>test-in-container</module>
+    <module>distributed-tracing</module>
+  </modules>
 
   <repositories>
     <repository>

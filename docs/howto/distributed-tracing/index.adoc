@@ -1,0 +1,14 @@
+
+// This is an assembly
+[id='distributed-tracing_{context}']
+= Distributed tracing
+
+:parent-context: {context}
+
+include::ref_distributed-tracing.adoc[leveloffset=+1]
+
+include::proc_tracing-single-service.adoc[leveloffset=+1]
+
+include::proc_tracing-complex-service.adoc[leveloffset=+1]
+
+:context: {parent-context}
