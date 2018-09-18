@@ -22,7 +22,7 @@
   <description>Build Parent to bring in required dependencies</description>
 
   <properties>
-    <version.thorntail.fraction.plugin>89</version.thorntail.fraction.plugin>
+    <version.thorntail.fraction.plugin>90-SNAPSHOT</version.thorntail.fraction.plugin>
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
@@ -190,6 +190,11 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-aether-provider</artifactId>
+        <version>${version.maven.aether}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings-builder</artifactId>
         <version>${version.maven.aether}</version>
       </dependency>
 

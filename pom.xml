@@ -382,7 +382,13 @@
         <artifactId>bootstrap</artifactId>
         <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
-
+      
+      <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>maven-utils</artifactId>
+        <version>2.3.0.Final-SNAPSHOT</version>
+      </dependency>
+<!--
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>camel-core</artifactId>
@@ -448,7 +454,7 @@
         <artifactId>camel-undertow</artifactId>
         <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
-
+-->
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>cdi</artifactId>
@@ -1014,6 +1020,7 @@
 
     <module>meta/meta-spi</module>
     <module>meta/fraction-metadata</module>
+    <module>plugins/maven-utils</module>
     <module>plugins/maven</module>
 
     <module>client-apis/health-api</module>
@@ -1081,6 +1088,8 @@
     <module>standalone-servers</module>
     <module>standalone-servers/microprofile</module>
     <module>standalone-servers/web</module>
+
+    <module>thorntail-runner</module>
   </modules>
 
   <profiles>
@@ -1146,7 +1155,7 @@
         <module>fractions/wildfly/jgroups</module>
 
         <module>fractions/asciidoctorj</module>
-        <module>fractions/camel</module>
+<!--        <module>fractions/camel</module> -->
         <module>fractions/drools-server</module>
         <module>fractions/fluentd</module>
         <module>fractions/flyway</module>
@@ -1288,14 +1297,14 @@
         <module>testsuite/testsuite-jose</module>
         <module>testsuite/testsuite-asciidoctorj</module>
         <module>testsuite/testsuite-batch-jberet</module>
-        <module>testsuite/testsuite-camel-cdi</module>
+<!--        <module>testsuite/testsuite-camel-cdi</module>
         <module>testsuite/testsuite-camel-core</module>
         <module>testsuite/testsuite-camel-cxf</module>
         <module>testsuite/testsuite-camel-ejb</module>
         <module>testsuite/testsuite-camel-jms</module>
         <module>testsuite/testsuite-camel-jmx</module>
         <module>testsuite/testsuite-camel-jpa</module>
-        <module>testsuite/testsuite-camel-ognl</module>
+        <module>testsuite/testsuite-camel-ognl</module> -->
         <module>testsuite/testsuite-cdi-jaxrsapi</module>
         <module>testsuite/testsuite-cdi-jaxws</module>
         <module>testsuite/testsuite-classloader</module>

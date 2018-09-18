@@ -15,10 +15,6 @@
  */
 package org.wildfly.swarm.tools;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Consumer;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -26,6 +22,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.wildfly.swarm.bootstrap.env.FractionManifest;
 import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -58,7 +58,7 @@ public class DependencyManagerTest {
 
     @Before
     public void setUp() {
-        this.manager = new DependencyManager(RESOLVER);
+        this.manager = new DependencyManager(RESOLVER, false);
     }
 
     @Test

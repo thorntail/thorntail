@@ -37,13 +37,9 @@ import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
-import org.eclipse.aether.util.graph.transformer.NearestVersionSelector;
-import org.eclipse.aether.util.graph.transformer.ConflictResolver;
-import org.eclipse.aether.util.graph.transformer.JavaScopeDeriver;
-import org.eclipse.aether.util.graph.transformer.JavaScopeSelector;
-import org.eclipse.aether.util.graph.transformer.SimpleOptionalitySelector;
 import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
+import org.wildfly.swarm.maven.utils.RepositorySystemSessionWrapper;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
@@ -157,12 +153,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                                                   "compile")));
 
             RepositorySystemSession tempSession
-                    = new RepositorySystemSessionWrapper(this.session,
-                                                         new ConflictResolver(new NearestVersionSelector(),
-                                                                              new JavaScopeSelector(),
-                                                                              new SimpleOptionalitySelector(),
-                                                                              new JavaScopeDeriver()
-                                                         ), defaultExcludes
+                    = new RepositorySystemSessionWrapper(this.session, defaultExcludes
             );
             CollectResult result = this.system.collectDependencies(tempSession, request);
             PreorderNodeListGenerator gen = new PreorderNodeListGenerator();
