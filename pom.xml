@@ -727,6 +727,11 @@
         <artifactId>microprofile-health</artifactId>
         <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
+      <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>microprofile-health-api</artifactId>
+        <version>2.3.0.Final-SNAPSHOT</version>
+      </dependency>
 
       <dependency>
         <groupId>io.thorntail</groupId>
