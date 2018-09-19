@@ -39,6 +39,7 @@
     <module>create-a-fraction</module>
     <module>test-in-container</module>
     <module>distributed-tracing</module>
+    <module>metrics</module>
   </modules>
 
   <repositories>

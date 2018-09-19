@@ -1,0 +1,96 @@
+
+[id='exposing-metrics_{context}']
+= Exposing metrics
+
+.Prerequisites
+
+* Prometheus configured to collect metrics from the application.
++
+--
+To show the default Prometheus configuration, run
+[source,bash]
+----
+docker run -it --rm --entrypoint /bin/sh prom/prometheus -c 'cat /etc/prometheus/prometheus.yml'
+----
+
+We will use the default configuration verbatim and just append this snippet to make Prometheus automatically collect metrics from our application.
+
+[source,yaml]
+----
+include::prometheus.yml[tag=thorntail]
+----
+
+By default, Prometheus expects metrics to be exposed on `/metrics`.
+This can be configured in `prometheus.yml`, but you will notice that we didn't have to configure anything like that.
+This is because MicroProfile Metrics specifies that metrics are exposed on `/metrics`, and that's exactly what {Thorntail} does.
+
+This configuration snippet also shows an important characteristic of Prometheus: it actively connects to monitored applications to collect data.
+It doesn't expect applications to actively send metrics to some server.
+--
+
+* The Prometheus server running on `localhost`.
++
+--
+[source,bash]
+----
+docker run -it --rm --network host -p 9090:9090 -v $PWD/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+----
+
+Wait until the `Server is ready to receive web requests` message shows in the console.
+
+Notice we use `--network host` so that Prometheus can connect to the application we will run.
+--
+
+.Procedure
+
+. Include the `microprofile-metrics` fraction in your `pom.xml`.
++
+--
+.pom.xml
+[source,xml]
+----
+<dependencies>
+include::pom.xml[tag=mp-metrics,indent=2]
+</dependencies>
+----
+--
+
+. Annotate the desired methods or classes with the desired metrics annotations.
++
+--
+[source,java]
+----
+include::src/main/java/org/wildfly/swarm/howto/metrics/MyResource.java[tag=metrics-resource-method,indent=0]
+----
+
+Here, we use `@Counted(monotonic = true)` to keep track of how many times this method was invoked, and `@Timed` to keep track of the time these invocations took.
+There are other kinds of metrics in MicroProfile Metrics, too.
+
+In this example, we annotated a JAX-RS resource method directly, but it's possible to annotate any CDI bean in your application.
+--
+
+. Invoke the traced endpoint several times.
++
+--
+[source,bash]
+----
+$ curl http://localhost:8080/
+Hello from counted and timed endpoint
+----
+--
+
+. Wait a short while, at least 15 seconds with the configuration we use, until the metrics are collected by Prometheus.
+
+
+. See the metrics in Prometheus UI.
++
+--
+Open the Prometheus UI at link:http://localhost:9090/[http://localhost:9090/] and type `hello` into the _Expression_ box.
+From the suggestions, select e.g. `application:hello_count` and press _Execute_.
+In the table below, you will see how many times the resource method was invoked.
+Alternatively, you can select `application:hello_time_mean_seconds` to see the mean time of all the invocations.
+
+Note that all metrics you created are prefixed with `application:`.
+There are other metrics, automatically exposed by {Thorntail} per the MicroProfile Metrics specification.
+Those are prefixed with `base:` and `vendor:` and expose a lot of information about the JVM in which the application runs.
+--
