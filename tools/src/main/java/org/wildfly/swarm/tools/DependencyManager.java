@@ -20,8 +20,8 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.wildfly.swarm.bootstrap.env.FractionManifest;
 import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
 import org.wildfly.swarm.fractions.FractionDescriptor;
+import org.wildfly.swarm.tools.utils.ChecksumUtil;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -307,7 +306,7 @@ public class DependencyManager implements ResolvedDependencies {
         }
 
         try (final InputStream inputStream = asset.openStream()) {
-            String checksum = checksum(inputStream);
+            String checksum = ChecksumUtil.calculateChecksum(inputStream);
 
             return this.removableCheckSums.contains(checksum);
         } catch (NoSuchAlgorithmException | IOException e) {
@@ -328,30 +327,17 @@ public class DependencyManager implements ResolvedDependencies {
 
     private String checksum(ArtifactSpec spec) {
         if (spec.sha1sum != null) {
-            return spec.sha1sum.toUpperCase();
+            return spec.sha1sum;
         }
 
         try {
             try (FileInputStream stream = new FileInputStream(spec.file)) {
-                return checksum(stream);
+                return ChecksumUtil.calculateChecksum(stream);
             }
         } catch (Exception any) {
             any.printStackTrace();
             return null;
         }
-    }
-
-    protected String checksum(InputStream in) throws IOException, NoSuchAlgorithmException {
-        byte[] buf = new byte[1024];
-        int len = 0;
-
-        MessageDigest md = MessageDigest.getInstance("SHA1");
-
-        while ((len = in.read(buf)) >= 0) {
-            md.update(buf, 0, len);
-        }
-
-        return DatatypeConverter.printHexBinary(md.digest());
     }
 
     protected boolean isConfigApiModulesJar(File file) {
