@@ -2,4 +2,8 @@
   <resources>
     <artifact name="com.google.code.gson:gson:${version.jaeger.gson}"/>
   </resources>
+
+  <dependencies>
+    <module name="sun.jdk"/>
+  </dependencies>
 </module>
