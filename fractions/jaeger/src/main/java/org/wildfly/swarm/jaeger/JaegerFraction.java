@@ -114,7 +114,6 @@ public class JaegerFraction implements Fraction<JaegerFraction> {
                 ", reporterFlushInterval='" + reporterFlushInterval.get() + '\'' +
                 ", reporterMaxQueueSize='" + reporterMaxQueueSize.get() + '\'' +
                 ", user='" + user.get() + '\'' +
-                ", password='" + password.get() + '\'' +
                 '}';
     }
 
