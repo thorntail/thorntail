@@ -9,13 +9,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.jboss.arquillian.container.spi.client.deployment.DeploymentDescription;
 import org.jboss.arquillian.container.test.impl.client.deployment.AnnotationDeploymentScenarioGenerator;
@@ -69,19 +67,10 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
 
         ClassLoader cl = testClass.getJavaClass().getClassLoader();
 
-        Set<CodeSource> codeSources = new HashSet<>();
-
         URLPackageScanner.Callback callback = (className, asset) -> {
             ArchivePath classNamePath = AssetUtil.getFullPathForClassResource(className);
             ArchivePath location = new BasicPath(classPrefix, classNamePath);
             archive.add(asset, location);
-
-            try {
-                Class<?> cls = cl.loadClass(className);
-                codeSources.add(cls.getProtectionDomain().getCodeSource());
-            } catch (ClassNotFoundException | NoClassDefFoundError e) {
-                //e.printStackTrace();
-            }
         };
 
         URLPackageScanner scanner = URLPackageScanner.newInstance(
@@ -92,20 +81,10 @@ public class DefaultDeploymentScenarioGenerator extends AnnotationDeploymentScen
 
         scanner.scanPackage();
 
-        Set<String> prefixes = codeSources.stream().map(e -> e.getLocation().toExternalForm()).collect(Collectors.toSet());
-
         try {
             List<URL> resources = Collections.list(cl.getResources(""));
 
             resources.stream()
-                    .filter(e -> {
-                        for (String prefix : prefixes) {
-                            if (e.toExternalForm().startsWith(prefix)) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    })
                     .filter(e -> e.getProtocol().equals("file"))
                     .map(e -> getPlatformPath(e.getPath()))
                     .map(e -> Paths.get(e))
