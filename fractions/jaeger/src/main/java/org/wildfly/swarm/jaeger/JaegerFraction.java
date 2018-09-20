@@ -43,6 +43,12 @@ public class JaegerFraction implements Fraction<JaegerFraction> {
     @AttributeDocumentation("Remote Reporter HTTP endpoint for Jaeger collector, such as http://jaeger-collector.istio-system:14268/api/traces")
     private Defaultable<String> remoteReporterHttpEndpoint = Defaultable.string(getDefault(JAEGER_ENDPOINT));
 
+    @AttributeDocumentation("Username to send as part of \"Basic\" authentication to the endpoint")
+    private Defaultable<String> user = Defaultable.string(getDefault(JAEGER_USER));
+
+    @AttributeDocumentation("Password to send as part of \"Basic\" authentication to the endpoint")
+    private Defaultable<String> password = Defaultable.string(getDefault(JAEGER_PASSWORD));
+
     public String getServiceName() {
         return serviceName.get();
     }
@@ -87,6 +93,14 @@ public class JaegerFraction implements Fraction<JaegerFraction> {
         return remoteReporterHttpEndpoint.get();
     }
 
+    public String getUser() {
+        return user.get();
+    }
+
+    public String getPassword() {
+        return password.get();
+    }
+
     @Override
     public String toString() {
         return "JaegerFraction{" +
@@ -99,6 +113,8 @@ public class JaegerFraction implements Fraction<JaegerFraction> {
                 ", agentPort='" + agentPort.get() + '\'' +
                 ", reporterFlushInterval='" + reporterFlushInterval.get() + '\'' +
                 ", reporterMaxQueueSize='" + reporterMaxQueueSize.get() + '\'' +
+                ", user='" + user.get() + '\'' +
+                ", password='" + password.get() + '\'' +
                 '}';
     }
 
