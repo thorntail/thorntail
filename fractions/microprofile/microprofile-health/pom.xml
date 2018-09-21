@@ -65,15 +65,9 @@
 
     <dependency>
       <groupId>io.thorntail</groupId>
-      <artifactId>health-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.thorntail</groupId>
       <artifactId>management</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>naming</artifactId>
