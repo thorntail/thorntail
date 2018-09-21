@@ -5,7 +5,7 @@ import org.wildfly.swarm.spi.meta.PackageFractionDetector;
 public class MvcPackageDetector extends PackageFractionDetector {
 
     public MvcPackageDetector() {
-        anyClassOf("javax.mvc.annotation.Controller");
+        anyClassOf("javax.mvc.Controller");
     }
 
     public String artifactId() {

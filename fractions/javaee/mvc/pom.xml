@@ -26,8 +26,8 @@
   <properties>
     <swarm.fraction.stability>experimental</swarm.fraction.stability>
     <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
-    <version.ozark>1.0.0-m03</version.ozark>
-    <version.mvc>1.0-pr</version.mvc>
+    <version.ozark>1.0.0-m04</version.ozark>
+    <version.mvc>1.0-pfd</version.mvc>
   </properties>
 
   <build>

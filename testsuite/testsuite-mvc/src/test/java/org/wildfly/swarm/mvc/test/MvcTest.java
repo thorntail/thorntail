@@ -29,7 +29,7 @@ public class MvcTest {
     private URL baseUrl;
 
     @Deployment(testable = false)
-    public static Archive createDeployment() throws Exception {
+    public static Archive createDeployment() {
         return ShrinkWrap.create(JAXRSArchive.class, "myapp.war")
                 .addClass(MvcApplication.class)
                 .addClass(MvcController.class)
