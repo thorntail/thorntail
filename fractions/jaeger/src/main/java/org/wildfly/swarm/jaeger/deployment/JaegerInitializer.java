@@ -15,6 +15,9 @@
  */
 package org.wildfly.swarm.jaeger.deployment;
 
+import io.jaegertracing.Configuration.CodecConfiguration;
+import io.jaegertracing.internal.propagation.B3TextMapCodec;
+import io.opentracing.propagation.Format.Builtin;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
@@ -30,7 +33,7 @@ import org.jboss.logging.Logger;
 import static io.jaegertracing.Configuration.JAEGER_AGENT_HOST;
 import static io.jaegertracing.Configuration.JAEGER_AGENT_PORT;
 import static io.jaegertracing.Configuration.JAEGER_ENDPOINT;
-import static io.jaegertracing.Configuration.JAEGER_PROPAGATION;
+import static io.jaegertracing.Configuration.JAEGER_PASSWORD;
 import static io.jaegertracing.Configuration.JAEGER_REPORTER_FLUSH_INTERVAL;
 import static io.jaegertracing.Configuration.JAEGER_REPORTER_LOG_SPANS;
 import static io.jaegertracing.Configuration.JAEGER_REPORTER_MAX_QUEUE_SIZE;
@@ -38,6 +41,7 @@ import static io.jaegertracing.Configuration.JAEGER_SAMPLER_MANAGER_HOST_PORT;
 import static io.jaegertracing.Configuration.JAEGER_SAMPLER_PARAM;
 import static io.jaegertracing.Configuration.JAEGER_SAMPLER_TYPE;
 import static io.jaegertracing.Configuration.JAEGER_SERVICE_NAME;
+import static io.jaegertracing.Configuration.JAEGER_USER;
 import static io.jaegertracing.Configuration.ReporterConfiguration;
 import static io.jaegertracing.Configuration.SenderConfiguration;
 
@@ -54,12 +58,11 @@ public class JaegerInitializer implements ServletContextListener {
 
         String serviceName = getProperty(sc, JAEGER_SERVICE_NAME);
         if (serviceName == null || serviceName.isEmpty()) {
-            logger.info("No Service Name set. Skipping initialization of the Jaeger Tracer.");
-            return;
+            logger.warn("No Service Name set. Using default. Please change it.");
+            serviceName = "thorntail/unknown";
         }
 
-        Configuration configuration = new Configuration(
-                getProperty(sc, JAEGER_SERVICE_NAME))
+        Configuration configuration = new Configuration(serviceName)
                 .withSampler(
                         new Configuration.SamplerConfiguration()
                                 .withType(
@@ -74,10 +77,10 @@ public class JaegerInitializer implements ServletContextListener {
                                         getPropertyAsBoolean(sc, JAEGER_REPORTER_LOG_SPANS))
                                 .withSender(
                                         new SenderConfiguration()
-                                                .withAgentHost(
-                                                        getProperty(sc, JAEGER_AGENT_HOST))
-                                                .withAgentPort(
-                                                        getPropertyAsInt(sc, JAEGER_AGENT_PORT)))
+                                                .withAuthUsername(getProperty(sc, JAEGER_USER))
+                                                .withAuthPassword(getProperty(sc, JAEGER_PASSWORD))
+                                                .withAgentHost(getProperty(sc, JAEGER_AGENT_HOST))
+                                                .withAgentPort(getPropertyAsInt(sc, JAEGER_AGENT_PORT)))
                                 .withFlushInterval(
                                         getPropertyAsInt(sc, JAEGER_REPORTER_FLUSH_INTERVAL))
                                 .withMaxQueueSize(
@@ -92,11 +95,13 @@ public class JaegerInitializer implements ServletContextListener {
                                         .withEndpoint(remoteEndpoint));
         }
 
-        String enableB3HeaderPropagation = sc.getInitParameter("enableB3HeaderPropagation");
+        String enableB3HeaderPropagation = getProperty(sc, "enableB3HeaderPropagation");
         if (enableB3HeaderPropagation != null && Boolean.parseBoolean(enableB3HeaderPropagation)) {
             logger.info("Enabling B3 Header Propagation for Jaeger");
-            System.setProperty(JAEGER_PROPAGATION, "B3");
-            configuration.withCodec(Configuration.CodecConfiguration.fromEnv());
+            CodecConfiguration codecConfiguration = new CodecConfiguration();
+            codecConfiguration.withCodec(Builtin.HTTP_HEADERS, new B3TextMapCodec.Builder().build());
+            codecConfiguration.withCodec(Builtin.TEXT_MAP, new B3TextMapCodec.Builder().build());
+            configuration.withCodec(codecConfiguration);
         }
 
         GlobalTracer.register(configuration.getTracer());

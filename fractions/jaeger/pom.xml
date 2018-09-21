@@ -75,6 +75,11 @@
       <version>${version.jaeger}</version>
     </dependency>
     <dependency>
+      <groupId>io.jaegertracing</groupId>
+      <artifactId>jaeger-thrift</artifactId>
+      <version>${version.jaeger}</version>
+    </dependency>
+    <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>
       <type>zip</type>

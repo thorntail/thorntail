@@ -63,7 +63,7 @@ public class JaegerAndMicroprofileOpenTracingTest {
   @Test
   public void test() throws IOException {
     String body = hitEndpoint("http://localhost:8080/");
-    assertTrue(body.equals("io.jaegertracing.Span"));
+    assertTrue(body.equals("io.jaegertracing.internal.JaegerSpan"));
   }
 
   private String hitEndpoint(String endpoint) throws IOException {
