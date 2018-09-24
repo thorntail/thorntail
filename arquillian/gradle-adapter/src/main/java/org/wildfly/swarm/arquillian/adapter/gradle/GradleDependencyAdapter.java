@@ -112,6 +112,10 @@ public class GradleDependencyAdapter {
 
                 // parse
                 line = parseLine(line);
+                if (line.startsWith(PROJECT)) { // Always skip 'project' dependencies.
+                    continue;
+                }
+
                 String coord = parseCoordinate(line);
                 ArtifactSpec parent = DeclaredDependencies.createSpec(coord);
                 declaredDependencies.add(parent);
@@ -125,7 +129,13 @@ public class GradleDependencyAdapter {
                 }
 
                 String coord = parseCoordinate(line);
-                declaredDependencies.add(stack.peek(), DeclaredDependencies.createSpec(coord));
+                ArtifactSpec spec = DeclaredDependencies.createSpec(coord);
+                if (stack.empty()) {
+                    // Parent was a project dependency, add this dependency directly.
+                    declaredDependencies.add(spec);
+                } else {
+                    declaredDependencies.add(stack.peek(), spec);
+                }
 
             }
         }
