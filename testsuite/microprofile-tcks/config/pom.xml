@@ -79,31 +79,76 @@
 
    </dependencies>
 
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-               <suiteXmlFiles>
-                  <suiteXmlFile>src/test/tck-suite.xml</suiteXmlFile>
-               </suiteXmlFiles>
-               <environmentVariables>
-                  <my_int_property>45</my_int_property>
-                  <MY_BOOLEAN_PROPERTY>true</MY_BOOLEAN_PROPERTY>
-                  <my_string_property>haha</my_string_property>
-                  <MY_STRING_PROPERTY>woohoo</MY_STRING_PROPERTY>
-               </environmentVariables>
-               <!-- This workaround allows to run a single test using "test"
-                  system property -->
-               <!-- https://issues.apache.org/jira/browse/SUREFIRE-569 -->
-               <dependenciesToScan>
-                  <dependency>org.eclipse.microprofile.config:microprofile-config-tck</dependency>
-               </dependenciesToScan>
-            </configuration>
-         </plugin>
-      </plugins>
-   </build>
+   <!-- Setting up two different profiles - windows & non-windows. In the Windows environment, we cannot have case sensitive
+        environment variables.
+     -->
+   <profiles>
+      <profile>
+         <id>windows-specific</id>
+         <activation>
+            <os>
+               <family>windows</family>
+            </os>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <suiteXmlFiles>
+                        <suiteXmlFile>src/test/tck-suite.xml</suiteXmlFile>
+                     </suiteXmlFiles>
+                     <environmentVariables>
+                        <my_int_property>45</my_int_property>
+                        <MY_BOOLEAN_PROPERTY>true</MY_BOOLEAN_PROPERTY>
+                        <MY_STRING_PROPERTY>woohoo</MY_STRING_PROPERTY>
+                     </environmentVariables>
+                     <!-- This workaround allows to run a single test using "test"
+                        system property -->
+                     <!-- https://issues.apache.org/jira/browse/SUREFIRE-569 -->
+                     <dependenciesToScan>
+                        <dependency>org.eclipse.microprofile.config:microprofile-config-tck</dependency>
+                     </dependenciesToScan>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+      <profile>
+         <id>*nix</id>
+         <activation>
+            <os>
+               <family>!windows</family>
+            </os>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <suiteXmlFiles>
+                        <suiteXmlFile>src/test/tck-suite.xml</suiteXmlFile>
+                     </suiteXmlFiles>
+                     <environmentVariables>
+                        <my_int_property>45</my_int_property>
+                        <MY_BOOLEAN_PROPERTY>true</MY_BOOLEAN_PROPERTY>
+                        <my_string_property>haha</my_string_property>
+                        <MY_STRING_PROPERTY>woohoo</MY_STRING_PROPERTY>
+                     </environmentVariables>
+                     <!-- This workaround allows to run a single test using "test"
+                        system property -->
+                     <!-- https://issues.apache.org/jira/browse/SUREFIRE-569 -->
+                     <dependenciesToScan>
+                        <dependency>org.eclipse.microprofile.config:microprofile-config-tck</dependency>
+                     </dependenciesToScan>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
 
 </project>
 

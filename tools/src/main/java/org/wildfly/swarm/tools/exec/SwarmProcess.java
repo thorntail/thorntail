@@ -119,7 +119,9 @@ public class SwarmProcess {
         }
         this.process.destroy();
         if (!this.process.waitFor(timeout, timeUnit)) {
-            process.destroyForcibly();
+            // Attempt to terminate the process forcibly and also wait for the same amount of time as the base attempt.
+            // This should potentially take care of the issues with the process not terminating on Windows CI build.
+            process.destroyForcibly().waitFor(timeout, timeUnit);
         }
 
         try {
