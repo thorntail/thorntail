@@ -22,7 +22,7 @@
   <description>Build Parent to bring in required dependencies</description>
 
   <properties>
-    <version.thorntail.fraction.plugin>90-SNAPSHOT</version.thorntail.fraction.plugin>
+    <version.thorntail.fraction.plugin>90</version.thorntail.fraction.plugin>
 
     <version.org.snakeyaml>1.17</version.org.snakeyaml>
 
