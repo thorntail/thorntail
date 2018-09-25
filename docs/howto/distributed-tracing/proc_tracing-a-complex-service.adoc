@@ -1,0 +1,89 @@
+
+[id='tracing-a-complex-service_{context}']
+= Tracing a complex service
+
+In this example, you can see how to trace a more complex service that performs an external service invocation.
+To keep the example easy to use, the application actually calls itself, but in a way that is equivalent to calling services outside of the application.
+
+In this example, Jaeger runs locally using Docker.
+
+.Prerequisites
+
+* A xref:tracing-a-single-service_{context}[simple service tracing] configured.
+
+.Procedure
+
+. If the Jaeger tracer is running, restart it:
+.. Open the console where the container with Jaeger is running and stop it by pressing `Ctrl + C`.
+.. Relaunch the container by running:
++
+[source,bash]
+----
+# docker run -it --rm -p 6831:6831/udp -p 16686:16686 jaegertracing/all-in-one
+----
+
+. Use JAX-RS Client to invoke an external service:
++
+--
+.MyComplexResource.java
+[source,java]
+----
+include::src/main/java/org/wildfly/swarm/howto/tracing/MyComplexResource.java[tag=complex-resource,indent=0]
+----
+
+.MyService.java
+[source,java]
+----
+include::src/main/java/org/wildfly/swarm/howto/tracing/MyService.java[tag=traced-service-method,indent=0]
+----
+
+Here, you can see that not only JAX-RS resource methods can be traced.
+This is a regular method in a CDI bean.
+Unlike JAX-RS resources, which are traced automatically, other methods need the explicit `@Traced` annotation.
+
+The most important part is this usage of MicroProfile OpenTracing API:
+
+[source,java]
+----
+include::src/main/java/org/wildfly/swarm/howto/tracing/MyService.java[tag=client-registration,indent=0]
+----
+
+This is how MicroProfile OpenTracing integrates with JAX-RS Client to ensure the trace is propagated across services.
+Without the integration, it would be impossible to correlate the invocations as part of a single user request.
+
+[NOTE]
+====
+Currently, MicroProfile OpenTracing does not integrate with MicroProfile RestClient, so you need to use a pure JAX-RS Client.
+This limitation will be removed in the future, see link:https://github.com/eclipse/microprofile-opentracing/issues/82[MicroProfile OpenTracing issue #82^].
+====
+--
+
+. Invoke the traced endpoint several times:
++
+--
+[source,bash]
+----
+$ curl http://localhost:8080/complex
+Called an external service successfully, it responded: Hello from traced endpoint
+----
+
+Notice how the _complex_ service calls the _simple_ service, which you configured in the simple service example.
+Both of these services are traced, so we can see the invocation of the _simple_ service as a part of the _complex_ invocation.
+--
+
+. See the traces in Jaeger UI.
++
+--
+Reload the Jaeger UI at link:http://localhost:16686/[http://localhost:16686/^], select `greeter` under _Service_ and click _Find Traces_.
+You can see all the requests you performed and basic information about them.
+
+Click on one of the traces to show detailed information about that particular request:
+
+* At the top level, you can see the JAX-RS resource method `MyComplexResource.get`.
+* Under it, you can see the invocation of `MyService.call` method.
+* Under that, you can see that this method performed a `GET` request to another service.
+* Under the `GET` request, you can see the JAX-RS resource method `MySimpleResource.get`.
+
+For all these invocations, you can see how long they took and when they occurred as part of the entire request processing.
+--
+

@@ -5,10 +5,13 @@
 
 :parent-context: {context}
 
-include::ref_distributed-tracing.adoc[leveloffset=+1]
+{Thorntail} provides ways of simplifying the debugging of your application in a distributed environment.
 
-include::proc_tracing-single-service.adoc[leveloffset=+1]
+include::ref_what-is-distributed-tracing.adoc[leveloffset=+1]
 
-include::proc_tracing-complex-service.adoc[leveloffset=+1]
+include::proc_tracing-a-single-service.adoc[leveloffset=+1]
+
+include::proc_tracing-a-complex-service.adoc[leveloffset=+1]
 
 :context: {parent-context}
+
