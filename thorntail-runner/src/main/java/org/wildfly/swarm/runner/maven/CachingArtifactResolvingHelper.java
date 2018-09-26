@@ -161,7 +161,6 @@ public class CachingArtifactResolvingHelper implements ArtifactResolvingHelper {
 
 
     private Collection<ArtifactSpec> resolveDependencies(final Collection<ArtifactSpec> specs, boolean defaultExcludes) throws DependencyCollectionException {
-        long start = System.currentTimeMillis();
         List<ArtifactSpec> dependencyNodes = dependencyCache.getCachedDependencies(specs, defaultExcludes);
         if (dependencyNodes == null) {
             List<Dependency> dependencies =
@@ -194,11 +193,8 @@ public class CachingArtifactResolvingHelper implements ArtifactResolvingHelper {
 
             dependencyCache.storeCachedDependencies(specs, dependencyNodes, defaultExcludes);
         }
-        System.out.println("dependency analysis time: " + (System.currentTimeMillis() - start) + "[ms]");
-        start = System.currentTimeMillis();
 
         Collection<ArtifactSpec> result = resolveDependencies(dependencyNodes);
-        System.out.println("dependency resolution time: " + (System.currentTimeMillis() - start) + "[ms]");
         return result;
     }
 
@@ -207,24 +203,18 @@ public class CachingArtifactResolvingHelper implements ArtifactResolvingHelper {
         // if dependencies were previously resolved, we don't need to resolve using remote repositories
         dependencyNodes = new ArrayList<>(dependencyNodes);
 
-        System.out.println("parallel resolution time: " + (System.currentTimeMillis() - start));
-
-        try {
-            return dependencyNodes.parallelStream()
-                    .filter(node -> !"system".equals(node.scope))
-                    .map(node -> new ArtifactSpec(node.scope,
-                            node.groupId(),
-                            node.artifactId(),
-                            node.version(),
-                            "bundle".equals(node.type()) ? "jar" : node.type(),
-                            node.classifier(),
-                            null))
-                    .map(this::resolve)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
-        } finally {
-            System.out.println("total time of dep resolution: " + (System.currentTimeMillis() - start));
-        }
+        return dependencyNodes.parallelStream()
+                .filter(node -> !"system".equals(node.scope))
+                .map(node -> new ArtifactSpec(node.scope,
+                        node.groupId(),
+                        node.artifactId(),
+                        node.version(),
+                        "bundle".equals(node.type()) ? "jar" : node.type(),
+                        node.classifier(),
+                        null))
+                .map(this::resolve)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     private DefaultArtifact artifact(ArtifactSpec spec) {

@@ -61,7 +61,7 @@ public class ArtifactResolutionCache {
             }
         }
         resolutionFailures.add("org.jboss.narayana.jta:cdi:jar:5.5.30.Final");
-        System.out.printf("Cache initialization done in %d [ms]\n", System.currentTimeMillis() - startTime);
+        System.out.printf("Cache initialization done in %d ms\n", System.currentTimeMillis() - startTime);
     }
 
     public void store() {

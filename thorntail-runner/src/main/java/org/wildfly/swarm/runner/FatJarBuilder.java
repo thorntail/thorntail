@@ -78,7 +78,7 @@ public class FatJarBuilder {
 
         buildFatJarTo(fatJar);
 
-        System.out.printf("total time %d ms\n", System.currentTimeMillis() - start);
+        System.out.printf("Uber jar built in %d ms\n", System.currentTimeMillis() - start);
     }
 
     private static File buildFatJarTo(File target) throws Exception {
