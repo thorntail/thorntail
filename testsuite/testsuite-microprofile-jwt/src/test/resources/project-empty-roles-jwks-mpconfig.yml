@@ -1,0 +1,22 @@
+mpjwt:
+  jwksUri: "http://localhost:14145/jwks"
+  issuedBy: "http://testsuite-jwt-issuer.io"
+swarm:
+  security:
+    security-domains:
+      testSuiteRealm:
+        jaspi-authentication:
+          login-module-stacks:
+            roles-lm-stack:
+              login-modules:
+                - login-module: rm
+                  code: org.wildfly.swarm.microprofile.jwtauth.deployment.auth.jaas.JWTLoginModule
+                  flag: required
+                  module-options:
+                    rolesProperties: emptyRoles.properties
+          auth-modules:
+            http:
+              code: org.wildfly.extension.undertow.security.jaspi.modules.HTTPSchemeServerAuthModule
+              module: org.wildfly.extension.undertow
+              flag: required
+              login-module-stack-ref: roles-lm-stack

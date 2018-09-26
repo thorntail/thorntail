@@ -47,18 +47,11 @@ public class JwksKeyWithFractionConfigTest {
                 .addClass(TokenResource.class)
                 .addClass(KeyTool.class)
                 .addClass(JwtTool.class)
-                .addAsResource("project-empty-roles.yml", "project-defaults.yml")
+                .addAsResource("project-empty-roles-jwks-fraction.yml", "project-defaults.yml")
                 .addAsResource("emptyRoles.properties")
                 .addAsResource(new ClassLoaderAsset("keys/pkcs8_bad_key.pem"), "pkcs8_bad_key.pem")
                 .addAsResource(new ClassLoaderAsset("keys/pkcs8_good_key.pem"), "pkcs8_good_key.pem")
                 .setContextRoot("/testsuite");
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm()
-                .withProperty("swarm.microprofile.jwt.token.jwks-uri", "http://localhost:14145/jwks")
-                .withProperty("swarm.microprofile.jwt.token.issued-by", "http://testsuite-jwt-issuer.io");
     }
 
     @Test

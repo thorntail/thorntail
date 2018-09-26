@@ -26,19 +26,11 @@ public class StaticKeyWithFractionConfigTest {
                 .addClass(TokenResource.class)
                 .addClass(KeyTool.class)
                 .addClass(JwtTool.class)
-                .addAsResource("project-empty-roles.yml", "project-defaults.yml")
+                .addAsResource("project-empty-roles-static-fraction.yml", "project-defaults.yml")
                 .addAsResource("emptyRoles.properties")
                 .addAsResource(new ClassLoaderAsset("keys/pkcs8_bad_key.pem"), "pkcs8_bad_key.pem")
                 .addAsResource(new ClassLoaderAsset("keys/pkcs8_good_key.pem"), "pkcs8_good_key.pem")
                 .setContextRoot("/testsuite");
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        final KeyTool keyTool = KeyTool.newKeyTool(StaticKeyWithFractionConfigTest.class.getResource("/pkcs8_good_key.pem").toURI());
-        return new Swarm()
-                .withProperty("swarm.microprofile.jwt.token.signer-pub-key", keyTool.getPublicKeyPEM())
-                .withProperty("swarm.microprofile.jwt.token.issued-by", "http://testsuite-jwt-issuer.io");
     }
 
     @Test
