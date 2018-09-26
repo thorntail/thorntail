@@ -5,7 +5,9 @@
 
 :parent-context: {context}
 
-include::ref_metrics.adoc[leveloffset=+1]
+{Thorntail} provides ways of exposing application metrics in order to track performance and service availability.
+
+include::ref_what-are-metrics.adoc[leveloffset=+1]
 
 include::proc_exposing-metrics.adoc[leveloffset=+1]
 

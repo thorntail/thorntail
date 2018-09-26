@@ -12,26 +12,26 @@ alerting:
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
-# - "first_rules.yml"
-# - "second_rules.yml"
+  # - "first_rules.yml"
+  # - "second_rules.yml"
 
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
 scrape_configs:
-# The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-- job_name: 'prometheus'
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
 
-  # metrics_path defaults to '/metrics'
-  # scheme defaults to 'http'.
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
 
-  static_configs:
-  - targets: ['localhost:9090']
+    static_configs:
+    - targets: ['localhost:9090']
 
 # the text above is a verbatim copy of /etc/prometheus/prometheus.yml from the prom/prometheus image:
 # docker run -it --rm --entrypoint /bin/sh prom/prometheus -c 'cat /etc/prometheus/prometheus.yml'
 
 # tag::thorntail[]
-- job_name: 'thorntail'
-  static_configs:
-  - targets: ['localhost:8080']
+  - job_name: 'thorntail'
+    static_configs:
+    - targets: ['localhost:8080']
 # end::thorntail[]
