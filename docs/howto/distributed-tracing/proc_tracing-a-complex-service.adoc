@@ -22,7 +22,7 @@ In this example, Jaeger runs locally using Docker.
 # docker run -it --rm -p 6831:6831/udp -p 16686:16686 jaegertracing/all-in-one
 ----
 
-. Use JAX-RS Client to invoke an external service:
+. Use JAX-RS Client to invoke an external service, for example:
 +
 --
 .MyComplexResource.java
@@ -48,7 +48,7 @@ The most important part is this usage of MicroProfile OpenTracing API:
 include::src/main/java/org/wildfly/swarm/howto/tracing/MyService.java[tag=client-registration,indent=0]
 ----
 
-This is how MicroProfile OpenTracing integrates with JAX-RS Client to ensure the trace is propagated across services.
+This snippet shows how MicroProfile OpenTracing integrates with JAX-RS Client to ensure the trace is propagated across services.
 Without the integration, it would be impossible to correlate the invocations as part of a single user request.
 
 [NOTE]
@@ -57,6 +57,13 @@ Currently, MicroProfile OpenTracing does not integrate with MicroProfile RestCli
 This limitation will be removed in the future, see link:https://github.com/eclipse/microprofile-opentracing/issues/82[MicroProfile OpenTracing issue #82^].
 ====
 --
+
+. Launch your application:
++
+[source,bash,opts="nowrap"]
+----
+$ mvn thorntail:run
+----
 
 . Invoke the traced endpoint several times:
 +

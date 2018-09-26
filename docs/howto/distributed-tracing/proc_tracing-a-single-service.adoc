@@ -62,7 +62,7 @@ include::src/main/resources/project-istio.yml[]
 ----
 --
 
-. Create a JAX-RS resource as follows:
+. Create a JAX-RS resource, for example:
 +
 --
 .MySimpleResource.java
@@ -74,6 +74,13 @@ include::src/main/java/org/wildfly/swarm/howto/tracing/MySimpleResource.java[tag
 All JAX-RS resources are automatically traced.
 You can customize this behavior using the `@Traced` annotation from MicroProfile OpenTracing.
 --
+
+. Launch your application:
++
+[source,bash,opts="nowrap"]
+----
+$ mvn thorntail:run
+----
 
 . Invoke the traced endpoint several times:
 +
