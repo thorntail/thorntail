@@ -1,0 +1,25 @@
+
+[id='what-are-metrics_{context}']
+= What are metrics
+
+In the microservices architecture, where multiple services are invoked in order to serve a single user request, diagnosing performance issues or reacting to service outages might be hard.
+To make solving problems easier, applications must expose machine-readable data about their behavior, such as:
+
+* How many requests are currently being processed.
+* How many connections to the database are currently in use.
+* How long service invocations take.
+
+These kinds of data are referred to as _metrics_.
+Collecting metrics, visualizing them, setting alerts, discovering trends, etc. are very important to keep a service healthy.
+
+{Thorntail} provides a fraction for MicroProfile Metrics, an easy-to-use API for exposing metrics.
+Among other formats, it supports exporting data in the native format of Prometheus, a popular monitoring solution.
+Inside the application, you need nothing except this fraction.
+Outside of the application, Prometheus typically runs.
+
+.Additional resources
+* The link:https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics GitHub page^].
+* The link:https://prometheus.io/[Prometheus homepage^]
+* A popular solution to visualize metrics stored in Prometheus is Grafana.
+For more information, see the link:https://grafana.com/[Grafana homepage^].
+

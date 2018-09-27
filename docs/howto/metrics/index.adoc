@@ -1,0 +1,14 @@
+
+// This is an assembly
+[id='metrics_{context}']
+= Metrics
+
+:parent-context: {context}
+
+{Thorntail} provides ways of exposing application metrics in order to track performance and service availability.
+
+include::ref_what-are-metrics.adoc[leveloffset=+1]
+
+include::proc_exposing-metrics.adoc[leveloffset=+1]
+
+:context: {parent-context}

@@ -40,6 +40,7 @@ include::howto/enabling-logging/index.adoc[leveloffset=+3]
 include::howto/logging-to-a-file/index.adoc[leveloffset=+3]
 
 include::howto/distributed-tracing/index.adoc[leveloffset=+2]
+include::howto/metrics/index.adoc[leveloffset=+2]
 
 ifndef::product[]
 
