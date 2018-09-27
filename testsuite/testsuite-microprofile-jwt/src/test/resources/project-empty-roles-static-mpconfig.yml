@@ -1,0 +1,26 @@
+mpjwt:
+  signerPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqOAjDHZU7FisNb9srcITQOpptmT06fbgHh9KiESS/FZJNsIyPs2Hok9qY9++N6boilCBxKnBsznprwcvQzMETkeGK/9EiRyWEyq4n8NRM4hoPsV42UYFV+8zWokwIjwVXtF5ZBM8IVxo70IloVnjIDoxA4ESGVG0WfgeRFEXAknMBnvcTzGuQdGwGdp/eKa32XMYyT+/X+urOHA8wHU8RNjcEVJht1H083wu26rsLdDLJeA3R1wd9OKzUrdTaKFWcJ1/l2F+ekNkZyi5E9M0JE6V1ujCr2KNNkH9OhopmqNCEddDAzksnF/cEn1jkgdjA/kFzWz3GiQgNQr4CGEczQIDAQAB
+  issuedBy: "http://testsuite-jwt-issuer.io"
+swarm:
+  microprofile:
+    jwtauth:
+      token:
+        issuedBy: "http://testsuite-jwt-issuer.io"
+  security:
+    security-domains:
+      testSuiteRealm:
+        jaspi-authentication:
+          login-module-stacks:
+            roles-lm-stack:
+              login-modules:
+                - login-module: rm
+                  code: org.wildfly.swarm.microprofile.jwtauth.deployment.auth.jaas.JWTLoginModule
+                  flag: required
+                  module-options:
+                    rolesProperties: emptyRoles.properties
+          auth-modules:
+            http:
+              code: org.wildfly.extension.undertow.security.jaspi.modules.HTTPSchemeServerAuthModule
+              module: org.wildfly.extension.undertow
+              flag: required
+              login-module-stack-ref: roles-lm-stack
