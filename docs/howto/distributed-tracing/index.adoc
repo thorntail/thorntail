@@ -1,0 +1,17 @@
+
+// This is an assembly
+[id='distributed-tracing_{context}']
+= Distributed tracing
+
+:parent-context: {context}
+
+{Thorntail} provides ways of simplifying the debugging of your application in a distributed environment.
+
+include::ref_what-is-distributed-tracing.adoc[leveloffset=+1]
+
+include::proc_tracing-a-single-service.adoc[leveloffset=+1]
+
+include::proc_tracing-a-complex-service.adoc[leveloffset=+1]
+
+:context: {parent-context}
+

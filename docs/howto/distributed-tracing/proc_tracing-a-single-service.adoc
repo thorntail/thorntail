@@ -1,0 +1,105 @@
+
+[id='tracing-a-single-service_{context}']
+= Tracing a single service
+
+In this example, you can see how to trace a stand-alone "hello world" service.
+This service does not make any external invocations, so the results are not particularly interesting, but it is useful for building more complex examples.
+
+For the purpose of demonstration, we only configure the Jaeger client to send information about all requests to the tracing server.
+In a production environment, you can configure more elaborate types of sampling.
+
+In this example, Jaeger runs locally using Docker.
+
+.Prerequisites
+
+* The Jaeger tracer running in a Docker container on `localhost`.
++
+--
+Launch the container using the following command:
+
+[source,bash]
+----
+# docker run -it --rm -p 6831:6831/udp -p 16686:16686 jaegertracing/all-in-one
+----
+
+Wait until the `Connected to peer` message is displayed in the console.
+--
+
+.Procedure
+
+. Include the `jaxrs`, `microprofile-opentracing` and `jaeger` fractions in the `pom.xml` file of your application:
++
+.pom.xml
+--
+[source,xml]
+----
+<dependencies>
+include::pom.xml[tag=tracing-dependencies,indent=2]
+</dependencies>
+----
+--
+
+. Configure the Jaeger tracer in the `project-defaults.yml` file of your application:
++
+--
+.project-defaults.yml
+[source,yaml]
+----
+include::src/main/resources/project-defaults.yml[]
+----
+
+All traces sent from this {Thorntail} application to the tracer server will be identified by the name specified in `service-name`.
+The name needs to be unique across the entire network of services.
+
+This example expects the Jaeger server to be running on `localhost` so that you do not have to configure its location.
+In a production environment, you must configure the `jaeger` fraction to specify where traces shall be sent.
+For example, in an Istio environment with Jaeger installed, the configuration might look like this:
+
+.project-istio.yml
+[source,yaml]
+----
+include::src/main/resources/project-istio.yml[]
+----
+--
+
+. Create a JAX-RS resource, for example:
++
+--
+.MySimpleResource.java
+[source,java]
+----
+include::src/main/java/org/wildfly/swarm/howto/tracing/MySimpleResource.java[tag=traced-resource-method,indent=0]
+----
+
+All JAX-RS resources are automatically traced.
+You can customize this behavior using the `@Traced` annotation from MicroProfile OpenTracing.
+--
+
+. Launch your application:
++
+[source,bash,opts="nowrap"]
+----
+$ mvn thorntail:run
+----
+
+. Invoke the traced endpoint several times:
++
+--
+[source,bash]
+----
+$ curl http://localhost:8080/simple
+Hello from traced endpoint
+----
+--
+
+. See the traces in Jaeger UI:
++
+--
+Open the Jaeger UI at link:http://localhost:16686/[http://localhost:16686/^], select `greeter` under _Service_ and click _Find Traces_.
+You can see all the requests you performed and basic information about them.
+--
+
+.Additional resources
+
+* For more information about configuring Jaeger sampling, see the link:https://www.jaegertracing.io/docs/latest/sampling/[Jaeger documentation^].
+

@@ -1,0 +1,5 @@
+swarm:
+  jaeger:
+    service-name: greeter
+    sampler-type: const
+    sampler-parameter: 1
