@@ -163,47 +163,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-enforcer-plugin</artifactId>
-         <version>1.4.1</version>
-         <dependencies>
-            <dependency>
-            <groupId>io.thorntail</groupId>
-            <artifactId>thorntail-enforcer-pattern-size</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>enforce</id>
-            <phase>verify</phase>
-            <configuration>
-              <rules>
-          <patternSizeRule implementation="org.wildfly.swarm.plugin.enforcer.patternsize.RequireFilePatternSize">
-            <requiredFilePatterns>
-                <requiredFilePattern>
-                  <maxSize>0</maxSize>
-                  <recursive>false</recursive>
-	          <directory>${project.build.directory}</directory>
-                  <pattern>wfswarm\S+[0-9]{5,}.\S{5,}</pattern>
-                </requiredFilePattern>
-               <requiredFilePattern>
-                  <maxSize>0</maxSize>
-                  <recursive>false</recursive>
-                  <directory>${java.io.tmpdir}</directory>
-                  <pattern>wfswarm\S+[0-9]{5,}.\S{5,}</pattern>
-               </requiredFilePattern>
-            </requiredFilePatterns>
-          </patternSizeRule>
-              </rules>
-            </configuration>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -302,11 +261,6 @@
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>build-resources</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>thorntail-enforcer-pattern-size</artifactId>
         <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
 
@@ -1001,7 +955,6 @@
   </pluginRepositories>
 
   <modules>
-    <module>maven-enforcer-pattern-size</module>
     <module>build-resources</module>
     <module>build-parent</module>
 

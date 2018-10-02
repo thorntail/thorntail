@@ -19,21 +19,6 @@
   <name>Test Suite: WebServices</name>
   <description>Test Suite: WebServices</description>
 
-  <build>
-   <plugins>
-     <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-              <id>enforce</id>
-              <phase>none</phase>
-          </execution>
-       </executions>
-     </plugin>
-   </plugins>
-  </build>
-
   <dependencies>
     <dependency>
       <groupId>io.thorntail</groupId>
