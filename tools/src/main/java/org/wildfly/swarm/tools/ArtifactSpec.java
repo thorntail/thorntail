@@ -27,6 +27,8 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
 
     public final String scope;
 
+    public String sha1sum;
+
     public File file;
 
     public boolean shouldGather = true;
@@ -41,6 +43,17 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
         super(groupId, artifactId, packaging, classifier, version);
         this.scope = scope;
         this.file = file;
+        this.sha1sum = null;
+    }
+
+    private ArtifactSpec(final String groupId,
+                        final String artifactId,
+                        final String version,
+                        final String classifier,
+                        final String sha1sum) {
+        super(groupId, artifactId, "jar", classifier, version);
+        this.sha1sum = sha1sum;
+        this.scope = "compile";
     }
 
     public static ArtifactSpec fromMscGav(String gav) {
@@ -52,6 +65,13 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
         } else {
             throw new RuntimeException("Invalid gav: " + gav);
         }
+    }
+
+    public static ArtifactSpec fromMavenDependencyDescription(String description) {
+        String[] parts = description.split("#");
+        ArtifactSpec result = fromMscGav(parts[0]);
+        result.sha1sum = parts[1];
+        return result;
     }
 
     public FractionDescriptor toFractionDescriptor() {
@@ -86,6 +106,4 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
     public String toString() {
         return mavenGav() + " [" + this.scope + "]";
     }
-
-
 }

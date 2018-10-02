@@ -15,30 +15,33 @@
  */
 package org.wildfly.swarm.tools;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.security.DigestException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarFile;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.wildfly.swarm.bootstrap.env.FractionManifest;
 import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
 import org.wildfly.swarm.fractions.FractionDescriptor;
+import org.wildfly.swarm.tools.utils.ChecksumUtil;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.jar.JarFile;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+
+import static java.util.Arrays.asList;
 
 /**
  * @author Bob McWhirter
@@ -47,8 +50,9 @@ import org.wildfly.swarm.fractions.FractionDescriptor;
  */
 public class DependencyManager implements ResolvedDependencies {
 
-    public DependencyManager(ArtifactResolver resolver) {
+    public DependencyManager(ArtifactResolver resolver, boolean removeAllThorntailLibs) {
         this.resolver = resolver;
+        this.removeAllThorntailLibs = removeAllThorntailLibs;
     }
 
     public void addAdditionalModule(Path module) {
@@ -118,16 +122,14 @@ public class DependencyManager implements ResolvedDependencies {
         resolveDependencies(declaredDependencies, autodetect);
 
         // sort out removals, modules, etc
+        analyzeFractionManifests();
         analyzeRemovableDependencies(declaredDependencies);
-        analyzeFractionManifests(declaredDependencies);
 
         this.dependencies.stream()
                 .filter(e -> !this.removableDependencies.contains(e))
-                .forEach(e -> {
-                    this.applicationManifest.addDependency(e.mavenGav());
-                });
+                .forEach(e -> this.applicationManifest.addDependency(e.mavenGav()));
 
-        analyzeModuleDependencies(declaredDependencies);
+        analyzeModuleDependencies();
 
         return this;
     }
@@ -141,66 +143,73 @@ public class DependencyManager implements ResolvedDependencies {
     private void resolveDependencies(DeclaredDependencies declaredDependencies, boolean autodetect) throws Exception {
         this.dependencies.clear();
 
+        // remove thorntail-runner dependencies, if some of them are needed, they should be re-added later
+        Collection<ArtifactSpec> explicitDependencies = new ArrayList<>(declaredDependencies.getDirectDependencies());
+
+        declaredDependencies.runnerDependency().ifPresent(runner -> {
+            filterOutRunnerDependencies(runner, explicitDependencies);
+        });
+
         // resolve the explicit deps to local files
         // expand to transitive if these are not pre-solved
         boolean resolveExplicitsTransitively = !declaredDependencies.isPresolved() || autodetect;
         Collection<ArtifactSpec> resolvedExplicitDependencies = resolveExplicitsTransitively ?
-                resolver.resolveAllArtifactsTransitively(declaredDependencies.getExplicitDependencies(), false) :
-                resolver.resolveAllArtifactsNonTransitively(declaredDependencies.getExplicitDependencies());
+                resolver.resolveAllArtifactsTransitively(explicitDependencies, false) :
+                resolver.resolveAllArtifactsNonTransitively(explicitDependencies);
 
         this.dependencies.addAll(resolvedExplicitDependencies);
 
+        Collection<ArtifactSpec> inputSet;
+        Collection<ArtifactSpec> resolvedTransientDependencies;
         // resolve transitives if not pre-computed (i.e. from maven/gradle plugin)
         if (declaredDependencies.getTransientDependencies().isEmpty()) {
-
-            Collection<ArtifactSpec> inputSet = declaredDependencies.getExplicitDependencies();
+            inputSet = explicitDependencies;
             Collection<ArtifactSpec> filtered = inputSet
                     .stream()
                     .filter(dep -> dep.type().equals(JAR)) // filter out composite types, like ear, war, etc
                     .collect(Collectors.toList());
 
-            Collection<ArtifactSpec> resolvedTransientDependencies = resolver.resolveAllArtifactsTransitively(
+            resolvedTransientDependencies = resolver.resolveAllArtifactsTransitively(
                     filtered, false
             );
 
             this.dependencies.addAll(resolvedTransientDependencies);
-
-            // add the remaining transitive ones that have not been filtered
-            Collection<ArtifactSpec> remainder = new ArrayList<>();
-            inputSet.forEach(remainder::add);
-            remainder.removeAll(resolvedTransientDependencies);
-
-            this.dependencies.addAll(
-                    resolver.resolveAllArtifactsNonTransitively(remainder)
-            );
         } else {
             // if transitive deps are pre-computed, resolve them to local files if needed
-            Collection<ArtifactSpec> inputSet = declaredDependencies.getTransientDependencies();
+            inputSet = declaredDependencies.getTransientDependencies();
             Collection<ArtifactSpec> filtered = inputSet
                     .stream()
                     .filter(dep -> dep.type().equals(JAR))
                     .collect(Collectors.toList());
 
-            Collection<ArtifactSpec> resolvedTransientDependencies = Collections.emptySet();
+            resolvedTransientDependencies = Collections.emptySet();
             if (filtered.size() > 0) {
 
                 resolvedTransientDependencies = resolver.resolveAllArtifactsNonTransitively(filtered);
                 this.dependencies.addAll(resolvedTransientDependencies);
             }
-
-            // add the remaining transitive ones that have not been filtered
-            Collection<ArtifactSpec> remainder = new ArrayList<>();
-            inputSet.forEach(remainder::add);
-            remainder.removeAll(resolvedTransientDependencies);
-
-            this.dependencies.addAll(
-                    resolver.resolveAllArtifactsNonTransitively(remainder)
-            );
         }
 
+        // add the remaining transitive ones that have not been filtered
+        Collection<ArtifactSpec> remainder = new ArrayList<>(inputSet);
+        remainder.removeAll(resolvedTransientDependencies);
+
+        this.dependencies.addAll(
+                resolver.resolveAllArtifactsNonTransitively(remainder)
+        );
     }
 
-    private void analyzeModuleDependencies(DeclaredDependencies declaredDependencies) {
+    private void filterOutRunnerDependencies(ArtifactSpec runnerJar, Collection<ArtifactSpec> explicitDependencies) {
+        removableDependencies.add(runnerJar);
+        explicitDependencies.remove(runnerJar);
+
+        mavenDependencies(runnerJar.file)
+                .stream()
+                .map(ArtifactSpec::fromMavenDependencyDescription)
+                .forEach(removableDependencies::add);
+    }
+
+    private void analyzeModuleDependencies() {
         this.dependencies.stream()
                 .filter(e -> e.type().equals(JAR))
                 .map(e -> e.file)
@@ -210,7 +219,25 @@ public class DependencyManager implements ResolvedDependencies {
     }
 
     private void analyzeModuleDependencies(ModuleAnalyzer analyzer) {
-        this.moduleDependencies.addAll(analyzer.getDependencies());
+        List<ArtifactSpec> thorntailDependencies = analyzer.getDependencies();
+        this.moduleDependencies.addAll(thorntailDependencies);
+    }
+
+    private void analyzeFractionManifests() {
+        this.dependencies.stream()
+                .map(e -> fractionManifest(e.file))
+                .filter(Objects::nonNull)
+                .peek(this.fractionManifests::add)
+                .forEach((manifest) -> {
+                    String module = manifest.getModule();
+                    if (module != null) {
+                        this.applicationManifest.addBootstrapModule(module);
+                    }
+                });
+
+        this.dependencies.stream()
+                .filter(e -> isFractionJar(e.file) || isConfigApiModulesJar(e.file))
+                .forEach((artifact) -> this.applicationManifest.addBootstrapArtifact(artifact.mavenGav()));
     }
 
     /**
@@ -221,43 +248,46 @@ public class DependencyManager implements ResolvedDependencies {
         Collection<ArtifactSpec> bootstrapDeps = this.dependencies.stream()
                 .filter(e -> isFractionJar(e.file))
                 .collect(Collectors.toSet());
+        if (removeAllThorntailLibs) {
+            String whitelistProperty = System.getProperty("thorntail.runner.user-dependencies");
+            Set<String> whitelist = new HashSet<>();
+            if (whitelistProperty != null) {
+                whitelist.addAll(asList(whitelistProperty.split(",")));
+            }
+            Set<String> uniqueMavenDependencies = new HashSet<>();
+            this.dependencies.stream()
+                    .map(e -> e.file)
+                    .flatMap(e -> mavenDependencies(e).stream())
+                    .forEach(uniqueMavenDependencies::add);
+            this.fractionManifests.stream()
+                    .flatMap(manifest -> manifest.getMavenDependencies().stream())
+                    .forEach(uniqueMavenDependencies::add);
 
-        List<ArtifactSpec> nonBootstrapDeps = new ArrayList<>();
-        nonBootstrapDeps.addAll(declaredDependencies.getExplicitDependencies());
-        nonBootstrapDeps.removeAll(bootstrapDeps);
+            uniqueMavenDependencies
+                    .stream()
+                    .map(ArtifactSpec::fromMavenDependencyDescription)
+                    .forEach(this.removableDependencies::add);
 
-        // re-resolve the application's dependencies minus any of our swarm dependencies
-        // [hb] TODO this can be improved to use the previous results if the data-structure allows to reason about the parent of transitive deps
-        Collection<ArtifactSpec> nonBootstrapTransitive = resolver.resolveAllArtifactsTransitively(nonBootstrapDeps, true);
+            removableDependencies.addAll(bootstrapDeps);
 
-        // do not remove .war or .rar or anything else weird-o like.
-        Set<ArtifactSpec> justJars = this.dependencies
-                .stream()
-                .filter(e -> e.type().equals(JAR))
-                .collect(Collectors.toSet());
+            removableDependencies.removeIf(dep -> whitelist.contains(dep.mscGav()));
+        } else {
+            List<ArtifactSpec> nonBootstrapDeps = new ArrayList<>();
+            nonBootstrapDeps.addAll(declaredDependencies.getDirectDependencies());
+            nonBootstrapDeps.removeAll(bootstrapDeps);
+            // re-resolve the application's dependencies minus any of our swarm dependencies
+            // [hb] TODO this can be improved to use the previous results if the data-structure allows to reason about the parent of transitive deps
+            Collection<ArtifactSpec> nonBootstrapTransitive = resolver.resolveAllArtifactsTransitively(nonBootstrapDeps, true);
 
-        this.removableDependencies.addAll(justJars);
-        this.removableDependencies.removeAll(nonBootstrapTransitive);
+            // do not remove .war or .rar or anything else weird-o like.
+            Set<ArtifactSpec> justJars = this.dependencies
+                    .stream()
+                    .filter(e -> e.type().equals(JAR))
+                    .collect(Collectors.toSet());
 
-    }
-
-    private void analyzeFractionManifests(DeclaredDependencies declaredDependencies) {
-        this.dependencies.stream()
-                .map(e -> fractionManifest(e.file))
-                .filter(e -> e != null)
-                .forEach((manifest) -> {
-                    String module = manifest.getModule();
-                    if (module != null) {
-                        this.applicationManifest.addBootstrapModule(module);
-                    }
-                });
-
-        this.dependencies.stream()
-                .filter(e -> isFractionJar(e.file) || isConfigApiModulesJar(e.file))
-                .forEach((artifact) -> {
-                    this.applicationManifest.addBootstrapArtifact(artifact.mavenGav());
-                });
-
+            this.removableDependencies.addAll(justJars);
+            this.removableDependencies.removeAll(nonBootstrapTransitive);
+        }
     }
 
     Set<ArtifactSpec> getRemovableDependencies() {
@@ -271,41 +301,43 @@ public class DependencyManager implements ResolvedDependencies {
             return false;
         }
 
-        String path = node.getPath().get();
-        try (final InputStream inputStream = asset.openStream()) {
-            byte[] checksum = checksum(inputStream);
+        if (removableCheckSums == null) {
+            initCheckSums();
+        }
 
-            return this.removableDependencies.stream()
-                    .filter(e -> path.endsWith(e.artifactId() + "-" + e.version() + ".jar"))
-                    .map(e -> {
-                        try (final FileInputStream in = new FileInputStream(e.file)) {
-                            return checksum(in);
-                        } catch (IOException | NoSuchAlgorithmException | DigestException e1) {
-                            return null;
-                        }
-                    })
-                    .filter(e -> e != null)
-                    .anyMatch(e -> {
-                        return Arrays.equals(e, checksum);
-                    });
-        } catch (NoSuchAlgorithmException | IOException | DigestException e) {
+        try (final InputStream inputStream = asset.openStream()) {
+            String checksum = ChecksumUtil.calculateChecksum(inputStream);
+
+            return this.removableCheckSums.contains(checksum);
+        } catch (NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
         }
 
         return false;
     }
 
-    protected byte[] checksum(InputStream in) throws IOException, NoSuchAlgorithmException, DigestException {
-        byte[] buf = new byte[1024];
-        int len = 0;
+    private synchronized void initCheckSums() {
+        if (removableCheckSums == null) {
+            removableCheckSums = removableDependencies.stream()
+                    .map(this::checksum)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+        }
+    }
 
-        MessageDigest md = MessageDigest.getInstance("SHA1");
-
-        while ((len = in.read(buf)) >= 0) {
-            md.update(buf, 0, len);
+    private String checksum(ArtifactSpec spec) {
+        if (spec.sha1sum != null) {
+            return spec.sha1sum;
         }
 
-        return md.digest();
+        try {
+            try (FileInputStream stream = new FileInputStream(spec.file)) {
+                return ChecksumUtil.calculateChecksum(stream);
+            }
+        } catch (Exception any) {
+            any.printStackTrace();
+            return null;
+        }
     }
 
     protected boolean isConfigApiModulesJar(File file) {
@@ -333,6 +365,31 @@ public class DependencyManager implements ResolvedDependencies {
             // ignore
         }
         return false;
+    }
+
+    protected List<String> mavenDependencies(File file) {
+        if (file == null) {
+            return Collections.emptyList();
+        }
+
+        List<String> resultList = new ArrayList<>();
+
+        try (JarFile jar = new JarFile(file)) {
+            ZipEntry entry = jar.getEntry("META-INF/maven-dependencies.txt");
+            if (entry != null) {
+                InputStream inputStream = jar.getInputStream(entry);
+                try (InputStreamReader streamReader = new InputStreamReader(inputStream);
+                     BufferedReader reader = new BufferedReader(streamReader)) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        resultList.add(line);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // ignore
+        }
+        return resultList;
     }
 
     protected FractionManifest fractionManifest(File file) {
@@ -369,9 +426,13 @@ public class DependencyManager implements ResolvedDependencies {
 
     private final WildFlySwarmManifest applicationManifest = new WildFlySwarmManifest();
 
+    private final List<FractionManifest> fractionManifests = new ArrayList<>();
+
     private final Set<ArtifactSpec> dependencies = new HashSet<>();
 
     private final Set<ArtifactSpec> removableDependencies = new HashSet<>();
+
+    private volatile Set<String> removableCheckSums;
 
     private final Set<ArtifactSpec> moduleDependencies = new HashSet<>();
 
@@ -379,4 +440,5 @@ public class DependencyManager implements ResolvedDependencies {
 
     private ArtifactResolver resolver;
 
+    private final boolean removeAllThorntailLibs;
 }

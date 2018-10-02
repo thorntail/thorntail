@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.wildfly.swarm.bootstrap.env.DependencyTree;
@@ -36,7 +37,7 @@ import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
  */
 public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
 
-    public Collection<ArtifactSpec> getExplicitDependencies() {
+    public Collection<ArtifactSpec> getDirectDependencies() {
         return getDirectDeps();
     }
 
@@ -44,7 +45,9 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
         if (null == allTransient) {
             allTransient = new HashSet<>();
             for (ArtifactSpec directDep : getDirectDeps()) {
-                allTransient.addAll(getTransientDependencies(directDep));
+                if (!isThorntailRunner(directDep)) {
+                    allTransient.addAll(getTransientDependencies(directDep));
+                }
             }
         }
         return allTransient;
@@ -76,6 +79,14 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
      */
     public boolean isPresolved() {
         return getTransientDependencies().size() > 0;
+    }
+
+    public Optional<ArtifactSpec> runnerDependency() {
+        return getDirectDependencies().stream().filter(this::isThorntailRunner).findAny();
+    }
+
+    private boolean isThorntailRunner(ArtifactSpec artifactSpec) {
+        return artifactSpec.groupId().equals("io.thorntail") && artifactSpec.artifactId().equals("thorntail-runner");
     }
 
     public static ArtifactSpec createSpec(String gav) {

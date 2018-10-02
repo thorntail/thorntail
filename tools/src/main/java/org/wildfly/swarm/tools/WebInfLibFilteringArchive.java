@@ -46,6 +46,9 @@ public class WebInfLibFilteringArchive extends GenericArchiveImpl {
     protected void filter(Set<ArchivePath> remove, Node node, ResolvedDependencies resolvedDependencies) {
         String path = node.getPath().get();
         if (path.startsWith("/WEB-INF/lib") && path.endsWith(".jar")) {
+            if (path.contains("thorntail-runner")) {
+                remove.add(node.getPath());
+            }
             if (resolvedDependencies.isRemovable(node)) {
                 remove.add(node.getPath());
             }
