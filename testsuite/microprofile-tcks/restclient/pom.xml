@@ -181,24 +181,6 @@
             </configuration>
          </plugin>
 
-         <plugin>
-           <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-enforcer-plugin</artifactId>
-            <dependencies>
-               <dependency>
-              <groupId>io.thorntail</groupId>
-              <artifactId>thorntail-enforcer-pattern-size</artifactId>
-              <version>${project.version}</version>
-            </dependency>
-          </dependencies>
-          <executions>
-            <execution>
-              <id>enforce</id>
-              <phase>none</phase>
-            </execution>
-           </executions>
-        </plugin>
-
       </plugins>
    </build>
 
