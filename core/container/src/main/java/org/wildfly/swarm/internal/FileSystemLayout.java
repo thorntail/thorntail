@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,14 @@
  */
 package org.wildfly.swarm.internal;
 
+import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.jboss.logging.Logger;
 
 /**
  * Build tool filesystem abstraction for use in IDE:run cases.
@@ -28,6 +31,11 @@ import java.util.UUID;
  * @since 02/08/16
  */
 public abstract class FileSystemLayout {
+
+    /**
+     * System property for overriding the layout class that should be initialized.
+     */
+    public static final String CUSTOM_LAYOUT_CLASS = "thorntail.filesystem.layout.class";
 
     public static final String MAVEN_CMD_LINE_ARGS = "MAVEN_CMD_LINE_ARGS";
 
@@ -76,6 +84,43 @@ public abstract class FileSystemLayout {
      */
     public static FileSystemLayout create(String root) {
 
+        // THORN-2178: Check if a System property has been set to a specific implementation class.
+        String implClassName = System.getProperty(CUSTOM_LAYOUT_CLASS);
+        if (implClassName != null) {
+            implClassName = implClassName.trim();
+            if (!implClassName.isEmpty()) {
+                FileSystemLayout layout = null;
+                // Attempt to load the specified class implementation.
+                ClassLoader loader = Thread.currentThread().getContextClassLoader();
+                try {
+                    Class<?> clazz = loader.loadClass(implClassName);
+                    // Check if clazz is an implementation of FileSystemLayout or not.
+                    if (FileSystemLayout.class.isAssignableFrom(clazz)) {
+                        Class<? extends FileSystemLayout> implClazz = clazz.asSubclass(FileSystemLayout.class);
+                        // Check if we have an appropriate constructor or not.
+                        Constructor<? extends FileSystemLayout> ctor = implClazz.getDeclaredConstructor(String.class);
+                        layout = ctor.newInstance(root);
+                    } else {
+                        String msg = String.format("%s does not subclass %s", implClassName, FileSystemLayout.class.getName());
+                        LOG.warn(SwarmMessages.MESSAGES.invalidFileSystemLayoutProvided(msg));
+                    }
+                } catch (ReflectiveOperationException e) {
+                    Throwable cause = e.getCause();
+                    String msg = String.format("Unable to instantiate layout class (%s) due to: %s", implClassName,
+                                               cause != null ? cause.getMessage() : e.getMessage());
+                    LOG.warn(SwarmMessages.MESSAGES.invalidFileSystemLayoutProvided(msg));
+                    LOG.debug(SwarmMessages.MESSAGES.invalidFileSystemLayoutProvided(msg), e);
+                    throw SwarmMessages.MESSAGES.cannotIdentifyFileSystemLayout(msg);
+                }
+
+                if (layout != null) {
+                    return layout;
+                }
+            } else {
+                LOG.warn(SwarmMessages.MESSAGES.invalidFileSystemLayoutProvided("Implementation class name is empty."));
+            }
+        }
+
         String mavenBuildFile = resolveMavenBuildFileName();
 
         if (Files.exists(Paths.get(root, mavenBuildFile))) {
@@ -101,6 +146,15 @@ public abstract class FileSystemLayout {
         return buildFileName;
     }
 
+    /**
+     * Constructs a new instance of {@code FileSystemLayout} which is rooted at the given path.
+     *
+     * @param path the root path for the layout.
+     */
+    protected FileSystemLayout(String path) {
+        this.rootPath = Paths.get(path);
+    }
+
     public abstract Path getRootPath();
 
     private static final String POM_XML = "pom.xml";
@@ -119,8 +173,11 @@ public abstract class FileSystemLayout {
 
     private static final String BUILD_RESOURCES_MAIN = "build/resources/main";
 
+    private static final Logger LOG = Logger.getLogger("org.wildfly.swarm");
+
     protected static final String TYPE_JAR = "jar";
 
     protected static final String TYPE_WAR = "war";
 
+    protected final Path rootPath;
 }

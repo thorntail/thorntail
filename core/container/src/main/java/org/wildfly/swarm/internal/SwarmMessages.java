@@ -153,6 +153,8 @@ public interface SwarmMessages extends BasicLogger {
     @Message(id = 31, value = "Registered archive-preparer: %s")
     void registeredArchivePreparer(String preparer);
 
+    @Message(id = 32, value = "Invalid file system layout: %s")
+    String invalidFileSystemLayoutProvided(String message);
 
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------

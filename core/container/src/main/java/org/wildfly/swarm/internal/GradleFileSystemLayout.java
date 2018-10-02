@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,8 +49,6 @@ public class GradleFileSystemLayout extends FileSystemLayout {
      */
     public static final String BUILD_DIR_NAME = "build";
 
-    private final Path rootPath;
-
     private final Path sourceRoot;
 
     private final Path buildRoot;
@@ -58,7 +56,7 @@ public class GradleFileSystemLayout extends FileSystemLayout {
     private final Path classesDir;
 
     GradleFileSystemLayout(String root) {
-        this.rootPath = Paths.get(root);
+        super(root);
 
         // 1. Determine the sources root.
         //      - See if the developer has overridden the path.

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author Heiko Braun
@@ -28,7 +27,7 @@ import java.nio.file.Paths;
 public class MavenFileSystemLayout extends FileSystemLayout {
 
     MavenFileSystemLayout(String root) {
-        this.rootPath = Paths.get(root);
+        super(root);
     }
 
     @Override
@@ -96,5 +95,4 @@ public class MavenFileSystemLayout extends FileSystemLayout {
 
     private static final String PACKAGING_WAR = "<packaging>war</packaging>";
 
-    private final Path rootPath;
 }
