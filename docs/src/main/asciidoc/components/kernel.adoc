@@ -4,7 +4,7 @@
 .Maven Coordinates
 
 The core of {project_name} is usually brought in transitively through other dependencies.
-It's Maven coordinates are:
+Its Maven coordinates are:
 
 [source,xml,subs="verbatim,attributes"]
 ----
@@ -65,11 +65,11 @@ These defaults have a priority of `-1000` to allow easy overriding of them.
 |===
 |Path|Priority|Notes
 
-|`META-INF/framework-defaults.propertes`
+|`META-INF/framework-defaults.properties`
 |-1000
 |Located via classloader and provided by framework components.
 
-|`META-INF/microprofile.propertes`
+|`META-INF/microprofile.properties`
 |100
 |Located via classloader.
 
@@ -114,7 +114,7 @@ These defaults have a priority of `-1000` to allow easy overriding of them.
 .Interpolation
 
 Configuration values may be interpreted and assembled from other values. 
-Interpolation expressions are wrapped within delimeters of `${' and `}'. 
+Interpolation expressions are wrapped within delimiters of `${` and `}`. 
 Additionally, expressions may provide a default value, which may in turn be another expression or a literal.
 All interpolation is performed before using the value converters to convert to the desired type.
 
@@ -134,7 +134,7 @@ If no such value exists, the value of `8080` will be provided, and converted as 
 
 `${web.management.port:${web.primary.port:8080}}`::
 Will be replaced with the current value of the configuration item `web.management.port` if it exists.
-If not such value exists, will be replaced by the current value of the configuration item `web.primary.port` if it exists.
+If no such value exists, will be replaced by the current value of the configuration item `web.primary.port` if it exists.
 If no such value exists, the value of `8080` will be provided, and converted as appropriate.
 
 `thing-${thing.type:default}-impl`::
