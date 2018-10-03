@@ -3,7 +3,7 @@ require 'open-uri'
 
 versions = []
 
-open('https://raw.githubusercontent.com/wildfly-swarm/docs.wildfly-swarm.io/master/versions.txt') do |io|
+open('https://raw.githubusercontent.com/thorntail/docs.thorntail.io/master/versions.txt') do |io|
   versions = io.readlines
 end
 
@@ -16,7 +16,7 @@ seenSnapshot = false
 versions.reject! {|e|
   puts "test #{e}"
   result = false;
-  if ( e.include? '-SNAPSHOT' )
+  if ( !e.include?('4.0.0') && e.include?('-SNAPSHOT') )
     if ( seenSnapshot )
       puts "reject-1 #{e}"
       result = true;

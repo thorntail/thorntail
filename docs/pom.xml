@@ -130,7 +130,7 @@
             </goals>
             <phase>deploy</phase>
             <configuration>
-              <pubScmUrl>scm:git:git@github.com:wildfly-swarm/docs.wildfly-swarm.io.git</pubScmUrl>
+              <pubScmUrl>scm:git:git@github.com:thorntail/docs.thorntail.io.git</pubScmUrl>
               <dryRun>false</dryRun>
               <skipDeletedFiles>true</skipDeletedFiles>
               <content>${project.build.directory}/generated-docs/</content>

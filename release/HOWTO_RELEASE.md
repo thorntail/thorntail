@@ -106,7 +106,7 @@ Run the local wildfly-swarm/release/fetch-notes.js with node.js, passing the ver
 Go to the local `wildfly-swarm.io`.
 
 * Prepend the new version to VERSIONS array in `versions.js`
-* In `build.js` add redirects to generated docs site at `docs.wildfly-swarm.io` and update `/docs/HEAD` to point to new SNAPSHOT
+* In `build.js` add redirects to generated docs site at `docs.thorntail.io` and update `/docs/HEAD` to point to new SNAPSHOT
 * Update `src/documentation.adoc`, moving the previous release to the
   previous release section, and changing the current release pointers.
 
