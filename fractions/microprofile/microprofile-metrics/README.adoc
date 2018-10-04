@@ -7,7 +7,7 @@ To use this in your project you need the following in your pom.xml
 [source,xml]
 ----
    <dependency>
-      <groupId>org.wildfly.swarm</groupId>
+      <groupId>io.thorntail</groupId>
       <artifactId>microprofile-metrics</artifactId>
     </dependency>
 ----
@@ -22,7 +22,7 @@ NOTE: Exposing application metrics currently only works if you chose `war` packa
 ----
 <project>
   <groupId>org.example</groupId>
-  <artifactId>swarm-demo</artifactId>
+  <artifactId>thorntail-demo</artifactId>
   <packaging>war</packaging> <!--1-->
 ----
 <1> war packaging
