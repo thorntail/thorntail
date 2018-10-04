@@ -7,7 +7,7 @@ site_dir=$1
 tmp_dir=$2
 version=$3
 
-git clone git@github.com:wildfly-swarm/wildfly-swarm-javadocs.git $tmp_dir
+git clone git@github.com:thorntail/javadocs.git $tmp_dir
 cd $tmp_dir
 git checkout gh-pages
 git pull
