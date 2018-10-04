@@ -3,7 +3,6 @@ package org.wildfly.swarm.jolokia;
 import java.io.InputStream;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -35,6 +34,7 @@ public class JolokiaSecuredTest {
         return deployment;
     }
 
+    // Unable to do the below with yaml at present
     @CreateSwarm
     public static Swarm createSwarm() throws Exception {
         Swarm swarm = new Swarm()

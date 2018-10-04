@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.swagger.webapp;
 
-import static org.fest.assertions.Assertions.assertThat;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -27,10 +25,9 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.cdi.CDIFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
+
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author John Alstrom
@@ -42,16 +39,8 @@ public class SwaggerWebAppDefaultUrlChangerArquillianTest {
     @Deployment(testable = false)
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-        deployment.addAsResource("project-application-path.yml");
+        deployment.addAsResource("project-application-path.yml", "/project-defaults.yml");
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        Swarm swarm = new Swarm();
-        swarm.fraction(new CDIFraction());
-        swarm.withProfile("application-path");
-        return swarm;
     }
 
     @RunAsClient

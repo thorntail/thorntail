@@ -23,13 +23,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
-import org.wildfly.swarm.spi.api.OutboundSocketBinding;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -42,29 +38,9 @@ public class RemoteMessagingArquillianTest {
     @Deployment
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
-        deployment.addModule( "org.wildfly.swarm.messaging" );
+        deployment.addAsResource("remote-messaging.yml", "project-defaults.yml");
+        deployment.addModule("org.wildfly.swarm.messaging");
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm()
-                .outboundSocketBinding("standard-sockets",
-                        new OutboundSocketBinding("remote-activemq")
-                                .remoteHost("localhost")
-                                .remotePort(61616))
-                .fraction(new MessagingFraction()
-                        .server("default", server -> {
-                            server.remoteConnector("remote-activemq", connector -> {
-                                connector.socketBinding("remote-activemq");
-                            });
-                            server.pooledConnectionFactory("remote", factory -> {
-                                factory.connectors("remote-activemq");
-                                factory.entry("java:/jms/remoteCF");
-                            });
-                        })
-                );
     }
 
     @ArquillianResource

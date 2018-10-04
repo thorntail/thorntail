@@ -1,0 +1,4 @@
+swarm:
+  messaging:
+    remote:
+      jndi-name: java:/jms/remoteCF

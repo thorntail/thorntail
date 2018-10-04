@@ -25,8 +25,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.config.resource.adapters.ResourceAdapter.TransactionSupport;
 import org.wildfly.swarm.config.resource.adapters.resource_adapter.ConfigProperties;
 
@@ -55,11 +53,6 @@ public class ResourceAdaptersIronjacamarFromRaTest {
         deploymentRar.addAsLibraries(files[0]);
         deploymentRar.setResourceAdapterXML("ra.xml");
         return deploymentRar;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new ResourceAdapterFraction());
     }
 
     @Test

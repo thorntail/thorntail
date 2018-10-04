@@ -15,13 +15,8 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.config.naming.Binding;
-import org.wildfly.swarm.naming.NamingFraction;
 import org.wildfly.swarm.undertow.WARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -43,19 +38,10 @@ public class SWARM582Test {
                 .addClass(EchoServiceClient.class)
                 .addClass(EchoServiceClientWithHandler.class)
                 .addAsWebInfResource(new ClassLoaderAsset("handler-chain.xml"), "classes/org/wildfly/swarm/webservices/handler-chain.xml")
-                .addClass(MySOAPHandler.class);
+                .addClass(MySOAPHandler.class)
+                .addAsResource("project-defaults.yml");
 
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm create() throws Exception {
-        return new Swarm()
-                .fraction(new NamingFraction()
-                                  .binding(new Binding("java:global/ws/echo")
-                                                   .bindingType(Binding.BindingType.SIMPLE)
-                                                   .type(URL.class.getCanonicalName())
-                                                   .value("http://localhost:8080/ws/echo?wsdl")));
     }
 
     @Test

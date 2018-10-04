@@ -28,7 +28,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
-import org.wildfly.swarm.camel.core.test.RouteBuilderA;
 
 
 /**
@@ -38,21 +37,6 @@ import org.wildfly.swarm.camel.core.test.RouteBuilderA;
 @RunWith(Arquillian.class)
 @DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class SimpleCoreTransformTest {
-
-    /*
-    @Deployment
-    public static JARArchive deployment() {
-        JARArchive archive = ShrinkWrap.create(JARArchive.class);
-        archive.addAsResource("spring/simple-camel-context.xml");
-        archive.addClasses(RouteBuilderA.class);
-        return archive;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new CamelFraction());
-    }
-    */
 
     @Test
     public void testSimpleTransform() throws Exception {

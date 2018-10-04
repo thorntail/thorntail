@@ -35,7 +35,7 @@ import org.wildfly.swarm.logging.LoggingFraction;
 public class ZipkinJAXRSTest {
 
     private static final String LOG_FILE = System.getProperty("user.dir") + File.separator + "swarm-test.log";
-    private static final String SERVICE_NAME = "wildfly-swarm-service";
+    private static final String SERVICE_NAME = "thorntail-service";
     private static final String SPAN_COLLECTOR = "com.github.kristofa.brave.LoggingSpanCollector";
 
 
@@ -50,6 +50,7 @@ public class ZipkinJAXRSTest {
         return deployment;
     }
 
+    // Unable to remove @CreateSwarm at present as we need a way to track the log file name
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
         System.out.println("Log file: " + LOG_FILE);
@@ -69,8 +70,7 @@ public class ZipkinJAXRSTest {
 
                                 })
                                 .rootLogger(Level.INFO, "CONSOLE", "FILE")
-                )
-                .fraction(new ZipkinFraction("wildfly-swarm-service"));
+                );
     }
 
     @Test

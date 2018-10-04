@@ -1,0 +1,9 @@
+swarm:
+  logging:
+    loggers:
+      cheese.gouda:
+        level: FINEST
+        handlers:
+          - CONSOLE
+      cheese.cheddar:
+        level: OFF

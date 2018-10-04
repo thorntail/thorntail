@@ -29,8 +29,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.camel.core.test.RouteBuilderA;
 import org.wildfly.swarm.spi.api.JARArchive;
 
@@ -48,11 +46,6 @@ public class SimpleCoreTransformTest {
         archive.addAsResource("spring/simple-camel-context.xml");
         archive.addClasses(RouteBuilderA.class);
         return archive;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new CamelCoreFraction());
     }
 
     @Test

@@ -20,10 +20,7 @@ import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
-import org.wildfly.swarm.transactions.TransactionsFraction;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -49,12 +46,6 @@ public class SWARM_513Test {
 
         deployment.addAsResource(projectDefaults, "/project-defaults.yml");
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm()
-                .fraction(TransactionsFraction.createDefaultFraction());
     }
 
     @Test

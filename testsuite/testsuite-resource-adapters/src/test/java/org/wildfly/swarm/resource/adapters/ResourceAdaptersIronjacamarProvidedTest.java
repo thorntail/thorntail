@@ -25,8 +25,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 
 /**
  * @author Ralf Battenfeld
@@ -42,11 +40,6 @@ public class ResourceAdaptersIronjacamarProvidedTest {
         deploymentRar.addAsManifestResource("ironjacamar.xml", "ironjacamar.xml");
         deploymentRar.setResourceAdapterXML("ra.xml");
         return deploymentRar;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new ResourceAdapterFraction());
     }
 
     @Test

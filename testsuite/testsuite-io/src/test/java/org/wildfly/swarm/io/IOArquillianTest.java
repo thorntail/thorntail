@@ -28,8 +28,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.junit.Assert.assertNotNull;
@@ -45,11 +43,6 @@ public class IOArquillianTest {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newSwarm() throws Exception {
-        return new Swarm().fraction(new IOFraction().applyDefaults());
     }
 
     @ArquillianResource

@@ -8,8 +8,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -19,16 +17,9 @@ public class ApplicationPathTest extends SimpleHttp {
     @Deployment(testable = false)
     public static Archive createDeployment() throws Exception {
         return ShrinkWrap.create(JAXRSArchive.class, "app.war")
-                .addAsResource("project-application-path.yml")
+                .addAsResource("project-application-path.yml", "/project-defaults.yml")
                 .addClass(MyResource.class)
                 .addAllDependencies();
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm()
-                .fraction(new JAXRSFraction())
-                .withProfile("application-path");
     }
 
     @Test

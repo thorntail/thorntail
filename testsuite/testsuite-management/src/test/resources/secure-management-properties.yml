@@ -1,0 +1,19 @@
+swarm:
+  management:
+    bind:
+      interface: management
+    http-interface-management-interface:
+      console-enabled: false
+      http-upgrade:
+        enabled: true
+      security-realm: ManagementRealm
+      socket-binding: management-http
+    security-realms:
+      ManagementRealm:
+        plug-in-authentication:
+          name: thorntail-in-memory
+          properties:
+            bob.hash:
+              value: 9b511b00aa7f2265621e38d2cf665f2f
+        plug-in-authorization:
+          name: thorntail-in-memory

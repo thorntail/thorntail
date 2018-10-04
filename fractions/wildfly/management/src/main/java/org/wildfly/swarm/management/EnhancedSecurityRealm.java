@@ -23,7 +23,7 @@ import org.wildfly.swarm.spi.api.annotations.Configurable;
  */
 public class EnhancedSecurityRealm extends SecurityRealm<EnhancedSecurityRealm> {
 
-    public static final String IN_MEMORY_PLUGIN_NAME = "swarm-in-memory";
+    public static final String IN_MEMORY_PLUGIN_NAME = "thorntail-in-memory";
 
     public EnhancedSecurityRealm(String key) {
         super(key);

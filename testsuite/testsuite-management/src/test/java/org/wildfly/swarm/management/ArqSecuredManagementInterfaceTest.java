@@ -17,7 +17,6 @@ package org.wildfly.swarm.management;
 
 import java.security.Security;
 
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.controller.PathAddress;
@@ -26,15 +25,12 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.controller.client.helpers.Operations;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.security.WildFlyElytronProvider;
 import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
+import org.wildfly.swarm.management.AuthCallbackHandler;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -42,33 +38,8 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
+@DefaultDeployment
 public class ArqSecuredManagementInterfaceTest {
-
-    @Deployment(testable = false)
-    public static Archive createDeployment() {
-        JARArchive deployment = ShrinkWrap.create(JARArchive.class, "myapp.jar");
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
-        return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm()
-                .fraction(
-                        ManagementFraction.createDefaultFraction()
-                                .httpInterfaceManagementInterface((iface) -> {
-                                    iface.securityRealm("TestRealm");
-                                })
-                                .securityRealm("TestRealm", (realm) -> {
-                                    realm.inMemoryAuthentication((authn) -> {
-                                        authn.add("bob", "tacos!", true);
-                                    });
-                                    realm.inMemoryAuthorization((authz) -> {
-                                        authz.add("bob", "admin");
-                                    });
-                                })
-                );
-    }
 
     @Test
     @RunAsClient
@@ -77,7 +48,7 @@ public class ArqSecuredManagementInterfaceTest {
         Security.addProvider(new WildFlyElytronProvider());
 
         ModelControllerClient client = ModelControllerClient.Factory.create(
-                "localhost", 9990, new AuthCallbackHandler("TestRealm", "bob", "tacos!")
+                "localhost", 9990, new AuthCallbackHandler("ManagementRealm", "bob", "tacos!")
         );
 
         ModelNode response = client.execute(Operations.createOperation("whoami"));
@@ -119,7 +90,7 @@ public class ArqSecuredManagementInterfaceTest {
         assertThat(myappResult).isNotNull();
         assertThat(myappResult.isDefined()).isTrue();
 
-        assertThat(myappResult.get("name").asString()).isEqualTo("myapp.jar");
+        assertThat(myappResult.get("name").asString()).isEqualTo("ArqSecuredManagementInterfaceTest.war");
 
     }
 

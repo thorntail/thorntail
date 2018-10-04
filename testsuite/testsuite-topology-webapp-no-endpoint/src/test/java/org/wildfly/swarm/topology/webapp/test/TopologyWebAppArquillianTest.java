@@ -34,18 +34,6 @@ import static org.junit.Assert.assertNotNull;
 @DefaultDeployment(type = DefaultDeployment.Type.WAR)
 public class TopologyWebAppArquillianTest {
 
-    /*
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        TopologyWebAppFraction topology = new TopologyWebAppFraction();
-        topology.proxyService("myService", "/my-proxy");
-
-        return new Swarm()
-                .fraction(topology)
-                .fraction(new JGroupsTopologyFraction());
-    }
-    */
-
     @ArquillianResource
     private ServiceRegistry registry;
 

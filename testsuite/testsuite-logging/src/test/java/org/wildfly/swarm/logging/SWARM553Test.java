@@ -80,6 +80,7 @@ public class SWARM553Test {
 
     }
 
+    // Unable to remove as we're relying on a specific log file name in the test
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
         return new Swarm()

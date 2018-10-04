@@ -31,6 +31,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.Swarm;
@@ -54,6 +55,7 @@ public class KeycloakMultitenancyTest {
         return deployment;
     }
 
+    // For some reason doing this in a static or @BeforeClass doesn't work
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
         URL migrationRealmUrl = KeycloakMultitenancyTest.class.getResource("/wildfly-swarm-keycloak-example-realm.json");

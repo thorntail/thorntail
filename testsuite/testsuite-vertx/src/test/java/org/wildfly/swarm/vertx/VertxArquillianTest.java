@@ -26,10 +26,6 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.cdi.CDIFraction;
-import org.wildfly.swarm.ejb.EJBFraction;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -49,14 +45,6 @@ public class VertxArquillianTest {
         deployment.addClass(VertxProvider.class);
         deployment.addModule("io.vertx.jca", "api");
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm()
-                .fraction(new CDIFraction())
-                .fraction(new VertxFraction())
-                .fraction(EJBFraction.createDefaultFraction());
     }
 
     @Inject

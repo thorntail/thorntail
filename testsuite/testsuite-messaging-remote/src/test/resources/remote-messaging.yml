@@ -1,0 +1,20 @@
+swarm:
+  network:
+    socket-binding-groups:
+      standard-sockets:
+        outbound-socket-bindings:
+          remote-activemq:
+            remote-host: localhost
+            remote-port: 61616
+  messaging-activemq:
+    servers:
+      default:
+        pooled-connection-factories:
+          remote:
+            connectors:
+              - remote-activemq
+            entries:
+              - java:/jms/remoteCF
+        remote-connectors:
+          remote-activemq:
+            socket-binding: remote-activemq

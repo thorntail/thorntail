@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.management.test;
+package org.wildfly.swarm.management;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

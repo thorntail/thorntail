@@ -25,11 +25,8 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -43,18 +40,8 @@ public class JMXRemoteManagementAutoEndpointArquillianTest {
     @Deployment(testable = false)
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
+        deployment.addAsResource("auto-endpoints.yml", "project-defaults.yml");
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newSwarm() throws Exception {
-        return new Swarm().fraction(
-                new JMXFraction()
-                        .expressionExposeModel()
-                        .resolvedExposeModel()
-                        .jmxRemotingConnector()
-        );
     }
 
     @Test

@@ -15,6 +15,13 @@
  */
 package org.wildfly.swarm.opentracing;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.stream.Collectors;
+
 import io.opentracing.contrib.tracerresolver.TracerResolver;
 import io.opentracing.mock.MockTracer;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -23,16 +30,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.undertow.WARArchive;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -54,14 +52,9 @@ public class SkipPatternTest {
         // this is a simple servlet, that we can hit with our tests
         deployment.addClass(SimpleServlet.class);
         deployment.addClass(HealthServlet.class);
-        deployment.addAsResource("project-skip-pattern.yml");
+        deployment.addAsResource("project-skip-pattern.yml", "/project-defaults.yml");
 
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().withProfile("skip-pattern").fraction(new OpenTracingFraction());
     }
 
     @Test

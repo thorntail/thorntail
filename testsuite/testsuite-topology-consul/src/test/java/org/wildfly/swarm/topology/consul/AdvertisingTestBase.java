@@ -15,6 +15,9 @@
  */
 package org.wildfly.swarm.topology.consul;
 
+import java.io.IOException;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -22,12 +25,6 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.Map;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -43,9 +40,8 @@ abstract class AdvertisingTestBase {
     protected static final String consulUrl = System.getProperty("consulUrl", "http://localhost:8500");
     protected static final String servicesUrl = String.format("%s/v1/catalog/services", consulUrl);
 
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new ConsulTopologyFraction(new URI(consulUrl).toURL()));
+    static {
+        System.setProperty("swarm.topology.consul.url", consulUrl);
     }
 
     protected Map<?, ?> getDefinedServicesAsMap() throws IOException {

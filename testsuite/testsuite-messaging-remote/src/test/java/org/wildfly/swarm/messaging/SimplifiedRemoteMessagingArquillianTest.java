@@ -23,11 +23,8 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.junit.Assert.assertNotNull;
@@ -41,22 +38,9 @@ public class SimplifiedRemoteMessagingArquillianTest {
     @Deployment
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
-        deployment.addModule( "org.wildfly.swarm.messaging" );
+        deployment.addAsResource("remote-simple.yml", "project-defaults.yml");
+        deployment.addModule("org.wildfly.swarm.messaging");
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm()
-                .fraction(new MessagingFraction()
-                        .server("default", server -> {
-                            server.remoteConnection( "remote-activemq", (config)->{
-                                // using default host/port
-                                config.jndiName( "java:/jms/remoteCF" );
-                            });
-                        })
-                );
     }
 
     @ArquillianResource
