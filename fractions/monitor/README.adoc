@@ -1,5 +1,5 @@
 = Monitor
 
 WARNING: This fraction is deprecated.
-Use the `org.wildfly.swarm:microprofile-health` fraction instead.
+Use the `io.thorntail:microprofile-health` fraction instead.
 
