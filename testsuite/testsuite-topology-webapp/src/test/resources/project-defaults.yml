@@ -1,0 +1,5 @@
+swarm:
+  topology:
+    web-app:
+      proxied-service-mappings:
+        myService: "/my-proxy"

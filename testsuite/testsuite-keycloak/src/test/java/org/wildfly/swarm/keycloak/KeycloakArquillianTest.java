@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.keycloak;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -52,6 +53,7 @@ public class KeycloakArquillianTest {
         return deployment;
     }
 
+    // For some reason doing this in a static or @BeforeClass doesn't work
     @CreateSwarm
     public static Swarm newContainer() throws Exception {
         URL migrationRealmUrl = KeycloakArquillianTest.class.getResource("/wildfly-swarm-keycloak-example-realm.json");
@@ -68,18 +70,18 @@ public class KeycloakArquillianTest {
         // Check 401 is returned without the token
         Assert.assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(),
            ClientBuilder.newClient().target("http://localhost:8080/secured").request().get().getStatus());
-        
-        final String tokenUri = 
+
+        final String tokenUri =
             "http://localhost:8080/auth/realms/wildfly-swarm-keycloak-example/protocol/openid-connect/token";
-        String response = 
+        String response =
             ClientBuilder.newClient().target(tokenUri).request()
                 .post(Entity.form(
                         new Form().param("grant_type", "password").param("client_id", "curl")
                                   .param("username", "user1").param("password", "password1")),
                         String.class);
         String accessToken = getAccessTokenFromResponse(response);
-        
-        String serviceResponse = 
+
+        String serviceResponse =
             ClientBuilder.newClient().target("http://localhost:8080/secured")
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)

@@ -6,8 +6,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         JAXRSArquillianTest.class,
-        MonitorPayloadTest.class,
-        MonitorSecurityTest.class,
         ArqJAXRSExceptionMapperTest.class,
         ApplicationPathTest.class
 })

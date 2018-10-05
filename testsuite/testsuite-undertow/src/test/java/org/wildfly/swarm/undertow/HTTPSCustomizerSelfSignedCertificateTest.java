@@ -29,9 +29,6 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.management.ManagementFraction;
 import org.wildfly.swarm.spi.api.SwarmProperties;
 
 /**
@@ -43,16 +40,9 @@ public class HTTPSCustomizerSelfSignedCertificateTest {
 
     @Deployment(testable = false)
     public static Archive createDeployment() {
+        System.setProperty(SwarmProperties.HTTPS_GENERATE_SELF_SIGNED_CERTIFICATE, "true");
         return ShrinkWrap.create(WARArchive.class, "test.war")
                 .add(EmptyAsset.INSTANCE, "index.html");
-    }
-
-    @CreateSwarm
-    public static Swarm newSwarm() throws Exception {
-        System.setProperty(SwarmProperties.HTTPS_GENERATE_SELF_SIGNED_CERTIFICATE, "true");
-        return new Swarm()
-                .fraction(UndertowFraction.createDefaultFraction())
-                .fraction(ManagementFraction.createDefaultFraction());
     }
 
     @Test(expected = SSLHandshakeException.class)

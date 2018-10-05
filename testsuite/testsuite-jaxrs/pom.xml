@@ -29,11 +29,6 @@
 
     <dependency>
       <groupId>io.thorntail</groupId>
-      <artifactId>monitor</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>io.thorntail</groupId>
       <artifactId>elytron</artifactId>
     </dependency>
 

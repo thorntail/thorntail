@@ -1,0 +1,7 @@
+swarm:
+  naming:
+    bindings:
+      java:global/ws/echo:
+        binding-type: "simple"
+        type: java.net.URL
+        value: "http://localhost:8080/ws/echo?wsdl"

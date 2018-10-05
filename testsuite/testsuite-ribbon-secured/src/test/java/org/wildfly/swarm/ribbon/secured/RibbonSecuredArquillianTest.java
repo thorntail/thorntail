@@ -24,9 +24,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
-import org.wildfly.swarm.netflix.ribbon.secured.RibbonSecuredFraction;
 import org.wildfly.swarm.undertow.WARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -42,11 +39,6 @@ public class RibbonSecuredArquillianTest {
         WARArchive deployment = ShrinkWrap.create(WARArchive.class);
         deployment.addClass(TestServlet.class);
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new RibbonSecuredFraction());
     }
 
     @Test

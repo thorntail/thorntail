@@ -1,0 +1,6 @@
+swarm:
+  jmx:
+    expression-expose-model.domain-name: AutoEndpoint
+    jmx-remoting-connector: null
+    resolved-expose-model.domain-name: AutoEndpoint
+    show-model: true

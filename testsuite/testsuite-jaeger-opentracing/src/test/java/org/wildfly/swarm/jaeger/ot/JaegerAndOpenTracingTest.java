@@ -29,10 +29,10 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.undertow.WARArchive;
 
 
@@ -49,12 +49,14 @@ public class JaegerAndOpenTracingTest {
     return deployment;
   }
 
-  @CreateSwarm
-  public static Swarm newContainer() throws Exception {
+  @BeforeClass
+  public static void setup() throws Exception {
     System.setProperty(Configuration.JAEGER_SERVICE_NAME, "foo");
-    Swarm swarm = new Swarm();
+  }
+
+  @AfterClass
+  public static void tearDown() throws Exception {
     System.clearProperty(Configuration.JAEGER_SERVICE_NAME);
-    return swarm;
   }
 
   @Test

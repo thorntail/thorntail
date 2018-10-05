@@ -24,6 +24,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Documented
+@Deprecated
 public @interface CreateSwarm {
     boolean startEagerly() default false;
 }

@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.jgroups;
 
-import java.util.concurrent.CountDownLatch;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -28,8 +26,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.junit.Assert.assertNotNull;
@@ -44,17 +40,12 @@ public class JGroupsArquillianTest {
         return deployment;
     }
 
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(JGroupsFraction.defaultFraction());
-    }
-
     @ArquillianResource
     private ServiceRegistry registry;
 
     @Test
     public void testActivation() throws InterruptedException {
         ServiceController<?> dispatcher = registry.getService(ServiceName.parse("org.wildfly.clustering.default-command-dispatcher-factory"));
-        assertNotNull( dispatcher );
+        assertNotNull(dispatcher);
     }
 }

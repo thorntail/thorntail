@@ -24,10 +24,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
-import org.wildfly.swarm.spring.SpringFraction;
 
 /**
  * @author Ken Finnigan
@@ -41,11 +38,6 @@ public class SpringRestArquillianTest {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new SpringFraction());
     }
 
     @Test

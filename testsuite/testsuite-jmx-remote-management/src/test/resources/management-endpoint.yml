@@ -1,0 +1,7 @@
+swarm:
+  jmx:
+    expression-expose-model.domain-name: RemoteJMX
+    jmx-remoting-connector:
+      use-management-endpoint: true
+    resolved-expose-model.domain-name: RemoteJMX
+    show-model: true

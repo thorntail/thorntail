@@ -23,13 +23,9 @@ import org.jboss.msc.service.ServiceName;
 import org.jboss.msc.service.ServiceRegistry;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
-import org.wildfly.swarm.topology.jgroups.JGroupsTopologyFraction;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -43,18 +39,8 @@ public class TopologyWebAppArquillianTest {
     @Deployment
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
+        deployment.addAsResource("project-defaults.yml");
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        TopologyWebAppFraction topology = new TopologyWebAppFraction();
-        topology.proxyService("myService", "/my-proxy");
-
-        return new Swarm()
-                .fraction(topology)
-                .fraction(new JGroupsTopologyFraction());
     }
 
     @ArquillianResource

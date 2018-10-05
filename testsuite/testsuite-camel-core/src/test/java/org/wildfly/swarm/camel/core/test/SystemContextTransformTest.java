@@ -43,28 +43,6 @@ import org.wildfly.swarm.arquillian.DefaultDeployment;
 @DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class SystemContextTransformTest {
 
-    /*
-    @Deployment
-    public static JARArchive deployment() {
-        JARArchive archive = ShrinkWrap.create(JARArchive.class, "system-context-tests.jar");
-        archive.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-        return archive;
-    }
-    */
-
-    /*
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new CamelFraction().addRouteBuilder("myname", new RouteBuilder() {
-            @Override
-            public void configure() throws Exception {
-                from("direct:start")
-                        .transform(simple("Hello ${body}"));
-            }
-        }));
-    }
-    */
-
     @Test
     public void testSimpleTransform() throws Exception {
 

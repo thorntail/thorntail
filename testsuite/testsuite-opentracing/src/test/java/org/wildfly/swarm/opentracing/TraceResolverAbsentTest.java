@@ -22,14 +22,9 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.undertow.WARArchive;
 
-import javax.naming.NamingException;
-
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Juraci Paixão Kröhling
@@ -40,11 +35,6 @@ public class TraceResolverAbsentTest {
     @Deployment
     public static Archive createDeployment() {
         return ShrinkWrap.create(WARArchive.class);
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new OpenTracingFraction());
     }
 
     @Test

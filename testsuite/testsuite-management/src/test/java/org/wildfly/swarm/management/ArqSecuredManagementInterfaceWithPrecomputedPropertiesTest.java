@@ -16,7 +16,6 @@
 package org.wildfly.swarm.management;
 
 import java.security.Security;
-import java.util.Properties;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -29,12 +28,9 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.ModelType;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.security.WildFlyElytronProvider;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.spi.api.JARArchive;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -48,27 +44,8 @@ public class ArqSecuredManagementInterfaceWithPrecomputedPropertiesTest {
     @Deployment(testable = false)
     public static Archive createDeployment() {
         JARArchive deployment = ShrinkWrap.create(JARArchive.class, "myapp.jar");
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
+        deployment.addAsResource("secure-management-properties.yml", "/project-defaults.yml");
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm()
-                .fraction(
-                        ManagementFraction.createDefaultFraction()
-                                .httpInterfaceManagementInterface((iface) -> {
-                                    iface.securityRealm("ManagementRealm");
-                                })
-                                .securityRealm("ManagementRealm", (realm) -> {
-                                    realm.inMemoryAuthentication((authn) -> {
-                                        authn.add(new Properties() {{
-                                            put("bob", "9b511b00aa7f2265621e38d2cf665f2f");
-                                        }});
-                                    });
-                                    realm.inMemoryAuthorization();
-                                })
-                );
     }
 
     @Test

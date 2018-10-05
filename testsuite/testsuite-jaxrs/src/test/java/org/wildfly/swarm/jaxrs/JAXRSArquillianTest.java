@@ -28,8 +28,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -45,25 +43,12 @@ public class JAXRSArquillianTest {
         assertThat(url).isNotNull();
         File projectDefaults = new File(url.toURI());
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
-        deployment.addClass(SuccessfulChecks.class);
         deployment.addClass(CustomJsonProvider.class);
         deployment.addClass(MyResource.class);
         deployment.setContextRoot("rest");
         deployment.addAsResource(projectDefaults, "/project-defaults.yml");
         deployment.addAllDependencies();
         return deployment;
-    }
-
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        return new Swarm().fraction(new JAXRSFraction());
-    }
-
-    @Test
-    @RunAsClient
-    public void testResource() {
-        browser.navigate().to("http://localhost:8080/rest/success/first");
-        assertThat(browser.getPageSource()).contains("UP");
     }
 
     @RunAsClient

@@ -1,6 +1,7 @@
-
 swarm:
   deployment:
     myapp.war:
       jaxrs:
         application-path: /
+  zipkin:
+    name: "thorntail-service"
