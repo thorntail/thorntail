@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.thorntail</groupId>
+		<artifactId>thorntail-core-parent</artifactId>
+		<version>4.0.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>thorntail-flyway</artifactId>
+	<name>Flyway</name>
+	
+	<properties>
+		<flyway.version>5.2.0</flyway.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.thorntail</groupId>
+			<artifactId>thorntail-kernel</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.thorntail</groupId>
+			<artifactId>thorntail-jndi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.thorntail</groupId>
+			<artifactId>thorntail-datasources</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>${flyway.version}</version>
+		</dependency>
+	</dependencies>
+</project>

@@ -141,6 +141,7 @@
     <module>testutils-opentracing-jaeger</module>
 
     <module>migrate</module>
+    <module>flyway</module>
   </modules>
 
   <build>
