@@ -9,7 +9,7 @@
 	</parent>
 	<artifactId>thorntail-flyway</artifactId>
 	<name>Flyway</name>
-	
+
 	<properties>
 		<flyway.version>5.2.0</flyway.version>
 	</properties>
@@ -32,6 +32,13 @@
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
 			<version>${flyway.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>2.23.0</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

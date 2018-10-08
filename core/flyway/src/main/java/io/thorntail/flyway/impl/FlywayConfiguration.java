@@ -29,6 +29,9 @@ public class FlywayConfiguration {
 	@Inject
 	private DataSourceRegistry dataSourceRegistry;
 
+	@Inject
+	private FlywayMessages flywayMessages;
+
 	private Properties properties = new Properties();
 
 	private DataSource dataSource = null;
@@ -39,22 +42,22 @@ public class FlywayConfiguration {
 		try {
 			dataSourceId = config.getValue(DATASOURCE_PROPERTY, String.class);
 		} catch (Exception e) {
-			FlywayMessages.MESSAGES.dataSourceIdNotConfigured();
+			flywayMessages.dataSourceIdNotConfigured();
 			return;
 		}
 
-		FlywayMessages.MESSAGES.fetchingDatasourceMetadataFor(dataSourceId);
+		flywayMessages.fetchingDatasourceMetadataFor(dataSourceId);
 		Optional<DataSourceMetaData> dataSourceMetaData = StreamSupport.stream(dataSourceRegistry.spliterator(), false)
 				.filter(ds -> ds.getId().equals(dataSourceId)).findFirst();
 
 		dataSource = (DataSource) dataSourceMetaData.map(ds -> {
 			try {
-				FlywayMessages.MESSAGES.fetchingDatasourceWithJndiName(ds.getJNDIName());
+				flywayMessages.fetchingDatasourceWithJndiName(ds.getJNDIName());
 				// TODO: Not really loving this. Requires datasources and JNDI, solve in another
 				// way?
 				return new InitialContext().lookup(ds.getJNDIName());
 			} catch (NamingException e) {
-				FlywayMessages.MESSAGES.dataSourceNotFound(ds.getJNDIName());
+				flywayMessages.dataSourceNotFound(ds.getJNDIName());
 				// TODO: Throw exception? Property configured, but could not find in JNDI
 				return null;
 			}

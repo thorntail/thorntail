@@ -14,18 +14,21 @@ public class FlywayMigrator {
 	@Inject
 	private FlywayConfiguration flywayConfiguration;
 
+	@Inject
+	private FlywayMessages flywayMessages;
+
 	// TODO: Which event? Since this implementation needs DataSourceRegistry and
 	// JNDI deploy works fine
 	public void init(@Observes LifecycleEvent.Deploy event) {
 		if (flywayConfiguration.configured()) {
-			FlywayMessages.MESSAGES.performingFlywayMigration();
+			flywayMessages.performingFlywayMigration();
 			try {
 				Flyway flyway = Flyway.configure().dataSource(flywayConfiguration.dataSource())
 						.configuration(flywayConfiguration.properties()).load();
 				flyway.migrate();
 			} catch (Exception e) {
 				// TODO: Throw exception here? Which sort? Create own?
-				FlywayMessages.MESSAGES.flywayMigrationFailed(e.getMessage());
+				flywayMessages.flywayMigrationFailed(e.getMessage());
 			}
 		}
 	}
