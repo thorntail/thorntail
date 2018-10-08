@@ -15,6 +15,7 @@ Only the following properties are added to the uberjar at package time:
 * The properties specified outside of the `<properties>` section or the `<propertiesFile>`, whose path starts with one of the following:
 ** `jboss.`
 ** `wildfly.`
+** `thorntail.`
 ** `swarm.`
 ** `maven.`
 * The properties that override a property specified in the `<properties>` section or the `<propertiesFile>`.

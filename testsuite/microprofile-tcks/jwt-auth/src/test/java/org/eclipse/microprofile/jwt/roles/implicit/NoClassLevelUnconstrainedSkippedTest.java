@@ -40,7 +40,7 @@ import org.testng.annotations.Test;
 import org.wildfly.swarm.microprofile.jwtauth.MicroProfileJWTAuthFraction;
 
 /**
- * Test that if there is no class-level security annotation and <code>swarm.microprofile.jwt.default-missing-method-permissions-deny-access</code> is set to
+ * Test that if there is no class-level security annotation and <code>thorntail.microprofile.jwt.default-missing-method-permissions-deny-access</code> is set to
  * false an unconstrained resource method is skipped.
  *
  * @author Martin Kouba

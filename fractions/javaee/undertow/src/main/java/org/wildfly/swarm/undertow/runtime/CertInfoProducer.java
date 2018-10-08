@@ -81,7 +81,7 @@ public class CertInfoProducer {
                 try {
                     URL jks = ClassLoader.getSystemClassLoader().getResource(keystorePath);
                     if (jks == null) {
-                        Module appModule = Module.getCallerModuleLoader().loadModule("swarm.application");
+                        Module appModule = Module.getCallerModuleLoader().loadModule("thorntail.application");
                         jks = appModule.getClassLoader().getResource(keystorePath);
                     }
                     if (jks == null) {

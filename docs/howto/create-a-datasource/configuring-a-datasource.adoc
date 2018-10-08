@@ -12,12 +12,12 @@
 == Procedure
 
 . Edit the `project-defaults.yml` file to configure one or more datasources
-using the JDBC driver of your choice. The configuration is stored under `swarm`
+using the JDBC driver of your choice. The configuration is stored under `thorntail`
 -> `datasources` -> `data-sources`:
 +
 [source,yaml]
 ----
-swarm:
+thorntail:
   datasources:
     data-sources:
 include::src/main/resources/project-defaults.yml[tag=datasource,indent=6]

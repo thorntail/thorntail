@@ -17,17 +17,17 @@ package org.wildfly.swarm.bootstrap.util;
 
 public class BootstrapProperties {
 
-    public static final String BUNDLED_DEPENDENCIES = "swarm.bundled.dependencies";
+    public static final String BUNDLED_DEPENDENCIES = "thorntail.bundled.dependencies";
 
-    public static final String APP_NAME = "swarm.app.name";
+    public static final String APP_NAME = "thorntail.app.name";
 
-    public static final String APP_PATH = "swarm.app.path";
+    public static final String APP_PATH = "thorntail.app.path";
 
-    public static final String APP_ARTIFACT = "swarm.app.artifact";
+    public static final String APP_ARTIFACT = "thorntail.app.artifact";
 
-    public static final String DEFAULT_DEPLOYMENT_TYPE = "swarm.default.deployment.type";
+    public static final String DEFAULT_DEPLOYMENT_TYPE = "thorntail.default.deployment.type";
 
-    public static final String IS_UBERJAR = "swarm.isuberjar";
+    public static final String IS_UBERJAR = "thorntail.isuberjar";
 
     private BootstrapProperties() {
     }

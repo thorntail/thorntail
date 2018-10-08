@@ -112,7 +112,7 @@
         <path name="sun/security/provider"/>
         <path name="sun/text"/>
 <!--
-        Prevent services files from being exported as it causes problems with IDE and wildfly-swarm:run
+        Prevent services files from being exported as it causes problems with IDE and thorntail:run
         <path name="META-INF/services"/>
 -->
       </paths>

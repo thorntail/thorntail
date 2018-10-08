@@ -42,9 +42,9 @@ public class ExtraArtifactsHandler {
      * <p/>
      * Set one or more of the following system properties to make the method return artifacts of a specified type:
      * <ul>
-     * <li><code>swarm.download.sources</code> for sources</li>
-     * <li><code>swarm.download.poms</code> for pom files</li>
-     * <li><code>swarm.download.javadocs</code> for javadocs</li>
+     * <li><code>thorntail.download.sources</code> for sources</li>
+     * <li><code>thorntail.download.poms</code> for pom files</li>
+     * <li><code>thorntail.download.javadocs</code> for javadocs</li>
      * </ul>
      * <p/>
      *
@@ -54,17 +54,17 @@ public class ExtraArtifactsHandler {
     public static List<DependencyNode> getExtraDependencies(List<DependencyNode> nodes) {
 
         ExtraArtifactsHandler fetcher = new ExtraArtifactsHandler(nodes);
-        if (isSet("swarm.download.sources")) {
+        if (isSet("thorntail.download.sources")) {
             System.out.println("will download sources");
             fetcher.addWithClassifier("sources");
         }
 
-        if (isSet("swarm.download.poms")) {
+        if (isSet("thorntail.download.poms")) {
             System.out.println("will download poms");
             fetcher.addWithExtension("pom");
         }
 
-        if (isSet("swarm.download.javadocs")) {
+        if (isSet("thorntail.download.javadocs")) {
             System.out.println("will download javadocs");
             fetcher.addWithClassifier("javadoc");
         }

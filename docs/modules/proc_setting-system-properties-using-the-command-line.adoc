@@ -22,9 +22,9 @@ To use a property on the command line, pass it as a command-line parameter to th
 --
 [source,shell]
 ----
-$ java -Dswarm.bind.address=127.0.0.1 -jar myapp-thorntail.jar
+$ java -Dthorntail.bind.address=127.0.0.1 -jar myapp-thorntail.jar
 ----
 
-In this example, you assing the value `127.0.0.1` to the property called `swarm.bind.address`.
+In this example, you assing the value `127.0.0.1` to the property called `thorntail.bind.address`.
 --
 

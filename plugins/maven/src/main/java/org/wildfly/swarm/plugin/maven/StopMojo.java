@@ -43,11 +43,11 @@ public class StopMojo extends AbstractSwarmMojo {
     @Override
     public void executeSpecific() throws MojoExecutionException, MojoFailureException {
         if (this.execution.getExecutionId().equals("default-cli")) {
-            getLog().error("wildfly-swarm:stop is not usable from the CLI");
+            getLog().error("thorntail:stop is not usable from the CLI");
             return;
         }
 
-        List<SwarmProcess> value = (List<SwarmProcess>) getPluginContext().get("swarm-process");
+        List<SwarmProcess> value = (List<SwarmProcess>) getPluginContext().get("thorntail-process");
 
         if (value == null) {
             getLog().error("No known processes to stop");
@@ -58,7 +58,7 @@ public class StopMojo extends AbstractSwarmMojo {
             stop(each);
         }
 
-        File tmp = (File) getPluginContext().get("swarm-cp-file");
+        File tmp = (File) getPluginContext().get("thorntail-cp-file");
 
         if (tmp != null && tmp.exists()) {
             tmp.delete();

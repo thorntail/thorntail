@@ -23,7 +23,7 @@ In the YAML file, add the following section:
 +
 [source,yaml]
 ----
-swarm:
+thorntail:
   logging:
 ----
 . Configure a formatter (optional).

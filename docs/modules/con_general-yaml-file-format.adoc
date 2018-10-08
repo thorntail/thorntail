@@ -6,11 +6,11 @@ The {Thorntail} configuration item names correspond to the YAML configuration st
 
 .YAML configuration
 ====
-For example, a configuration item documented as `swarm.undertow.servers.KEY.default-host` translates to the following YAML structure, substituting the `KEY` segment with the `default` identifier:
+For example, a configuration item documented as `thorntail.undertow.servers.KEY.default-host` translates to the following YAML structure, substituting the `KEY` segment with the `default` identifier:
 
 [source,yaml]
 ----
-swarm:
+thorntail:
   undertow:
     servers:
       default:

@@ -11,7 +11,7 @@ Otherwise, they will be resolved from `$M2_REPO` or the network at runtime.
 [cols="1,2a"]
 |===
 |Property
-|`swarm.bundleDependencies`
+|`thorntail.bundleDependencies`
 
 |Default
 |true
@@ -22,12 +22,12 @@ Otherwise, they will be resolved from `$M2_REPO` or the network at runtime.
 
 debug::
 The port to use for debugging.
-If set, the swarm process will suspend on start and open a debugger on this port.
+If set, the thorntail process will suspend on start and open a debugger on this port.
 +
 [cols="1,2a"]
 |===
 |Property
-|`swarm.debug.port`
+|`thorntail.debug.port`
 
 |Default
 |
@@ -57,7 +57,7 @@ A `.properties` file with environment variables to use when executing the applic
 [cols="1,2a"]
 |===
 |Property
-|`swarm.environmentFile`
+|`thorntail.environmentFile`
 
 |Default
 |
@@ -78,7 +78,7 @@ The mode of fraction detection. The available options are:
 [cols="1,2a"]
 |===
 |Property
-|`swarm.detect.mode`
+|`thorntail.detect.mode`
 
 |Default
 |`when_missing`
@@ -146,7 +146,7 @@ Specifies if the resulting executable JAR should be hollow, and therefore not in
 [cols="1,2a"]
 |===
 |Property
-|`swarm.hollow`
+|`thorntail.hollow`
 
 |Default
 |`false`
@@ -162,7 +162,7 @@ A list of `<jvmArgument>` elements specifying additional JVM arguments (such as 
 [cols="1,2a"]
 |===
 |Property
-|`swarm.jvmArguments`
+|`thorntail.jvmArguments`
 
 |Default
 |
@@ -222,7 +222,7 @@ See xref:thorntail-maven-plugin-configuration-properties_{context}[].
 [cols="1,2a"]
 |===
 |Property
-|`swarm.propertiesFile`
+|`thorntail.propertiesFile`
 
 |Default
 |
@@ -237,7 +237,7 @@ A file path where to store the `stderr` output instead of sending it to the `std
 [cols="1,2a"]
 |===
 |Property
-|`swarm.stderr`
+|`thorntail.stderr`
 
 |Default
 |
@@ -252,7 +252,7 @@ A file path where to store the `stdout` output instead of sending it to the `std
 [cols="1,2a"]
 |===
 |Property
-|`swarm.stdout`
+|`thorntail.stdout`
 
 |Default
 |
@@ -268,7 +268,7 @@ This JAR is not created automatically, so make sure you execute the `package` go
 [cols="1,2a"]
 |===
 |Property
-|`swarm.useUberJar`
+|`thorntail.useUberJar`
 
 |Default
 |
@@ -278,4 +278,4 @@ This JAR is not created automatically, so make sure you execute the `package` go
 |===
 +
 NOTE: Before version 2.3.0.Final, this property was called `wildfly-swarm.useUberJar`, and only setting it to `true` enabled this behavior: `-Dwildfly-swarm.useUberJar=true`.
-You can continue using the old name, but consider using the new variant, which does not require setting a value: `-Dswarm.useUberJar`.
+You can continue using the old name, but consider using the new variant, which does not require setting a value: `-Dthorntail.useUberJar`.

@@ -83,19 +83,19 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     /**
      * Flag to skip all executions
      */
-    @Parameter(alias = "skipAll", defaultValue = "false", property = "swarm.skipAll")
+    @Parameter(alias = "skipAll", defaultValue = "false", property = "thorntail.skipAll")
     protected boolean skipAll;
 
     @Parameter(alias = "properties")
     protected Properties properties;
 
-    @Parameter(alias = "propertiesFile", property = "swarm.propertiesFile")
+    @Parameter(alias = "propertiesFile", property = "thorntail.propertiesFile")
     protected String propertiesFile;
 
     @Parameter(alias = "environment")
     protected Properties environment;
 
-    @Parameter(alias = "environmentFile", property = "swarm.environmentFile")
+    @Parameter(alias = "environmentFile", property = "thorntail.environmentFile")
     protected String environmentFile;
 
     @Parameter(alias = "modules")
@@ -104,7 +104,7 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     @Parameter(alias = "fractions")
     protected List<String> fractions = new ArrayList<>();
 
-    @Parameter(defaultValue = "when_missing", property = "swarm.detect.mode")
+    @Parameter(defaultValue = "when_missing", property = "thorntail.detect.mode")
     protected BuildTool.FractionDetectionMode fractionDetectMode;
 
     @Inject
@@ -123,7 +123,7 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     public final void execute() throws MojoExecutionException, MojoFailureException {
         deprecationWarnings();
         if (this.skipAll) {
-            getLog().info("Skipping wildfly-swarm-plugin execution");
+            getLog().info("Skipping thorntail-maven-plugin execution");
             return;
         }
         executeSpecific();

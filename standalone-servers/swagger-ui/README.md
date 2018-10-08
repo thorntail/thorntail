@@ -25,9 +25,9 @@ The server recognizes three (3) runtime options.
 
 | Option | Default |
 | ------ | ------- |
-| `swarm.http.port` | 8080 |
-| `swarm.context.path` | swagger-ui |
-| `swarm.swagger.ui.resources` | `null` |
+| `thorntail.http.port` | 8080 |
+| `thorntail.context.path` | swagger-ui |
+| `thorntail.swagger.ui.resources` | `null` |
 
 ## Custom HTML, CSS and JavaScript
 
@@ -39,20 +39,20 @@ or modified content. User provided content will override that provided by
 this user-provided file will be used instead of the default provided by
 `swagger-ui`.
 
-The format of the `swarm.swagger.ui.resources` string can be in the form of
+The format of the `thorntail.swagger.ui.resources` string can be in the form of
 a path on disk, or a GAV with maven coordinates. For example, if you have a
 directory called `resources` alongside your `swagger-ui-thorntail.jar`, and it
 contains an `index.html` file, then running
 
-    $ java -jar swagger-ui-thorntail.jar -Dswarm.swagger.ui.resources=resources
+    $ java -jar swagger-ui-thorntail.jar -Dthorntail.swagger.ui.resources=resources
 
 will cause Swagger UI Server to use the provided file from that directory.
 If the directory has been compressed as a `jar` or `war` file, you can just
 provide the file name.
 
-    $ java -jar swagger-ui-thorntail.jar -Dswarm.swagger.ui.resources=resources.jar
+    $ java -jar swagger-ui-thorntail.jar -Dthorntail.swagger.ui.resources=resources.jar
 
 And if that jar actually exists in a maven repository, then you can just provide
 the coordinates.
 
-    $ java -jar swagger-ui-thorntail.jar -Dswarm.swagger.ui.resources="com.example:resources:war:1.0.0"
+    $ java -jar swagger-ui-thorntail.jar -Dthorntail.swagger.ui.resources="com.example:resources:war:1.0.0"

@@ -3,7 +3,7 @@
 = Network configuration
 
 For network configuration, create or adjust _interfaces,_ _socket-bindings,_ and _outbound-socket-bindings._
-The networking configuration is stored under the `network` -> `swarm` key.
+The networking configuration is stored under the `network` -> `thorntail` key.
 
 == Interfaces
 
@@ -20,7 +20,7 @@ The following interface is called `backnet`, and is bound to the `192.168.4.5` a
 
 [source,yaml]
 ----
-swarm:
+thorntail:
   network:
     interfaces:
       backnet:
@@ -30,8 +30,8 @@ swarm:
 
 If you want to change the bind address for the `public` or `management` interfaces, use special properties, which are defined for these two cases in particular:
 
-* `swarm.bind.address`
-* `swarm.management.bind.address`
+* `thorntail.bind.address`
+* `thorntail.management.bind.address`
 
 Change the underlying addresses by changing the above properties or their related YAML values.
 
@@ -52,7 +52,7 @@ The ports of the `standard-sockets` default group are offset by 10:
 
 [source,yaml]
 ----
-swarm:
+thorntail:
   network:
     socket-binding-groups:
       standard-sockets:
@@ -68,7 +68,7 @@ Socket-bindings may be created or adjusted within a `socket-binding-group`:
 
 [source,yaml]
 ----
-swarm:
+thorntail:
   network:
     socket-binding-groups:
       standard-sockets:
@@ -84,7 +84,7 @@ To create a named outbound socket binding for connection to remote endpoints, de
 
 [source,yaml]
 ----
-swarm:
+thorntail:
   network:
     socket-binding-groups:
       standard-sockets:

@@ -35,7 +35,7 @@ import java.util.zip.ZipOutputStream;
 public class WarBuilder {
 
     public static File build(List<String> classesDirs, List<File> classpathJars) throws IOException {
-        File war = File.createTempFile("wfswarm-user-war", ".war");
+        File war = File.createTempFile("thorntail-user-war", ".war");
         war.deleteOnExit();
         try (FileOutputStream fos = new FileOutputStream(war);
              ZipOutputStream out = new ZipOutputStream(fos)) {

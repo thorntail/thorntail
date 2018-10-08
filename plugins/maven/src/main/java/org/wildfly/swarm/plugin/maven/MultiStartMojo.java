@@ -59,7 +59,7 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
     private static final String THORNTAIL_MAVEN_PLUGIN = "io.thorntail:thorntail-maven-plugin";
 
-    private static final String SWARM_PROCESS = "swarm-process";
+    private static final String THORNTAIL_PROCESS = "thorntail-process";
 
     @Parameter(alias = "processes")
     protected List<XmlPlexusConfiguration> processes;
@@ -126,13 +126,13 @@ public class MultiStartMojo extends AbstractSwarmMojo {
         mavenSession.setCurrentProject(project);
         this.pluginManager.executeMojo(mavenSession, mojoExecution);
 
-        List<SwarmProcess> launched = (List<SwarmProcess>) mavenSession.getPluginContext(pluginDescriptor, project).get(SWARM_PROCESS);
+        List<SwarmProcess> launched = (List<SwarmProcess>) mavenSession.getPluginContext(pluginDescriptor, project).get(THORNTAIL_PROCESS);
 
-        List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get(SWARM_PROCESS);
+        List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get(THORNTAIL_PROCESS);
 
         if (procs == null) {
             procs = new ArrayList<>();
-            getPluginContext().put(SWARM_PROCESS, procs);
+            getPluginContext().put(THORNTAIL_PROCESS, procs);
         }
 
         procs.addAll(launched);
@@ -142,11 +142,11 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
     @SuppressWarnings("unchecked")
     protected void startArtifact(Artifact artifact, XmlPlexusConfiguration process) throws InvalidPluginDescriptorException, PluginResolutionException, PluginDescriptorParsingException, PluginNotFoundException, PluginConfigurationException, MojoFailureException, MojoExecutionException, PluginManagerException {
-        List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get(SWARM_PROCESS);
+        List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get(THORNTAIL_PROCESS);
 
         if (procs == null) {
             procs = new ArrayList<>();
-            getPluginContext().put(SWARM_PROCESS, procs);
+            getPluginContext().put(THORNTAIL_PROCESS, procs);
         }
 
         SwarmExecutor executor = new SwarmExecutor();

@@ -14,12 +14,12 @@
 
 . Edit the `project-defaults.yml` file to define the driver information.
 +
-In the `swarm` -> `datasources` -> `jdbc-drivers` tree, define the driver by
+In the `thorntail` -> `datasources` -> `jdbc-drivers` tree, define the driver by
 key, which will be used later for connecting it to the datasource.
 +
 [source,yaml]
 ----
-swarm:
+thorntail:
   datasources:
     jdbc-drivers:
 include::src/main/resources/project-defaults.yml[tag=driver,indent=6]

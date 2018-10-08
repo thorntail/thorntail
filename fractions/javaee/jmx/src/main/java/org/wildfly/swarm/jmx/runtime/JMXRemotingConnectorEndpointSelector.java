@@ -40,14 +40,14 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
  * will pick the "best" connector available, given the following priority:</p>
  *
  * <ul>
- * <li>Management Interface (typically port 9990) if <code>org.wildfly.swarm:management</code> is present</li>
- * <li>Remoting over HTTP (typically normal web-port, 8080) if <code>org.wildfly.swarm:undertow</code> is present</li>
+ * <li>Management Interface (typically port 9990) if <code>io.thorntail:management</code> is present</li>
+ * <li>Remoting over HTTP (typically normal web-port, 8080) if <code>io.thorntail:undertow</code> is present</li>
  * <li>Else, the legacy remoting port (typically port 4777)</li>
  * </ul>
  *
  * <p>A user who does not explicitly configure a {@link JMXRemotingConnector} can still activate
  * a connector using configuation values (through properties or project-stages.yml), using
- * the key of <code>swarm.jmx.remote</code></p>.
+ * the key of <code>thorntail.jmx.remote</code></p>.
  *
  * <p>A non-null value (such as "true") will cause the above logic to be followed in selecting
  * an endpoint.  If the value is <code>management</code>, then the management endpoint will
@@ -55,7 +55,7 @@ import org.wildfly.swarm.spi.runtime.annotations.Pre;
  * rather use the standard HTTP interface, then a value of <code>http></code> may be used.</p>
  *
  * <p>In the event a user has specifically {@link JMXRemotingConnector#useManagementEndpoint(Boolean)} to
- * <code>true<</code>, then in the event <code>org.wildfly.swarm:management</code> is not present,
+ * <code>true<</code>, then in the event <code>io.thorntail:management</code> is not present,
  * then the remote connector for JMX will be <b>completely disabled</b>.</p>
  *
  * @author Bob McWhirter
@@ -115,7 +115,7 @@ public class JMXRemotingConnectorEndpointSelector implements Customizer {
                 requiresLegacyRemoting = true;
             }
         } else if (remotingConnector.useManagementEndpoint() && this.management.isUnsatisfied()) {
-            LOG.warn("JMX configured to use management endpoint, but org.wildfly.swarm:management not available. Disabling");
+            LOG.warn("JMX configured to use management endpoint, but io.thorntail:management not available. Disabling");
             this.jmx.jmxRemotingConnector(() -> null);
         } else if (this.undertow.isUnsatisfied()) {
             requiresLegacyRemoting = true;

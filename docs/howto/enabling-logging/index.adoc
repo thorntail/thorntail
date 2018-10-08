@@ -22,12 +22,12 @@ Verify it contains the following coordinates. If it does not, add them.
 </dependency>
 ----
 
-. If you want to log messages of a level other than `INFO`, launch the application while specifying the `swarm.logging` system property:
+. If you want to log messages of a level other than `INFO`, launch the application while specifying the `thorntail.logging` system property:
 +
 --
 [source,bash]
 ----
-$ mvn thorntail:run -Dswarm.logging=FINE
+$ mvn thorntail:run -Dthorntail.logging=FINE
 ----
 
 See the link:https://wildfly-swarm.github.io/wildfly-swarm-javadocs/{version}/apidocs/org/wildfly/swarm/config/logging/Level.html[`org.wildfly.swarm.config.logging.Level`] class for the list of available levels.

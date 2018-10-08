@@ -54,7 +54,7 @@ public class CamelMarshaller implements CustomMarshaller {
     }
 
     protected String read(String path) throws ModuleLoadException, IOException {
-        Module app = getBootModuleLoader().loadModule("swarm.application");
+        Module app = getBootModuleLoader().loadModule("thorntail.application");
 
         StringBuilder str = new StringBuilder();
 

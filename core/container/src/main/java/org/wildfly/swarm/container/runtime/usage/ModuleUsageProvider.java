@@ -38,7 +38,7 @@ public class ModuleUsageProvider implements UsageProvider {
 
     @Override
     public String getRawUsageText() throws Exception {
-        Module module = Module.getBootModuleLoader().loadModule("swarm.application");
+        Module module = Module.getBootModuleLoader().loadModule("thorntail.application");
         ClassLoader cl = module.getClassLoader();
 
         InputStream in = cl.getResourceAsStream(META_INF_USAGE_TXT);

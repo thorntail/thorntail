@@ -64,7 +64,7 @@ An example of a MySQL datasource configuration with connection information, basi
 
 [source,yaml,options="nowrap"]
 ----
-swarm:
+thorntail:
   datasources:
     data-sources:
       MyDS:
@@ -84,7 +84,7 @@ An example of a PostgreSQL datasource configuration with connection information,
 
 [source,yaml,options="nowrap"]
 ----
-swarm:
+thorntail:
   datasources:
     data-sources:
       MyDS:
@@ -104,7 +104,7 @@ An example of an Oracle datasource configuration with connection information, ba
 
 [source,yaml,options="nowrap"]
 ----
-swarm:
+thorntail:
   datasources:
     data-sources:
       MyDS:

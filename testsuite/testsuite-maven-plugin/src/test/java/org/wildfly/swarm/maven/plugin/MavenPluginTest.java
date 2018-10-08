@@ -72,8 +72,8 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class MavenPluginTest {
-    private static final String RUN_FULL_MATRIX_KEY = "swarm.test.full";
-    private static final String SINGLE_TESTING_PROJECT_KEY = "swarm.test.maven.plugin.single";
+    private static final String RUN_FULL_MATRIX_KEY = "thorntail.test.full";
+    private static final String SINGLE_TESTING_PROJECT_KEY = "thorntail.test.maven.plugin.single";
 
     @Parameters(name = "{0}")
     public static Iterable<?> parameters() {
@@ -265,9 +265,9 @@ public class MavenPluginTest {
             }
 
             assertThat(log).contains("Custom main() usage is intended to be deprecated in a future release");
-            // 1st warning for wildfly-swarm:package
-            // 2nd warning possibly for wildfly-swarm:start for tests
-            // 3rd warning possibly for wildfly-swarm:stop for tests
+            // 1st warning for thorntail:package
+            // 2nd warning possibly for thorntail:start for tests
+            // 3rd warning possibly for thorntail:stop for tests
             assertThat(count).as("There should only be 1 to 3 warnings").isIn(1, 2, 3);
         } else {
             assertThat(log).doesNotContain("[WARNING]");

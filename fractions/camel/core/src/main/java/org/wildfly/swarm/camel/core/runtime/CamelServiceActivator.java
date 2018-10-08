@@ -71,7 +71,7 @@ public class CamelServiceActivator implements ServiceActivator {
         @Override
         public void start(StartContext startContext) throws StartException {
             try {
-                Module appModule = Module.getCallerModuleLoader().loadModule("swarm.application");
+                Module appModule = Module.getCallerModuleLoader().loadModule("thorntail.application");
                 ModuleClassLoaderAssociationHandler.associate(appModule.getClassLoader());
                 try {
                     for (Map.Entry<String, RouteBuilder> entry : fraction.getRouteBuilders().entrySet()) {

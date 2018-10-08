@@ -38,9 +38,9 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
  */
 public abstract class DefaultDeploymentFactory {
 
-    public static String APP_NAME = "swarm.app.name";
-    public static String APP_PATH = "swarm.app.path";
-    public static String APP_ARTIFACT = "swarm.app.artifact";
+    public static String APP_NAME = "thorntail.app.name";
+    public static String APP_PATH = "thorntail.app.path";
+    public static String APP_ARTIFACT = "thorntail.app.artifact";
 
     public abstract int getPriority();
 

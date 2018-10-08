@@ -2,7 +2,7 @@
 
 ## chkconfig
 # chkconfig: 345 90 90
-# description: Runs a Wildfly Swarm app
+# description: Runs a Thorntail app
 
 [[ -n "$DEBUG" ]] && set -x
 

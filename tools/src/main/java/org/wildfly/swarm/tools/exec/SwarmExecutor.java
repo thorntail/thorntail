@@ -76,7 +76,7 @@ public class SwarmExecutor {
         Set<String> names = System.getProperties().stringPropertyNames();
 
         for (String name : names) {
-            if (name.startsWith("jboss") || name.startsWith("swarm") || name.startsWith("wildfly") || name.startsWith("maven")
+            if (name.startsWith("jboss") || name.startsWith("thorntail") || name.startsWith("swarm") || name.startsWith("wildfly") || name.startsWith("maven")
                     || name.equals("java.io.tmpdir")) {
                 String value = System.getProperty(name);
                 this.properties.put(name, value);

@@ -131,7 +131,7 @@ public class InitialLoggerManager implements BackingLoggerManager {
         }
     }
 
-    private static final String PREFIX = "swarm.log.";
+    private static final String PREFIX = "thorntail.log.";
 
     private final LevelNode root;
 

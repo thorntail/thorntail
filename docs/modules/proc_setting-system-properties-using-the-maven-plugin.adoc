@@ -31,7 +31,7 @@ If you want to set explicit configuration values as defaults through the Maven p
       <version>{version}</version>
       <configuration>
         <properties>
-          <swarm.bind.address>127.0.0.1</swarm.bind.address>
+          <thorntail.bind.address>127.0.0.1</thorntail.bind.address>
           <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
         </properties>
       </configuration>
@@ -40,6 +40,6 @@ If you want to set explicit configuration values as defaults through the Maven p
 </build>
 ----
 
-In the example above, the `swarm.bind.address` property is set to `127.0.0.1` and the `java.net.preferIPv4Stack` property is set to `true`.
+In the example above, the `thorntail.bind.address` property is set to `127.0.0.1` and the `java.net.preferIPv4Stack` property is set to `true`.
 --
 

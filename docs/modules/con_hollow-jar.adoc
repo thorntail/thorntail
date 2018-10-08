@@ -15,11 +15,11 @@ JAR.
 ====
 Using hollow JARs has certain limitations:
 
-* To enable {Thorntail} to autodetect a JDBC driver, you must add the JAR with the driver to the `swarm.classpath` system property, for example:
+* To enable {Thorntail} to autodetect a JDBC driver, you must add the JAR with the driver to the `thorntail.classpath` system property, for example:
 +
 [source,bash,options="nowrap"]
 ----
-$ java -Dswarm.classpath=./h2-1.4.196.jar -jar my-hollow-thorntail.jar myApp.war
+$ java -Dthorntail.classpath=./h2-1.4.196.jar -jar my-hollow-thorntail.jar myApp.war
 ----
 
 * YAML configuration files in your application are not automatically applied.

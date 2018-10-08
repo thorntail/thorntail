@@ -122,7 +122,7 @@ public abstract class DriverModuleBuilder {
 
     private File findLocationOfClass(String className) {
         try {
-            ClassLoader cl = Module.getBootModuleLoader().loadModule("swarm.application").getClassLoader();
+            ClassLoader cl = Module.getBootModuleLoader().loadModule("thorntail.application").getClassLoader();
             File candidate = findLocationOfClass(cl, className);
             if (candidate == null) {
                 candidate = findLocationOfClass(ClassLoader.getSystemClassLoader(), className);

@@ -58,28 +58,28 @@ import org.wildfly.swarm.tools.exec.SwarmProcess;
         requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class StartMojo extends AbstractSwarmMojo {
 
-    @Parameter(alias = "stdoutFile", property = "swarm.stdout")
+    @Parameter(alias = "stdoutFile", property = "thorntail.stdout")
     public File stdoutFile;
 
-    @Parameter(alias = "stderrFile", property = "swarm.stderr")
+    @Parameter(alias = "stderrFile", property = "thorntail.stderr")
     public File stderrFile;
 
     @Parameter(defaultValue = "${wildfly-swarm.useUberJar}")
     public boolean oldUseUberJar;
 
-    @Parameter(alias = "useUberJar", property = "swarm.useUberJar")
+    @Parameter(alias = "useUberJar", property = "thorntail.useUberJar")
     public String useUberJar;
 
     @Parameter(alias = "debug", property = SwarmProperties.DEBUG_PORT)
     public Integer debugPort;
 
-    @Parameter(alias = "jvmArguments", property = "swarm.jvmArguments")
+    @Parameter(alias = "jvmArguments", property = "thorntail.jvmArguments")
     public List<String> jvmArguments = new ArrayList<>();
 
     @Parameter(alias = "arguments")
     public List<String> arguments = new ArrayList<>();
 
-    @Parameter(property = "swarm.arguments", defaultValue = "")
+    @Parameter(property = "thorntail.arguments", defaultValue = "")
     public String argumentsProp;
 
     boolean waitForProcess;
@@ -119,7 +119,7 @@ public class StartMojo extends AbstractSwarmMojo {
 
             File tmp;
             try {
-                tmp = Files.createTempFile("swarm-process-file", null).toFile();
+                tmp = Files.createTempFile("thorntail-process-file", null).toFile();
             } catch (IOException e) {
                 throw new MojoFailureException("Error while creating process file");
             }
@@ -160,10 +160,10 @@ public class StartMojo extends AbstractSwarmMojo {
             throw new MojoFailureException("Error waiting for deployment", e);
         }
 
-        List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get("swarm-process");
+        List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get("thorntail-process");
         if (procs == null) {
             procs = new ArrayList<>();
-            getPluginContext().put("swarm-process", procs);
+            getPluginContext().put("thorntail-process", procs);
         }
         procs.add(process);
 
@@ -342,14 +342,14 @@ public class StartMojo extends AbstractSwarmMojo {
                 // multi-start doesn't have a projectBuildDir
 
                 File tmp = this.projectBuildDir != null ?
-                        Files.createTempFile(Paths.get(this.projectBuildDir), TempFileManager.WFSWARM_TMP_PREFIX + "swarm-", "-cp.txt").toFile() :
-                        Files.createTempFile(TempFileManager.WFSWARM_TMP_PREFIX + "swarm-", "-cp.txt").toFile();
+                        Files.createTempFile(Paths.get(this.projectBuildDir), TempFileManager.WFSWARM_TMP_PREFIX + "thorntail-", "-cp.txt").toFile() :
+                        Files.createTempFile(TempFileManager.WFSWARM_TMP_PREFIX + "thorntail-", "-cp.txt").toFile();
 
                 tmp.deleteOnExit();
-                getPluginContext().put("swarm-cp-file", tmp);
+                getPluginContext().put("thorntail-cp-file", tmp);
                 declaredDependencies.writeTo(tmp);
                 getLog().debug("dependency info stored at: " + tmp.getAbsolutePath());
-                this.properties.setProperty("swarm.cp.info", tmp.getAbsolutePath());
+                this.properties.setProperty("thorntail.cp.info", tmp.getAbsolutePath());
 
             } catch (IOException e) {
                 throw new RuntimeException(e.getMessage());

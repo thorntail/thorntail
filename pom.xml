@@ -101,7 +101,7 @@
           <excludedGroups>${testCategory.excluded}</excludedGroups>
           <systemPropertyVariables>
             <java.io.tmpdir>${project.build.directory}</java.io.tmpdir>
-            <swarm.bind.address>127.0.0.1</swarm.bind.address>
+            <thorntail.bind.address>127.0.0.1</thorntail.bind.address>
             <project.version>${project.version}</project.version>
             <org.apache.maven.user-settings>${session.request.userSettingsFile.path}</org.apache.maven.user-settings>
           </systemPropertyVariables>
@@ -1320,7 +1320,7 @@
       <id>swarm.debug</id>
       <activation>
         <property>
-          <name>swarm.debug</name>
+          <name>thorntail.debug</name>
         </property>
       </activation>
       <build>
@@ -1331,7 +1331,7 @@
               <artifactId>maven-surefire-plugin</artifactId>
               <configuration>
                 <systemPropertyVariables>
-                  <swarm.debug.port>8787</swarm.debug.port>
+                  <thorntail.debug.port>8787</thorntail.debug.port>
                 </systemPropertyVariables>
               </configuration>
             </plugin>

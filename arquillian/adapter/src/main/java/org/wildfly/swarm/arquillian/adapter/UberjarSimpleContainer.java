@@ -188,7 +188,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
             executor.withProperty(SwarmProperties.CONTEXT_PATH, contextRoot.context());
         }
 
-        executor.withProperty("swarm.inhibit.auto-stop", "true");
+        executor.withProperty("thorntail.inhibit.auto-stop", "true");
 
         String additionalRepos = System.getProperty(SwarmInternalProperties.BUILD_REPOS);
         if (additionalRepos != null) {
@@ -269,7 +269,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         if (BootstrapProperties.flagIsSet(SwarmInternalProperties.EXPORT_UBERJAR)) {
             final File out = new File(wrapped.getName());
-            System.err.println("Exporting swarm jar to " + out.getAbsolutePath());
+            System.err.println("Exporting thorntail jar to " + out.getAbsolutePath());
             wrapped.as(ZipExporter.class).exportTo(out, true);
         }
 

@@ -75,7 +75,7 @@ public interface SwarmProperties {
 
     /**
      * If provided, the swarm process will pause for debugging on the given port.
-     * This option is only available when running an Arquillian test or mvn wildfly-swarm:run, not when executing java -jar.
+     * This option is only available when running an Arquillian test or mvn thorntail:run, not when executing java -jar.
      * The latter requires normal Java debug agent parameters.
      */
     String DEBUG_PORT = "thorntail.debug.port";
