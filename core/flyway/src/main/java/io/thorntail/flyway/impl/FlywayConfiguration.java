@@ -50,9 +50,12 @@ public class FlywayConfiguration {
 		dataSource = (DataSource) dataSourceMetaData.map(ds -> {
 			try {
 				FlywayMessages.MESSAGES.fetchingDatasourceWithJndiName(ds.getJNDIName());
+				// TODO: Not really loving this. Requires datasources and JNDI, solve in another
+				// way?
 				return new InitialContext().lookup(ds.getJNDIName());
 			} catch (NamingException e) {
 				FlywayMessages.MESSAGES.dataSourceNotFound(ds.getJNDIName());
+				// TODO: Throw exception? Property configured, but could not find in JNDI
 				return null;
 			}
 		}).orElse(null);

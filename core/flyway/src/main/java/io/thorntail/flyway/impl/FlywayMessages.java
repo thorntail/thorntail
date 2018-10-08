@@ -12,6 +12,7 @@ public interface FlywayMessages {
 
 	FlywayMessages MESSAGES = Logger.getMessageLogger(FlywayMessages.class, LoggingUtil.loggerCategory("flyway"));
 
+	// TODO: Move to kernel?
 	int OFFSET = 90000;
 
 	@LogMessage(level = Logger.Level.ERROR)
