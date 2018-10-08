@@ -26,7 +26,7 @@ import static org.wildfly.swarm.spi.api.Defaultable.string;
 /**
  * Created by ggastald on 02/06/16.
  */
-@Configurable("swarm.management-console")
+@Configurable("thorntail.management-console")
 public class ManagementConsoleFraction implements Fraction<ManagementConsoleFraction> {
 
     public ManagementConsoleFraction() {

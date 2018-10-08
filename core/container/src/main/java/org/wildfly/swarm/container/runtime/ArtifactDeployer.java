@@ -40,7 +40,7 @@ public class ArtifactDeployer {
     private Instance<RuntimeDeployer> deployer;
 
     public void deploy() throws Exception {
-        List<SimpleKey> subkeys = configView.simpleSubkeys(ConfigKey.of("swarm", "deployment"));
+        List<SimpleKey> subkeys = configView.simpleSubkeys(ConfigKey.of("thorntail", "deployment"));
 
         for (SimpleKey subkey : subkeys) {
             String spec = subkey.name();

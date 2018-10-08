@@ -50,7 +50,7 @@ public class DefaultApplicationDeploymentProcessor implements DeploymentProcesso
 
     @AttributeDocumentation("Set the JAX-RS application path. If set, Thorntail will automatically generate a JAX-RS" +
             " Application class and use this value as the @ApplicationPath")
-    @Configurable("swarm.deployment.*.jaxrs.application-path")
+    @Configurable("thorntail.deployment.*.jaxrs.application-path")
     Defaultable<String> applicationPath = Defaultable.string("/");
 
     private final Archive archive;

@@ -106,6 +106,10 @@ public interface ConfigKey {
 
         ConfigKey key = ConfigKey.EMPTY;
 
+        if (str.startsWith("swarm.")) {
+            str = str.replaceFirst("swarm.", "thorntail.");
+        }
+
         int len = str.length();
         int i = 0;
 

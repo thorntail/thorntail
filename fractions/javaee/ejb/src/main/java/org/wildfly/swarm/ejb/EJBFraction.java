@@ -40,7 +40,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module = "org.jboss.as.ejb3")
 @MarshalDMR
-@Configurable("swarm.ejb3")
+@Configurable("thorntail.ejb3")
 public class EJBFraction extends EJB3<EJBFraction> implements Fraction<EJBFraction> {
 
     @PostConstruct

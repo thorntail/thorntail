@@ -34,7 +34,7 @@ import static org.wildfly.swarm.vertx.VertxProperties.DEFAULT_JNDI_NAME;
 @DeploymentModule(name = "io.vertx.jca", slot = "api")
 @DeploymentModule(name = "io.vertx.jca", slot = "ra", services = Module.ServiceHandling.IMPORT)
 @DeploymentModule(name = "com.hazelcast")
-@Configurable("swarm.vertx")
+@Configurable("thorntail.vertx")
 public class VertxFraction implements Fraction<VertxFraction> {
 
     public VertxFraction inhibitAdapterDeployment() {
@@ -77,14 +77,14 @@ public class VertxFraction implements Fraction<VertxFraction> {
     private boolean inhibitAdapterDeployment;
 
     @AttributeDocumentation("JNDI name of the Vertx connector")
-    @Configurable("swarm.vertx.jndi-name")
+    @Configurable("thorntail.vertx.jndi-name")
     private Defaultable<String> jndiName = string(DEFAULT_JNDI_NAME);
 
     @AttributeDocumentation("Vertx cluster host name")
-    @Configurable("swarm.vertx.cluster.host")
+    @Configurable("thorntail.vertx.cluster.host")
     private Defaultable<String> clusterHost = string(DEFAULT_CLUSTER_HOST);
 
     @AttributeDocumentation("Vertx cluster port")
-    @Configurable("swarm.vertx.cluster.port")
+    @Configurable("thorntail.vertx.cluster.port")
     private Defaultable<Integer> clusterPort = integer(DEFAULT_CLUSTER_PORT);
 }

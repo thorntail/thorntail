@@ -35,7 +35,7 @@ import static org.wildfly.swarm.swagger.webapp.SwaggerWebAppProperties.DEFAULT_C
 /**
  * @author Lance Ball
  */
-@Configurable("swarm.swagger.web-app")
+@Configurable("thorntail.swagger.web-app")
 public class SwaggerWebAppFraction implements Fraction<SwaggerWebAppFraction> {
 
     public SwaggerWebAppFraction() {

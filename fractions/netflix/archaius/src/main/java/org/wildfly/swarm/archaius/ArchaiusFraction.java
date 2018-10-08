@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.netflix.archaius.runtime;
+package org.wildfly.swarm.archaius;
 
 /**
  * This is a dummy fraction class needed to generate a module name correcly after the project was renamed and groupId changed to <code>io.thorntail</code>. See

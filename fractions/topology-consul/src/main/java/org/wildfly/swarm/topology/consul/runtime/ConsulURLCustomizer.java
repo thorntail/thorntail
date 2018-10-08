@@ -38,7 +38,7 @@ public class ConsulURLCustomizer implements Customizer {
     ConsulTopologyFraction fraction;
 
     @Inject
-    @ConfigurationValue("swarm.consul.url")
+    @ConfigurationValue("thorntail.consul.url")
     private String consulUrl;
 
 

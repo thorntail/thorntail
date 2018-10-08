@@ -25,7 +25,7 @@ public class SwaggerDefaultUrlChangerServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     @Inject
-    @ConfigurationValue ("swarm.swagger.web-app.json.path")
+    @ConfigurationValue ("thorntail.swagger.web-app.json.path")
     private String path;
 
     @Override

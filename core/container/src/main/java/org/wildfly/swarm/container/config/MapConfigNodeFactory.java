@@ -53,6 +53,9 @@ public class MapConfigNodeFactory {
         for (String key : keys) {
             Object value = input.get(key);
             ConfigNode child = load(value);
+            if (key.equals("swarm")) {
+                key = "thorntail";
+            }
             config.child(key, child);
         }
     }

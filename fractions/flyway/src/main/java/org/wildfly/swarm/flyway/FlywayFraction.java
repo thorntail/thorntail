@@ -26,7 +26,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
  * @author <a href="mailto:ggastald@redhat.com">George Gastaldi</a>
  */
 @DeploymentModule(name = "org.wildfly.swarm.flyway", slot = "deployment")
-@Configurable("swarm.flyway")
+@Configurable("thorntail.flyway")
 public class FlywayFraction implements Fraction<FlywayFraction> {
 
     /**

@@ -32,7 +32,7 @@ import org.wildfly.swarm.spi.api.annotations.Configurable;
  * @author John Hovell
  * @author Bob McWhirter
  */
-@Configurable("swarm.topology.consul")
+@Configurable("thorntail.topology.consul")
 public class ConsulTopologyFraction implements Fraction<ConsulTopologyFraction> {
 
     public ConsulTopologyFraction() {

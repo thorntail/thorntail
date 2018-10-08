@@ -142,7 +142,7 @@ public class RuntimeServer implements Server {
 
         File configurationFile;
         try {
-            configurationFile = TempFileManager.INSTANCE.newTempFile("swarm-config-", ".xml");
+            configurationFile = TempFileManager.INSTANCE.newTempFile("thorntail-config-", ".xml");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -249,7 +249,7 @@ public class RuntimeServer implements Server {
             RuntimeDeployer deployer = this.deployer.get();
 
             try (AutoCloseable installDeployer = Performance.time("Installing deployer")) {
-                serviceContainer.addService(ServiceName.of("swarm", "deployer"), new ValueService<>(new ImmediateValue<Deployer>(deployer))).install();
+                serviceContainer.addService(ServiceName.of("thorntail", "deployer"), new ValueService<>(new ImmediateValue<Deployer>(deployer))).install();
             }
 
             try (AutoCloseable configUserSpaceExt = Performance.time("Configure user-space extensions")) {

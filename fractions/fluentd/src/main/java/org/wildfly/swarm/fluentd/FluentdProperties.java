@@ -17,9 +17,9 @@ package org.wildfly.swarm.fluentd;
 
 public interface FluentdProperties {
     //public
-    String HOSTNAME = "swarm.fluentd.hostname";
+    String HOSTNAME = "thorntail.fluentd.hostname";
 
     //public
-    String PORT = "swarm.fluentd.port";
+    String PORT = "thorntail.fluentd.port";
 
 }

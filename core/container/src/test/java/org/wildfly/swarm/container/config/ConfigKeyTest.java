@@ -94,7 +94,7 @@ public class ConfigKeyTest {
 
         key.replace(2, "taco.jar");
 
-        assertThat( key.head().name() ).isEqualTo( "swarm");
+        assertThat( key.head().name() ).isEqualTo( "thorntail");
         assertThat( key.subkey(1).head().name() ).isEqualTo( "deployment");
         assertThat( key.subkey(2).head().name() ).isEqualTo( "taco.jar");
         assertThat( key.subkey(3).head().name() ).isEqualTo( "foo");

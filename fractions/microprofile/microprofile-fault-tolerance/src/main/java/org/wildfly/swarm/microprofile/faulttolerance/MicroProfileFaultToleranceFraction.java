@@ -32,7 +32,7 @@ import io.smallrye.faulttolerance.HystrixCommandInterceptor;
 @DeploymentModule(name = "io.smallrye.faulttolerance", metaInf = MetaInfDisposition.IMPORT, export = true, services = Module.ServiceHandling.IMPORT)
 public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfileFaultToleranceFraction> {
 
-    private static final String SYNC_CIRCUIT_BREAKER_KEY = "swarm.microprofile.fault-tolerance.synchronous-circuit-breaker";
+    private static final String SYNC_CIRCUIT_BREAKER_KEY = "thorntail.microprofile.fault-tolerance.synchronous-circuit-breaker";
 
     public MicroProfileFaultToleranceFraction() {
         // IMPL NOTE: this is not very nice but works because org.wildfly.swarm.container.config.PropertiesManipulator.SystemPropertiesManipulator (used by

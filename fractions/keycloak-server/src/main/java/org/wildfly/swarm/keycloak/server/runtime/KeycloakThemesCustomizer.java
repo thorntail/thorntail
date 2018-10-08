@@ -73,7 +73,7 @@ public class KeycloakThemesCustomizer implements Customizer {
     /**
      * Whether or not to combine the default themes when the custom themes are also available.
      */
-    @Configurable("swarm.keycloak-server.combine-default-and-custom-themes")
+    @Configurable("thorntail.keycloak-server.combine-default-and-custom-themes")
     @AttributeDocumentation("Combine the default themes with the custom themes")
     private Defaultable<Boolean> combineDefaultAndCustomThemes = bool(false);
 }

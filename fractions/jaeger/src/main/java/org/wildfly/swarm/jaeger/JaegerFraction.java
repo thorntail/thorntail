@@ -14,7 +14,7 @@ import static io.jaegertracing.Configuration.*;
  * @author Juraci Paixão Kröhling
  */
 @DeploymentModule(name = "org.wildfly.swarm.jaeger", slot = "deployment")
-@Configurable("swarm.jaeger")
+@Configurable("thorntail.jaeger")
 public class JaegerFraction implements Fraction<JaegerFraction> {
     @AttributeDocumentation("The service name. Required (via this parameter, system property or env var). Ex.: `order-manager`")
     private Defaultable<String> serviceName = Defaultable.string(getDefault(JAEGER_SERVICE_NAME));

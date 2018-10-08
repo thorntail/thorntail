@@ -215,7 +215,7 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
     private final Archive<?> archive;
 
     @AttributeDocumentation("Path to Keycloak adapter configuration")
-    @Configurable("swarm.keycloak.json.path")
+    @Configurable("thorntail.keycloak.json.path")
     String keycloakJsonPath;
 
     /**
@@ -226,7 +226,7 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
      * of another configured path to avoid the unexpected KeyCloak token validation results.
      */
     @AttributeDocumentation("Map of the relative request paths to Keycloak adapter configuration locations")
-    @Configurable("swarm.keycloak.multitenancy.paths")
+    @Configurable("thorntail.keycloak.multitenancy.paths")
     Map<String, String> keycloakMultitenancyPaths;
 
 }

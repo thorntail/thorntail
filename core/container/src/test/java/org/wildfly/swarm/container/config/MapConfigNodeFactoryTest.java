@@ -33,6 +33,37 @@ public class MapConfigNodeFactoryTest {
     public void testLoad() {
 
         Map<String,Object> input = new HashMap<String,Object>() {{
+            put("thorntail", new HashMap<String,Object>() {{
+                put("port", 8080);
+                put("enabled", true);
+                put("things", new ArrayList<Object>() {{
+                    add("one");
+                    add("two");
+                    add(new HashMap<String,Object>() {{
+                        put("name", "three");
+                        put("cheese", "cheddar");
+                        put("item", 3);
+                    }});
+                }});
+            }});
+        }};
+
+        ConfigNode config = MapConfigNodeFactory.load(input);
+
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.port"))).isEqualTo("8080");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.enabled"))).isEqualTo("true");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.things.0"))).isEqualTo("one");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.things.1"))).isEqualTo("two");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.things.2.name"))).isEqualTo("three");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.things.2.cheese"))).isEqualTo("cheddar");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.things.2.item"))).isEqualTo("3");
+
+    }
+
+    @Test
+    public void testLoadBackwardsCompatible() {
+
+        Map<String,Object> input = new HashMap<String,Object>() {{
             put("swarm", new HashMap<String,Object>() {{
                 put("port", 8080);
                 put("enabled", true);
@@ -50,13 +81,13 @@ public class MapConfigNodeFactoryTest {
 
         ConfigNode config = MapConfigNodeFactory.load(input);
 
-        assertThat(config.valueOf(ConfigKey.parse("swarm.port"))).isEqualTo("8080");
-        assertThat(config.valueOf(ConfigKey.parse("swarm.enabled"))).isEqualTo("true");
-        assertThat(config.valueOf(ConfigKey.parse("swarm.things.0"))).isEqualTo("one");
-        assertThat(config.valueOf(ConfigKey.parse("swarm.things.1"))).isEqualTo("two");
-        assertThat(config.valueOf(ConfigKey.parse("swarm.things.2.name"))).isEqualTo("three");
-        assertThat(config.valueOf(ConfigKey.parse("swarm.things.2.cheese"))).isEqualTo("cheddar");
-        assertThat(config.valueOf(ConfigKey.parse("swarm.things.2.item"))).isEqualTo("3");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.port"))).isEqualTo("8080");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.enabled"))).isEqualTo("true");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.things.0"))).isEqualTo("one");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.things.1"))).isEqualTo("two");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.things.2.name"))).isEqualTo("three");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.things.2.cheese"))).isEqualTo("cheddar");
+        assertThat(config.valueOf(ConfigKey.parse("thorntail.things.2.item"))).isEqualTo("3");
 
     }
 }

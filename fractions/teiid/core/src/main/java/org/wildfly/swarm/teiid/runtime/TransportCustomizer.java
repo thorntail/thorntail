@@ -37,19 +37,19 @@ import org.wildfly.swarm.teiid.TeiidFraction;
 @ApplicationScoped
 public class TransportCustomizer implements Customizer {
 
-    @Configurable("swarm.teiid.jdbc.port")
+    @Configurable("thorntail.teiid.jdbc.port")
     @AttributeDocumentation("JDBC Connection Port")
     private Defaultable<Integer> jdbcPort = integer(31000);
 
-    @Configurable("swarm.teiid.odbc.port")
+    @Configurable("thorntail.teiid.odbc.port")
     @AttributeDocumentation("ODBC Connection Port")
     private Defaultable<Integer> odbcPort = integer(35432);
 
-    @Configurable("swarm.teiid.jdbc.enable")
+    @Configurable("thorntail.teiid.jdbc.enable")
     @AttributeDocumentation("Enable JDBC Connections")
     private Defaultable<Boolean> enableJDBC = bool(true);
 
-    @Configurable("swarm.teiid.odbc.enable")
+    @Configurable("thorntail.teiid.odbc.enable")
     @AttributeDocumentation("Enable ODBC Connections")
     private Defaultable<Boolean> enableODBC = bool(false);
 

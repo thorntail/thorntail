@@ -1,4 +1,4 @@
-swarm:
+thorntail:
   context:
     mounts:
       - /external1

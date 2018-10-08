@@ -29,7 +29,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 @WildFlyExtension(module = "org.wildfly.extension.messaging-activemq")
 @MarshalDMR
 @DeploymentModule(name = "javax.jms.api")
-@Configurable("swarm.messaging-activemq")
+@Configurable("thorntail.messaging-activemq")
 public class MessagingFraction extends MessagingActiveMQ<MessagingFraction> implements Fraction<MessagingFraction> {
 
     public MessagingFraction() {

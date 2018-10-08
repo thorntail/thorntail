@@ -1,0 +1,7 @@
+thorntail:
+  keycloak:
+    security:
+      constraints:
+        - url-pattern: /secured
+          methods: [GET, POST]
+          roles: [admin]

@@ -19,5 +19,5 @@ public interface ManagementProperties {
     int DEFAULT_HTTP_PORT = 9990;
     int DEFAULT_HTTPS_PORT = 9993;
 
-    String MANAGEMENT_BIND_ADDRESS = "swarm.management.bind.address";
+    String MANAGEMENT_BIND_ADDRESS = "thorntail.management.bind.address";
 }

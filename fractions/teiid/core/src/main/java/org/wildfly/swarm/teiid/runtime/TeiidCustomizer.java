@@ -30,7 +30,7 @@ import org.wildfly.swarm.teiid.TeiidFraction;
 @ApplicationScoped
 public class TeiidCustomizer implements Customizer {
 
-    @Configurable("swarm.teiid.odata.secured")
+    @Configurable("thorntail.teiid.odata.secured")
     private Defaultable<Boolean> secure = bool(false);
 
     @Inject

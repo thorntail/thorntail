@@ -35,7 +35,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 @WildFlyExtension(module = "org.wildfly.extension.microprofile.config")
 @MarshalDMR
 @DeploymentModule(name = "org.eclipse.microprofile.config.api")
-@Configurable("swarm.microprofile.config")
+@Configurable("thorntail.microprofile.config")
 public class MicroProfileConfigFraction extends MicroprofileConfig<MicroProfileConfigFraction> implements Fraction<MicroProfileConfigFraction> {
 
     public MicroProfileConfigFraction() {
