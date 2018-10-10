@@ -8,27 +8,27 @@ Below is a non-exhaustive set of the useful general system properties:
 |Description
 |Default
 
-|'swarm.bind.address'
+|swarm.bind.address
 |Interface to bind servers
 |0.0.0.0
 
-|'swarm.port.offset'
+|swarm.port.offset
 |Sets a global port adjustment
 |0
 
-|'swarm.context.path'
+|swarm.context.path
 |Sets the context path for the deployed application
 |/
 
-|'swarm.http.port'
+|swarm.http.port
 |Sets the port for the HTTP server
 |8080
 
-|'swarm.https.port'
+|swarm.https.port
 |Sets the port for the HTTPS server
 |8483
 
-|`swarm.debug.port`
+|swarm.debug.port
 |If provided, the swarm process will pause for debugging on the given port. This option is only available when running an Arquillian test or mvn wildfly-swarm:run, not when executing java -jar. The latter requires normal Java debug agent parameters
 |none
 |===
@@ -41,19 +41,19 @@ For the H2, MySQL and Postgres database fractions, the following properties are 
 |Description
 |Default
 
-|'swarm.ds.name'
+|swarm.ds.name
 |Name of the datasource
 |ExampleDS
 
-|'swarm.ds.username'
+|swarm.ds.username
 |Username to access the database
 |driver specific
 
-|'swarm.ds.password'
+|swarm.ds.password
 |Password to access the database
 |driver specific
 
-|'swarm.ds.connection.url'
+|swarm.ds.connection.url
 |JDBC Connection URL
 |driver specific
 |===
