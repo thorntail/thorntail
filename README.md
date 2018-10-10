@@ -1,12 +1,9 @@
 [![Build Status](https://ci.wildfly-swarm.io/buildStatus/icon?job=thorntail-linux)](https://ci.wildfly-swarm.io/job/thorntail-linux)
 [![License](https://img.shields.io/:license-Apache2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/wildfly-swarm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.wildfly.swarm/wildfly-swarm)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.thorntail/thorntail/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.thorntail/thorntail)
 [![Join the chat at freenode:thorntail](https://img.shields.io/badge/irc-freenode%3A%20%23thorntail-blue.svg)](http://webchat.freenode.net/?channels=%23thorntail)
 
-We rely on the [Java profiler from EJ Technologies](http://www.ej-technologies.com/products/jprofiler/overview.html)
-![Supported by JProfiler](https://www.ej-technologies.com/images/product_banners/jprofiler_small.png)
-
-![Thorntail: Rightsize your JavaEE Applications](http://wildfly-swarm.io/images/swarm_logo_final.png)
+![Thorntail: Rightsize your JavaEE Applications](http://thorntail.io/images/thorntail_horizontal_rgb_600px_reverse.png.png)
 
 > Issues for v2/master are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/projects/THORN/issues?filter=allopenissues) (JIRA).
 > Issues for v4 are being tracked in GitHub Issues.
@@ -81,8 +78,7 @@ mvn clean install -DskipTests
 
 # Documentation
 
-For a more complete set of documentation, go to the [WildFly Swarm User's
-Guide](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/).
+For a more complete set of documentation, go to the [Thorntail Guide](https://docs.thorntail.io/).
 
 # Community
 
