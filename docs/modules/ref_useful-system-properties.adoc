@@ -1,0 +1,61 @@
+
+[id='useful-system-properties_{context}']
+Below is a non-exhaustive set of the useful general system properties:
+
+[cols="1,2,3"]
+|===
+|Property
+|Description
+|Default
+
+|'swarm.bind.address'
+|Interface to bind servers
+|0.0.0.0
+
+|'swarm.port.offset'
+|Sets a global port adjustment
+|0
+
+|'swarm.context.path'
+|Sets the context path for the deployed application
+|/
+
+|'swarm.http.port'
+|Sets the port for the HTTP server
+|8080
+
+|'swarm.https.port'
+|Sets the port for the HTTPS server
+|8483
+
+|`swarm.debug.port`
+|If provided, the swarm process will pause for debugging on the given port. This option is only available when running an Arquillian test or mvn wildfly-swarm:run, not when executing java -jar. The latter requires normal Java debug agent parameters
+|none
+|===
+
+For the H2, MySQL and Postgres database fractions, the following properties are supported to configure the datasource:
+
+[cols="1,2,3"]
+|===
+|Property
+|Description
+|Default
+
+|'swarm.ds.name'
+|Name of the datasource
+|ExampleDS
+
+|'swarm.ds.username'
+|Username to access the database
+|driver specific
+
+|'swarm.ds.password'
+|Password to access the database
+|driver specific
+
+|'swarm.ds.connection.url'
+|JDBC Connection URL
+|driver specific
+|===
+
+NOTE: For a full set of supported options, please consult the documentation for each fraction and the javadocs on class https://github.com/thorntail/thorntail/blob/master/core/spi/src/main/java/org/wildfly/swarm/spi/api/SwarmProperties.java[SwarmProperties.java]
