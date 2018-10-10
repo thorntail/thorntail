@@ -3,7 +3,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.thorntail/thorntail/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.thorntail/thorntail)
 [![Join the chat at freenode:thorntail](https://img.shields.io/badge/irc-freenode%3A%20%23thorntail-blue.svg)](http://webchat.freenode.net/?channels=%23thorntail)
 
-![Thorntail: Rightsize your JavaEE Applications](http://thorntail.io/images/thorntail_horizontal_rgb_600px_reverse.png.png)
+![Thorntail: Rightsize your JavaEE Applications](http://thorntail.io/images/thorntail_horizontal_rgb_600px_reverse.png)
 
 > Issues for v2/master are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/projects/THORN/issues?filter=allopenissues) (JIRA).
 > Issues for v4 are being tracked in GitHub Issues.
