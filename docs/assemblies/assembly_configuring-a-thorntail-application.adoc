@@ -13,7 +13,7 @@ Only the items related to the fractions that your application uses are relevant 
 
 Using system properties for configuring your application is advantageous for experimenting, debugging, and other short-term activities.
 
-include::../modules/ref_useful-system-properties.adoc[leveloffset=+2]
+include::../modules/ref_commonly-used-system-properties.adoc[leveloffset=+2]
 
 include::../modules/con_application-configuration-using-system-properties.adoc[leveloffset=+2]
 
