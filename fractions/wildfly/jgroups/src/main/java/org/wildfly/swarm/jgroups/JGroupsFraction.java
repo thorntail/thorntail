@@ -86,7 +86,7 @@ public class JGroupsFraction extends JGroups<JGroupsFraction> implements Fractio
     }
 
     @AttributeDocumentation("Default multicast address for JGroups")
-    @Configurable("swarm.default.multicast.address")
+    @Configurable("thorntail.default.multicast.address")
     private Defaultable<String> defaultMulticastAddress = string("230.0.0.4");
 
 }

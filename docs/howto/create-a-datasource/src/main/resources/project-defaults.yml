@@ -1,6 +1,6 @@
 
 # tag::all[]
-swarm:
+thorntail:
   datasources:
     data-sources:
       # tag::datasource[]

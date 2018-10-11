@@ -92,27 +92,27 @@ public class ProjectStagesTest {
         Swarm swarm = new Swarm(new Properties());
         swarm.withProfile("foo");
         ConfigView view = swarm.configView();
-        assertThat(view.resolve("swarm.myname").getValue()).isEqualTo("foo");
+        assertThat(view.resolve("thorntail.myname").getValue()).isEqualTo("foo");
         swarm.withProfile("bar");
-        assertThat(view.resolve("swarm.myname").getValue()).isEqualTo("foo");
-        assertThat(view.resolve("swarm.mydottednumber").as(Double.class).getValue()).isEqualTo(2.82);
+        assertThat(view.resolve("thorntail.myname").getValue()).isEqualTo("foo");
+        assertThat(view.resolve("thorntail.mydottednumber").as(Double.class).getValue()).isEqualTo(2.82);
     }
 
     @Test
     public void testCLIToLoadConfig() throws Exception {
         Swarm swarm = new Swarm(new Properties(), "-Sfoo");
         ConfigView view = swarm.configView();
-        assertThat(view.resolve("swarm.myname").getValue()).isEqualTo("foo");
+        assertThat(view.resolve("thorntail.myname").getValue()).isEqualTo("foo");
     }
 
     @Test
     public void testEnvironmentVars() throws Exception {
         Map<String, String> environment = new HashMap<>();
-        environment.put("swarm.myname", "from_env");
+        environment.put("thorntail.myname", "from_env");
         Swarm swarm = new Swarm(new Properties(), environment);
 
         ConfigView view = swarm.configView();
-        assertThat(view.resolve("swarm.myname").getValue()).isEqualTo("from_env");
+        assertThat(view.resolve("thorntail.myname").getValue()).isEqualTo("from_env");
     }
 
     @Test
@@ -120,13 +120,13 @@ public class ProjectStagesTest {
         Map<String, String> environment = new HashMap<>();
         Properties properties = new Properties();
 
-        environment.put("swarm.myname", "from_env");
-        properties.setProperty("swarm.myname", "from_props");
+        environment.put("thorntail.myname", "from_env");
+        properties.setProperty("thorntail.myname", "from_props");
 
         Swarm swarm = new Swarm(properties, environment);
 
         ConfigView view = swarm.configView();
-        assertThat(view.resolve("swarm.myname").getValue()).isEqualTo("from_props");
+        assertThat(view.resolve("thorntail.myname").getValue()).isEqualTo("from_props");
     }
 
     @Test
@@ -134,19 +134,19 @@ public class ProjectStagesTest {
         Map<String, String> environment = new HashMap<>();
         Properties properties = new Properties();
 
-        environment.put("swarm.myname", "from_env");
-        properties.setProperty("swarm.myname", "from_props");
+        environment.put("thorntail.myname", "from_env");
+        properties.setProperty("thorntail.myname", "from_props");
 
-        Swarm swarm = new Swarm(properties, environment, "-Dswarm.myname=tacos");
+        Swarm swarm = new Swarm(properties, environment, "-Dthorntail.myname=tacos");
 
         ConfigView view = swarm.configView();
-        assertThat(view.resolve("swarm.myname").getValue()).isEqualTo("tacos");
+        assertThat(view.resolve("thorntail.myname").getValue()).isEqualTo("tacos");
     }
 
     @Test
     public void testPseudoPropertiesToSelectProjectStage() throws Exception {
         Swarm swarm = new Swarm(new Properties(),
-                                "-Dswarm.project.stage=production");
+                                "-Dthorntail.project.stage=production");
 
         ConfigView view = swarm.configView();
         assertThat(view.resolve("foo.bar.baz").getValue()).isEqualTo("brie");
@@ -155,9 +155,9 @@ public class ProjectStagesTest {
     @Test
     public void testIsolatedPropertiesToSelectProjectStage() throws Exception {
         Properties props = new Properties();
-        props.setProperty("swarm.project.stage", "production");
+        props.setProperty("thorntail.project.stage", "production");
         Swarm swarm = new Swarm(props,
-                                "-Dswarm.project.stage=production");
+                                "-Dthorntail.project.stage=production");
 
         ConfigView view = swarm.configView();
         assertThat(view.resolve("foo.bar.baz").getValue()).isEqualTo("brie");

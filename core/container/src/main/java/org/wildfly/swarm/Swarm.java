@@ -138,7 +138,7 @@ public class Swarm {
 
     private static final String BOOT_MODULE_PROPERTY = "boot.module.loader";
 
-    public static final String APPLICATION_MODULE_NAME = "swarm.application";
+    public static final String APPLICATION_MODULE_NAME = "thorntail.application";
 
     private static final String CONTAINER_MODULE_NAME = "swarm.container";
 
@@ -379,7 +379,7 @@ public class Swarm {
     public Swarm start() throws Exception {
         INSTANCE = this;
 
-        try (AutoCloseable handle = Performance.time("Swarm.start()")) {
+        try (AutoCloseable handle = Performance.time("Thorntail.start()")) {
 
             Module module = Module.getBootModuleLoader().loadModule(CONTAINER_MODULE_NAME);
             Class<?> bootstrapClass = module.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.ServerBootstrapImpl");
@@ -740,7 +740,7 @@ public class Swarm {
 
         try {
             swarm.start();
-            if (System.getProperty("swarm.inhibit.default-deployment") == null) {
+            if (System.getProperty("thorntail.inhibit.default-deployment") == null) {
                 swarm.deploy();
             }
         } catch (final VirtualMachineError vme) {
@@ -748,7 +748,7 @@ public class Swarm {
             vme.printStackTrace();
             System.exit(1);
         } catch (final Throwable t) {
-            if (System.getProperty("swarm.inhibit.auto-stop") == null) {
+            if (System.getProperty("thorntail.inhibit.auto-stop") == null) {
                 t.printStackTrace();
                 tryToStopAfterStartupError(t, swarm);
             }

@@ -145,8 +145,8 @@
                </dependenciesToScan>
                <systemPropertyVariables>
                   <!-- Uncomment to debug arquillian test -->
-                  <!-- swarm.debug.port>8787</swarm.debug.port-->
-                  <!-- swarm.logging>FINEST</swarm.logging-->
+                  <!-- thorntail.debug.port>8787</thorntail.debug.port-->
+                  <!-- thorntail.logging>FINEST</thorntail.logging-->
                </systemPropertyVariables>
             </configuration>
          </plugin>

@@ -44,13 +44,26 @@ public class PropertiesConfigNodeFactoryTest {
     @Test
     public void testLoadNested() {
         Properties props = new Properties() {{
+            setProperty("thorntail.http.port", "8080");
+            setProperty("thorntail.data-sources.ExampleDS.url", "jdbc:db");
+        }};
+
+        ConfigNode node = PropertiesConfigNodeFactory.load(props);
+
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "http", "port"))).isEqualTo("8080");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "data-sources", "ExampleDS", "url"))).isEqualTo("jdbc:db");
+    }
+
+    @Test
+    public void testLoadNestedBackwardsCompatible() {
+        Properties props = new Properties() {{
             setProperty("swarm.http.port", "8080");
             setProperty("swarm.data-sources.ExampleDS.url", "jdbc:db");
         }};
 
         ConfigNode node = PropertiesConfigNodeFactory.load(props);
 
-        assertThat(node.valueOf(ConfigKey.of("swarm", "http", "port"))).isEqualTo("8080");
-        assertThat(node.valueOf(ConfigKey.of("swarm", "data-sources", "ExampleDS", "url"))).isEqualTo("jdbc:db");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "http", "port"))).isEqualTo("8080");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "data-sources", "ExampleDS", "url"))).isEqualTo("jdbc:db");
     }
 }

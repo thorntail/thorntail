@@ -40,38 +40,38 @@ import org.wildfly.swarm.undertow.WARArchive;
 @DeploymentScoped
 public class SwaggerArchivePreparer implements DeploymentProcessor {
 
-    @Configurable("swarm.deployment.*.swagger.title")
+    @Configurable("thorntail.deployment.*.swagger.title")
     private String title;
 
-    @Configurable("swarm.deployment.*.swagger.description")
+    @Configurable("thorntail.deployment.*.swagger.description")
     private String description;
 
-    @Configurable("swarm.deployment.*.swagger.packages")
+    @Configurable("thorntail.deployment.*.swagger.packages")
     private List<String> packages;
 
-    @Configurable("swarm.deployment.*.swagger.tos-url")
+    @Configurable("thorntail.deployment.*.swagger.tos-url")
     private String tosUrl;
 
-    @Configurable("swarm.deployment.*.swagger.license")
+    @Configurable("thorntail.deployment.*.swagger.license")
     private String license;
 
-    @Configurable("swarm.deployment.*.swagger.license-url")
+    @Configurable("thorntail.deployment.*.swagger.license-url")
     private String licenseUrl;
 
-    @Configurable("swarm.deployment.*.swagger.version")
+    @Configurable("thorntail.deployment.*.swagger.version")
     private String version;
 
-    @Configurable("swarm.deployment.*.swagger.schemes")
+    @Configurable("thorntail.deployment.*.swagger.schemes")
     private List<String> schemes;
 
-    @Configurable("swarm.deployment.*.swagger.host")
+    @Configurable("thorntail.deployment.*.swagger.host")
     private String host;
 
-    @Configurable("swarm.deployment.*.swagger.root")
+    @Configurable("thorntail.deployment.*.swagger.root")
     private String root;
 
-    @Configurable("swarm.deployment.*.context.path")
-    @Configurable("swarm.context.path")
+    @Configurable("thorntail.deployment.*.context.path")
+    @Configurable("thorntail.context.path")
     Defaultable<String> contextPath = Defaultable.string("/");
 
     private final Archive archive;

@@ -32,6 +32,22 @@ public class EnvironmentConfigNodeFactoryTest {
     public void testLoadSimple() {
 
         Map<String, String> env = new HashMap<String, String>() {{
+            put("thorntail.name", "bob");
+            put("thorntail.cheese", "cheddar");
+            put("not.thorntail.taco", "crunchy");
+        }};
+
+        ConfigNode node = EnvironmentConfigNodeFactory.load(env);
+
+        assertThat(node.valueOf(ConfigKey.parse("thorntail.name"))).isEqualTo("bob");
+        assertThat(node.valueOf(ConfigKey.parse("thorntail.cheese"))).isEqualTo("cheddar");
+        assertThat(node.valueOf(ConfigKey.parse("not.thorntail.taco"))).isNull();
+    }
+
+    @Test
+    public void testLoadSimpleBackwardsCompatible() {
+
+        Map<String, String> env = new HashMap<String, String>() {{
             put("swarm.name", "bob");
             put("swarm.cheese", "cheddar");
             put("not.swarm.taco", "crunchy");
@@ -39,13 +55,30 @@ public class EnvironmentConfigNodeFactoryTest {
 
         ConfigNode node = EnvironmentConfigNodeFactory.load(env);
 
-        assertThat(node.valueOf(ConfigKey.parse("swarm.name"))).isEqualTo("bob");
-        assertThat(node.valueOf(ConfigKey.parse("swarm.cheese"))).isEqualTo("cheddar");
-        assertThat(node.valueOf(ConfigKey.parse("not.swarm.taco"))).isNull();
+        assertThat(node.valueOf(ConfigKey.parse("thorntail.name"))).isEqualTo("bob");
+        assertThat(node.valueOf(ConfigKey.parse("thorntail.cheese"))).isEqualTo("cheddar");
+        assertThat(node.valueOf(ConfigKey.parse("not.thorntail.taco"))).isNull();
     }
 
     @Test
     public void testLoadNested() {
+        Map<String, String> env = new HashMap<String, String>() {{
+            put("thorntail.http.port", "8080");
+            put("thorntail.data-sources.ExampleDS.url", "jdbc:db");
+            put("THORNTAIL_DATA_DASH_SOURCES_EXAMPLEDS_JNDI_DASH_NAME", "java:/jboss/datasources/example");
+            put("THORNTAIL_DATA_UNDERSCORE_SOURCES_EXAMPLEDS_USER_DASH_NAME", "joe");
+        }};
+
+        ConfigNode node = EnvironmentConfigNodeFactory.load(env);
+
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "http", "port"))).isEqualTo("8080");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "data-sources", "ExampleDS", "url"))).isEqualTo("jdbc:db");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "data-sources", "ExampleDS", "jndi-name"))).isEqualTo("java:/jboss/datasources/example");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "data_sources", "ExampleDS", "user-name"))).isEqualTo("joe");
+    }
+
+    @Test
+    public void testLoadNestedBackwardsCompatible() {
         Map<String, String> env = new HashMap<String, String>() {{
             put("swarm.http.port", "8080");
             put("swarm.data-sources.ExampleDS.url", "jdbc:db");
@@ -55,8 +88,9 @@ public class EnvironmentConfigNodeFactoryTest {
 
         ConfigNode node = EnvironmentConfigNodeFactory.load(env);
 
-        assertThat(node.valueOf(ConfigKey.of("swarm", "http", "port"))).isEqualTo("8080");
-        assertThat(node.valueOf(ConfigKey.of("swarm", "data-sources", "ExampleDS", "url"))).isEqualTo("jdbc:db");
-        assertThat(node.valueOf(ConfigKey.of("swarm", "data_sources", "ExampleDS", "user-name"))).isEqualTo("joe");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "http", "port"))).isEqualTo("8080");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "data-sources", "ExampleDS", "url"))).isEqualTo("jdbc:db");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "data-sources", "ExampleDS", "jndi-name"))).isEqualTo("java:/jboss/datasources/example");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "data_sources", "ExampleDS", "user-name"))).isEqualTo("joe");
     }
 }

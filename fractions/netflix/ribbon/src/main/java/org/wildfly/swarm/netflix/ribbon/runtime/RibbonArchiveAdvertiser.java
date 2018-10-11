@@ -14,7 +14,7 @@ import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 @DeploymentScoped
 public class RibbonArchiveAdvertiser implements DeploymentProcessor {
 
-    @Configurable("swarm.deployment.*.ribbon.advertise")
+    @Configurable("thorntail.deployment.*.ribbon.advertise")
     private String advertiseName;
 
     @Inject

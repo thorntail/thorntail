@@ -31,10 +31,10 @@ import org.wildfly.swarm.spi.runtime.annotations.Post;
  * Configures the legacy remoting socketing binding and connector if required.
  *
  * <p>In the event {@link RemotingFraction#requireLegacyConnector(boolean)}</p> has been
- * set to <code>true</code> or if configuration property <code>swarm.remoting.port</code>
+ * set to <code>true</code> or if configuration property <code>thorntail.remoting.port</code>
  * is set to any value, this customizer will install a socket-binding named
  * <code>legacy-remoting</code> for port <code>4447</code> or whatever value
- * configuration property <code>swarm.remoting.port</code> is set to.</p>
+ * configuration property <code>thorntail.remoting.port</code> is set to.</p>
  *
  * @author Bob McWhirter
  */

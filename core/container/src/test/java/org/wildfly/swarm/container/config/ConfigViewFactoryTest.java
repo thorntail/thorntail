@@ -46,7 +46,7 @@ public class ConfigViewFactoryTest {
     public void testLucasesYaml() {
         InputStream in = getClass().getResourceAsStream("/lucas.yml");
         Map<String, ?> doc = ConfigViewFactory.loadYaml(in);
-        Map<String, ?> swarm = (Map<String, ?>) doc.get("swarm");
+        Map<String, ?> swarm = (Map<String, ?>) doc.get("thorntail");
         Map<String, ?> security = (Map<String, ?>) swarm.get("security");
         Map<String, ?> securityDomains = (Map<String, ?>) security.get("security-domains");
         Map<String, ?> jaspioauth = (Map<String, ?>) securityDomains.get("jaspioauth");

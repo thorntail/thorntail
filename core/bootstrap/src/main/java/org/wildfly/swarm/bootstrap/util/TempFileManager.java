@@ -32,9 +32,9 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class TempFileManager {
 
-    public static final String TMPDIR_PROPERTY = "swarm.io.tmpdir";
+    public static final String TMPDIR_PROPERTY = "thorntail.io.tmpdir";
 
-    public static final String WFSWARM_TMP_PREFIX = "wfswarm";
+    public static final String WFSWARM_TMP_PREFIX = "thorntail";
 
     public static final TempFileManager INSTANCE = new TempFileManager();
 

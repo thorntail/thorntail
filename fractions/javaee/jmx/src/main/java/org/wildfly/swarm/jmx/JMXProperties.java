@@ -33,5 +33,5 @@ public interface JMXProperties {
      * <li>any other non-null value to allow for auto-detection.</li>
      * </ul>
      */
-    String REMOTE = "swarm.jmx.remote";
+    String REMOTE = "thorntail.jmx.remote";
 }

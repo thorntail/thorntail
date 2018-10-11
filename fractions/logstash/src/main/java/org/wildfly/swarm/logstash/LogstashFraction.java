@@ -33,7 +33,7 @@ import static org.wildfly.swarm.spi.api.Defaultable.string;
 /**
  * @author Ken Finnigan
  */
-@Configurable("swarm.logstash")
+@Configurable("thorntail.logstash")
 public class LogstashFraction implements Fraction<LogstashFraction> {
 
     public LogstashFraction() {

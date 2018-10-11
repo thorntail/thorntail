@@ -11,10 +11,10 @@ Each {Thorntail} application can contain a text file with usage instructions at 
 When the application has fully started, the contents of the file are be logged to the logging output, with variables substituted according to the configuration properties.
 This is useful for displaying the currently active port used by the application, for example.
 
-Reference the configuration variables in the `${swarm.thing}` format:
+Reference the configuration variables in the `${thorntail.thing}` format:
 
 [source,text]
 ----
-The application is now ready on ${swarm.http.port}!
+The application is now ready on ${thorntail.http.port}!
 ----
 

@@ -41,7 +41,7 @@ public class TopologyWebAppDeploymentProducer {
     private TopologyWebAppFraction fraction;
 
     @Inject
-    @ConfigurationValue("swarm.topology.context.path")
+    @ConfigurationValue("thorntail.topology.context.path")
     private String contextPath;
 
     @Produces
@@ -57,7 +57,7 @@ public class TopologyWebAppDeploymentProducer {
             WARArchive war = ShrinkWrap.create(WARArchive.class, "topology-webapp.war");
             war.addAsWebInfResource(new StringAsset(getWebXml(fraction)), "web.xml");
             war.addClass(TopologySSEServlet.class);
-            war.addModule("swarm.application");
+            war.addModule("thorntail.application");
             war.addModule("org.wildfly.swarm.topology");
             war.addAsWebResource(new ClassLoaderAsset("topology.js", this.getClass().getClassLoader()), "topology.js");
             war.setContextRoot(context);

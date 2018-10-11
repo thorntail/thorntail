@@ -107,7 +107,7 @@ public class Runner {
     }
 
     private static URLClassLoader createClassLoader() throws Exception {
-        File fatJar = File.createTempFile("wfswarm-user-app", ".jar");
+        File fatJar = File.createTempFile("thorntail-user-app", ".jar");
         buildJar(fatJar);
 
 

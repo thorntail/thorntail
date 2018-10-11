@@ -45,7 +45,7 @@ import org.wildfly.swarm.bootstrap.util.TempFileManager;
  */
 public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
 
-    public static final String MODULE_NAME = "swarm.application";
+    public static final String MODULE_NAME = "thorntail.application";
 
     public ApplicationModuleFinder() {
         super(MODULE_NAME);
@@ -195,7 +195,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
     }
 
     private void addClasspathJars(ModuleSpec.Builder builder) throws IOException {
-        String driversList = System.getProperty("swarm.classpath");
+        String driversList = System.getProperty("thorntail.classpath");
 
         if (driversList != null && driversList.trim().length() > 0) {
             String[] drivers = driversList.split(";");

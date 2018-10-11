@@ -31,7 +31,7 @@ public class YamlDumper {
         new YamlDumper(out, props).dump();
     }
 
-    private final Node root = new Node("swarm");
+    private final Node root = new Node("thorntail");
 
     private final PrintStream out;
 

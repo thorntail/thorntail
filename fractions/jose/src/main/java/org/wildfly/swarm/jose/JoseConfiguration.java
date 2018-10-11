@@ -163,98 +163,98 @@ public class JoseConfiguration {
     /**
      * Keystore type.
      */
-    @Configurable("swarm.jose.keystore.type")
+    @Configurable("thorntail.jose.keystore.type")
     @AttributeDocumentation("Keystore type: Java KeyStore type or 'jwk' - JSON Web Key store, see RFC7517, section 5")
     private Defaultable<String> keystoreType = string(DEFAULT_KEYSTORE_TYPE);
 
     /**
      * Path to the keystore.
      */
-    @Configurable("swarm.jose.keystore.path")
+    @Configurable("thorntail.jose.keystore.path")
     @AttributeDocumentation("Path to the keystore, only the classpath is currently supported")
     private Defaultable<String> keystorePath = string(DEFAULT_KEYSTORE_PATH);
 
     /**
      * Password for the keystore.
      */
-    @Configurable("swarm.jose.keystore.password")
+    @Configurable("thorntail.jose.keystore.password")
     @AttributeDocumentation("Password to the keystore")
     private Defaultable<String> keystorePassword = string(DEFAULT_KEYSTORE_PASSWORD);
 
     /**
      * Signature algorithm.
      */
-    @Configurable("swarm.jose.signature.algorithm")
+    @Configurable("thorntail.jose.signature.algorithm")
     @AttributeDocumentation("Signature algorithm: see RFC7518, Section 3")
     private Defaultable<String> signatureAlgorithm = string(DEFAULT_SIGNATURE_ALGORITHM);
 
     /**
      * Signature Format.
      */
-    @Configurable("swarm.jose.signature.format")
+    @Configurable("thorntail.jose.signature.format")
     @AttributeDocumentation("Signature format: COMPACT (default) or JSON (support  is optional)")
     private Defaultable<String> signatureFormat = string(DEFAULT_JOSE_FORMAT.name());
 
     /**
      * Signature Data Encoding.
      */
-    @Configurable("swarm.jose.signature.data-encoding")
+    @Configurable("thorntail.jose.signature.data-encoding")
     @AttributeDocumentation("Signature data encoding mode: true - Base64Url (default), false - clear text")
     private Defaultable<Boolean> signatureDataEncoding = bool(DEFAULT_SIGNATURE_DATA_ENCODING);
 
     /**
      * Signature Detached Data.
      */
-    @Configurable("swarm.jose.signature.data-detached")
+    @Configurable("thorntail.jose.signature.data-detached")
     @AttributeDocumentation("Signature detached mode: true - the data is in the sequence (default), false - outside")
     private Defaultable<Boolean> signatureDataDetached = bool(DEFAULT_SIGNATURE_DATA_DETACHED);
 
     /**
      * Password for the signature key.
      */
-    @Configurable("swarm.jose.signature.key.password")
+    @Configurable("thorntail.jose.signature.key.password")
     @AttributeDocumentation("Password to the signature private key")
     private Defaultable<String> signatureKeyPassword = string(DEFAULT_KEY_PASSWORD);
 
     /**
      * Alias to the signature key entry in the keystore.
      */
-    @Configurable("swarm.jose.signature.key.alias")
+    @Configurable("thorntail.jose.signature.key.alias")
     @AttributeDocumentation("Alias to the signature key entry in the keystore")
     private Defaultable<String> signatureKeyAlias = string(DEFAULT_KEY_ALIAS);
 
     /**
      * Encryption Format.
      */
-    @Configurable("swarm.jose.encryption.format")
+    @Configurable("thorntail.jose.encryption.format")
     @AttributeDocumentation("Encryption format: COMPACT (default) or JSON (support is optional)")
     private Defaultable<String> encryptionFormat = string(DEFAULT_JOSE_FORMAT.name());
 
     /**
      * Key Encryption algorithm.
      */
-    @Configurable("swarm.jose.encryption.keyAlgorithm")
+    @Configurable("thorntail.jose.encryption.keyAlgorithm")
     @AttributeDocumentation("Key encryption algorithm: see RFC7518, Section 4")
     private Defaultable<String> keyEncryptionAlgorithm = string(DEFAULT_KEY_ENCRYPTION_ALGORITHM);
 
     /**
      * Content Encryption algorithm.
      */
-    @Configurable("swarm.jose.encryption.contentAlgorithm")
+    @Configurable("thorntail.jose.encryption.contentAlgorithm")
     @AttributeDocumentation("Content encryption algorithm: : see RFC7518, Section 5")
     private Defaultable<String> contentEncryptionAlgorithm = string(DEFAULT_CONTENT_ENCRYPTION_ALGORITHM);
 
     /**
      * Password for the encryption key.
      */
-    @Configurable("swarm.jose.encryption.key.password")
+    @Configurable("thorntail.jose.encryption.key.password")
     @AttributeDocumentation("Password to the encryption private key")
     private Defaultable<String> encryptionKeyPassword = string(DEFAULT_KEY_PASSWORD);
 
     /**
      * Alias to the encryption key entry in the keystore.
      */
-    @Configurable("swarm.jose.encryption.key.alias")
+    @Configurable("thorntail.jose.encryption.key.alias")
     @AttributeDocumentation("Alias to the encryption key entry in the keystore")
     private Defaultable<String> encryptionKeyAlias = string(DEFAULT_KEY_ALIAS);
 }

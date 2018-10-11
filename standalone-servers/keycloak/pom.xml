@@ -28,7 +28,7 @@
         <artifactId>thorntail-maven-plugin</artifactId>
         <configuration>
           <properties>
-            <swarm.inhibit.default-deployment>true</swarm.inhibit.default-deployment>
+            <thorntail.inhibit.default-deployment>true</thorntail.inhibit.default-deployment>
           </properties>
         </configuration>
         <executions>

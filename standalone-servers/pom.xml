@@ -57,7 +57,7 @@
     <profile>
       <id>uberjar</id>
       <properties>
-        <wildfly-swarm.useUberJar>true</wildfly-swarm.useUberJar>
+        <thorntail.useUberJar>true</thorntail.useUberJar>
       </properties>
     </profile>
     <profile>
@@ -84,7 +84,7 @@
                   <configuration>
                     <properties>
                       <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
-                      <swarm.bind.address>127.0.0.1</swarm.bind.address>
+                      <thorntail.bind.address>127.0.0.1</thorntail.bind.address>
                     </properties>
                     <stdoutFile>target/stdout.log</stdoutFile>
                     <stderrFile>target/stderr.log</stderrFile>

@@ -1,4 +1,4 @@
-swarm:
+thorntail:
   jaeger:
     service-name: greeter
     sampler-type: const

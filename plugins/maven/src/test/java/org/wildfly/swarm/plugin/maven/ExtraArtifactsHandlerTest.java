@@ -42,27 +42,27 @@ public class ExtraArtifactsHandlerTest {
 
     @Before
     public void setUp() {
-        System.clearProperty("swarm.download.poms");
-        System.clearProperty("swarm.download.sources");
-        System.clearProperty("swarm.download.javadocs");
+        System.clearProperty("thorntail.download.poms");
+        System.clearProperty("thorntail.download.sources");
+        System.clearProperty("thorntail.download.javadocs");
     }
 
     @Test
     public void shouldGetOnlyPomWhenPomsSpecified() throws Exception {
-        System.setProperty("swarm.download.poms", "");
+        System.setProperty("thorntail.download.poms", "");
 
         shouldGetWithClassifierAndExtension("", "pom");
     }
 
     @Test
     public void shouldGetOnlySourcesWhenSourcesSpecified() throws Exception {
-        System.setProperty("swarm.download.sources", "");
+        System.setProperty("thorntail.download.sources", "");
         shouldGetWithClassifierAndExtension("sources", "jar");
     }
 
     @Test
     public void shouldGetOnlyJavadocWhenJavadocSpecified() throws Exception {
-        System.setProperty("swarm.download.javadocs", "");
+        System.setProperty("thorntail.download.javadocs", "");
         shouldGetWithClassifierAndExtension("javadoc", "jar");
     }
 

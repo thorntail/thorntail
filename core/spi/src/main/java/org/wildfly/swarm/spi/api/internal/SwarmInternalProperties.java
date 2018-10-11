@@ -22,14 +22,14 @@ package org.wildfly.swarm.spi.api.internal;
  */
 public interface SwarmInternalProperties {
 
-    String BUILD_MODULES = "swarm.build.modules";
+    String BUILD_MODULES = "thorntail.build.modules";
 
-    String BUILD_REPOS = "swarm.build.repos";
+    String BUILD_REPOS = "thorntail.build.repos";
 
-    String EXPORT_UBERJAR = "swarm.export.uberjar";
+    String EXPORT_UBERJAR = "thorntail.export.uberjar";
 
-    String CURRENT_DEPLOYMENT = "swarm.current.deployment";
+    String CURRENT_DEPLOYMENT = "thorntail.current.deployment";
 
-    String NODE_ID = "swarm.node.id";
+    String NODE_ID = "thorntail.node.id";
 
 }

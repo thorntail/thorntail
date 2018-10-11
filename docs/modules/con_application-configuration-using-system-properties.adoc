@@ -9,7 +9,7 @@ Any property that has the _KEY_ parameter in its name indicates that you must su
 [discrete]
 == Configuration of items with the KEY parameter
 
-A configuration item documented as `swarm.undertow.servers.KEY.default-host` indicates that the configuration applies to a particular named server.
+A configuration item documented as `thorntail.undertow.servers.KEY.default-host` indicates that the configuration applies to a particular named server.
 
-In practical usage, the property would be, for example, `swarm.undertow.servers.default.default-host` for a server known as `default`.
+In practical usage, the property would be, for example, `thorntail.undertow.servers.default.default-host` for a server known as `default`.
 

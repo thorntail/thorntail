@@ -37,7 +37,7 @@ import org.wildfly.swarm.spi.api.config.SimpleKey;
 @ApplicationScoped
 public class NetworkConfigurer {
 
-    private static final ConfigKey SWARM = ConfigKey.of("swarm");
+    private static final ConfigKey SWARM = ConfigKey.of("thorntail");
 
     private static ConfigKey ROOT = SWARM.append("network", "socket-binding-groups");
 

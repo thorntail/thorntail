@@ -99,6 +99,7 @@ public class PropertiesUtil {
         System.getProperties().stringPropertyNames().forEach(key -> {
             if (key.startsWith("jboss.") ||
                     key.startsWith("swarm.") ||
+                    key.startsWith("thorntail.") ||
                     key.startsWith("wildfly.") ||
                     (withMaven && key.startsWith("maven.")) ||
                     existing.containsKey(key)) {

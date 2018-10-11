@@ -41,7 +41,7 @@ abstract class AdvertisingTestBase {
     protected static final String servicesUrl = String.format("%s/v1/catalog/services", consulUrl);
 
     static {
-        System.setProperty("swarm.topology.consul.url", consulUrl);
+        System.setProperty("thorntail.topology.consul.url", consulUrl);
     }
 
     protected Map<?, ?> getDefinedServicesAsMap() throws IOException {

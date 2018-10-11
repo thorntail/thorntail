@@ -54,23 +54,23 @@ public class DatasourceAndDriverCustomizer implements Customizer {
     private String defaultDatasourceJndiName;
 
     @AttributeDocumentation("Name of the default datasource")
-    @Configurable("swarm.ds.name")
+    @Configurable("thorntail.ds.name")
     private String datasourceName = "ExampleDS";
 
     @AttributeDocumentation("Default datasource connection URL")
-    @Configurable("swarm.ds.connection.url")
+    @Configurable("thorntail.ds.connection.url")
     private String datasourceConnectionUrl;
 
     @AttributeDocumentation("Default datasource connection user name")
-    @Configurable("swarm.ds.username")
+    @Configurable("thorntail.ds.username")
     private String datasourceUserName;
 
     @AttributeDocumentation("Defatul datasource connection password")
-    @Configurable("swarm.ds.password")
+    @Configurable("thorntail.ds.password")
     private String datasourcePassword;
 
     @AttributeDocumentation("Defatul datasource JDBC driver name")
-    @Configurable("swarm.jdbc.driver")
+    @Configurable("thorntail.jdbc.driver")
     private String driverName;
 
     @Override

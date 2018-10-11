@@ -42,7 +42,7 @@ public class ConfigurableManagerTest {
         Properties props = new Properties();
         Map<String, String> env = new HashMap<>();
         ConfigViewFactory factory = new ConfigViewFactory(props, env);
-        factory.withProperty("swarm.deployment.[myapp.war].context", "/myapp");
+        factory.withProperty("thorntail.deployment.[myapp.war].context", "/myapp");
         ConfigView configView = factory.get(true);
         DeploymentContext context = new DeploymentContextImpl();
         ConfigurableManager manager = new ConfigurableManager(configView, context);
@@ -51,6 +51,28 @@ public class ConfigurableManagerTest {
         try {
             context.activate(archive, archive.getName(), false);
             Component component = new Component();
+            manager.scan(component);
+            assertThat(component.context.get()).isEqualTo("/myapp");
+
+        } finally {
+            context.deactivate();
+        }
+    }
+
+    @Test
+    public void testDeploymentConfigurableBackwardCompatibility() throws Exception {
+        Properties props = new Properties();
+        Map<String, String> env = new HashMap<>();
+        ConfigViewFactory factory = new ConfigViewFactory(props, env);
+        factory.withProperty("swarm.deployment.[myapp.war].context", "/myapp");
+        ConfigView configView = factory.get(true);
+        DeploymentContext context = new DeploymentContextImpl();
+        ConfigurableManager manager = new ConfigurableManager(configView, context);
+
+        Archive archive = ShrinkWrap.create(JavaArchive.class, "myapp.war");
+        try {
+            context.activate(archive, archive.getName(), false);
+            BackwardCompatibleComponent component = new BackwardCompatibleComponent();
             manager.scan(component);
             assertThat(component.context.get()).isEqualTo("/myapp");
 
@@ -64,7 +86,7 @@ public class ConfigurableManagerTest {
         Properties props = new Properties();
         Map<String, String> env = new HashMap<>();
         ConfigViewFactory factory = new ConfigViewFactory(props, env);
-        factory.withProperty("swarm.http.context", "/myapp");
+        factory.withProperty("thorntail.http.context", "/myapp");
         ConfigView configView = factory.get(true);
         DeploymentContext context = new DeploymentContextImpl();
         ConfigurableManager manager = new ConfigurableManager(configView, context);
@@ -82,12 +104,34 @@ public class ConfigurableManagerTest {
     }
 
     @Test
+    public void testDeploymentConfigurableUsingAliasBackwardCompatibility() throws Exception {
+        Properties props = new Properties();
+        Map<String, String> env = new HashMap<>();
+        ConfigViewFactory factory = new ConfigViewFactory(props, env);
+        factory.withProperty("swarm.http.context", "/myapp");
+        ConfigView configView = factory.get(true);
+        DeploymentContext context = new DeploymentContextImpl();
+        ConfigurableManager manager = new ConfigurableManager(configView, context);
+
+        Archive archive = ShrinkWrap.create(JavaArchive.class, "myapp.war");
+        try {
+            context.activate(archive, archive.getName(), false);
+            BackwardCompatibleComponent component = new BackwardCompatibleComponent();
+            manager.scan(component);
+            assertThat(component.context.get()).isEqualTo("/myapp");
+
+        } finally {
+            context.deactivate();
+        }
+    }
+
+    @Test
     public void testDeploymentConfigurableUsingBoth() throws Exception {
         Properties props = new Properties();
         Map<String, String> env = new HashMap<>();
         ConfigViewFactory factory = new ConfigViewFactory(props, env);
-        factory.withProperty("swarm.deployment.[myapp.war].context", "/my-specific-app");
-        factory.withProperty("swarm.http.context", "/my-alias-app");
+        factory.withProperty("thorntail.deployment.[myapp.war].context", "/my-specific-app");
+        factory.withProperty("thorntail.http.context", "/my-alias-app");
         ConfigView configView = factory.get(true);
         DeploymentContext context = new DeploymentContextImpl();
         ConfigurableManager manager = new ConfigurableManager(configView, context);
@@ -113,7 +157,45 @@ public class ConfigurableManagerTest {
         }
     }
 
+    @Test
+    public void testDeploymentConfigurableUsingBothBackwardCompatible() throws Exception {
+        Properties props = new Properties();
+        Map<String, String> env = new HashMap<>();
+        ConfigViewFactory factory = new ConfigViewFactory(props, env);
+        factory.withProperty("swarm.deployment.[myapp.war].context", "/my-specific-app");
+        factory.withProperty("swarm.http.context", "/my-alias-app");
+        ConfigView configView = factory.get(true);
+        DeploymentContext context = new DeploymentContextImpl();
+        ConfigurableManager manager = new ConfigurableManager(configView, context);
+
+        Archive archive = ShrinkWrap.create(JavaArchive.class, "myapp.war");
+        try {
+            context.activate(archive, archive.getName(), false);
+            BackwardCompatibleComponent component = new BackwardCompatibleComponent();
+            manager.scan(component);
+            assertThat(component.context.get()).isEqualTo("/my-specific-app");
+        } finally {
+            context.deactivate();
+        }
+
+        Archive archiveToo = ShrinkWrap.create(JavaArchive.class, "otherapp.war");
+        try {
+            context.activate(archiveToo, archiveToo.getName(), false);
+            BackwardCompatibleComponent component = new BackwardCompatibleComponent();
+            manager.scan(component);
+            assertThat(component.context.get()).isEqualTo("/my-alias-app");
+        } finally {
+            context.deactivate();
+        }
+    }
+
     public static class Component {
+        @Configurable("thorntail.deployment.*.context")
+        @Configurable("thorntail.http.context")
+        public Defaultable<String> context = Defaultable.string("/");
+    }
+
+    public static class BackwardCompatibleComponent {
         @Configurable("swarm.deployment.*.context")
         @Configurable("swarm.http.context")
         public Defaultable<String> context = Defaultable.string("/");

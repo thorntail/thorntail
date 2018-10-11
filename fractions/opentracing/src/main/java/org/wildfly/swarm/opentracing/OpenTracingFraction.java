@@ -13,10 +13,10 @@ import java.util.Optional;
  * @author Juraci Paixão Kröhling
  */
 @DeploymentModule(name = "org.wildfly.swarm.opentracing", slot = "deployment")
-@Configurable("swarm.opentracing")
+@Configurable("thorntail.opentracing")
 public class OpenTracingFraction implements Fraction<OpenTracingFraction> {
     @AttributeDocumentation("The servlet skip pattern as a Java compilable Pattern. Optional. Ex.: `/health-check`")
-    @Configurable("swarm.opentracing.servlet.skipPattern")
+    @Configurable("thorntail.opentracing.servlet.skipPattern")
     private Defaultable<String> servletSkipPattern = Defaultable.string(getDefault(TracingFilter.SKIP_PATTERN));
 
     public String getServletSkipPattern() {

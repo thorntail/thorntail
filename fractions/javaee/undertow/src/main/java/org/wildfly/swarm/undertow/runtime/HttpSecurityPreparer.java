@@ -122,7 +122,7 @@ public class HttpSecurityPreparer implements DeploymentProcessor {
     }
 
     @AttributeDocumentation("Map of security configuration by deployment")
-    @Configurable("swarm.deployment")
+    @Configurable("thorntail.deployment")
     Map<String, Object> deploymentConfigs;
 
 }

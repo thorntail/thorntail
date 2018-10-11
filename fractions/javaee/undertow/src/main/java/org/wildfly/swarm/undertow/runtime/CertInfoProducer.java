@@ -52,15 +52,15 @@ public class CertInfoProducer {
     UndertowFraction undertow;
 
     @AttributeDocumentation("Should a self-signed certificate be generated")
-    @Configurable("swarm.https.certificate.generate")
+    @Configurable("thorntail.https.certificate.generate")
     Defaultable<Boolean> generateSelfCertificate = bool(false);
 
     @AttributeDocumentation("Hostname for the generated self-signed certificate")
-    @Configurable("swarm.https.certificate.generate.host")
+    @Configurable("thorntail.https.certificate.generate.host")
     Defaultable<String> selfCertificateHost = string("localhost");
 
     @AttributeDocumentation("Should an embedded keystore be created")
-    @Configurable("swarm.https.keystore.embedded")
+    @Configurable("thorntail.https.keystore.embedded")
     Defaultable<Boolean> embeddedKeystore = bool(false);
 
     @Produces
@@ -81,7 +81,7 @@ public class CertInfoProducer {
                 try {
                     URL jks = ClassLoader.getSystemClassLoader().getResource(keystorePath);
                     if (jks == null) {
-                        Module appModule = Module.getCallerModuleLoader().loadModule("swarm.application");
+                        Module appModule = Module.getCallerModuleLoader().loadModule("thorntail.application");
                         jks = appModule.getClassLoader().getResource(keystorePath);
                     }
                     if (jks == null) {

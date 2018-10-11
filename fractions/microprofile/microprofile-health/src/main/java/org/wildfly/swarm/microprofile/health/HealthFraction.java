@@ -38,8 +38,8 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 public class HealthFraction implements Fraction<HealthFraction> {
 
     @AttributeDocumentation("Security realm configuration")
-    @Configurable("swarm.microprofile.health.security-realm")
-    @Configurable("swarm.health.security-realm")
+    @Configurable("thorntail.microprofile.health.security-realm")
+    @Configurable("thorntail.health.security-realm")
     private Defaultable<String> securityRealm = string("");
 
     public HealthFraction securityRealm(String realmName) {

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
 
 /**
- * this servlet will listen to /swagger-ui and if swarm.swagger.web-app.json.path
+ * this servlet will listen to /swagger-ui and if thorntail.swagger.web-app.json.path
  * is configured redirect to index.html?url= so swagger will load the swagger.json
  * configured.
  * @author john
@@ -25,7 +25,7 @@ public class SwaggerDefaultUrlChangerServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     @Inject
-    @ConfigurationValue ("swarm.swagger.web-app.json.path")
+    @ConfigurationValue ("thorntail.swagger.web-app.json.path")
     private String path;
 
     @Override

@@ -248,61 +248,61 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
         return this.ajpPort.get();
     }
 
-    @Configurable("swarm.http.port")
+    @Configurable("thorntail.http.port")
     @AttributeDocumentation("Set the port for the default HTTP listener")
     private Defaultable<Integer> httpPort = integer(DEFAULT_HTTP_PORT);
 
-    @Configurable("swarm.https.port")
+    @Configurable("thorntail.https.port")
     @AttributeDocumentation("Set the port for the default HTTPS listener")
     private Defaultable<Integer> httpsPort = integer(DEFAULT_HTTPS_PORT);
 
-    @Configurable("swarm.ajp.port")
+    @Configurable("thorntail.ajp.port")
     @AttributeDocumentation("Set the port for the default AJP listener")
     private Defaultable<Integer> ajpPort = integer(DEFAULT_AJP_PORT);
 
     /**
      * Path to the keystore.
      */
-    @Configurable("swarm.https.keystore.path")
-    @Configurable("swarm.http.keystore.path")
+    @Configurable("thorntail.https.keystore.path")
+    @Configurable("thorntail.http.keystore.path")
     @AttributeDocumentation("Path to the server keystore")
     private String keystorePath;
 
     /**
      * Password for the keystore.
      */
-    @Configurable("swarm.https.keystore.password")
-    @Configurable("swarm.http.keystore.password")
+    @Configurable("thorntail.https.keystore.password")
+    @Configurable("thorntail.http.keystore.password")
     @AttributeDocumentation("Password to the server keystore")
     private String keystorePassword;
 
     /**
      * Password for the key.
      */
-    @Configurable("swarm.https.key.password")
-    @Configurable("swarm.http.key.password")
+    @Configurable("thorntail.https.key.password")
+    @Configurable("thorntail.http.key.password")
     @AttributeDocumentation("Password to the server certificate")
     private String keyPassword;
 
     /**
      * Alias of Server certificate key entry in the keystore.
      */
-    @Configurable("swarm.https.key.alias")
-    @Configurable("swarm.http.certificate.alias")
+    @Configurable("thorntail.https.key.alias")
+    @Configurable("thorntail.http.certificate.alias")
     @AttributeDocumentation("Alias to the server certificate key entry in the keystore")
     private String alias;
 
     /**
      * Whether or not disable HTTP interface
      */
-    @Configurable("swarm.https.only")
+    @Configurable("thorntail.https.only")
     @AttributeDocumentation("Only enable the HTTPS  Listener")
     private Defaultable<Boolean> onlyHTTPS = bool(false);
 
     /**
      * Whether or not enabling AJP
      */
-    @Configurable("swarm.ajp.enable")
+    @Configurable("thorntail.ajp.enable")
     @AttributeDocumentation("Determine if AJP should be enabled")
     private Defaultable<Boolean> enableAJP = ifAnyExplicitlySet(this.ajpPort);
 

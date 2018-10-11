@@ -29,35 +29,35 @@ import static org.wildfly.swarm.spi.api.Defaultable.string;
 /**
  * A fraction that adds support for the MicroProfile 1.0 JWT RBAC authentication and authorization spec.
  */
-@Configurable("swarm.microprofile.jwt")
+@Configurable("thorntail.microprofile.jwt")
 @DeploymentModule(name = "org.wildfly.swarm.microprofile.jwtauth", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
 public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuthFraction> {
 
     @AttributeDocumentation("The URI of the JWT token issuer")
-    @Configurable("swarm.microprofile.jwt.token.issued-by")
-    @Configurable("swarm.microprofile.jwtauth.token.issuedBy")
+    @Configurable("thorntail.microprofile.jwt.token.issued-by")
+    @Configurable("thorntail.microprofile.jwtauth.token.issuedBy")
     private Defaultable<String> tokenIssuer = string("http://localhost");
 
     @AttributeDocumentation("The public key of the JWT token signer. Can be prefixed 'file:' or 'classpath:' for key assets, otherwise the key contents are expected")
-    @Configurable("swarm.microprofile.jwt.token.signer-pub-key")
-    @Configurable("swarm.microprofile.jwtauth.token.signerPubKey")
+    @Configurable("thorntail.microprofile.jwt.token.signer-pub-key")
+    @Configurable("thorntail.microprofile.jwtauth.token.signerPubKey")
     private String publicKey;
 
     @AttributeDocumentation("The JWT token expiration grace period in seconds ")
-    @Configurable("swarm.microprofile.jwt.token.exp-grace-period")
-    @Configurable("swarm.microprofile.jwtauth.token.expGracePeriod")
+    @Configurable("thorntail.microprofile.jwt.token.exp-grace-period")
+    @Configurable("thorntail.microprofile.jwtauth.token.expGracePeriod")
     private Defaultable<Integer> expGracePeriodSecs = integer(60);
 
     @AttributeDocumentation("The JWKS URI from which to load public keys (if 'signer-pub-key' is set, this setting is ignored).")
-    @Configurable("swarm.microprofile.jwt.token.jwks-uri")
+    @Configurable("thorntail.microprofile.jwt.token.jwks-uri")
     private String jwksUri;
 
     @AttributeDocumentation("The interval at which the JWKS URI should be queried for keys (in minutes).")
-    @Configurable("swarm.microprofile.jwt.token.jwks-refresh-interval")
+    @Configurable("thorntail.microprofile.jwt.token.jwks-refresh-interval")
     private Defaultable<Integer> jwksRefreshInterval = integer(60);
 
     @AttributeDocumentation("If a JAX-RS resource has no class-level security metadata, then if this property is set to `true` and at least one resource method has security metadata all other resource methods without security metadata have an implicit `@DenyAll`, otherwise resource methods without security metadata are not secured")
-    @Configurable("swarm.microprofile.jwt.default-missing-method-permissions-deny-access")
+    @Configurable("thorntail.microprofile.jwt.default-missing-method-permissions-deny-access")
     private Defaultable<Boolean> defaultMissingMethodPermissionsDenyAccess = bool(true);
 
     public Defaultable<String> getTokenIssuer() {

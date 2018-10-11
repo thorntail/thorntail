@@ -55,13 +55,13 @@ public class PackageMojo extends AbstractSwarmMojo {
 
     static final String HOLLOWJAR_SUFFIX = "hollow" + "-" + UBERJAR_SUFFIX;
 
-    @Parameter(alias = "bundleDependencies", defaultValue = "true", property = "swarm.bundleDependencies")
+    @Parameter(alias = "bundleDependencies", defaultValue = "true", property = "thorntail.bundleDependencies")
     protected boolean bundleDependencies;
 
     /**
      * Make a fully executable jar for *nix machines by prepending a launch script to the jar.
      */
-    @Parameter(alias = "executable", defaultValue = "false", property = "swarm.executable")
+    @Parameter(alias = "executable", defaultValue = "false", property = "thorntail.executable")
     protected boolean executable;
 
     /**
@@ -70,7 +70,7 @@ public class PackageMojo extends AbstractSwarmMojo {
     @Parameter(alias = "executableScript")
     protected File executableScript;
 
-    @Parameter(alias = "hollow", defaultValue = "false", property = "swarm.hollow")
+    @Parameter(alias = "hollow", defaultValue = "false", property = "thorntail.hollow")
     protected boolean hollow;
 
     @Parameter(property = "finalName")
@@ -79,7 +79,7 @@ public class PackageMojo extends AbstractSwarmMojo {
     /**
      * Flag to skip packaging entirely.
      */
-    @Parameter(alias = "skip", defaultValue = "false", property = "swarm.package.skip")
+    @Parameter(alias = "skip", defaultValue = "false", property = "thorntail.package.skip")
     protected boolean skip;
 
     @Parameter(alias = "uberjarResources")
@@ -121,7 +121,7 @@ public class PackageMojo extends AbstractSwarmMojo {
         final File primaryArtifactFile = divineFile();
 
         if (primaryArtifactFile == null) {
-            throw new MojoExecutionException("Cannot package without a primary artifact; please `mvn package` prior to invoking wildfly-swarm:package from the command-line");
+            throw new MojoExecutionException("Cannot package without a primary artifact; please `mvn package` prior to invoking thorntail:package from the command-line");
         }
 
         final DeclaredDependencies declaredDependencies = new DeclaredDependencies();

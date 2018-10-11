@@ -304,7 +304,7 @@ public class ConfigurableManager implements AutoCloseable {
             key = new SimpleKey(fraction.getClass().getSimpleName().replace("Fraction", "").toLowerCase());
         }
 
-        return ConfigKey.of("swarm").append(key);
+        return ConfigKey.of("thorntail").append(key);
     }
 
     protected void scan(ConfigKey prefix, Object instance, boolean implicit) throws Exception {
@@ -465,7 +465,7 @@ public class ConfigurableManager implements AutoCloseable {
         return null;
     }
 
-    private static ConfigKey DEPLOYMENT_PREFIX = ConfigKey.parse("swarm.deployment.*");
+    private static ConfigKey DEPLOYMENT_PREFIX = ConfigKey.parse("thorntail.deployment.*");
 
     protected ConfigKey handleDeploymentConfiguration(ConfigKey in) {
         if (!this.deploymentContext.isActive()) {

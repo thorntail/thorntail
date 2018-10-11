@@ -105,7 +105,7 @@ public class ApplicationEnvironment {
     }
 
     private void loadDependencyTree() {
-        final String cpInfoProp = System.getProperty("swarm.cp.info");
+        final String cpInfoProp = System.getProperty("thorntail.cp.info");
 
         if (cpInfoProp == null) {
             return;

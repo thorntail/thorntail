@@ -35,7 +35,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlySubsystem;
 
 @WildFlyExtension(module = "org.wildfly.extension.camel")
 @WildFlySubsystem("camel")
-@Configurable("swarm.camel")
+@Configurable("thorntail.camel")
 public final class CamelFraction implements Fraction<CamelFraction> {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("org.wildfly.swarm.camel");

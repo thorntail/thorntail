@@ -103,12 +103,12 @@
                <systemProperties>
                   <!-- Set the log level for FT  -->
                   <property>
-                     <name>swarm.logging.loggers.[org.wildfly.swarm.microprofile.faulttolerance].level</name>
+                     <name>thorntail.logging.loggers.[org.wildfly.swarm.microprofile.faulttolerance].level</name>
                      <value>INFO</value>
                   </property>
                   <!-- Uncomment to debug arquillian test -->
                   <!-- property>
-                     <name>swarm.debug.port</name>
+                     <name>thorntail.debug.port</name>
                      <value>8787</value>
                   </property-->
                </systemProperties>

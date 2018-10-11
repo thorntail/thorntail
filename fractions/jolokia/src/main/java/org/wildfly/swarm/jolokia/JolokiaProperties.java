@@ -5,7 +5,7 @@ package org.wildfly.swarm.jolokia;
  */
 public interface JolokiaProperties {
 
-    String CONTEXT = "swarm.jolokia.context";
-    String ACCESS_XML = "swarm.jolokia.access.xml";
-    String KEYCLOAK_ROLE = "swarm.jolokia.keycloak.role";
+    String CONTEXT = "thorntail.jolokia.context";
+    String ACCESS_XML = "thorntail.jolokia.access.xml";
+    String KEYCLOAK_ROLE = "thorntail.jolokia.keycloak.role";
 }

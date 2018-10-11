@@ -40,7 +40,7 @@ import org.wildfly.swarm.spi.api.config.SimpleKey;
  */
 public class SocketBindingGroupExtension extends AbstractNetworkExtension<SocketBindingGroup> {
 
-    private static ConfigKey ROOT = ConfigKey.of("swarm", "network", "socket-binding-groups");
+    private static ConfigKey ROOT = ConfigKey.of("thorntail", "network", "socket-binding-groups");
 
     public SocketBindingGroupExtension(ConfigView configView) {
         super(configView);

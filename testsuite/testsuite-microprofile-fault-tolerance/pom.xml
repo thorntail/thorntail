@@ -36,16 +36,16 @@
                <systemProperties>
                   <!-- Set the log levels -->
                   <property>
-                     <name>swarm.logging.loggers.[io.smallrye.faulttolerance].level</name>
+                     <name>thorntail.logging.loggers.[io.smallrye.faulttolerance].level</name>
                      <value>INFO</value>
                   </property>
                   <property>
-                     <name>swarm.logging.loggers.[com.netflix.hystrix].level</name>
+                     <name>thorntail.logging.loggers.[com.netflix.hystrix].level</name>
                      <value>INFO</value>
                   </property>
                   <!-- Uncomment to debug arquillian test -->
                   <!-- property>
-                     <name>swarm.debug.port</name>
+                     <name>thorntail.debug.port</name>
                      <value>8787</value>
                   </property-->
                </systemProperties>

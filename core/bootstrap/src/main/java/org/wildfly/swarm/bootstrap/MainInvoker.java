@@ -109,7 +109,7 @@ public class MainInvoker {
     public static Class<?> getMainClass(String mainClassName) throws IOException, URISyntaxException, ModuleLoadException, ClassNotFoundException {
         Class<?> mainClass = null;
         try {
-            Module module = Module.getBootModuleLoader().loadModule("swarm.application");
+            Module module = Module.getBootModuleLoader().loadModule("thorntail.application");
             ClassLoader cl = module.getClassLoader();
             mainClass = cl.loadClass(mainClassName);
         } catch (ClassNotFoundException | ModuleLoadException e) {

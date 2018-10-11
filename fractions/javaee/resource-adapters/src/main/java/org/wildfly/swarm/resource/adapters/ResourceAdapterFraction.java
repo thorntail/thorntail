@@ -27,7 +27,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module = "org.jboss.as.connector", classname = "org.jboss.as.connector.subsystems.resourceadapters.ResourceAdaptersExtension")
 @MarshalDMR
-@Configurable("swarm.resource-adapters")
+@Configurable("thorntail.resource-adapters")
 public class ResourceAdapterFraction extends ResourceAdapters<ResourceAdapterFraction> implements Fraction<ResourceAdapterFraction> {
 
     @Override

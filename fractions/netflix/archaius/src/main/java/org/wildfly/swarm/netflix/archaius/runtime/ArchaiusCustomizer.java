@@ -73,7 +73,7 @@ public class ArchaiusCustomizer implements Customizer {
     }
 
     protected boolean shouldLink(ConfigKey key) {
-        if (!key.head().name().equals("swarm")) {
+        if (!key.head().name().equals("thorntail")) {
             return false;
         }
         return linkable.stream().anyMatch(e -> key.subkey(1).name().startsWith(e));

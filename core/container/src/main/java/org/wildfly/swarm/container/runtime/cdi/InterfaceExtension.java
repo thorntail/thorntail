@@ -39,7 +39,7 @@ import org.wildfly.swarm.spi.api.config.SimpleKey;
  */
 public class InterfaceExtension extends AbstractNetworkExtension<Interface> {
 
-    private static ConfigKey ROOT = ConfigKey.of("swarm", "network", "interfaces");
+    private static ConfigKey ROOT = ConfigKey.of("thorntail", "network", "interfaces");
 
     public InterfaceExtension(ConfigView configView) {
         super(configView);

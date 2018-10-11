@@ -59,6 +59,6 @@ public class ManagementSocketBindingsCustomizer implements Customizer {
     }
 
     @AttributeDocumentation("Interface to bind for the management ports")
-    @Configurable("swarm.management.bind.interface")
+    @Configurable("thorntail.management.bind.interface")
     private Defaultable<String> iface = string("management");
 }

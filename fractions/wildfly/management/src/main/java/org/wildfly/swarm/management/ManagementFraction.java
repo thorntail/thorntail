@@ -34,7 +34,7 @@ import static org.wildfly.swarm.spi.api.Defaultable.integer;
  * @author Bob McWhirter
  */
 @MarshalDMR
-@Configurable("swarm.management")
+@Configurable("thorntail.management")
 public class ManagementFraction extends ManagementCoreService<ManagementFraction> implements Fraction<ManagementFraction> {
 
     public ManagementFraction() {
@@ -136,14 +136,14 @@ public class ManagementFraction extends ManagementCoreService<ManagementFraction
     }
 
     @AttributeDocumentation("Port for HTTP access to management interface")
-    @Configurable("swarm.management.http.port")
+    @Configurable("thorntail.management.http.port")
     private Defaultable<Integer> httpPort = integer(DEFAULT_HTTP_PORT);
 
     @AttributeDocumentation("Port for HTTPS access to management interface")
-    @Configurable("swarm.management.https.port")
+    @Configurable("thorntail.management.https.port")
     private Defaultable<Integer> httpsPort = integer(DEFAULT_HTTPS_PORT);
 
     @AttributeDocumentation("Flag to disable HTTP access to management interface")
-    @Configurable("swarm.management.http.disable")
+    @Configurable("thorntail.management.http.disable")
     private Defaultable<Boolean> httpDisable = bool(false);
 }

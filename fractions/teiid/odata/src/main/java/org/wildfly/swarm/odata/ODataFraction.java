@@ -23,13 +23,13 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 public class ODataFraction implements Fraction<ODataFraction> {
-    @Configurable("swarm.teiid.odata.context")
+    @Configurable("thorntail.teiid.odata.context")
     private Defaultable<String> context = string("odata4");
 
-    @Configurable("swarm.teiid.odata.secured")
+    @Configurable("thorntail.teiid.odata.secured")
     private Defaultable<Boolean> secure = bool(false);
 
-    @Configurable("swarm.teiid.odata.role")
+    @Configurable("thorntail.teiid.odata.role")
     private Defaultable<String> role = string("odata");
 
     public String getContext() {

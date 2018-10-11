@@ -38,8 +38,8 @@ public class ConfigRemoteMessagingArquillianTest {
 
     @Deployment
     public static Archive createDeployment() {
-        System.setProperty("swarm.messaging.remote.name", "my-remote-activemq");
-        System.err.println("property is: " + System.getProperty("swarm.messaging.remote.name"));
+        System.setProperty("thorntail.messaging.remote.name", "my-remote-activemq");
+        System.err.println("property is: " + System.getProperty("thorntail.messaging.remote.name"));
 
         JARArchive deployment = ShrinkWrap.create(JARArchive.class);
         deployment.add(EmptyAsset.INSTANCE, "nothing");

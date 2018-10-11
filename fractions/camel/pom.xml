@@ -91,7 +91,7 @@
                             <artifactId>maven-surefire-plugin</artifactId>
                             <configuration>
                                 <systemPropertyVariables>
-                                    <swarm.debug.port>8787</swarm.debug.port>
+                                    <thorntail.debug.port>8787</thorntail.debug.port>
                                 </systemPropertyVariables>
                             </configuration>
                         </plugin>

@@ -37,18 +37,51 @@ public class ConfigResolutionStrategyTest {
     @Test
     public void testOnlyProperties() {
         Properties props = new Properties() {{
+            setProperty("thorntail.http.port", "8080");
+            setProperty("thorntail.data-sources.ExampleDS.url", "jdbc:db");
+        }};
+        ConfigResolutionStrategy strategy = new ConfigResolutionStrategy(props);
+        strategy.activate();
+
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.http.port"))).isEqualTo("8080");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.data-sources.ExampleDS.url"))).isEqualTo("jdbc:db");
+    }
+
+    @Test
+    public void testOnlyPropertiesBackwardsCompatible() {
+        Properties props = new Properties() {{
             setProperty("swarm.http.port", "8080");
             setProperty("swarm.data-sources.ExampleDS.url", "jdbc:db");
         }};
         ConfigResolutionStrategy strategy = new ConfigResolutionStrategy(props);
         strategy.activate();
 
-        assertThat(strategy.valueOf(ConfigKey.parse("swarm.http.port"))).isEqualTo("8080");
-        assertThat(strategy.valueOf(ConfigKey.parse("swarm.data-sources.ExampleDS.url"))).isEqualTo("jdbc:db");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.http.port"))).isEqualTo("8080");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.data-sources.ExampleDS.url"))).isEqualTo("jdbc:db");
     }
 
     @Test
     public void testOnlyConfig() {
+        Properties props = new Properties();
+
+        ConfigNode config = new ConfigNode() {{
+            recursiveChild("thorntail.http.port", "8080");
+            recursiveChild("thorntail.data-sources.ExampleDS.url", "jdbc:db");
+        }};
+
+        ConfigResolutionStrategy strategy = new ConfigResolutionStrategy(props);
+        strategy.add(config);
+        strategy.activate();
+
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.http.port"))).isEqualTo("8080");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.data-sources.ExampleDS.url"))).isEqualTo("jdbc:db");
+
+        assertThat(props.getProperty("thorntail.http.port")).isEqualTo("8080");
+        assertThat(props.getProperty("thorntail.data-sources.ExampleDS.url")).isEqualTo("jdbc:db");
+    }
+
+    @Test
+    public void testOnlyConfigBackwardsCompatible() {
         Properties props = new Properties();
 
         ConfigNode config = new ConfigNode() {{
@@ -60,15 +93,42 @@ public class ConfigResolutionStrategyTest {
         strategy.add(config);
         strategy.activate();
 
-        assertThat(strategy.valueOf(ConfigKey.parse("swarm.http.port"))).isEqualTo("8080");
-        assertThat(strategy.valueOf(ConfigKey.parse("swarm.data-sources.ExampleDS.url"))).isEqualTo("jdbc:db");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.http.port"))).isEqualTo("8080");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.data-sources.ExampleDS.url"))).isEqualTo("jdbc:db");
 
-        assertThat(props.getProperty("swarm.http.port")).isEqualTo("8080");
-        assertThat(props.getProperty("swarm.data-sources.ExampleDS.url")).isEqualTo("jdbc:db");
+        assertThat(props.getProperty("thorntail.http.port")).isEqualTo("8080");
+        assertThat(props.getProperty("thorntail.data-sources.ExampleDS.url")).isEqualTo("jdbc:db");
     }
 
     @Test
     public void testNonOverlappingMerge() {
+        Properties props = new Properties() {{
+            setProperty("thorntail.https.port", "8443");
+            setProperty("thorntail.data-sources.ExampleDS.driver-name", "cooper");
+        }};
+
+        ConfigNode config = new ConfigNode() {{
+            recursiveChild("thorntail.http.port", "8080");
+            recursiveChild("thorntail.data-sources.ExampleDS.url", "jdbc:db");
+        }};
+
+        ConfigResolutionStrategy strategy = new ConfigResolutionStrategy(props);
+        strategy.add(config);
+        strategy.activate();
+
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.http.port"))).isEqualTo("8080");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.https.port"))).isEqualTo("8443");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.data-sources.ExampleDS.url"))).isEqualTo("jdbc:db");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.data-sources.ExampleDS.driver-name"))).isEqualTo("cooper");
+
+        assertThat(props.getProperty("thorntail.http.port")).isEqualTo("8080");
+        assertThat(props.getProperty("thorntail.https.port")).isEqualTo("8443");
+        assertThat(props.getProperty("thorntail.data-sources.ExampleDS.url")).isEqualTo("jdbc:db");
+        assertThat(props.getProperty("thorntail.data-sources.ExampleDS.driver-name")).isEqualTo("cooper");
+    }
+
+    @Test
+    public void testNonOverlappingMergeBackwardsCompatible() {
         Properties props = new Properties() {{
             setProperty("swarm.https.port", "8443");
             setProperty("swarm.data-sources.ExampleDS.driver-name", "cooper");
@@ -83,19 +143,47 @@ public class ConfigResolutionStrategyTest {
         strategy.add(config);
         strategy.activate();
 
-        assertThat(strategy.valueOf(ConfigKey.parse("swarm.http.port"))).isEqualTo("8080");
-        assertThat(strategy.valueOf(ConfigKey.parse("swarm.https.port"))).isEqualTo("8443");
-        assertThat(strategy.valueOf(ConfigKey.parse("swarm.data-sources.ExampleDS.url"))).isEqualTo("jdbc:db");
-        assertThat(strategy.valueOf(ConfigKey.parse("swarm.data-sources.ExampleDS.driver-name"))).isEqualTo("cooper");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.http.port"))).isEqualTo("8080");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.https.port"))).isEqualTo("8443");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.data-sources.ExampleDS.url"))).isEqualTo("jdbc:db");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.data-sources.ExampleDS.driver-name"))).isEqualTo("cooper");
 
-        assertThat(props.getProperty("swarm.http.port")).isEqualTo("8080");
-        assertThat(props.getProperty("swarm.https.port")).isEqualTo("8443");
-        assertThat(props.getProperty("swarm.data-sources.ExampleDS.url")).isEqualTo("jdbc:db");
-        assertThat(props.getProperty("swarm.data-sources.ExampleDS.driver-name")).isEqualTo("cooper");
+        assertThat(props.getProperty("thorntail.http.port")).isEqualTo("8080");
+        assertThat(props.getProperty("thorntail.https.port")).isEqualTo("8443");
+        assertThat(props.getProperty("thorntail.data-sources.ExampleDS.url")).isEqualTo("jdbc:db");
+        assertThat(props.getProperty("thorntail.data-sources.ExampleDS.driver-name")).isEqualTo("cooper");
     }
 
     @Test
     public void testOverlappingMerge() {
+        Properties props = new Properties() {{
+            setProperty("thorntail.https.port", "8443");
+            setProperty("thorntail.data-sources.ExampleDS.driver-name", "cooper");
+            setProperty("thorntail.data-sources.ExampleDS.url", "jdbc:otherwise");
+        }};
+
+        ConfigNode config = new ConfigNode() {{
+            recursiveChild("thorntail.http.port", "8080");
+            recursiveChild("thorntail.data-sources.ExampleDS.url", "jdbc:db");
+        }};
+
+        ConfigResolutionStrategy strategy = new ConfigResolutionStrategy(props);
+        strategy.add(config);
+        strategy.activate();
+
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.http.port"))).isEqualTo("8080");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.https.port"))).isEqualTo("8443");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.data-sources.ExampleDS.url"))).isEqualTo("jdbc:otherwise");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.data-sources.ExampleDS.driver-name"))).isEqualTo("cooper");
+
+        assertThat(props.getProperty("thorntail.http.port")).isEqualTo("8080");
+        assertThat(props.getProperty("thorntail.https.port")).isEqualTo("8443");
+        assertThat(props.getProperty("thorntail.data-sources.ExampleDS.url")).isEqualTo("jdbc:otherwise");
+        assertThat(props.getProperty("thorntail.data-sources.ExampleDS.driver-name")).isEqualTo("cooper");
+    }
+
+    @Test
+    public void testOverlappingMergeBackwardsCompatible() {
         Properties props = new Properties() {{
             setProperty("swarm.https.port", "8443");
             setProperty("swarm.data-sources.ExampleDS.driver-name", "cooper");
@@ -111,15 +199,15 @@ public class ConfigResolutionStrategyTest {
         strategy.add(config);
         strategy.activate();
 
-        assertThat(strategy.valueOf(ConfigKey.parse("swarm.http.port"))).isEqualTo("8080");
-        assertThat(strategy.valueOf(ConfigKey.parse("swarm.https.port"))).isEqualTo("8443");
-        assertThat(strategy.valueOf(ConfigKey.parse("swarm.data-sources.ExampleDS.url"))).isEqualTo("jdbc:otherwise");
-        assertThat(strategy.valueOf(ConfigKey.parse("swarm.data-sources.ExampleDS.driver-name"))).isEqualTo("cooper");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.http.port"))).isEqualTo("8080");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.https.port"))).isEqualTo("8443");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.data-sources.ExampleDS.url"))).isEqualTo("jdbc:otherwise");
+        assertThat(strategy.valueOf(ConfigKey.parse("thorntail.data-sources.ExampleDS.driver-name"))).isEqualTo("cooper");
 
-        assertThat(props.getProperty("swarm.http.port")).isEqualTo("8080");
-        assertThat(props.getProperty("swarm.https.port")).isEqualTo("8443");
-        assertThat(props.getProperty("swarm.data-sources.ExampleDS.url")).isEqualTo("jdbc:otherwise");
-        assertThat(props.getProperty("swarm.data-sources.ExampleDS.driver-name")).isEqualTo("cooper");
+        assertThat(props.getProperty("thorntail.http.port")).isEqualTo("8080");
+        assertThat(props.getProperty("thorntail.https.port")).isEqualTo("8443");
+        assertThat(props.getProperty("thorntail.data-sources.ExampleDS.url")).isEqualTo("jdbc:otherwise");
+        assertThat(props.getProperty("thorntail.data-sources.ExampleDS.driver-name")).isEqualTo("cooper");
     }
 
 

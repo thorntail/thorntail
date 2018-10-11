@@ -246,7 +246,7 @@ public class MyCustomizer implements Customizer {
 #### `Archive` producers
 
 In some cases, a fraction implicitly produces a deployment archive by its simple
-presence in the dependency graph.  For example, including `org.wildfly.swarm:jolokia`
+presence in the dependency graph.  For example, including `io.thorntail:jolokia`
 ensures that the Jolokia web-app is deployed.  This is accomplished by having a CDI
 component that `@Produces` a ShrinkWrap `Archive`.  No particular interface is required
 to be implemented.
@@ -282,7 +282,7 @@ capabilities.
 
 [source,java]
 ----
-@Configurable("swarm.myfraction.taco")
+@Configurable("thorntail.myfraction.taco")
 @AttributeDocumentation("Determines the type of taco to expose.")
 private String tacoType;
 ----
@@ -294,7 +294,7 @@ item.
 
 [source,java]
 ----
-@Configurable("swarm.myfraction.taco")
+@Configurable("thorntail.myfraction.taco")
 @AttributeDocumentation("Determines the type of taco to expose.")
 private Defaultable<String> tacoType = Defaultable.string("soft");
 ----

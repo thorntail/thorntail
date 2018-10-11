@@ -36,7 +36,7 @@ class SystemDependencyResolution implements DependencyResolution {
         final String classpathProp = System.getProperty("java.class.path");
         final String javaHomProp = System.getProperty("java.home");
         final String userDirProp = System.getProperty("user.dir");
-        final String testClasspatProp = System.getProperty("swarm.test.dependencies");
+        final String testClasspatProp = System.getProperty("thorntail.test.dependencies");
 
         //Dedect gradle cache
         this.useGradleRepo = classpathProp.contains(File.separator + ".gradle");

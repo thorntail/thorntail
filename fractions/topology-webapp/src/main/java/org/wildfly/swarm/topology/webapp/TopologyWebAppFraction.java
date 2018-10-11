@@ -28,7 +28,7 @@ import static org.wildfly.swarm.spi.api.Defaultable.*;
 /**
  * @author Lance Ball
  */
-@Configurable("swarm.topology.web-app")
+@Configurable("thorntail.topology.web-app")
 public class TopologyWebAppFraction implements Fraction<TopologyWebAppFraction> {
 
     public static final String DEFAULT_CONTEXT = "/topology";

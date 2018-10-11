@@ -1,4 +1,4 @@
-swarm:
+thorntail:
   logging:
     pattern-formatters:
       LOG_FORMATTER:

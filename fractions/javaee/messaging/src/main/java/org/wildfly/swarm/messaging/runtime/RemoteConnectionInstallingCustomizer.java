@@ -28,23 +28,23 @@ import static org.wildfly.swarm.spi.api.Defaultable.string;
 public class RemoteConnectionInstallingCustomizer implements Customizer {
 
     @AttributeDocumentation("Name of the remote connection")
-    @Configurable("swarm.messaging.remote.name")
+    @Configurable("thorntail.messaging.remote.name")
     final Defaultable<String> name = string(DEFAULT_REMOTE_MQ_NAME);
 
     @AttributeDocumentation("Host of the remote connection")
-    @Configurable("swarm.messaging.remote.host")
+    @Configurable("thorntail.messaging.remote.host")
     final Defaultable<String> host = string(DEFAULT_REMOTE_HOST);
 
     @AttributeDocumentation("Port of the remote connection")
-    @Configurable("swarm.messaging.remote.port")
+    @Configurable("thorntail.messaging.remote.port")
     final Defaultable<Integer> port = integer(DEFAULT_REMOTE_PORT);
 
     @AttributeDocumentation("JNDI name of the remote connection")
-    @Configurable("swarm.messaging.remote.jndi-name")
+    @Configurable("thorntail.messaging.remote.jndi-name")
     final Defaultable<String> jndiName = string(() -> "java:/jms/" + name.get());
 
     @AttributeDocumentation("Flag to enable the remote connection")
-    @Configurable("swarm.messaging.remote")
+    @Configurable("thorntail.messaging.remote")
     final Defaultable<Boolean> enabled = ifAnyExplicitlySet(name, host, port, jndiName);
 
     @Inject

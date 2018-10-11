@@ -114,7 +114,7 @@ public class FatJarBuilder {
         File war = buildWar(classPathEntries);
         final BuildTool tool = new BuildTool(new CachingArtifactResolvingHelper(), true)
                 .projectArtifact("tt",
-                        "wfswarm-user-app",
+                        "thorntail-user-app",
                         "0.1-SNAPSHOT",
                         type,
                         war,

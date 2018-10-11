@@ -1,4 +1,4 @@
-swarm:
+thorntail:
   keycloak:
     security:
       constraints:

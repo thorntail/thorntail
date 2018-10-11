@@ -38,11 +38,11 @@ public class StandaloneXMLConfigProducer {
     @XMLConfig
     public URL fromSwarmApplicationModule() {
         try {
-            Module app = Module.getBootModuleLoader().loadModule("swarm.application");
+            Module app = Module.getBootModuleLoader().loadModule("thorntail.application");
             ClassLoader cl = app.getClassLoader();
             URL result = cl.getResource(STANDALONE_XML_FILE);
             if (result != null) {
-                SwarmConfigMessages.MESSAGES.loadingStandaloneXml("'swarm.application' module", result.toExternalForm());
+                SwarmConfigMessages.MESSAGES.loadingStandaloneXml("'thorntail.application' module", result.toExternalForm());
             }
             return result;
         } catch (ModuleLoadException e) {

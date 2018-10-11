@@ -17,5 +17,5 @@ package org.wildfly.swarm.logging;
 
 public interface LoggingProperties {
     //public
-    String LOGGING = "swarm.logging";
+    String LOGGING = "thorntail.logging";
 }

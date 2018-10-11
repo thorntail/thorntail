@@ -12,10 +12,10 @@ If you use the `@Bulkhead` pattern together with some `@Fallback` logic to limit
 === Semaphore Isolation
 
 For semaphore-style `@Bulkhead` a `BulkheadException` may be thrown if the maximum concurrent limit is reached.
-To avoid that, set the `swarm.hystrix.command.default.fallback.isolation.semaphore.maxConcurrentRequests` property to increase the limit.
+To avoid that, set the `thorntail.hystrix.command.default.fallback.isolation.semaphore.maxConcurrentRequests` property to increase the limit.
 
 === Thread Isolation
 
 For `@Bulkhead` used together with `@Asynchronous` a `RejectedExecutionException` may be thrown if the maximum concurrent limit is reached.
-To avoid that, set the `swarm.hystrix.threadpool.default.maximumSize` property to increase the limit.
-Also don't forget to set the `swarm.hystrix.threadpool.default.allowMaximumSizeToDivergeFromCoreSize` property to `true`.
+To avoid that, set the `thorntail.hystrix.threadpool.default.maximumSize` property to increase the limit.
+Also don't forget to set the `thorntail.hystrix.threadpool.default.allowMaximumSizeToDivergeFromCoreSize` property to `true`.

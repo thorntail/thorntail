@@ -18,8 +18,8 @@ public class NetworkVariableSupplier implements UsageVariableSupplier {
     @Override
     public Object valueOf(String name) throws Exception {
         // very special case
-        if (name.equals("swarm.public.url.base")) {
-            return "http://" + valueOf("swarm.public.host") + ":" + valueOf("swarm.http.port") + "/";
+        if (name.equals("thorntail.public.url.base")) {
+            return "http://" + valueOf("thorntail.public.host") + ":" + valueOf("thorntail.http.port") + "/";
         }
 
         String[] parts = name.split("\\.");
@@ -77,7 +77,7 @@ public class NetworkVariableSupplier implements UsageVariableSupplier {
                     String addr = socketBinding.multicastAddress();
                     return addr;
                 } else if (which.equals("host")) {
-                    return valueOf("swarm." + socketBinding.iface() + ".host");
+                    return valueOf("thorntail." + socketBinding.iface() + ".host");
                 }
             }
         }

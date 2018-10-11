@@ -92,7 +92,7 @@ public class ContextPathArchivePreparerTest {
         factory.withProfile("test");
         ConfigViewImpl view = factory.get(true);
 
-        List<String> mounts = view.resolve("swarm.context.mounts").as(List.class).getValue();
+        List<String> mounts = view.resolve("thorntail.context.mounts").as(List.class).getValue();
 
         ContextPathArchivePreparer preparer = new ContextPathArchivePreparer(archive);
         preparer.mounts = mounts;
