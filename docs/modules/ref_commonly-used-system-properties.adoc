@@ -1,0 +1,99 @@
+
+[id='commonly-used-system-properties_{context}']
+= Commonly used system properties
+
+This is a non-exhaustive list of system properties you are likely to use in your application:
+
+.General system properties
+swarm.bind.address:: The interface to bind servers
++
+[cols="1,2a"]
+|===
+|Default
+|0.0.0.0
+|===
+
+swarm.port.offset:: The global port adjustment
++
+[cols="1,2a"]
+|===
+|Default
+|0
+|===
+
+swarm.context.path:: The context path for the deployed application
++
+[cols="1,2a"]
+|===
+|Default
+|/
+|===
+
+swarm.http.port:: The port for the HTTP server
++
+[cols="1,2a"]
+|===
+|Default
+|8080
+|===
+
+swarm.https.port:: The port for the HTTPS server
++
+[cols="1,2a"]
+|===
+|Default
+|8483
+|===
+
+swarm.debug.port:: If provided, the swarm process will pause for debugging on the given port.
++
+--
+This option is only available when running an Arquillian test or starting the application using the `mvn wildfly-swarm:run` command, not when executing a JAR file.
+The JAR file execution requires normal Java debug agent parameters.
+
+[cols="1,2a"]
+|===
+|Default
+|
+|===
+--
+
+With the H2, MySQL, and Postgres database fractions,  use the following properties to configure the datasource:
+
+.Datasource-related system properties
+swarm.ds.name:: The name of the datasource
++
+[cols="1,2a"]
+|===
+|Default
+|ExampleDS
+|===
+
+swarm.ds.username:: The user name to access the database
++
+[cols="1,2a"]
+|===
+|Default
+|_driver-specific_
+|===
+
+swarm.ds.password:: The password to access the database
++
+[cols="1,2a"]
+|===
+|Default
+|_driver-specific_
+|===
+
+swarm.ds.connection.url:: The JDBC Connection URL
++
+[cols="1,2a"]
+|===
+|Default
+|_driver-specific_
+|===
+
+NOTE: For a full set of available properties, see the documentation for each fraction and the javadocs on class
+ifndef::product[https://github.com/thorntail/thorntail/blob/master/core/spi/src/main/java/org/wildfly/swarm/spi/api/SwarmProperties.java[SwarmProperties.java]]
+ifdef::product[https://github.com/thorntail/thorntail/blob/{version}/core/spi/src/main/java/org/wildfly/swarm/spi/api/SwarmProperties.java[SwarmProperties.java]]
+

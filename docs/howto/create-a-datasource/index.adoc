@@ -19,16 +19,6 @@ a pool of connections to a particular database using the driver.
 
 == Configuring a JDBC driver
 
-Start with adding the following Maven dependency which uses an H2 datasource by default: 
-
-[source,xml]
-----
-<dependency>
-  <groupId>io.thorntail</groupId>
-  <artifactId>datasources</artifactId>
-</dependency>
-----
-
 There are two options how to configure JDBC drivers:
 
 include::auto-detecting-jdbc-drivers.adoc[leveloffset=+2]
