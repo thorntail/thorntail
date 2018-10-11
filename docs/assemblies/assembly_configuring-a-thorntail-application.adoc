@@ -13,6 +13,8 @@ Only the items related to the fractions that your application uses are relevant 
 
 Using system properties for configuring your application is advantageous for experimenting, debugging, and other short-term activities.
 
+include::../modules/ref_commonly-used-system-properties.adoc[leveloffset=+2]
+
 include::../modules/con_application-configuration-using-system-properties.adoc[leveloffset=+2]
 
 include::../modules/proc_setting-system-properties-using-the-maven-plugin.adoc[leveloffset=+2]

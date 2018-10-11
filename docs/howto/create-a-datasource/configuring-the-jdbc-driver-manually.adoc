@@ -12,6 +12,18 @@
 [discrete]
 == Procedure
 
+. Add the `io.thorntail:datasources` dependency to the `pom.xml` file in your application:
++
+[source,xml]
+----
+<dependencies>
+  <dependency>
+    <groupId>io.thorntail</groupId>
+    <artifactId>datasources</artifactId>
+  </dependency>
+</dependencies>
+----
+
 . Edit the `project-defaults.yml` file to define the driver information.
 +
 In the `thorntail` -> `datasources` -> `jdbc-drivers` tree, define the driver by

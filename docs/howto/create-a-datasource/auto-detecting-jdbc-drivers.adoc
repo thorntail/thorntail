@@ -33,13 +33,19 @@ The drivers that {Thorntail} auto-detects include:
 [discrete]
 == Procedure
 
-. Add the appropriate dependency (with the default `<scope>compile</scope>`
+. Add the appropriate dependencies (with the default `<scope>compile</scope>`
 scope) to your application:
 +
 [source,xml]
 ----
 <dependencies>
+  <dependency>
+    <groupId>io.thorntail</groupId>
+    <artifactId>datasources</artifactId>
+  </dependency>
 include::pom.xml[tag=dependencies,indent=2]
 </dependencies>
 ----
++
+H2 is the default database in {Thorntail}.
 
