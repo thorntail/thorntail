@@ -93,7 +93,6 @@ swarm.ds.connection.url:: The JDBC Connection URL
 |_driver-specific_
 |===
 
-NOTE: For a full set of available properties, see the documentation for each fraction and the javadocs on class
-ifndef::product[https://github.com/thorntail/thorntail/blob/master/core/spi/src/main/java/org/wildfly/swarm/spi/api/SwarmProperties.java[SwarmProperties.java]]
-ifdef::product[https://github.com/thorntail/thorntail/blob/{version}/core/spi/src/main/java/org/wildfly/swarm/spi/api/SwarmProperties.java[SwarmProperties.java]]
+NOTE: For a full set of available properties, see the documentation for each fraction and the javadocs on class 
+https://github.com/thorntail/thorntail/blob/{version}/core/spi/src/main/java/org/wildfly/swarm/spi/api/SwarmProperties.java[SwarmProperties.java]
 
