@@ -35,3 +35,4 @@ include::../modules/con_default-thorntail-yaml-configuration-files.adoc[leveloff
 
 include::../modules/con_non-default-thorntail-yaml-configuration-files.adoc[leveloffset=+2]
 
+include::../modules/con_thorntail-yaml-project-stages.adoc[leveloffset=+2]

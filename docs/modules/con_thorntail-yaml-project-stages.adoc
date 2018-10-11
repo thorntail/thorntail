@@ -1,0 +1,80 @@
+
+[id='the-thorntail-yaml-project-stages_{context}']
+= Configuration overlays using stage properties
+
+In some cases it may be desirable to extract some of the configuration properties and switch them depending on the target environment. Project stages are a way to move environment specific configuration properties into an external file.
+
+.Stage configurations in project-defaults.yml
+====
+This example shows three stages, `default`, `development` and `production` being configured in the default project-defaults.yml.
+
+[source,yaml]
+----
+logger:
+    level: DEBUG
+swarm:
+  port:
+    offset: 10
+---
+project:
+    stage: development
+logger:
+    level: DEBUG
+swarm:
+  port:
+    offset: 50
+---
+project:
+    stage: production
+logger:
+    level: INFO
+swarm:
+  port:
+    offset: 100
+----
+====
+
+.Stage configurations in different files
+====
+In this example the `development` and `production` stage configurations are moved into separate files.
+
+.project-development.yaml
+[source,yaml]
+----
+logger:
+    level: DEBUG
+swarm:
+  port:
+    offset: 50
+----
+
+.project-production.yaml
+[source,yaml]
+----
+logger:
+    level: INFO
+swarm:
+  port:
+    offset: 100
+----
+====
+
+.System properties
+Use the following system properties to select the project stages:
+
+swarm.project.stage:: Enables a specific stage
++
+[cols="1,2a"]
+|===
+|Default
+|_default_
+|===
+
+swarm.project.stage.file:: References a project stage configuration file
++
+[cols="1,2a"]
+|===
+|Default
+|_none_
+|===
+
