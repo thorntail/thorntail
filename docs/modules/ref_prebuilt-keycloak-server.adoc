@@ -2,7 +2,7 @@
 [id='prebuilt-keycloak-server_{context}']
 = {Thorntail} Keycloak Server
 
-https://www.keycloak.org/ [Keycloak] is an open source identity and access management solution.
+https://www.keycloak.org/[Keycloak] is an open source identity and access management solution.
 
 {Thorntail} provides a Keycloak standalone server which can be used to test and run Keycloak Server on top of Thorntail.
 
