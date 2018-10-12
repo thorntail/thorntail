@@ -2,7 +2,7 @@
 [id='the-thorntail-yaml-project-stages_{context}']
 = Configuration overlays using stage properties
 
-In some cases it may be desirable to extract some of the configuration properties and switch them depending on the target environment. Project stages are a way to move environment specific configuration properties into an external file.
+In some cases it may be desirable to extract some of the configuration properties and switch between them depending on the project stage.
 
 .Stage configurations in project-defaults.yml
 ====
