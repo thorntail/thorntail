@@ -6,12 +6,10 @@ https://www.keycloak.org/[Keycloak] is an open source identity and access manage
 
 {Thorntail} provides a Keycloak standalone server which can be used to test and run Keycloak Server on top of Thorntail.
 
-ifdef::product[]
 [discrete]
 == Download
 
 You can download the server from https://search.maven.org/artifact/io.thorntail.servers/keycloak/{version}/jar[Maven Central]
-endif::[]
 
 [discrete]
 == Usage
