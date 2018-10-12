@@ -1,0 +1,19 @@
+
+[id='additional-resources_{context}']
+= Additional resources
+
+Please follow the links below to find out more about Thorntail and the Microservices Architecture
+
+[discrete]
+== Thorntail
+
+* thorntail.io[Homepage]
+* https://thorntail.io/archive/[Blog]
+
+[discrete]
+== Microservices
+
+* https://www.manning.com/books/enterprise-java-microservices[Ken Finnigan, "Enterprise Java Microservices"]
+* https://www.thoughtworks.com/de/insights/blog/microservices-nutshell[Martin Fowler, "Microservices in a Nutshell"]
+
+
