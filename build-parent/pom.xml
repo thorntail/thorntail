@@ -77,7 +77,7 @@
 
     <version.flyway>4.2.0</version.flyway>
 
-    <version.gradle>2.4</version.gradle>
+    <version.gradle>3.0</version.gradle>
     <version.gradle.plugins>1.12</version.gradle.plugins>
     <version.groovy>2.4.3</version.groovy>
 
@@ -533,6 +533,7 @@
             <groupId>org.gradle</groupId>
             <artifactId>gradle-core</artifactId>
             <version>${version.gradle}</version>
+            <scope>provided</scope>
           </dependency>
           <dependency>
             <groupId>org.gradle</groupId>
@@ -544,6 +545,11 @@
             <groupId>org.gradle</groupId>
             <artifactId>gradle-plugins</artifactId>
             <version>${version.gradle.plugins}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.gradle</groupId>
+            <artifactId>gradle-tooling-api</artifactId>
+            <version>${version.gradle}</version>
           </dependency>
           <dependency>
             <groupId>org.codehaus.groovy</groupId>

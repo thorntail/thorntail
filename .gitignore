@@ -57,3 +57,4 @@ log
 embedded-cassandra.log*
 diagrams
 build.metadata
+.thorntail-runner-cache/

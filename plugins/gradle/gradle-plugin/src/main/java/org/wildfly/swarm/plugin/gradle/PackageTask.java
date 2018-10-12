@@ -19,11 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,14 +29,11 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.PublishArtifactSet;
-import org.gradle.api.artifacts.ResolvedConfiguration;
-import org.gradle.api.artifacts.ResolvedDependency;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.ApplicationPluginConvention;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.SourceSet;
@@ -48,9 +41,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.bundling.Jar;
 import org.wildfly.swarm.fractions.PropertiesUtil;
 import org.wildfly.swarm.spi.meta.SimpleLogger;
-import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.BuildTool;
-import org.wildfly.swarm.tools.DeclaredDependencies;
 
 /**
  * @author Bob McWhirter
@@ -63,8 +54,6 @@ public class PackageTask extends DefaultTask {
 
     private static final String MODULE_DIR_NAME = "modules";
 
-    private BuildTool tool;
-
     private Jar jarTask;
 
     public Task jarTask(Jar jarTask) {
@@ -73,13 +62,17 @@ public class PackageTask extends DefaultTask {
         return this;
     }
 
+    /**
+     * Package the application content.
+     */
     @TaskAction
     public void packageForSwarm() throws Exception {
         final Project project = getProject();
+        final ThorntailExtension extension = getThorntailExtension();
 
         GradleArtifactResolvingHelper resolvingHelper = new GradleArtifactResolvingHelper(project);
-        Properties propertiesFromExtension = getPropertiesFromExtension();
-        List<File> moduleDirs = getModuleDirs();
+        Properties propertiesFromExtension = extension.getProperties();
+        Set<File> moduleDirs = extension.getModules();
         if (moduleDirs.isEmpty()) {
             Path resourcesOutputDir = project.getConvention()
                     .getPlugin(JavaPluginConvention.class)
@@ -97,18 +90,18 @@ public class PackageTask extends DefaultTask {
         }
 
 
-        this.tool = new BuildTool(resolvingHelper)
-                .projectArtifact(this.jarTask.getGroup().toString(), this.jarTask.getBaseName(), this.jarTask.getVersion(),
+        BuildTool tool = new BuildTool(resolvingHelper)
+                .projectArtifact(this.jarTask.getGroup(), this.jarTask.getBaseName(), this.jarTask.getVersion(),
                                  getPackaging(), getProjectArtifactFile())
                 .mainClass(getMainClassName())
-                .bundleDependencies(getBundleDependencies())
-                .executable(getExecutable())
-                .executableScript(getExecutableScript())
+                .bundleDependencies(extension.isBundleDependencies())
+                .executable(extension.isIncludeExecutable())
+                .executableScript(extension.getExecutableScript())
                 .properties(propertiesFromExtension)
                 .properties(getPropertiesFromFile())
                 .properties(PropertiesUtil.filteredSystemProperties(propertiesFromExtension, false))
-                .fractionDetectionMode(getSwarmExtension().getFractionDetectMode())
-                .hollow(getHollow())
+                .fractionDetectionMode(extension.getFractionDetectionMode())
+                .hollow(extension.isHollow())
                 .additionalModules(moduleDirs.stream()
                                            .filter(File::exists)
                                            .map(File::getAbsolutePath)
@@ -135,56 +128,12 @@ public class PackageTask extends DefaultTask {
                     }
                 });
 
-        DeclaredDependencies declaredDependencies = new DeclaredDependencies();
-        List<ArtifactSpec> explicitDependencies = new ArrayList<>();
-
-       /* project.getConfigurations()
-                .getByName("compile")
-                .getAllDependencies()
-                .forEach((artifact) -> {
-                    String groupId = artifact.getGroup();
-                    String artifactId = artifact.getName();
-                    explicitDependencies.add(new ArtifactSpec("compile", groupId, artifactId, null, "jar", null, null));
-                });
-
-        project.getConfigurations()
-                .getByName("compile")
-                .getResolvedConfiguration()
-                .getResolvedArtifacts()
-                .forEach(e -> addDependency(declaredDependencies, explicitDependencies, e));*/
-
-        ResolvedConfiguration resolvedConfiguration = project.getConfigurations()
-                .getByName("default")
-                .getResolvedConfiguration();
-
-        Set<ResolvedDependency> directDeps = resolvedConfiguration
-                .getFirstLevelModuleDependencies();
-
-        for (ResolvedDependency directDep : directDeps) {
-
-            assert directDep.getModuleArtifacts().iterator().hasNext() : "Expected module artifacts";
-
-            ArtifactSpec parent = new ArtifactSpec(
-                    "compile",
-                    directDep.getModule().getId().getGroup(),
-                    directDep.getModule().getId().getName(),
-                    directDep.getModule().getId().getVersion(),
-                    directDep.getModuleArtifacts().iterator().next().getExtension(),
-                    null,
-                    null
-            );
-            Set<ArtifactSpec> artifactSpecs = resolvingHelper.resolveAll(new HashSet<>(Collections.singletonList(parent)));
-            artifactSpecs.forEach(a -> declaredDependencies.add(parent, a));
-        }
-
-        tool.declaredDependencies(declaredDependencies);
-
-        final Boolean bundleDependencies = getBundleDependencies();
-        if (bundleDependencies != null) {
-            this.tool.bundleDependencies(bundleDependencies);
-        }
-
-        this.tool.build(getOutputFile().getName(), getOutputDirectory());
+        tool.declaredDependencies(GradleToolingHelper.toDeclaredDependencies(extension.getDependencies()));
+        tool.bundleDependencies(extension.isBundleDependencies());
+        // Add the explicitly defined fractions from the configuration.
+        extension.getDeclaredFractions().stream().map(DependencyDescriptor::toArtifactSpec).forEach(tool::fraction);
+        // Build the Thorntail archive.
+        tool.build(getOutputFile().getName(), getOutputDirectory());
 
         /* We expect a war task to be present before scanning for war files. */
         final java.util.Optional<Task> task = project.getTasks().stream().filter(t -> "war".equals(t.getName())).findAny();
@@ -218,8 +167,8 @@ public class PackageTask extends DefaultTask {
     @Optional
     private String getMainClassName() {
         Project project = getProject();
-        SwarmExtension swarmExtension = getSwarmExtension();
-        String mainClassName = swarmExtension.getMainClassName();
+        ThorntailExtension thorntailExtension = getThorntailExtension();
+        String mainClassName = thorntailExtension.getMainClassName();
 
         if (mainClassName == null && project.getConvention().getPlugins().containsKey("application")) {
             ApplicationPluginConvention app = (ApplicationPluginConvention) project.getConvention().getPlugins().get("application");
@@ -238,36 +187,8 @@ public class PackageTask extends DefaultTask {
         return mainClassName;
     }
 
-    private SwarmExtension getSwarmExtension() {
-        return getProject().getExtensions().getByType(SwarmExtension.class);
-    }
-
-    @Input
-    @Optional
-    private Boolean getBundleDependencies() {
-        return getSwarmExtension().getBundleDependencies();
-    }
-
-    @Input
-    @Optional
-    private Boolean getHollow() {
-        return getSwarmExtension().getHollow();
-    }
-
-    @Input
-    private boolean getExecutable() {
-        return getSwarmExtension().getExecutable();
-    }
-
-    @Optional
-    @InputFile
-    private File getExecutableScript() {
-        return getSwarmExtension().getExecutableScript();
-    }
-
-    @Input
-    private Properties getPropertiesFromExtension() {
-        return getSwarmExtension().getProperties();
+    private ThorntailExtension getThorntailExtension() {
+        return getProject().getExtensions().getByType(ThorntailExtension.class);
     }
 
     @Input
@@ -288,12 +209,7 @@ public class PackageTask extends DefaultTask {
     @Optional
     @InputFile
     private File getPropertiesFile() {
-        return getSwarmExtension().getPropertiesFile();
-    }
-
-    @InputFiles
-    private List<File> getModuleDirs() {
-        return getSwarmExtension().getModuleDirs();
+        return getThorntailExtension().getPropertiesFile();
     }
 
     @OutputFile
@@ -302,32 +218,10 @@ public class PackageTask extends DefaultTask {
     }
 
     private String getBaseName() {
-        return getProject().getName() + (this.getHollow() ? HOLLOW_SUFFIX : "");
+        return getProject().getName() + (getThorntailExtension().isHollow() ? HOLLOW_SUFFIX : "");
     }
 
     private Path getOutputDirectory() {
         return getProject().getBuildDir().toPath().resolve("libs");
     }
-
-    /*private void addDependency(DeclaredDependencies declaredDependencies, final List<ArtifactSpec> explicitDependencies, final ResolvedArtifact gradleArtifact) {
-
-        String groupId = gradleArtifact.getModuleVersion().getId().getGroup();
-        String artifactId = gradleArtifact.getModuleVersion().getId().getName();
-        String version = gradleArtifact.getModuleVersion().getId().getVersion();
-        String extension = gradleArtifact.getExtension();
-        String classifier = gradleArtifact.getClassifier();
-        File file = gradleArtifact.getFile();
-
-        boolean isExplicit = false;
-        for (ArtifactSpec each : explicitDependencies) {
-            if ( each.groupId().equals( groupId ) && each.artifactId().equals( artifactId ) ) {
-                declaredDependencies.addExplicitDependency(new ArtifactSpec("compile", groupId, artifactId, version, extension, classifier, file));
-                isExplicit = true;
-                break;
-            }
-        }
-
-        if(!isExplicit)
-            declaredDependencies.addTransientDependency(new ArtifactSpec("compile", groupId, artifactId, version, extension, classifier, file));
-    }*/
 }
