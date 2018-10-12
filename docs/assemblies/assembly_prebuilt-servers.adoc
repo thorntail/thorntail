@@ -1,0 +1,13 @@
+[id='prebuilt-servers_{context}']
+= Pre-built servers
+
+:parent-context: {context}
+
+{Thorntail} has pre-built some https://github.com/thorntail/thorntail/tree/master/standalone-servers[standalone-servers].
+
+include::../modules/ref_prebuilt-microprofile-server.adoc[leveloffset=+1]
+
+include::../modules/ref_prebuilt-keycloak-server.adoc[leveloffset=+1]
+
+:context: {parent-context}
+
