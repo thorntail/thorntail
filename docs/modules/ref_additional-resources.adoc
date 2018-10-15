@@ -13,6 +13,7 @@ Please follow the links below to find out more about Thorntail and the Microserv
 [discrete]
 == Microservices
 
+* http://shop.oreilly.com/product/0636920033158.do[Sam Newman, "Building Microservices"]
 * https://www.manning.com/books/enterprise-java-microservices[Ken Finnigan, "Enterprise Java Microservices"]
 * https://www.thoughtworks.com/de/insights/blog/microservices-nutshell[Martin Fowler, "Microservices in a Nutshell"]
 
