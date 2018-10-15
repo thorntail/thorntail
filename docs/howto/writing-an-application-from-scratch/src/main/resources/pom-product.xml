@@ -24,7 +24,7 @@
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>bom</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>${version.thorntail}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -43,7 +43,7 @@
       <plugin>
         <groupId>io.thorntail</groupId>
         <artifactId>thorntail-maven-plugin</artifactId>
-        <version>${version.wildfly.swarm}</version>
+        <version>${version.thorntail}</version>
         <executions>
           <execution>
             <goals>
