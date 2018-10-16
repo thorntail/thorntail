@@ -15,6 +15,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>agroal</module>
     <module>bean-validation</module>
     <module>kernel</module>
     <module>hibernate-search</module>

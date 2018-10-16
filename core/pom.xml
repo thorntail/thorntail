@@ -103,6 +103,7 @@
   <modules>
     <module>kernel</module>
 
+    <module>agroal</module>
     <module>bean-validation</module>
     <module>datasources</module>
     <module>health</module>
@@ -115,6 +116,7 @@
     <module>jms-artemis</module>
     <module>jpa-support</module>
     <module>jpa</module>
+    <module>jpa-agroal</module>
     <module>ogm</module>
     <module>jta</module>
     <module>json-p</module>

@@ -23,4 +23,5 @@ public interface MessageOffsets {
     int VERTX_OFFSET = 15000;
     int HIBERNATE_SEARCH_OFFSET = 16000;
     int JWT_AUTH_OFFSET = 17000;
+    int AGROAL_OFFSET = 18000;
 }

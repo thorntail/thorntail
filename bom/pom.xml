@@ -40,6 +40,7 @@
   </distributionManagement>
 
   <properties>
+    <version.agroal>1.3</version.agroal>
     <version.weld>3.0.3.Final</version.weld>
     <version.snakeyaml>1.19</version.snakeyaml>
 
@@ -188,6 +189,22 @@
         <version>${version.netty}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>io.agroal</groupId>
+        <artifactId>agroal-api</artifactId>
+        <version>${version.agroal}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.agroal</groupId>
+        <artifactId>agroal-pool</artifactId>
+        <version>${version.agroal}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.agroal</groupId>
+        <artifactId>agroal-narayana</artifactId>
+        <version>${version.agroal}</version>
       </dependency>
 
       <dependency>
@@ -571,6 +588,11 @@
       </dependency>
       <dependency>
         <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-agroal</artifactId>
+        <version>4.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.thorntail</groupId>
         <artifactId>thorntail-bean-validation</artifactId>
         <version>4.0.0-SNAPSHOT</version>
       </dependency>
@@ -622,6 +644,11 @@
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>thorntail-jpa</artifactId>
+        <version>4.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-jpa-agroal</artifactId>
         <version>4.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
