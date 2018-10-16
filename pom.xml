@@ -929,6 +929,12 @@
         <artifactId>jose</artifactId>
         <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
+
+      <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-gradle-tooling</artifactId>
+        <version>2.3.0.Final-SNAPSHOT</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -1082,7 +1088,8 @@
         <module>swarmtool</module>
         <module>cli</module>
 
-        <module>plugins/gradle</module>
+        <module>plugins/gradle/tooling-api</module>
+        <module>plugins/gradle/gradle-plugin</module>
 
         <module>arquillian/daemon</module>
         <module>arquillian/resolver</module>

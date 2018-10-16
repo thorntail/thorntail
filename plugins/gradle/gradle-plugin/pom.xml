@@ -11,13 +11,13 @@
     <groupId>io.thorntail</groupId>
     <artifactId>build-parent</artifactId>
     <version>2.3.0.Final-SNAPSHOT</version>
-    <relativePath>../../build-parent/pom.xml</relativePath>
+    <relativePath>../../../build-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>thorntail-gradle-plugin</artifactId>
 
-  <name>Plugin for Gradle</name>
-  <description>Plugin for Gradle</description>
+  <name>Gradle Plugin</name>
+  <description>Gradle Plugin for Thorntail</description>
 
   <packaging>jar</packaging>
   <build>
@@ -31,6 +31,12 @@
         </configuration>
       </plugin>
     </plugins>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
   </build>
 
   <dependencies>
@@ -40,16 +46,20 @@
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>
-      <artifactId>tools</artifactId>
+      <artifactId>spi</artifactId>
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>
-      <artifactId>spi</artifactId>
+      <artifactId>thorntail-gradle-tooling</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gradle</groupId>
+      <artifactId>gradle-tooling-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.gradle</groupId>
       <artifactId>gradle-core</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.gradle</groupId>
@@ -75,6 +85,16 @@
       <groupId>org.eclipse.aether</groupId>
       <artifactId>aether-util</artifactId>
       <version>1.0.0.v20140518</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
