@@ -170,9 +170,12 @@ public class DefaultJoseImpl implements Jose {
 
     @Override
     public String encrypt(EncryptionInput input) {
+        Properties props = prepareEncryptionProperties();
         JweHeaders headers = new JweHeaders();
         headers.asMap().putAll(input.getHeaders());
-        Properties props = prepareEncryptionProperties();
+        if (config.includeEncryptionKeyAlias()) {
+            headers.setKeyId(config.encryptionKeyAlias());
+        }
         JweEncryptionProvider provider = JweUtils.loadEncryptionProvider(props, headers);
 
         return DEFAULT_JOSE_FORMAT == config.encryptionFormat()

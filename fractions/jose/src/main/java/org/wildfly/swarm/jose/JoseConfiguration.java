@@ -17,6 +17,7 @@ package org.wildfly.swarm.jose;
 
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_CONTENT_ENCRYPTION_ALGORITHM;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_JOSE_FORMAT;
+import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_INCLUDE_ENCRYPTION_KEY_ALIAS;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEYSTORE_PASSWORD;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEYSTORE_PATH;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEYSTORE_TYPE;
@@ -132,6 +133,15 @@ public class JoseConfiguration {
 
     public String encryptionKeyAlias() {
         return this.encryptionKeyAlias.get();
+    }
+
+    public JoseConfiguration includeEncryptionKeyAlias(boolean include) {
+        includeEncryptionKeyAlias.set(include);
+        return this;
+    }
+
+    public boolean includeEncryptionKeyAlias() {
+        return this.includeEncryptionKeyAlias.get();
     }
 
     public JoseConfiguration encryptionKeyPassword(String password) {
@@ -257,4 +267,11 @@ public class JoseConfiguration {
     @Configurable("thorntail.jose.encryption.key.alias")
     @AttributeDocumentation("Alias to the encryption key entry in the keystore")
     private Defaultable<String> encryptionKeyAlias = string(DEFAULT_KEY_ALIAS);
+
+    /**
+     * Include Encryption Key Alias as the JOSE 'kid' Header.
+     */
+    @Configurable("thorntail.jose.encryption.include.alias")
+    @AttributeDocumentation("Include the encryption key alias as the JOSE 'kid' header (defaults to true)")
+    private Defaultable<Boolean> includeEncryptionKeyAlias = bool(DEFAULT_INCLUDE_ENCRYPTION_KEY_ALIAS);
 }

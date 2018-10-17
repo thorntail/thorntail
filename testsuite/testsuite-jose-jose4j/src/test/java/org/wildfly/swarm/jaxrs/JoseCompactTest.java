@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.swarm.jose.DecryptionOutput;
 import org.wildfly.swarm.jose.Jose;
 import org.wildfly.swarm.jose.JoseLookup;
 import org.wildfly.swarm.jose.jose4j.Jose4jJoseFactory;
@@ -102,7 +103,9 @@ public class JoseCompactTest {
                                    .request(MediaType.TEXT_PLAIN)
                                    .post(Entity.entity(jose.encrypt("Hello"), MediaType.TEXT_PLAIN),
                                          String.class);
-        Assert.assertEquals("Hello", jose.decrypt(encryptedData));
+        DecryptionOutput decryption = jose.decryption(encryptedData);
+        Assert.assertEquals("Hello", decryption.getData());
+        Assert.assertEquals("server", decryption.getHeaders().get("kid"));
         Assert.assertEquals(5, encryptedData.split("\\.").length);
     }
     

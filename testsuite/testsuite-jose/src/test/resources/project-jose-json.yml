@@ -5,4 +5,6 @@ swarm:
     signature:
       format: JSON
     encryption:
-      format: JSON  
+      format: JSON 
+      include:
+        alias: false
