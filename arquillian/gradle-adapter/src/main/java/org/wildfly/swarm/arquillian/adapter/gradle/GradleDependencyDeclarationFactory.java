@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,7 +39,7 @@ public class GradleDependencyDeclarationFactory implements DependencyDeclaration
 
         GradleDependencyAdapter gradleAdapter = new GradleDependencyAdapter(fsLayout.getRootPath());
 
-        DeclaredDependencies declaredDependencies = gradleAdapter.parseDependencies(GradleDependencyAdapter.Configuration.TEST_RUNTIME);
+        DeclaredDependencies declaredDependencies = gradleAdapter.getProjectDependencies();
 
         // Resolve to local files.
         resolveDependencies(declaredDependencies.getRuntimeExplicitAndTransientDependencies(), resolvingHelper);
