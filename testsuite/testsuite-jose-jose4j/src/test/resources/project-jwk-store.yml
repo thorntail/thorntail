@@ -11,3 +11,5 @@ swarm:
       key:
         alias: AesGcmKey
       keyAlgorithm: dir
+      include:
+        alias: false

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.jose4j.base64url.Base64Url;
+import org.jose4j.json.JsonUtil;
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jwa.AlgorithmConstraints.ConstraintType;
 import org.jose4j.jwe.JsonWebEncryption;
@@ -137,6 +138,9 @@ public class Jose4jJoseImpl implements Jose {
         }
         jwe.setAlgorithmHeaderValue(config.keyEncryptionAlgorithm());
         jwe.setEncryptionMethodHeaderParameter(config.contentEncryptionAlgorithm());
+        if (config.includeEncryptionKeyAlias()) {
+            jwe.setKeyIdHeaderValue(config.encryptionKeyAlias());
+        }
         jwe.setKey(getEncryptionKey(true));
         try {
             return jwe.getCompactSerialization();
@@ -163,7 +167,9 @@ public class Jose4jJoseImpl implements Jose {
             new AlgorithmConstraints(ConstraintType.WHITELIST, config.contentEncryptionAlgorithm()));
         jwe.setKey(getEncryptionKey(false));
         try {
-            return new DecryptionOutput(jwe.getPlaintextString());
+            int firstDot = compactJwe.indexOf(".");
+            String headersJson = new Base64Url().base64UrlDecodeToUtf8String(compactJwe.substring(0, firstDot));
+            return new DecryptionOutput(JsonUtil.parseJson(headersJson), jwe.getPlaintextString());
         } catch (org.jose4j.lang.JoseException ex) {
             throw new JoseException(ex.getMessage(), ex);
         }
