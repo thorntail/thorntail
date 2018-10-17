@@ -30,6 +30,7 @@ import io.smallrye.faulttolerance.HystrixCommandInterceptor;
  * @author Antoine Sabot-Durand
  */
 @DeploymentModule(name = "io.smallrye.faulttolerance", metaInf = MetaInfDisposition.IMPORT, export = true, services = Module.ServiceHandling.IMPORT)
+@DeploymentModule(name = "org.wildfly.swarm.microprofile.faulttolerance", metaInf = MetaInfDisposition.IMPORT, slot = "deployment", export = true, services = Module.ServiceHandling.IMPORT)
 public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfileFaultToleranceFraction> {
 
     private static final String SYNC_CIRCUIT_BREAKER_KEY = "thorntail.microprofile.fault-tolerance.synchronous-circuit-breaker";
