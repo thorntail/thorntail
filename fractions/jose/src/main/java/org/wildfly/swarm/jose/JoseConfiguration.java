@@ -269,9 +269,9 @@ public class JoseConfiguration {
     private Defaultable<String> encryptionKeyAlias = string(DEFAULT_KEY_ALIAS);
 
     /**
-     * Include Encryption Key Alias as Header.
+     * Include Encryption Key Alias as the JOSE 'kid' Header.
      */
     @Configurable("thorntail.jose.encryption.include.alias")
-    @AttributeDocumentation("Include the encryption key alias as a 'kid' header: true (default)")
+    @AttributeDocumentation("Include the encryption key alias as the JOSE 'kid' header (defaults to true)")
     private Defaultable<Boolean> includeEncryptionKeyAlias = bool(DEFAULT_INCLUDE_ENCRYPTION_KEY_ALIAS);
 }
