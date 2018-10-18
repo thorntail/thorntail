@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,15 +15,17 @@
  */
 package org.wildfly.swarm.arquillian.adapter.gradle;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.file.Path;
-import java.util.Scanner;
-import java.util.Stack;
-import java.util.StringJoiner;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
-import org.gradle.tooling.model.GradleProject;
+import org.gradle.tooling.model.ExternalDependency;
+import org.gradle.tooling.model.GradleModuleVersion;
+import org.gradle.tooling.model.idea.IdeaModule;
+import org.gradle.tooling.model.idea.IdeaProject;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.DeclaredDependencies;
 
@@ -36,187 +38,57 @@ import org.wildfly.swarm.tools.DeclaredDependencies;
  */
 public class GradleDependencyAdapter {
 
-    private static final String PREFIX1 = "+---";
-
-    private static final String PREFIX2 = "\\---";
-
-    private static final String PROJECT = "project";
-
-    private static final String COLON = ":";
-
-    /**
-     * A gradle build configuration reference
-     */
-    public enum Configuration {
-        ARCHIVE("archives"),
-        DEFAULT("default"),
-        COMPILE("compile"),
-        RUNTIME("runtime"),
-        TEST_COMPILE("testCompile"),
-        TEST_RUNTIME("testRuntime");
-
-        private String literal;
-
-        Configuration(String literal) {
-            this.literal = literal;
-        }
-    }
-
     public GradleDependencyAdapter(Path projectDir) {
         this.rootPath = projectDir;
     }
 
-    public DeclaredDependencies parseDependencies(Configuration configuration) {
-        GradleConnector connector = GradleConnector.newConnector()
-                .forProjectDirectory(rootPath.toFile());
+    public DeclaredDependencies getProjectDependencies() {
+        GradleConnector connector = GradleConnector.newConnector().forProjectDirectory(rootPath.toFile());
         ProjectConnection connection = connector.connect();
-        GradleProject project = connection.getModel(GradleProject.class);
-        String path = project.getPath(); // Get the Gradle project path for executing the dependencies section.
-        project = getProjectForDirectory(project, rootPath);
-        if (project != null) {
-            // Not sure if we would ever have a scenario where project is null. Even if it does happen, it would fall back to
-            // existing default behavior.
-            path = project.getPath();
-            if (!path.endsWith(":")) {
-                path = path + ":";
-            }
+        try {
+            return getProjectDependencies(connection);
+        } finally {
+            connection.close();
         }
-
-        // Identify and resolve the dependencies for the given project.
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        connection.newBuild()
-                .withArguments(path + "dependencies", "--configuration", configuration.literal)
-                .setStandardOutput(bout)
-                .run();
-
-        connection.close();
-
-
-        // parse
-        DeclaredDependencies declaredDependencies = new DeclaredDependencies();
-
-        String deps = new String(bout.toByteArray());
-
-        Scanner scanner = new Scanner(deps);
-
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-
-            // top level deps
-            if (line.startsWith(PREFIX1)
-                    || line.startsWith(PREFIX2)) {
-
-                if (stack.size() > 0) {
-                    stack.pop();
-                }
-
-                // parse
-                line = parseLine(line);
-                if (line.startsWith(PROJECT)) { // Always skip 'project' dependencies.
-                    continue;
-                }
-
-                String coord = parseCoordinate(line);
-                ArtifactSpec parent = DeclaredDependencies.createSpec(coord);
-                declaredDependencies.add(parent);
-                stack.push(parent);
-            } else if (line.contains(PREFIX)) {
-                // transient
-                line = parseLine(line);
-
-                if (line.startsWith(PROJECT)) { // Always skip 'project' dependencies.
-                    continue;
-                }
-
-                String coord = parseCoordinate(line);
-                ArtifactSpec spec = DeclaredDependencies.createSpec(coord);
-                if (stack.empty()) {
-                    // Parent was a project dependency, add this dependency directly.
-                    declaredDependencies.add(spec);
-                } else {
-                    declaredDependencies.add(stack.peek(), spec);
-                }
-
-            }
-        }
-
-        scanner.close();
-
-        return declaredDependencies;
-    }
-
-    private String parseCoordinate(String line) {
-        String[] coords = line.split(COLON);
-        if (3 == coords.length) {
-            String version = coords[2];
-            if (version.contains(VERSION_UP)) {
-                String s = coords[0] + ":" + coords[1] + ":" + version.substring(version.indexOf(VERSION_UP) + VERSION_UP.length(), version.length());
-                return s;
-            } else {
-                return line;
-            }
-        } else if (2 == coords.length) {
-            // This could happen if the Gradle project is making use of the Gradle feature (in preview mode for 4.6+) that has
-            // improved support for BOMs.
-            // In this particular scenario, the dependency should look like the following,
-            // org.wildfly.swarm:jaxrs-multipart -> 2018.5.0-plankton-SNAPSHOT
-
-            StringJoiner joiner = new StringJoiner(":");
-            joiner.add(coords[0]);
-
-            // Extract artifact & version details.
-            String artifactId = coords[1];
-            int idx = artifactId.indexOf(VERSION_UP);
-            if (idx != -1) {
-                String version = artifactId.substring(idx + VERSION_UP.length()).trim();
-                artifactId = artifactId.substring(0, idx).trim();
-                joiner.add(artifactId).add(version);
-                return joiner.toString();
-            }
-        }
-        // Raise an exception if we are unable to determine the dependency format.
-        throw new IllegalArgumentException("Unexpected dependency format: " + line);
-    }
-
-    private String parseLine(String line) {
-        line = line.substring(line.indexOf(PREFIX) + PREFIX.length(), line.length());
-
-        if (line.endsWith(SUFFIX)) {
-            line = line.substring(0, line.indexOf(SUFFIX));
-        }
-        return line;
     }
 
     /**
-     * Scan the project hierarchy (in case of a multi-module project) and return the project that matches the given path
-     * reference.
+     * Retrieve the project dependencies by analyzing the IdeaProject model.
      *
-     * @param project the Gradle project reference.
-     * @param path    the path to match against.
-     * @return the Gradle project reference whose path matches the given input path.
+     * @param connection the Gradle project connection.
+     * @return the project dependencies.
      */
-    private static GradleProject getProjectForDirectory(GradleProject project, Path path) {
-        if (project != null) {
-            if (project.getProjectDirectory().toPath().equals(path)) {
-                return project;
-            }
-            for (GradleProject p : project.getChildren()) {
-                GradleProject searchResult = getProjectForDirectory(p, path);
-                if (searchResult != null) {
-                    return searchResult;
-                }
-            }
-        }
-        return null;
+    private DeclaredDependencies getProjectDependencies(ProjectConnection connection) {
+        // Of the 4 available scopes for a IdeaDependency scope, we ignore "PROVIDED" & "RUNTIME".
+        final List<String> APPLICABLE_SCOPES = Arrays.asList("COMPILE", "TEST");
+        DeclaredDependencies dependencies = new DeclaredDependencies();
+
+        // 1. Get the IdeaProject model from the Gradle connection.
+        IdeaProject prj = connection.getModel(IdeaProject.class);
+
+        // 2. Find the IdeaModule that maps to the project that we are looking at.
+        Optional<? extends IdeaModule> result = prj.getModules().stream()
+                .filter(m -> m.getGradleProject().getProjectDirectory().toPath().equals(rootPath))
+                .findFirst();
+
+        // 3. Parse the dependencies and add them to the return object.
+        result.ifPresent(m -> m.getDependencies().stream()
+                .filter(d -> APPLICABLE_SCOPES.contains(d.getScope().getScope().toUpperCase()) && d instanceof ExternalDependency)
+                .forEach(d -> {
+                    // Construct the ArtifactSpec and add to the declared dependencies.
+                    ExternalDependency extDep = (ExternalDependency) d;
+                    GradleModuleVersion gav = extDep.getGradleModuleVersion();
+                    if (gav != null) {
+                        ArtifactSpec spec = new ArtifactSpec("compile", gav.getGroup(), gav.getName(), gav.getVersion(),
+                                                             "jar", null, extDep.getFile());
+                        dependencies.add(spec);
+                    } else {
+                        System.err.println("Skipping artifact since it doesn't have any GAV coordinates: " + d.toString());
+                    }
+                }));
+
+        return dependencies;
     }
-
-    private static final String PREFIX = "--- ";
-
-    private static final String SUFFIX = " (*)";
-
-    private static final String VERSION_UP = "-> ";
-
-    private Stack<ArtifactSpec> stack = new Stack<>();
 
     private Path rootPath;
 }
