@@ -22,6 +22,7 @@ import java.util.UUID;
 import javax.enterprise.inject.Vetoed;
 import javax.naming.NamingException;
 
+import org.wildfly.security.manager.WildFlySecurityManager;
 import org.wildfly.swarm.microprofile.health.api.Monitor;
 
 import io.smallrye.health.SmallRyeHealth;
@@ -85,8 +86,18 @@ public class HttpContexts implements HttpHandler {
 
     private void health(HttpServerExchange exchange) {
         if (monitor.getHealthReporter() != null) {
-            SmallRyeHealthReporter reporter = (SmallRyeHealthReporter)monitor.getHealthReporter();
-            SmallRyeHealth health = reporter.getHealth();
+            SmallRyeHealthReporter reporter = (SmallRyeHealthReporter) monitor.getHealthReporter();
+            SmallRyeHealth health;
+
+            // THORN-2195: Use the correct TCCL when health checks are obtained
+            ClassLoader oldTccl = WildFlySecurityManager.getCurrentContextClassLoaderPrivileged();
+            try {
+                WildFlySecurityManager.setCurrentContextClassLoaderPrivileged(monitor.getContextClassLoader());
+                health = reporter.getHealth();
+            } finally {
+                WildFlySecurityManager.setCurrentContextClassLoaderPrivileged(oldTccl);
+            }
+
             if (health.isDown()) {
                 exchange.setStatusCode(503);
             } else {

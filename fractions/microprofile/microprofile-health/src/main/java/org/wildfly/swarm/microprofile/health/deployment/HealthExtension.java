@@ -67,6 +67,10 @@ public class HealthExtension implements Extension {
                 reporter =  reporterInstance.produce().inject().postConstruct().get();
                 monitor.registerHealthReporter(reporter);
 
+                // THORN-2195: Use the correct TCCL when health checks are obtained
+                // In WildFly, the TCCL should always be set to the top-level deployment CL during extension notification
+                monitor.registerContextClassLoader(Thread.currentThread().getContextClassLoader());
+
                 log.info(">> Added health reporter bean " + reporter);
                 delegate = null;
             }
@@ -84,6 +88,7 @@ public class HealthExtension implements Extension {
      */
     public void beforeShutdown(@Observes final BeforeShutdown bs) {
         monitor.unregisterHealthReporter();
+        monitor.unregisterContextClassLoader();
         reporter = null;
         reporterInstance.preDestroy().dispose();
         reporterInstance = null;
