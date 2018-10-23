@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Enumeration;
 
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleLoadException;
@@ -62,10 +63,10 @@ public class ClasspathModuleFinder implements ModuleFinder {
                     LOG.trace("path: " + path);
                 }
 
-                URL url = cl.getResource(path);
+                URL url = findResourceInClassLoader(cl, path);
 
                 if (url == null && cl != ClasspathModuleFinder.class.getClassLoader()) {
-                    url = ClasspathModuleFinder.class.getClassLoader().getResource(path);
+                    url = findResourceInClassLoader(ClasspathModuleFinder.class.getClassLoader(), path);
                 }
 
                 if (url == null) {
@@ -116,6 +117,19 @@ public class ClasspathModuleFinder implements ModuleFinder {
             throw new RuntimeException(e);
         }
 
+    }
+
+    private static URL findResourceInClassLoader(ClassLoader cl, String path) throws IOException {
+        Enumeration<URL> resources = cl.getResources(path);
+        while (resources.hasMoreElements()) {
+            URL candidate = resources.nextElement();
+            // always prefer productized artifacts over community ones
+            if (candidate.toString().contains("redhat-")) {
+                return candidate;
+            }
+        }
+
+        return cl.getResource(path);
     }
 
     private static final BootstrapLogger LOG = BootstrapLogger.logger("org.wildfly.swarm.modules.classpath");
