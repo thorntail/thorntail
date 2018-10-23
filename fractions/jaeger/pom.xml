@@ -67,6 +67,17 @@
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>opentracing-tracerresolver</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>io.opentracing</groupId>
+          <artifactId>opentracing-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing</groupId>
+      <artifactId>opentracing-api</artifactId>
+      <version>${version.opentracing}</version>
     </dependency>
 
     <dependency>
@@ -78,6 +89,32 @@
       <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-thrift</artifactId>
       <version>${version.jaeger}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpcore</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.squareup.okio</groupId>
+          <artifactId>okio</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okio</groupId>
+      <artifactId>okio</artifactId>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

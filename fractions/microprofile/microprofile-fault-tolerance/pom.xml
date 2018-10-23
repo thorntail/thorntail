@@ -83,6 +83,25 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-fault-tolerance</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.enterprise.concurrent</groupId>
+          <artifactId>javax.enterprise.concurrent-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.logging</groupId>
+          <artifactId>jboss-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise.concurrent</groupId>
+      <artifactId>javax.enterprise.concurrent-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
        <groupId>org.jboss.weld</groupId>

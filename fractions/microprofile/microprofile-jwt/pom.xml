@@ -95,12 +95,35 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-jwt</artifactId>
-      <version>${version.smallrye.jwt}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax</groupId>
+          <artifactId>javaee-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.microprofile.config</groupId>
+          <artifactId>microprofile-config-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.config</groupId>
+      <artifactId>microprofile-config-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.bitbucket.b_c</groupId>
       <artifactId>jose4j</artifactId>
       <version>${version.jose4j}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>
@@ -161,4 +184,3 @@
     </dependency>
   </dependencies>
 </project>
-

@@ -114,6 +114,16 @@
     <dependency>
       <groupId>org.jboss.narayana.jts</groupId>
       <artifactId>narayana-jts-idlj</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.openjdk-orb</groupId>
+          <artifactId>openjdk-orb</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.openjdk-orb</groupId>
+      <artifactId>openjdk-orb</artifactId>
     </dependency>
   </dependencies>
 </project>

@@ -46,7 +46,7 @@
     <version.jandex>2.0.5.Final</version.jandex>
     <!-- Align dependency versions with those present in WildFly parent -->
     <!-- Doing this explicitly since there is no easy way to import project properties from a pom file -->
-    <version.com.fasterxml.jackson>2.8.9</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.8.11</version.com.fasterxml.jackson>
 
     <version.org.objectweb.asm>6.0</version.org.objectweb.asm>
 
@@ -100,7 +100,7 @@
 
     <version.maven.aether>3.2.5</version.maven.aether>
 
-    <version.resteasy>3.0.24.Final</version.resteasy>
+    <version.resteasy>3.0.26.Final</version.resteasy>
     <version.org.glassfish.javax.json>1.0.4</version.org.glassfish.javax.json>
 
     <!-- MicroProfile APIs -->
@@ -122,7 +122,24 @@
     <version.smallrye.restclient>1.0.1</version.smallrye.restclient>
     <version.smallrye.jwt>1.1.0</version.smallrye.jwt>
     <version.smallrye-fault-tolerance>1.0.4</version.smallrye-fault-tolerance>
+    <version.smallrye.open-api>1.0.1</version.smallrye.open-api>
 
+    <!-- purely for dependency alignment purposes -->
+    <version.xnio>3.5.5.Final</version.xnio>
+    <version.wildfly-client-config>1.0.0.Final</version.wildfly-client-config>
+    <version.wildfly-common>1.2.0.Final</version.wildfly-common>
+    <version.org.slf4j>1.7.22</version.org.slf4j>
+    <version.apache-mime4j>0.6</version.apache-mime4j>
+    <version.httpcore>4.4.4</version.httpcore>
+    <version.httpclient>4.5.2</version.httpclient>
+    <version.commons-codec>1.10</version.commons-codec>
+    <version.commons-logging>1.1.1</version.commons-logging>
+    <version.commons-io>2.5</version.commons-io>
+    <version.jcip-annotations>1.0</version.jcip-annotations>
+    <version.openjdk-orb>8.0.8.Final</version.openjdk-orb>
+    <version.classmate>1.3.3</version.classmate>
+    <version.javax.enterprise.concurrent-api>1.0</version.javax.enterprise.concurrent-api>
+    <version.javax.activation>1.1.1</version.javax.activation>
   </properties>
 
   <build>
@@ -264,17 +281,17 @@
         <artifactId>mongo-config-api</artifactId>
         <version>${version.mongo.config-api}</version>
       </dependency>
-     <dependency>
+      <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>cassandra-config-api</artifactId>
         <version>${version.cassandra.config-api}</version>
       </dependency>
-     <dependency>
+      <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>neo4j-config-api</artifactId>
         <version>${version.neo4j.config-api}</version>
       </dependency>
-     <dependency>
+      <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>orientdb-config-api</artifactId>
         <version>${version.orientdb.config-api}</version>
@@ -376,81 +393,208 @@
         <version>${version.openshift.client}</version>
       </dependency>
 
-      <!-- MicroProfile 1.2 -->
+      <!-- MicroProfile and SmallRye -->
       <dependency>
         <groupId>org.eclipse.microprofile.config</groupId>
         <artifactId>microprofile-config-api</artifactId>
         <version>${version.microprofile-config}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.annotation.versioning</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-config</artifactId>
         <version>${version.smallrye.config}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.annotation.versioning</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>microprofile-config-api</artifactId>
         <version>${version.wildfly-microprofile-config}</version>
+        <exclusions>
+           <exclusion>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.versioning</artifactId>
+           </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
         <artifactId>microprofile-fault-tolerance-api</artifactId>
         <version>${version.microprofile-fault-tolerance}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.microprofile.health</groupId>
-        <artifactId>microprofile-health-api</artifactId>
-        <version>${version.microprofile-health}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.microprofile.metrics</groupId>
-        <artifactId>microprofile-metrics-api</artifactId>
-        <version>${version.microprofile-metrics}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.microprofile.jwt</groupId>
-        <artifactId>microprofile-jwt-auth-api</artifactId>
-        <version>${version.microprofile-jwt-auth}</version>
-      </dependency>
-
-      <!-- SmallRye -->
-      <dependency>
-        <groupId>io.smallrye</groupId>
-        <artifactId>smallrye-health</artifactId>
-        <version>${version.smallrye.health}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.smallrye</groupId>
-        <artifactId>smallrye-metrics</artifactId>
-        <version>${version.smallrye.metrics}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.smallrye</groupId>
-        <artifactId>smallrye-rest-client</artifactId>
-        <version>${version.smallrye.restclient}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.smallrye</groupId>
-        <artifactId>smallrye-opentracing</artifactId>
-        <version>${version.smallrye.opentracing}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.annotation.versioning</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-fault-tolerance</artifactId>
         <version>${version.smallrye-fault-tolerance}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.annotation.versioning</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
-      <!-- The following are not used, they are here to make PME align proper versions-->
+      <dependency>
+        <groupId>org.eclipse.microprofile.health</groupId>
+        <artifactId>microprofile-health-api</artifactId>
+        <version>${version.microprofile-health}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.annotation.versioning</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-health</artifactId>
+        <version>${version.smallrye.health}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.annotation.versioning</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.eclipse.microprofile.health</groupId>
+            <artifactId>microprofile-health-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.microprofile.metrics</groupId>
+        <artifactId>microprofile-metrics-api</artifactId>
+        <version>${version.microprofile-metrics}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.annotation.versioning</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-metrics</artifactId>
+        <version>${version.smallrye.metrics}</version>
+        <exclusions>
+           <exclusion>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.versioning</artifactId>
+           </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-rest-client</artifactId>
+        <version>${version.smallrye.restclient}</version>
+        <exclusions>
+           <exclusion>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.versioning</artifactId>
+           </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.microprofile.opentracing</groupId>
+        <artifactId>microprofile-opentracing-api</artifactId>
+        <version>${version.microprofile-opentracing}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.annotation.versioning</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-opentracing</artifactId>
+        <version>${version.smallrye.opentracing}</version>
+        <exclusions>
+           <exclusion>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.versioning</artifactId>
+           </exclusion>
+           <exclusion>
+              <groupId>org.eclipse.microprofile.opentracing</groupId>
+              <artifactId>microprofile-opentracing-api</artifactId>
+           </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.microprofile.jwt</groupId>
+        <artifactId>microprofile-jwt-auth-api</artifactId>
+        <version>${version.microprofile-jwt-auth}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.annotation.versioning</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-jwt</artifactId>
+        <version>${version.smallrye.jwt}</version>
+        <exclusions>
+           <exclusion>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.versioning</artifactId>
+           </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>smallrye-open-api</artifactId>
+        <version>${version.smallrye.open-api}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss</groupId>
+            <artifactId>jandex</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+          </exclusion>
+          <exclusion>
+              <groupId>org.osgi</groupId>
+              <artifactId>org.osgi.annotation.versioning</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <!-- The following are not used, they are here for dependency alignment -->
       <dependency>
         <groupId>com.squareup.okhttp3</groupId>
         <artifactId>okhttp</artifactId>
@@ -466,6 +610,35 @@
         <artifactId>okio</artifactId>
         <version>${version.com.squareup.okio}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.jboss.xnio</groupId>
+        <artifactId>xnio-nio</artifactId>
+        <version>${version.xnio}</version>
+      </dependency>
+
+      <dependency>
+       <groupId>org.jboss.xnio</groupId>
+       <artifactId>xnio-api</artifactId>
+       <version>${version.xnio}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.client</groupId>
+        <artifactId>wildfly-client-config</artifactId>
+        <version>${version.wildfly-client-config}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.common</groupId>
+        <artifactId>wildfly-common</artifactId>
+        <version>${version.wildfly-common}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${version.org.slf4j}</version>
+      </dependency>
       <dependency>
           <groupId>org.apache.thrift</groupId>
           <artifactId>libthrift</artifactId>
@@ -475,6 +648,82 @@
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
         <version>${version.jaeger.gson}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>javax.json</artifactId>
+        <version>${version.org.glassfish.javax.json}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>${version.commons-codec}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.james</groupId>
+        <artifactId>apache-mime4j</artifactId>
+        <version>${version.apache-mime4j}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>${version.httpcore}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${version.httpclient}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${version.commons-logging}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${version.commons-io}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.jcip</groupId>
+        <artifactId>jcip-annotations</artifactId>
+        <version>${version.jcip-annotations}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.openjdk-orb</groupId>
+        <artifactId>openjdk-orb</artifactId>
+        <version>${version.openjdk-orb}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml</groupId>
+        <artifactId>classmate</artifactId>
+        <version>${version.classmate}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-concurrent</artifactId>
+        <version>${version.opentracing.concurrent}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.enterprise.concurrent</groupId>
+        <artifactId>javax.enterprise.concurrent-api</artifactId>
+        <version>${version.javax.enterprise.concurrent-api}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.activation</groupId>
+        <artifactId>activation</artifactId>
+        <version>${version.javax.activation}</version>
       </dependency>
       <!-- end of unused dependencies -->
 
