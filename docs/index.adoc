@@ -67,4 +67,4 @@ include::reference/index.adoc[leveloffset=+2]
 
 Community contributions are always welcome.
 
-Please visit a https://thorntail.io/community/[Community] page to learn how to get involved.
+For more information about how to get involved, see our https://thorntail.io/community/[Community website].
