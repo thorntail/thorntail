@@ -8,7 +8,7 @@ Follow the links below for information about Thorntail and the Microservices Arc
 == Thorntail
 
 * Homepage: https://thorntail.io[thorntail.io]
-* https://thorntail.io/archive/[Blog]
+* Blog: https://thorntail.io/archive/[thorntail.io/archive]
 
 [discrete]
 == Microservices
