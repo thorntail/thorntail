@@ -2,7 +2,7 @@
 [id='additional-resources_{context}']
 = Additional resources
 
-Please follow the links below to find out more about Thorntail and the Microservices Architecture
+Follow the links below for information about Thorntail and the Microservices Architecture:
 
 [discrete]
 == Thorntail
