@@ -1093,16 +1093,17 @@
         <module>cli</module>
 
         <module>plugins/gradle/tooling-api</module>
+<!--
         <module>plugins/gradle/gradle-plugin</module>
-
+-->
         <module>arquillian/daemon</module>
         <module>arquillian/resolver</module>
         <module>arquillian/adapter</module>
         <module>arquillian/arquillian</module>
         <module>arquillian/test</module>
-
+<!--
         <module>arquillian/gradle-adapter</module>
-
+-->
         <module>fractions/javaee/jpa-spatial</module>
         <module>fractions/javaee/jpa-eclipselink</module>
         <module>fractions/javaee/mvc</module>

@@ -30,6 +30,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.jboss.as.controller.parsing.DeferredExtensionContext;
 import org.jboss.as.controller.parsing.Namespace;
 import org.jboss.as.controller.parsing.ProfileParsingCompletionHandler;
 import org.jboss.as.server.parsing.ExtensionHandler;
@@ -70,7 +71,7 @@ public class StandaloneXMLParser {
             public void writeExtensions(XMLExtendedStreamWriter writer, ModelNode modelNode) throws XMLStreamException {
                 // noop
             }
-        }, null, ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
+        }, new DeferredExtensionContext(null, null, null), ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
 
         xmlMapper = XMLMapper.Factory.create();
 
