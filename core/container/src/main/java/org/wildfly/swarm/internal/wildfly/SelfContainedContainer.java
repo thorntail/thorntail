@@ -53,10 +53,6 @@ import org.jboss.stdio.StdioContext;
 import org.wildfly.security.manager.WildFlySecurityManager;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
 
-//import org.jboss.as.selfcontained.ContentProvider;
-//import org.jboss.as.selfcontained.ContentProviderServiceActivator;
-//import org.jboss.as.selfcontained.SelfContainedConfigurationPersister;
-
 /**
  * The main-class entry point for self-contained server instances.
  *
@@ -173,7 +169,7 @@ public final class SelfContainedContainer {
     public ServerEnvironment determineEnvironment(Properties systemProperties, Map<String, String> systemEnvironment, ServerEnvironment.LaunchType launchType, long startTime) {
         ProductConfig productConfig = ProductConfig.fromKnownSlot(PRODUCT_SLOT, Module.getBootModuleLoader(), systemProperties);
         systemProperties.put(ServerEnvironment.SERVER_TEMP_DIR, tmpDir.getAbsolutePath());
-        ServerEnvironment serverEnvironment = new ServerEnvironment(null, systemProperties, systemEnvironment, null, null, launchType, RunningMode.NORMAL, productConfig, startTime, false);
+        ServerEnvironment serverEnvironment = new ServerEnvironment(null, systemProperties, systemEnvironment, null, null, launchType, RunningMode.NORMAL, productConfig, startTime, false, null, null, null);
         return serverEnvironment;
     }
 

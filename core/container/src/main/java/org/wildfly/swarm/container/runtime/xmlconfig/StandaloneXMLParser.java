@@ -70,7 +70,7 @@ public class StandaloneXMLParser {
             public void writeExtensions(XMLExtendedStreamWriter writer, ModelNode modelNode) throws XMLStreamException {
                 // noop
             }
-        }, ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
+        }, null, ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
 
         xmlMapper = XMLMapper.Factory.create();
 
