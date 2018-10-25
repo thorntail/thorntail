@@ -22,10 +22,10 @@ import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 
-import org.jboss.weld.literal.DefaultLiteral;
 import org.wildfly.swarm.spi.api.cdi.CommonBean;
 import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
 
@@ -56,7 +56,7 @@ public class CommandLineArgsExtension implements Extension {
                 .beanClass(CommandLineArgsExtension.class)
                 .scope(Dependent.class)
                 .createSupplier(() -> argsList)
-                .addQualifier(DefaultLiteral.INSTANCE)
+                .addQualifier(Default.Literal.INSTANCE)
                 .addType(List.class)
                 .addType(Object.class).build();
         abd.addBean(listBean);

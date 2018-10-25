@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -37,7 +38,6 @@ import org.jboss.jandex.Index;
 import org.jboss.jandex.IndexReader;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleLoadException;
-import org.jboss.weld.literal.AnyLiteral;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.container.runtime.ConfigurableManager;
@@ -80,7 +80,7 @@ public class FractionProducingExtension implements Extension {
                     preExistingFractionClasses.add(fraction.getClass());
                 }
 
-                Set<Bean<?>> availableFractionBeans = beanManager.getBeans(Fraction.class, AnyLiteral.INSTANCE);
+                Set<Bean<?>> availableFractionBeans = beanManager.getBeans(Fraction.class, Any.Literal.INSTANCE);
 
                 preExistingFractionClasses.addAll(
                         availableFractionBeans.stream()

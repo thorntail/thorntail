@@ -21,13 +21,13 @@ import java.util.function.Supplier;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Singleton;
 
-import org.jboss.weld.literal.AnyLiteral;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.internal.SocketBindingRequest;
 import org.wildfly.swarm.spi.api.Customizer;
@@ -54,7 +54,7 @@ public class SocketBindingExtension implements Extension {
             for (SocketBindingRequest each : this.bindings) {
 
                 Supplier<Customizer> supplier = () -> (Customizer) () -> {
-                    Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
+                    Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, Any.Literal.INSTANCE);
 
                     groups.stream()
                             .map((Bean<?> e) -> {
@@ -70,7 +70,7 @@ public class SocketBindingExtension implements Extension {
                         .beanClass(SocketBindingExtension.class)
                         .scope(Singleton.class)
                         .addQualifier(Pre.Literal.INSTANCE)
-                        .addQualifier(AnyLiteral.INSTANCE)
+                        .addQualifier(Any.Literal.INSTANCE)
                         .createSupplier(supplier)
                         .addType(Customizer.class)
                         .addType(Object.class).build();

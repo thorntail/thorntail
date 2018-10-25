@@ -22,12 +22,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Singleton;
 
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.DefaultLiteral;
 import org.wildfly.swarm.container.runtime.ConfigurableManager;
 import org.wildfly.swarm.spi.api.Fraction;
 
@@ -103,8 +103,8 @@ public class ConfigurableFractionBean<T extends Fraction> implements Bean<T> {
     @Override
     public Set<Annotation> getQualifiers() {
         Set<Annotation> qualifiers = new HashSet<>();
-        qualifiers.add(DefaultLiteral.INSTANCE);
-        qualifiers.add(AnyLiteral.INSTANCE);
+        qualifiers.add(Default.Literal.INSTANCE);
+        qualifiers.add(Any.Literal.INSTANCE);
         return qualifiers;
     }
 
