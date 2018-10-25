@@ -5,7 +5,7 @@
 
 {Thorntail} has pre-built some https://github.com/thorntail/thorntail/tree/master/standalone-servers[standalone-servers].
 
-include::../modules/ref_prebuilt-microprofile-server.adoc[leveloffset=+1]
+include::../modules/con_thorntail-microprofile-server.adoc[leveloffset=+1]
 ifndef::product[]
 include::../modules/con_thorntail-keycloak-server.adoc[leveloffset=+1]
 endif::[]
