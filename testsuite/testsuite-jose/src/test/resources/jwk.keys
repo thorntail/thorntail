@@ -12,6 +12,18 @@
         "alg":"A128GCM",
         "k":"GawgguFyGrWKav7AX4VKUg",
         "kid":"AesGcmKey"
-      }
+     },
+    {
+        "kty":"oct",
+        "alg":"A128GCM",
+        "k":"GawgguFyGrWKav7AX4VKUg",
+        "kid":"1"
+     },
+    {
+        "kty":"oct",
+        "alg":"A128GCM",
+        "k":"GawgguFyGrWKav7AX4VKUg",
+        "kid":"2"
+     }
   ]
 }

@@ -1,0 +1,13 @@
+swarm:
+  jose:
+    keystore:
+      path: jwk.keys
+      type: jwk
+    encryption:
+      keyAlgorithm: dir
+      in:
+        key:
+          alias: 1
+      out:
+        key:
+          alias: 2

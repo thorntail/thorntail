@@ -15,9 +15,13 @@
  */
 package org.wildfly.swarm.jose;
 
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
+import org.wildfly.swarm.spi.api.Defaultable;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
+
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_CONTENT_ENCRYPTION_ALGORITHM;
-import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_JOSE_FORMAT;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_INCLUDE_ENCRYPTION_KEY_ALIAS;
+import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_JOSE_FORMAT;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEYSTORE_PASSWORD;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEYSTORE_PATH;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEYSTORE_TYPE;
@@ -29,10 +33,6 @@ import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_DATA_DETAC
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_DATA_ENCODING;
 import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.string;
-
-import org.wildfly.swarm.config.runtime.AttributeDocumentation;
-import org.wildfly.swarm.spi.api.Defaultable;
-import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 public class JoseConfiguration {
 
@@ -79,6 +79,14 @@ public class JoseConfiguration {
 
     public String signatureKeyAlias() {
         return this.signatureKeyAlias.get();
+    }
+
+    public String signatureKeyAliasOut() {
+        return this.signatureKeyAliasOut;
+    }
+
+    public String signatureKeyAliasIn() {
+        return this.signatureKeyAliasIn;
     }
 
     public JoseConfiguration signatureAlgorithm(String algorithm) {
@@ -135,6 +143,14 @@ public class JoseConfiguration {
         return this.encryptionKeyAlias.get();
     }
 
+    public String encryptionKeyAliasOut() {
+        return this.encryptionKeyAliasOut;
+    }
+
+    public String encryptionKeyAliasIn() {
+        return this.encryptionKeyAliasIn;
+    }
+
     public JoseConfiguration includeEncryptionKeyAlias(boolean include) {
         includeEncryptionKeyAlias.set(include);
         return this;
@@ -170,6 +186,7 @@ public class JoseConfiguration {
     public String contentEncryptionAlgorithm() {
         return this.contentEncryptionAlgorithm.get();
     }
+
     /**
      * Keystore type.
      */
@@ -265,7 +282,7 @@ public class JoseConfiguration {
      * Alias to the encryption key entry in the keystore.
      */
     @Configurable("thorntail.jose.encryption.key.alias")
-    @AttributeDocumentation("Alias to the encryption key entry in the keystore")
+    @AttributeDocumentation("Key Alias in the keystore to be used for the encryption or decryption, by default")
     private Defaultable<String> encryptionKeyAlias = string(DEFAULT_KEY_ALIAS);
 
     /**
@@ -274,4 +291,34 @@ public class JoseConfiguration {
     @Configurable("thorntail.jose.encryption.include.alias")
     @AttributeDocumentation("Include the encryption key alias as the JOSE 'kid' header (defaults to true)")
     private Defaultable<Boolean> includeEncryptionKeyAlias = bool(DEFAULT_INCLUDE_ENCRYPTION_KEY_ALIAS);
+
+    /**
+     * Encryption Key Alias in the keystore to be used for the encryption.
+     */
+    @Configurable("thorntail.jose.encryption.out.key.alias")
+    @AttributeDocumentation("Key Alias in the keystore to be used for encryption only")
+    private String encryptionKeyAliasOut;
+
+    /**
+     * Decryption Key Alias in the keystore to be used for the decryption.
+     */
+    @Configurable("thorntail.jose.encryption.in.key.alias")
+    @AttributeDocumentation("Key Alias in the keystore to be used for decryption only")
+    private String encryptionKeyAliasIn;
+
+    /**
+     * Alias to the signature key entry in the keystore for signing.
+     */
+    @Configurable("thorntail.jose.signature.out.key.alias")
+    @AttributeDocumentation("Alias to the signature key entry in the keystore used for signing only")
+    private String signatureKeyAliasOut;
+
+    /**
+     * Alias to the signature key entry in the keystore for verification.
+     */
+    @Configurable("thorntail.jose.signature.in.key.alias")
+    @AttributeDocumentation("Alias to the signature key entry in the keystore used for verification only")
+    private String signatureKeyAliasIn;
+
+
 }
