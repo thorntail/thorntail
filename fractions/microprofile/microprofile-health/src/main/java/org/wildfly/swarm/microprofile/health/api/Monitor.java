@@ -54,6 +54,12 @@ public interface Monitor {
 
     Object getHealthReporter();
 
+    void unregisterContextClassLoader();
+
+    void registerContextClassLoader(ClassLoader classLoader);
+
+    ClassLoader getContextClassLoader();
+
     List<HealthMetaData> getHealthURIs();
 
     Optional<SecurityRealm> getSecurityRealm();

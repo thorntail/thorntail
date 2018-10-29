@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.enterprise.inject.Vetoed;
 
@@ -64,6 +65,7 @@ public class MonitorService implements Monitor, Service<MonitorService> {
 
     public MonitorService(Optional<String> securityRealm) {
         this.securityRealm = securityRealm;
+        this.contextClassLoader = new AtomicReference<ClassLoader>(null);
     }
 
     @Override
@@ -219,6 +221,20 @@ public class MonitorService implements Monitor, Service<MonitorService> {
         return healthReporter;
     }
 
+    @Override
+    public void registerContextClassLoader(ClassLoader classLoader) {
+        this.contextClassLoader.set(classLoader);
+    }
+
+    @Override
+    public void unregisterContextClassLoader() {
+        this.contextClassLoader.set(null);
+    }
+
+    @Override
+    public ClassLoader getContextClassLoader() {
+        return this.contextClassLoader.get();
+    }
 
     private static final long DEFAULT_PROBE_TIMEOUT_SECONDS = 2;
 
@@ -239,4 +255,6 @@ public class MonitorService implements Monitor, Service<MonitorService> {
     private CopyOnWriteArrayList<HealthMetaData> endpoints = new CopyOnWriteArrayList<HealthMetaData>();
 
     private Object healthReporter;
+
+    private AtomicReference<ClassLoader> contextClassLoader;
 }
