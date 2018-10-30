@@ -1,0 +1,13 @@
+[id='prebuilt-servers_{context}']
+= Pre-built servers
+
+:parent-context: {context}
+
+There are pre-built stand-alone servers available for {Thorntail}. The source code is available on https://github.com/thorntail/thorntail/tree/master/standalone-servers[GitHub].
+
+include::../modules/con_thorntail-microprofile-server.adoc[leveloffset=+1]
+ifndef::product[]
+include::../modules/con_thorntail-keycloak-server.adoc[leveloffset=+1]
+endif::[]
+:context: {parent-context}
+
