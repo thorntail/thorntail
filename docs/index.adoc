@@ -63,3 +63,8 @@ include::modules/ref_the-usage-txt-file.adoc[leveloffset=+2]
 
 include::reference/index.adoc[leveloffset=+2]
 
+# Getting Involved
+
+Community contributions are always welcome.
+
+For more information about how to get involved, see our https://thorntail.io/community/[Community website].
