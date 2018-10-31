@@ -76,6 +76,7 @@ import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.bootstrap.util.BootstrapUtil;
 import org.wildfly.swarm.cli.CommandLine;
 import org.wildfly.swarm.container.DeploymentException;
 import org.wildfly.swarm.container.config.ClassLoaderConfigLocator;
@@ -211,6 +212,8 @@ public class Swarm {
         if (debugBootstrap) {
             Module.setModuleLogger(new StreamModuleLogger(System.err));
         }
+
+        BootstrapUtil.convertSwarmSystemPropertiesToThorntail();
 
         setArgs(args);
         this.debugBootstrap = debugBootstrap;
