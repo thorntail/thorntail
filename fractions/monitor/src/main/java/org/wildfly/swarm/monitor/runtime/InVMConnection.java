@@ -270,7 +270,7 @@ final class InVMConnection extends ServerConnection {
     public boolean isRequestTrailerFieldsSupported() {
         return false;
     }
-    
+
     private boolean closed;
 
     private final InetSocketAddress address;
