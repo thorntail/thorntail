@@ -25,7 +25,6 @@ import org.jboss.msc.service.ServiceActivator;
 import org.wildfly.swarm.config.EJB3;
 import org.wildfly.swarm.config.JPA;
 import org.wildfly.swarm.config.Undertow;
-import org.wildfly.swarm.config.infinispan.cache_container.EvictionComponent;
 import org.wildfly.swarm.config.infinispan.cache_container.LockingComponent;
 import org.wildfly.swarm.config.infinispan.cache_container.TransactionComponent;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
@@ -96,11 +95,9 @@ public class InfinispanCustomizer implements Customizer {
                     cc -> cc.module("org.hibernate.infinispan")
                             .localCache("entity",
                                     c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
-                                            .evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
                                             .expirationComponent(e -> e.maxIdle(100000L)))
                             .localCache("local-query",
-                                    c -> c.evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
-                                            .expirationComponent(e -> e.maxIdle(100000L)))
+                                    c -> c.expirationComponent(e -> e.maxIdle(100000L)))
                             .localCache("timestamps"));
         }
 
