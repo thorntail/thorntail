@@ -61,27 +61,33 @@ public class StandaloneXMLParser {
 
     public StandaloneXMLParser() {
 
+        //WF14, THORN-2210
         @SuppressWarnings("deprecation")
         final ExtensionRegistry extensionRegistry =
             new ExtensionRegistry(ProcessType.EMBEDDED_SERVER, new RunningModeControl(RunningMode.NORMAL));
         final DeferredExtensionContext deferredExtensionContext =
             new DeferredExtensionContext(new BootModuleLoader(), extensionRegistry, null);
-        parserDelegate = new StandaloneXml(new ExtensionHandler() {
-            @Override
-            public void parseExtensions(XMLExtendedStreamReader reader, ModelNode address, Namespace namespace, List<ModelNode> list) throws XMLStreamException {
-                reader.discardRemainder(); // noop
-            }
+        //End of WF14
+        parserDelegate = new StandaloneXml(
+            new ExtensionHandler() {
+                @Override
+                public void parseExtensions(XMLExtendedStreamReader reader, ModelNode address, Namespace namespace, List<ModelNode> list) throws XMLStreamException {
+                    reader.discardRemainder(); // noop
+                }
 
-            @Override
-            public Set<ProfileParsingCompletionHandler> getProfileParsingCompletionHandlers() {
-                return Collections.emptySet();
-            }
+                @Override
+                public Set<ProfileParsingCompletionHandler> getProfileParsingCompletionHandlers() {
+                    return Collections.emptySet();
+                }
 
-            @Override
-            public void writeExtensions(XMLExtendedStreamWriter writer, ModelNode modelNode) throws XMLStreamException {
-                // noop
-            }
-        }, deferredExtensionContext, ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
+                @Override
+                public void writeExtensions(XMLExtendedStreamWriter writer, ModelNode modelNode) throws XMLStreamException {
+                    // noop
+                }
+            },
+            //WF14, THORN-2210
+            deferredExtensionContext,
+            ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
 
         xmlMapper = XMLMapper.Factory.create();
 
