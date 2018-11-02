@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import javax.enterprise.inject.Vetoed;
@@ -34,6 +35,7 @@ import org.jboss.as.controller.ProcessType;
 import org.jboss.as.controller.RunningMode;
 import org.jboss.as.controller.RunningModeControl;
 import org.jboss.as.controller.extension.ExtensionRegistry;
+import org.jboss.as.controller.extension.RuntimeHostControllerInfoAccessor;
 import org.jboss.as.controller.parsing.DeferredExtensionContext;
 import org.jboss.as.controller.parsing.Namespace;
 import org.jboss.as.controller.parsing.ProfileParsingCompletionHandler;
@@ -60,14 +62,17 @@ public class StandaloneXMLParser {
     private Set<QName> recognizedNames = new HashSet<>();
 
     public StandaloneXMLParser() {
-
-        //WF14, THORN-2210
-        @SuppressWarnings("deprecation")
-        final ExtensionRegistry extensionRegistry =
-            new ExtensionRegistry(ProcessType.EMBEDDED_SERVER, new RunningModeControl(RunningMode.NORMAL));
-        final DeferredExtensionContext deferredExtensionContext =
-            new DeferredExtensionContext(new BootModuleLoader(), extensionRegistry, null);
-        //End of WF14
+        // WF14 this is similar to BootstrapPersister.createDelegate, so should be OK, but better review once more
+        ExtensionRegistry extensionRegistry = new ExtensionRegistry(
+                ProcessType.SELF_CONTAINED,
+                new RunningModeControl(RunningMode.NORMAL),
+                null,
+                null,
+                null,
+                RuntimeHostControllerInfoAccessor.SERVER
+        );
+        DeferredExtensionContext deferredExtensionContext =
+            new DeferredExtensionContext(new BootModuleLoader(), extensionRegistry, Executors.newSingleThreadExecutor());
         parserDelegate = new StandaloneXml(
             new ExtensionHandler() {
                 @Override
@@ -85,7 +90,6 @@ public class StandaloneXMLParser {
                     // noop
                 }
             },
-            //WF14, THORN-2210
             deferredExtensionContext,
             ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
 
