@@ -15,9 +15,6 @@
  */
 package org.wildfly.swarm.mod_cluster;
 
-import static org.wildfly.swarm.spi.api.Defaultable.integer;
-import static org.wildfly.swarm.spi.api.Defaultable.string;
-
 import javax.annotation.PostConstruct;
 
 import org.wildfly.swarm.config.Modcluster;
@@ -27,6 +24,9 @@ import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
+
+import static org.wildfly.swarm.spi.api.Defaultable.integer;
+import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 /**
  * @author Stuart Douglas
