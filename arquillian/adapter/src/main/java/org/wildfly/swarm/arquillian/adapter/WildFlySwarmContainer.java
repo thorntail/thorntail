@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 import org.wildfly.swarm.arquillian.StartupTimeout;
 import org.wildfly.swarm.arquillian.daemon.container.DaemonContainerConfigurationBase;
 import org.wildfly.swarm.arquillian.daemon.container.DaemonDeployableContainerBase;
+import org.wildfly.swarm.bootstrap.util.BootstrapUtil;
 
 /**
  * @author Bob McWhirter
@@ -65,6 +66,8 @@ public class WildFlySwarmContainer extends DaemonDeployableContainerBase<DaemonC
 
     @Override
     public synchronized ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
+        BootstrapUtil.convertSwarmSystemPropertiesToThorntail();
+
         StartupTimeout startupTimeout = this.testClass.getAnnotation(StartupTimeout.class);
         if (startupTimeout != null) {
             setTimeout(startupTimeout.value());

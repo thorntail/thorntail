@@ -65,4 +65,14 @@ public class BootstrapUtil {
         }
     }
 
+    public static void convertSwarmSystemPropertiesToThorntail() {
+        for (String systemProperty : System.getProperties().stringPropertyNames()) {
+            if (systemProperty.startsWith("swarm.")) {
+                String corresponding = systemProperty.replaceFirst("^swarm\\.", "thorntail.");
+                if (System.getProperty(corresponding) == null) {
+                    System.setProperty(corresponding, System.getProperty(systemProperty));
+                }
+            }
+        }
+    }
 }
