@@ -15,18 +15,18 @@
  */
 package org.wildfly.swarm.mod_cluster;
 
+import static org.wildfly.swarm.spi.api.Defaultable.integer;
+import static org.wildfly.swarm.spi.api.Defaultable.string;
+
 import javax.annotation.PostConstruct;
 
 import org.wildfly.swarm.config.Modcluster;
-import org.wildfly.swarm.config.modcluster.ConfigurationModClusterConfig;
+import org.wildfly.swarm.config.modcluster.Proxy;
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
-
-import static org.wildfly.swarm.spi.api.Defaultable.integer;
-import static org.wildfly.swarm.spi.api.Defaultable.string;
 
 /**
  * @author Stuart Douglas
@@ -48,10 +48,25 @@ public class ModclusterFraction extends Modcluster<ModclusterFraction> implement
     }
 
     public ModclusterFraction applyDefaults() {
-        return configurationModClusterConfig(new ConfigurationModClusterConfig()
-                                                     .advertiseSocket("modcluster")
-                                                     .advertise(true)
-                                                     .connector("default"));
+        //WF14, http://wildscribe.github.io/WildFly/14.0/subsystem/modcluster/proxy/index.html
+        // The old ConfigurationModClusterConfig.connector documentation implies
+        // that it was Proxy which was indirectly configured
+        return proxy(new Proxy("modcluster")
+                .advertiseSocket("modcluster")
+                .advertise(true)
+                .listener("default"));
+        //ConfigurationModClusterConfig
+        //@AttributeDocumentation("Whether to enable multicast-based advertise mechanism.")
+        //private Boolean advertise;
+        //@AttributeDocumentation("The name of Undertow listener that will be registered with the reverse proxy.")
+        //private String connector;
+        //@AttributeDocumentation("Name of socket binding to use for the advertise socket.")
+        //private String advertiseSocket;
+
+        //return configurationModClusterConfig(new ConfigurationModClusterConfig()
+        //                                             .advertiseSocket("modcluster")
+        //                                             .advertise(true)
+        //                                             .connector("default"));
     }
 
     public ModclusterFraction multicastAddress(String address) {
