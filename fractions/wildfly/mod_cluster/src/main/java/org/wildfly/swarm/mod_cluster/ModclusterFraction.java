@@ -55,18 +55,6 @@ public class ModclusterFraction extends Modcluster<ModclusterFraction> implement
                 .advertiseSocket("modcluster")
                 .advertise(true)
                 .listener("default"));
-        //ConfigurationModClusterConfig
-        //@AttributeDocumentation("Whether to enable multicast-based advertise mechanism.")
-        //private Boolean advertise;
-        //@AttributeDocumentation("The name of Undertow listener that will be registered with the reverse proxy.")
-        //private String connector;
-        //@AttributeDocumentation("Name of socket binding to use for the advertise socket.")
-        //private String advertiseSocket;
-
-        //return configurationModClusterConfig(new ConfigurationModClusterConfig()
-        //                                             .advertiseSocket("modcluster")
-        //                                             .advertise(true)
-        //                                             .connector("default"));
     }
 
     public ModclusterFraction multicastAddress(String address) {
