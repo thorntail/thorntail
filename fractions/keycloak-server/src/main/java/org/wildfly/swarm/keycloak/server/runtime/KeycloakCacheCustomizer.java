@@ -41,6 +41,7 @@ public class KeycloakCacheCustomizer implements Customizer {
 
         CacheContainer cache = infinispan.subresources().cacheContainer("keycloak");
         if (cache == null) {
+            // WF14 a lot of caches had eviction configured
             infinispan.cacheContainer("keycloak", (c) -> c.localCache("realms")
                     .localCache("users")
                     .localCache("sessions")

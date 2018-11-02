@@ -94,6 +94,7 @@ public class InfinispanCustomizer implements Customizer {
         if (!this.jpa.isUnsatisfied()) {
             this.fraction.cacheContainer("hibernate",
                     cc -> cc.module("org.hibernate.infinispan")
+                            // WF14 two caches had eviction configured
                             .localCache("entity",
                                     c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
                                             .expirationComponent(e -> e.maxIdle(100000L)))
