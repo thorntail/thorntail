@@ -5,7 +5,7 @@ console.log( "release notes for: ", process.argv[2] );
 
 var version = process.argv[2];
 
-https.get( 'https://issues.jboss.org/rest/api/latest/search?maxResults=100&jql=project=SWARM+AND+fixVersion=' + version + '+order+by+key+asc', function(result, err) {
+https.get( 'https://issues.jboss.org/rest/api/latest/search?maxResults=100&jql=project=THORN+AND+fixVersion=' + version + '+order+by+key+asc', function(result, err) {
 
   var buf = "";
 
