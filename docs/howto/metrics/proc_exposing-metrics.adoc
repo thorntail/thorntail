@@ -14,18 +14,24 @@ Note that Prometheus actively connects to a monitored application to collect dat
 * Prometheus configured to collect metrics from the application:
 +
 --
-. Get the default Prometheus configuration using the following command:
+. Download and extract the link:https://prometheus.io/download/[archive^] with the latest Prometheus release:
 +
-[source,bash,opts="nowrap"]
+[source,bash,options="nowrap"]
 ----
-# docker run -it --rm --entrypoint /bin/sh prom/prometheus -c 'cat /etc/prometheus/prometheus.yml'
+$ wget https://github.com/prometheus/prometheus/releases/download/v2.4.3/prometheus-2.4.3.linux-amd64.tar.gz
+$ tar -xvf  prometheus-2.4.3.linux-amd64.tar.gz
 ----
+
+. Navigate to the directory with Prometheus:
 +
-Store the output in the `prometheus.yml` file in the directory with your application.
+[source,bash,options="nowrap"]
+----
+$ cd  prometheus-2.4.3.linux-amd64
+----
 
 . Append the following snippet to the `prometheus.yml` file to make Prometheus automatically collect metrics from your application:
 +
-[source,yaml]
+[source,yaml,options="nowrap"]
 ----
 include::prometheus.yml[tag=thorntail]
 ----
@@ -34,22 +40,21 @@ The default behavior of {Thorntail}-based applications is to expose metrics at t
 This is what the MicroProfile Metrics specification requires, and also what Prometheus expects.
 --
 
-* The Prometheus server running on `localhost` using Docker:
+* The Prometheus server started on `localhost`:
 +
 --
-[source,bash,opts="nowrap"]
-----
-# docker run -it --rm --network host -p 9090:9090 -v $PWD/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
-----
+Start Prometheus and wait until the `Server is ready to receive web requests` message is displayed in the console.
 
-Wait until the `Server is ready to receive web requests` message is displayed in the console.
-
-Notice the `--network host` option so that Prometheus can connect to your application.
+[source,bash,options="nowrap"]
+----
+$ ./prometheus
+----
 --
+
 
 .Procedure
 
-. Include the `microprofile-metrics` fraction in your `pom.xml`.
+. Include the `microprofile-metrics` fraction in the `pom.xml` file in your application:
 +
 .pom.xml
 [source,xml]
