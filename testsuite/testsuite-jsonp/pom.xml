@@ -21,11 +21,6 @@
 
   <packaging>jar</packaging>
   
-  <properties>
-    <version.javax.json.api>1.0</version.javax.json.api>
-    <version.org.glassfish.javax.json>1.0.4</version.org.glassfish.javax.json>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>io.thorntail</groupId>
