@@ -1209,6 +1209,7 @@
         <module>testsuite/testsuite-jpa-mysql</module>
         <module>testsuite/testsuite-jpa-postgresql</module>
         <module>testsuite/testsuite-jsf</module>
+        <module>testsuite/testsuite-jsonp</module>
         <module>testsuite/testsuite-jsp</module>
         <module>testsuite/testsuite-microprofile-jwt</module>
         <module>testsuite/testsuite-microprofile-metrics</module>
