@@ -27,24 +27,15 @@ import org.apache.http.client.fluent.Request;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.undertow.WARArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
+@DefaultDeployment
 public class JavaxJsonpTest {
-
-    @Deployment
-    public static Archive createDeployment() throws Exception {
-        WARArchive deployment = ShrinkWrap.create(WARArchive.class);
-        deployment.addClass(JsonpServlet.class);
-        return deployment;
-    }
-
 
     @Test
     @RunAsClient
