@@ -15,11 +15,6 @@
  */
 package org.wildfly.swarm.jose.provider;
 
-import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_JOSE_FORMAT;
-
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.cxf.common.util.Base64UrlUtility;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.rs.security.jose.common.JoseConstants;
@@ -47,11 +42,18 @@ import org.wildfly.swarm.jose.EncryptionInput;
 import org.wildfly.swarm.jose.Jose;
 import org.wildfly.swarm.jose.JoseConfiguration;
 import org.wildfly.swarm.jose.JoseException;
+import org.wildfly.swarm.jose.JoseOperation;
 import org.wildfly.swarm.jose.SignatureInput;
 import org.wildfly.swarm.jose.VerificationOutput;
 
+import java.util.List;
+import java.util.Properties;
+
+import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_JOSE_FORMAT;
+
 public class DefaultJoseImpl implements Jose {
     private JoseConfiguration config;
+
     public DefaultJoseImpl(JoseConfiguration config) {
         this.config = config;
     }
@@ -68,13 +70,13 @@ public class DefaultJoseImpl implements Jose {
         if (!config.signatureDataEncoding()) {
             headers.setPayloadEncodingStatus(false);
         }
-        Properties props = prepareSignatureProperties();
+        Properties props = prepareSignatureVerificationProperties(JoseOperation.SIGN);
         headers.setSignatureAlgorithm(SignatureAlgorithm.getAlgorithm(config.signatureAlgorithm()));
         JwsSignatureProvider provider =
-            JwsUtils.loadSignatureProvider(props, headers);
+                JwsUtils.loadSignatureProvider(props, headers);
 
         return DEFAULT_JOSE_FORMAT == config.signatureFormat()
-            ? signCompact(provider, headers, input.getData()) : signJson(provider, headers, input.getData());
+                ? signCompact(provider, headers, input.getData()) : signJson(provider, headers, input.getData());
     }
 
     private String signCompact(JwsSignatureProvider provider, JwsHeaders headers, String data) {
@@ -119,7 +121,7 @@ public class DefaultJoseImpl implements Jose {
     }
 
     private VerificationOutput getVerificationOutput(String jws, String detachedData) throws JoseException {
-        Properties props = prepareSignatureProperties();
+        Properties props = prepareSignatureVerificationProperties(JoseOperation.VERIFICATION);
         return DEFAULT_JOSE_FORMAT == config.signatureFormat()
                 ? verifyCompact(props, jws, detachedData) : verifyJson(props, jws, detachedData);
     }
@@ -128,12 +130,12 @@ public class DefaultJoseImpl implements Jose {
         try {
             JwsCompactConsumer consumer = new JwsCompactConsumer(jws, detachedData);
             JwsSignatureVerifier verifier =
-                JwsUtils.loadSignatureVerifier(props, consumer.getJwsHeaders());
+                    JwsUtils.loadSignatureVerifier(props, consumer.getJwsHeaders());
             if (!consumer.verifySignatureWith(verifier)) {
                 throw new JoseException("JWS Compact Signature Verification Failure");
             }
             return new VerificationOutput(consumer.getJwsHeaders().asMap(),
-                                          consumer.getDecodedJwsPayload());
+                    consumer.getDecodedJwsPayload());
         } catch (JoseException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -147,7 +149,7 @@ public class DefaultJoseImpl implements Jose {
             List<JwsJsonSignatureEntry> entries = consumer.getSignatureEntries();
             if (entries.size() > 1) {
                 throw new JoseException("JWS JSON Signature Verification Failure:"
-                    + " only a single recipient is supported at the moment");
+                        + " only a single recipient is supported at the moment");
             }
             JwsJsonSignatureEntry entry = entries.get(0);
             JwsSignatureVerifier verifier = JwsUtils.loadSignatureVerifier(props, entry.getProtectedHeader());
@@ -155,7 +157,7 @@ public class DefaultJoseImpl implements Jose {
                 throw new JoseException("JWS JSON Signature Verification Failure");
             }
             return new VerificationOutput(entry.getProtectedHeader().asMap(),
-                                    consumer.getDecodedJwsPayload());
+                    consumer.getDecodedJwsPayload());
         } catch (JoseException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -170,17 +172,18 @@ public class DefaultJoseImpl implements Jose {
 
     @Override
     public String encrypt(EncryptionInput input) {
-        Properties props = prepareEncryptionProperties();
+        Properties props = prepareEncryptionDecryptionProperties(JoseOperation.ENCRYPTION);
         JweHeaders headers = new JweHeaders();
         headers.asMap().putAll(input.getHeaders());
         if (config.includeEncryptionKeyAlias()) {
-            headers.setKeyId(config.encryptionKeyAlias());
+            headers.setKeyId(encryptionKeyAlias());
         }
         JweEncryptionProvider provider = JweUtils.loadEncryptionProvider(props, headers);
 
         return DEFAULT_JOSE_FORMAT == config.encryptionFormat()
                 ? encryptCompact(provider, headers, input.getData()) : encryptJson(provider, headers, input.getData());
     }
+
 
     private String encryptCompact(JweEncryptionProvider provider, JweHeaders headers, String data) {
         try {
@@ -207,7 +210,7 @@ public class DefaultJoseImpl implements Jose {
 
     @Override
     public DecryptionOutput decryption(String jwe) throws JoseException {
-        Properties props = prepareEncryptionProperties();
+        Properties props = prepareEncryptionDecryptionProperties(JoseOperation.DECRYPTION);
 
         return DEFAULT_JOSE_FORMAT == config.signatureFormat()
                 ? decryptCompact(props, jwe) : decryptJson(props, jwe);
@@ -219,7 +222,7 @@ public class DefaultJoseImpl implements Jose {
             JweDecryptionProvider decryptor = JweUtils.loadDecryptionProvider(props, consumer.getJweHeaders());
             String decryptedData = consumer.getDecryptedContentText(decryptor);
             return new DecryptionOutput(consumer.getJweHeaders().asMap(),
-                                     decryptedData);
+                    decryptedData);
         } catch (Exception ex) {
             throw new JoseException("JWE Compact Decryption Failure");
         }
@@ -230,12 +233,12 @@ public class DefaultJoseImpl implements Jose {
             JweJsonConsumer consumer = new JweJsonConsumer(jwe);
             if (consumer.getRecipients().size() > 1) {
                 throw new JoseException("JWE JSON Decryption Failure:"
-                    + " only a single recipient is supported at the moment");
+                        + " only a single recipient is supported at the moment");
             }
             JweDecryptionProvider decryptor = JweUtils.loadDecryptionProvider(props, consumer.getProtectedHeader());
             JweDecryptionOutput output = consumer.decryptWith(decryptor);
             return new DecryptionOutput(consumer.getProtectedHeader().asMap(),
-                                     output.getContentText());
+                    output.getContentText());
         } catch (JoseException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -243,26 +246,69 @@ public class DefaultJoseImpl implements Jose {
         }
     }
 
-    private Properties prepareSignatureProperties() {
+    private Properties prepareEncryptionDecryptionProperties(JoseOperation operation) {
+        Properties props = new Properties();
+
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_TYPE, config.keystoreType());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_FILE, config.keystorePath());
+        props.setProperty(JoseConstants.RSSEC_KEY_STORE_PSWD, config.keystorePassword());
+        props.setProperty(JoseConstants.RSSEC_KEY_PSWD, config.encryptionKeyPassword());
+        props.setProperty(JoseConstants.RSSEC_ENCRYPTION_KEY_ALGORITHM, config.keyEncryptionAlgorithm());
+        props.setProperty(JoseConstants.RSSEC_ENCRYPTION_CONTENT_ALGORITHM, config.contentEncryptionAlgorithm());
+
+        if (operation.equals(JoseOperation.ENCRYPTION)) {
+            props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, encryptionKeyAlias());
+
+        } else if (operation.equals(JoseOperation.DECRYPTION)) {
+            props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, decryptionKeyAlias());
+
+        }
+        return props;
+    }
+
+    private Properties prepareSignatureVerificationProperties(JoseOperation operation) {
         Properties props = new Properties();
         props.setProperty(JoseConstants.RSSEC_KEY_STORE_TYPE, config.keystoreType());
         props.setProperty(JoseConstants.RSSEC_KEY_STORE_FILE, config.keystorePath());
         props.setProperty(JoseConstants.RSSEC_KEY_STORE_PSWD, config.keystorePassword());
         props.setProperty(JoseConstants.RSSEC_KEY_PSWD, config.signatureKeyPassword());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, config.signatureKeyAlias());
         props.setProperty(JoseConstants.RSSEC_SIGNATURE_ALGORITHM, config.signatureAlgorithm());
+
+        if (operation.equals(JoseOperation.SIGN)) {
+            props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, signatureKeyAlias());
+
+        } else if (operation.equals(JoseOperation.VERIFICATION)) {
+            props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, verificationKeyAlias());
+        }
         return props;
     }
 
-    private Properties prepareEncryptionProperties() {
-        Properties props = new Properties();
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_TYPE, config.keystoreType());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_FILE, config.keystorePath());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_PSWD, config.keystorePassword());
-        props.setProperty(JoseConstants.RSSEC_KEY_PSWD, config.encryptionKeyPassword());
-        props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, config.encryptionKeyAlias());
-        props.setProperty(JoseConstants.RSSEC_ENCRYPTION_KEY_ALGORITHM, config.keyEncryptionAlgorithm());
-        props.setProperty(JoseConstants.RSSEC_ENCRYPTION_CONTENT_ALGORITHM, config.contentEncryptionAlgorithm());
-        return props;
+    private String signatureKeyAlias() {
+        if (config.signatureKeyAliasOut() == null) {
+            return config.signatureKeyAlias();
+        }
+        return config.signatureKeyAliasOut();
     }
+
+    private String verificationKeyAlias() {
+        if (config.signatureKeyAliasIn() == null) {
+            return config.signatureKeyAlias();
+        }
+        return config.signatureKeyAliasIn();
+    }
+
+    private String encryptionKeyAlias() {
+        if (config.encryptionKeyAliasOut() == null) {
+            return config.encryptionKeyAlias();
+        }
+        return config.encryptionKeyAliasOut();
+    }
+
+    private String decryptionKeyAlias() {
+        if (config.encryptionKeyAliasIn() == null) {
+            return config.encryptionKeyAlias();
+        }
+        return config.encryptionKeyAliasIn();
+    }
+
 }
