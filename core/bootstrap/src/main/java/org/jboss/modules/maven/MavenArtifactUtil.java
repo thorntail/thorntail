@@ -62,7 +62,7 @@ public final class MavenArtifactUtil {
 
     private static XPathExpression snapshotVersionXpath;
 
-    private static final Pattern tempFilePattern = Pattern.compile("wfswarm\\S+[0-9]{5,}.\\S{5,}");
+    private static final Pattern tempFilePattern = Pattern.compile("thorntail\\S+[0-9]{5,}.\\S{5,}");
 
     static {
         try {
@@ -97,7 +97,7 @@ public final class MavenArtifactUtil {
      * {@code "false"}.
      *
      * @param coordinates the non-{@code null} Maven coordinates object
-     * @param packaging   a non-{@code null} string with the exact packaging type desired (e.g. {@code pom}, {@code jar}, etc.)
+     * @param packaging a non-{@code null} string with the exact packaging type desired (e.g. {@code pom}, {@code jar}, etc.)
      * @return the absolute path to the artifact, or {@code null} if none exists
      * @throws IOException if acquiring the artifact path failed for some reason
      */
@@ -223,7 +223,7 @@ public final class MavenArtifactUtil {
             return;
         }
         final URL url = new URL(src);
-        final URLConnection connection = url.openConnection();
+        final URLConnection connection = MavenSettings.getSettings().openConnection(url);
         boolean message = Boolean.getBoolean("maven.download.message");
 
         try (InputStream bis = connection.getInputStream()) {
@@ -237,7 +237,7 @@ public final class MavenArtifactUtil {
 
     public static String downloadTimestampVersion(String artifact, String metadataSrc) throws IOException, XPathExpressionException {
         final URL url = new URL(metadataSrc);
-        final URLConnection connection = url.openConnection();
+        final URLConnection connection = MavenSettings.getSettings().openConnection(url);
         boolean message = Boolean.getBoolean("maven.download.message");
 
         try (InputStream is = connection.getInputStream()) {
@@ -263,21 +263,28 @@ public final class MavenArtifactUtil {
      * A utility method to create a Maven artifact resource loader for the given artifact name.
      *
      * @param mavenResolver the Maven resolver to use (must not be {@code null})
-     * @param name          the artifact name
+     * @param name the artifact name
      * @return the resource loader
      * @throws IOException if the artifact could not be resolved
      */
     public static ResourceLoader createMavenArtifactLoader(final MavenResolver mavenResolver, final String name) throws IOException {
-        File fp = mavenResolver.resolveJarArtifact(ArtifactCoordinates.fromString(name));
+        return createMavenArtifactLoader(mavenResolver, ArtifactCoordinates.fromString(name), name);
+    }
+
+    /**
+     * A utility method to create a Maven artifact resource loader for the given artifact coordinates.
+     *
+     * @param mavenResolver the Maven resolver to use (must not be {@code null})
+     * @param coordinates the artifact coordinates to use (must not be {@code null})
+     * @param rootName the resource root name to use (must not be {@code null})
+     * @return the resource loader
+     * @throws IOException if the artifact could not be resolved
+     */
+    public static ResourceLoader createMavenArtifactLoader(final MavenResolver mavenResolver, final ArtifactCoordinates coordinates, final String rootName) throws IOException {
+        File fp = mavenResolver.resolveJarArtifact(coordinates);
         if (fp == null) return null;
-        Matcher matcher = tempFilePattern.matcher(fp.getName());
-        JarFile jarFile = null;
-        if (matcher.matches()) {
-            jarFile = JarFileManager.INSTANCE.addJarFile(fp);
-        } else {
-            jarFile = new JarFile(fp, true);
-        }
-        return ResourceLoaders.createJarResourceLoader(name, jarFile);
+        JarFile jarFile = JDKSpecific.getJarFile(fp, true);
+        return ResourceLoaders.createJarResourceLoader(rootName, jarFile);
     }
 
     static <T> T doIo(PrivilegedExceptionAction<T> action) throws IOException {

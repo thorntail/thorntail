@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
+import org.jboss.modules.JDKModuleFinder;
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleLoader;
 
@@ -25,6 +26,7 @@ public class BootModuleLoader extends ModuleLoader {
 
     public BootModuleLoader() {
         super(new ModuleFinder[]{
+                JDKModuleFinder.getInstance(),
                 new BootstrapClasspathModuleFinder(),
                 new BootstrapModuleFinder(),
                 new ClasspathModuleFinder(),

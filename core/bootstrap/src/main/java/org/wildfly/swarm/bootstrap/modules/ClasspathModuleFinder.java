@@ -20,11 +20,13 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Enumeration;
+import java.util.jar.JarFile;
 
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
+import org.jboss.modules.ResourceLoaders;
 import org.jboss.modules.xml.ModuleXmlParser;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
@@ -89,7 +91,19 @@ public class ClasspathModuleFinder implements ModuleFinder {
                 ModuleSpec moduleSpec = null;
                 try {
                     moduleSpec = ModuleXmlParser.parseModuleXml(
-                            (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName),
+                            (rootPath, loaderPath, loaderName) -> {
+                                // WF14 temp files handling
+                                if ("".equals(rootPath)) { // Maven artifact TODO is there a better way to recognize this?
+                                    JarFile jarFile = new JarFile(loaderPath, true); // JDKSpecific.getJarFile(fp, true);
+//                                    Matcher matcher = tempFilePattern.matcher(fp.getName());
+//                                    if (matcher.matches()) {
+//                                        JarFileManager.INSTANCE.addExisting(fp, jarFile);
+//                                    }
+                                    return ResourceLoaders.createJarResourceLoader(loaderName, jarFile);
+                                } else { // resource root
+                                    return NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName);
+                                }
+                            },
                             MavenResolvers.get(),
                             (explodedJar == null ? "/" : explodedJar.toAbsolutePath().toString()),
                             in,

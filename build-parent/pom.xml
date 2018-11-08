@@ -22,7 +22,7 @@
   <description>Build Parent to bring in required dependencies</description>
 
   <properties>
-    <version.thorntail.fraction.plugin>90</version.thorntail.fraction.plugin>
+    <version.thorntail.fraction.plugin>91-SNAPSHOT</version.thorntail.fraction.plugin>
 
     <version.org.snakeyaml>1.18</version.org.snakeyaml>
 
@@ -36,7 +36,7 @@
     <version.orientdb.config-api>1.3.0</version.orientdb.config-api>
     <version.wildfly.nosql.feature-pack>1.0.1.Final</version.wildfly.nosql.feature-pack>
 
-    <version.jboss-modules>1.6.4.Final</version.jboss-modules>
+    <version.jboss-modules>1.8.6.Final</version.jboss-modules>
     <version.wildfly>14.0.1.Final</version.wildfly>
     <version.org.wildfly.core>6.0.2.Final</version.org.wildfly.core>
     <version.jboss-logmanager-ext>1.0.0.Alpha3</version.jboss-logmanager-ext>
