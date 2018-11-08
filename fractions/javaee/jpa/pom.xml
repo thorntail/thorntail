@@ -51,6 +51,11 @@
       <groupId>io.thorntail</groupId>
       <artifactId>ee</artifactId>
     </dependency>
+    <!-- WF14 -->
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>infinispan</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>bootstrap</artifactId>

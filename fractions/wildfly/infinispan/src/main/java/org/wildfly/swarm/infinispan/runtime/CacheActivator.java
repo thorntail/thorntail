@@ -13,7 +13,8 @@ import org.jboss.msc.service.ServiceRegistryException;
  */
 public class CacheActivator implements ServiceActivator {
 
-    private ServiceName BASE = ServiceName.parse("org.wildfly.clustering.infinispan.cache-container-configuration");
+    // WF14
+    private ServiceName BASE = ServiceName.parse("org.wildfly.clustering.infinispan.cache-configuration");
 
     public CacheActivator(String cacheName) {
         this.cacheName = cacheName;

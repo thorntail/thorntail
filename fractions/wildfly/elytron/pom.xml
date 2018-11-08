@@ -83,6 +83,19 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- WF14 -->
+    <dependency>
+      <groupId>org.wildfly</groupId>
+      <artifactId>wildfly-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
     <!-- provided dependencies -->
     <dependency>

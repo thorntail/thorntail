@@ -49,8 +49,8 @@ public class KeycloakServerFraction extends KeycloakServer<KeycloakServerFractio
         scheduledTaskInterval(900L);
 
         spi("eventsStore", (eventStore) -> {
-            eventStore.defaultProvider("jpa");
-            eventStore.provider("jpa", (provider) -> {
+            eventStore.defaultProvider(JPA);
+            eventStore.provider(JPA, (provider) -> {
                 provider.enabled(true);
                 provider.property("exclude-events", "[\"REFRESH_TOKEN\"]");
             });
@@ -112,7 +112,8 @@ public class KeycloakServerFraction extends KeycloakServer<KeycloakServerFractio
             spi.defaultProvider(DEFAULT);
             spi.provider(DEFAULT, (provider) -> {
                 provider.enabled(true);
-                provider.property("cacheContainer", "java:comp/env/infinispan/Keycloak");
+                // WF14 the Keycloak standalone server fails to boot, even with this change
+                provider.property("cacheContainer", "java:jboss/infinispan/container/keycloak");
             });
         });
 
