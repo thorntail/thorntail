@@ -39,6 +39,7 @@ import org.wildfly.swarm.bootstrap.logging.LevelNode;
  * @author Bob McWhirter
  */
 @Vetoed
+// WF14 WFLYLOG0013: A configurator class, 'class org.wildfly.swarm.container.runtime.wildfly.LoggingConfigurator', is not a known configurator and will be replaced.
 public class LoggingConfigurator implements Configurator, LogContextConfiguration {
 
     private final ConfigurationPersistence configPersistence;

@@ -342,8 +342,8 @@ public class StartMojo extends AbstractSwarmMojo {
                 // multi-start doesn't have a projectBuildDir
 
                 File tmp = this.projectBuildDir != null ?
-                        Files.createTempFile(Paths.get(this.projectBuildDir), TempFileManager.WFSWARM_TMP_PREFIX + "thorntail-", "-cp.txt").toFile() :
-                        Files.createTempFile(TempFileManager.WFSWARM_TMP_PREFIX + "thorntail-", "-cp.txt").toFile();
+                        Files.createTempFile(Paths.get(this.projectBuildDir), TempFileManager.WFSWARM_TMP_PREFIX, "-cp.txt").toFile() :
+                        Files.createTempFile(TempFileManager.WFSWARM_TMP_PREFIX, "-cp.txt").toFile();
 
                 tmp.deleteOnExit();
                 getPluginContext().put("thorntail-cp-file", tmp);
