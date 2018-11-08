@@ -17,6 +17,7 @@ package org.wildfly.swarm.flyway.deployment;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.inject.Vetoed;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -25,6 +26,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import javax.sql.DataSource;
+
 import org.flywaydb.core.Flyway;
 
 /**
@@ -64,6 +66,8 @@ public class FlywayMigrationServletContextListener implements ServletContextList
             String password = sc.getInitParameter(FLYWAY_JDBC_PASSWORD);
             flyway.setDataSource(url, user, password);
         }
+        // Configure with flyway.* system properties
+        flyway.configure(System.getProperties());
         flyway.migrate();
     }
 
