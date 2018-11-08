@@ -1,7 +1,7 @@
 
 // This is an assembly
-[id='metrics_{context}']
-= Metrics
+[id='application-metrics_{context}']
+= Application metrics
 
 :parent-context: {context}
 
@@ -9,6 +9,6 @@
 
 include::ref_what-are-metrics.adoc[leveloffset=+1]
 
-include::proc_exposing-metrics.adoc[leveloffset=+1]
+include::proc_exposing-application-metrics.adoc[leveloffset=+1]
 
 :context: {parent-context}
