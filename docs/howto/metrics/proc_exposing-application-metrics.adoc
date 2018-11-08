@@ -1,6 +1,6 @@
 
-[id='exposing-metrics_{context}']
-= Exposing metrics
+[id='exposing-application-metrics_{context}']
+= Exposing application metrics
 
 In this example, you:
 
