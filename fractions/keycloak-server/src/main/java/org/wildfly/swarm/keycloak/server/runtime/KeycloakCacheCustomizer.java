@@ -43,7 +43,7 @@ public class KeycloakCacheCustomizer implements Customizer {
         if (cache == null) {
             infinispan.cacheContainer("keycloak", (c) ->
                     c.localCache("realms", (localCache) -> {
-                        localCache.objectMemory(om -> om.size(1000L));
+                        localCache.objectMemory(om -> om.size(10000L));
                     })
                     .localCache("users", (localCache) -> {
                         localCache.objectMemory(om -> om.size(10000L));
@@ -56,10 +56,10 @@ public class KeycloakCacheCustomizer implements Customizer {
                     .localCache("loginFailures")
                     .localCache("work")
                     .localCache("authorization", (localCache) -> {
-                        localCache.objectMemory(om -> om.size(1000L));
+                        localCache.objectMemory(om -> om.size(100L));
                     })
                     .localCache("keys", (localCache) -> {
-                        localCache.objectMemory(om -> om.size(100L));
+                        localCache.objectMemory(om -> om.size(1000L));
                         localCache.expirationComponent((expire) -> {
                             expire.maxIdle(3600000L);
                         });
