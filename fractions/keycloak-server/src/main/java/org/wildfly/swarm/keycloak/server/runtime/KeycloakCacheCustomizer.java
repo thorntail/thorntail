@@ -41,9 +41,13 @@ public class KeycloakCacheCustomizer implements Customizer {
 
         CacheContainer cache = infinispan.subresources().cacheContainer("keycloak");
         if (cache == null) {
-            // WF14 a lot of caches had eviction configured
-            infinispan.cacheContainer("keycloak", (c) -> c.localCache("realms")
-                    .localCache("users")
+            infinispan.cacheContainer("keycloak", (c) ->
+                    c.localCache("realms", (localCache) -> {
+                        localCache.objectMemory(om -> om.size(1000L));
+                    })
+                    .localCache("users", (localCache) -> {
+                        localCache.objectMemory(om -> om.size(10000L));
+                    })
                     .localCache("sessions")
                     .localCache("authenticationSessions")
                     .localCache("offlineSessions")
@@ -51,13 +55,17 @@ public class KeycloakCacheCustomizer implements Customizer {
                     .localCache("offlineClientSessions")
                     .localCache("loginFailures")
                     .localCache("work")
-                    .localCache("authorization")
+                    .localCache("authorization", (localCache) -> {
+                        localCache.objectMemory(om -> om.size(1000L));
+                    })
                     .localCache("keys", (localCache) -> {
+                        localCache.objectMemory(om -> om.size(100L));
                         localCache.expirationComponent((expire) -> {
                             expire.maxIdle(3600000L);
                         });
                     })
                     .localCache("actionTokens", (localCache) -> {
+                        localCache.objectMemory(om -> om.size((long)-1));
                         localCache.expirationComponent((expire) -> {
                             expire.maxIdle((long) -1);
                             expire.interval((long) 300000);
