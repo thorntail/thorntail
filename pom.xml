@@ -853,12 +853,6 @@
 
       <dependency>
         <groupId>io.thorntail</groupId>
-        <artifactId>teiid</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.thorntail</groupId>
         <artifactId>topology</artifactId>
         <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
@@ -1141,7 +1135,6 @@
         <module>fractions/wildfly/scanner</module>
 
         <module>fractions/netflix</module>
-        <module>fractions/teiid</module>
 
         <module>fractions/nosql/cassandra</module>
         <module>fractions/nosql/mongodb</module>
