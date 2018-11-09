@@ -574,6 +574,12 @@
 
       <dependency>
         <groupId>io.thorntail</groupId>
+        <artifactId>jaxrs-jsonb</artifactId>
+        <version>2.3.0.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.thorntail</groupId>
         <artifactId>jca</artifactId>
         <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
@@ -629,6 +635,12 @@
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>jsonp</artifactId>
+        <version>2.3.0.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>jsonb</artifactId>
         <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
 
@@ -1000,6 +1012,7 @@
     <module>fractions/javaee/jaxrs-cdi</module>
     <module>fractions/javaee/jaxrs-jaxb</module>
     <module>fractions/javaee/jaxrs-jsonp</module>
+    <module>fractions/javaee/jaxrs-jsonb</module>
     <module>fractions/javaee/jaxrs-multipart</module>
     <module>fractions/javaee/jaxrs-validator</module>
     <module>fractions/javaee/jca</module>
@@ -1202,6 +1215,7 @@
         <module>testsuite/testsuite-jaxrs-cdi</module>
         <module>testsuite/testsuite-jaxrs-client</module>
         <module>testsuite/testsuite-jaxrs-ejb</module>
+        <module>testsuite/testsuite-jaxrs-jsonb</module>
         <module>testsuite/testsuite-jca</module>
         <module>testsuite/testsuite-jmx</module>
         <module>testsuite/testsuite-jmx-remote-remoting</module>
@@ -1211,6 +1225,7 @@
         <module>testsuite/testsuite-jpa-mysql</module>
         <module>testsuite/testsuite-jpa-postgresql</module>
         <module>testsuite/testsuite-jsf</module>
+        <module>testsuite/testsuite-jsonb</module>
         <module>testsuite/testsuite-jsonp</module>
         <module>testsuite/testsuite-jsp</module>
         <module>testsuite/testsuite-microprofile</module>
