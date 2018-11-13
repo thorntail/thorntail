@@ -47,6 +47,43 @@
           </exclusion>
         </exclusions>
       </dependency>
+
+      <dependency>
+        <groupId>org.wildfly.core</groupId>
+        <artifactId>wildfly-core-feature-pack</artifactId>
+        <scope>provided</scope>
+        <type>zip</type>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly</groupId>
+        <artifactId>wildfly-servlet-feature-pack</artifactId>
+        <scope>provided</scope>
+        <type>zip</type>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly</groupId>
+        <artifactId>wildfly-feature-pack</artifactId>
+        <scope>provided</scope>
+        <type>zip</type>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
     </dependencies>
 
     <modules>
