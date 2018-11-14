@@ -1020,6 +1020,7 @@
     <module>fractions/javaee/jpa</module>
     <module>fractions/javaee/jsf</module>
     <module>fractions/javaee/jsonp</module>
+    <module>fractions/javaee/jsonb</module>
     <module>fractions/javaee/naming</module>
     <module>fractions/javaee/remoting</module>
     <module>fractions/javaee/resource-adapters</module>
