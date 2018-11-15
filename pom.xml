@@ -472,6 +472,12 @@
 
       <dependency>
         <groupId>io.thorntail</groupId>
+        <artifactId>ee-security</artifactId>
+        <version>2.3.0.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.thorntail</groupId>
         <artifactId>ejb</artifactId>
         <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
@@ -1006,6 +1012,7 @@
     <module>fractions/javaee/connector</module>
     <module>fractions/javaee/datasources</module>
     <module>fractions/javaee/ee</module>
+    <module>fractions/javaee/ee-security</module>
     <module>fractions/javaee/ejb</module>
 
     <module>fractions/javaee/jaxrs</module>
@@ -1208,6 +1215,8 @@
         <module>testsuite/testsuite-datasources-defaultds</module>
         <module>testsuite/testsuite-default-deployment</module>
         <module>testsuite/testsuite-ee</module>
+        <module>testsuite/testsuite-ee-security</module>
+        <module>testsuite/testsuite-ee-security-jaxrs</module>
         <module>testsuite/testsuite-ejb</module>
         <module>testsuite/testsuite-https</module>
         <module>testsuite/testsuite-hystrix</module>

@@ -26,7 +26,7 @@
 
     <version.org.snakeyaml>1.18</version.org.snakeyaml>
 
-    <version.wildfly.config-api>1.5.2</version.wildfly.config-api>
+    <version.wildfly.config-api>1.5.3</version.wildfly.config-api>
 
     <version.keycloak.config-api>1.4.0</version.keycloak.config-api>
     <version.keycloak>3.4.3.Final</version.keycloak>

@@ -1,0 +1,3 @@
+= EE Security
+
+Provides Java EE Security API support according to JSR 375.

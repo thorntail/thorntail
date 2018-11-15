@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+-->
+
+<jboss-web>
+    <security-domain>jaspitest</security-domain>
+</jboss-web>
