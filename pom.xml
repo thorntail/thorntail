@@ -200,6 +200,16 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
         </plugin>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <configuration>
+            <!--
+              - otherwise source JARs wouldn't be created for modules that don't have real sources,
+              - such as Camel components or hollow JARs
+              -->
+            <forceCreation>true</forceCreation>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
