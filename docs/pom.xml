@@ -82,6 +82,7 @@
             <product>${swarm.product.build}</product>
             <WildFly>WildFly</WildFly>
             <Thorntail>Thorntail</Thorntail>
+            <open-jdk-builder-image-name>registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift:latest</open-jdk-builder-image-name>
           </attributes>
           <doctype>book</doctype>
           <backend>html5</backend>
