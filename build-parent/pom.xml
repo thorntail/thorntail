@@ -114,8 +114,8 @@
     <version.microprofile-openapi>1.0.1</version.microprofile-openapi>
     <version.microprofile-opentracing>1.1</version.microprofile-opentracing>
     <!-- MP Config implementation -->
-    <version.wildfly-microprofile-config>1.3.0</version.wildfly-microprofile-config>
-    <version.smallrye.config>1.3.3</version.smallrye.config>
+    <version.microprofile-config-wildfly>1.5.0</version.microprofile-config-wildfly>
+    <version.smallrye.config>1.3.4</version.smallrye.config>
     <version.smallrye.health>1.0.2</version.smallrye.health>
     <version.smallrye.opentracing>1.1.1</version.smallrye.opentracing>
     <version.smallrye.metrics>1.1.1</version.smallrye.metrics>
@@ -427,8 +427,8 @@
 
       <dependency>
         <groupId>io.thorntail</groupId>
-        <artifactId>microprofile-config-api</artifactId>
-        <version>${version.wildfly-microprofile-config}</version>
+        <artifactId>microprofile-config-wildfly-config-api</artifactId>
+        <version>${version.microprofile-config-wildfly}</version>
       </dependency>
 
       <dependency>
