@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.wildfly.swarm.runner.cache.RunnerCacheConstants.CACHE_STORAGE_DIR;
 
@@ -53,8 +54,8 @@ public class ArtifactResolutionCache {
         if (!cache.toFile().exists()) {
             System.out.println("No preexisting artifact resolution cache found. The first execution may take some time.");
         } else {
-            try {
-                Files.lines(cache).forEach(this::addToCache);
+            try (Stream<String> lines = Files.lines(cache)) {
+                lines.forEach(this::addToCache);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("Error reading resolution cache file, caching will be disabled.");
