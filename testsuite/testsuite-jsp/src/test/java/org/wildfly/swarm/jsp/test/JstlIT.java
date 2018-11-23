@@ -29,9 +29,11 @@ import static org.fest.assertions.Assertions.assertThat;
 public class JstlIT {
 
     @Test
-    public void jstlTransform() throws IOException, InterruptedException {
+    public void jstlTransform() throws IOException {
         String result = Request.Get("http://localhost:8080/xslt.jsp").execute().returnContent().asString();
         System.out.println(result);
-        assertThat(result).contains("table");
+        assertThat(result).contains("<table");
+        assertThat(result).contains("<i>Padam History</i>");
+        assertThat(result).contains("<i>Great Mistry</i>");
     }
 }

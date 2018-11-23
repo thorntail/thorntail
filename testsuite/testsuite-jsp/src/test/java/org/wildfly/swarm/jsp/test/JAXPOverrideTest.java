@@ -12,6 +12,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.swarm.jsp.ServicesServlet;
+import org.wildfly.swarm.jsp.TransformerServlet;
 import org.wildfly.swarm.undertow.WARArchive;
 
 @RunWith(Arquillian.class)
@@ -35,4 +37,3 @@ public class JAXPOverrideTest {
         Assert.assertTrue(responseBody.startsWith("net.sf.saxon.TransformerFactoryImpl"));
     }
 }
-

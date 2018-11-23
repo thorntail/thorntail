@@ -11,6 +11,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.swarm.jsp.ServicesServlet;
+import org.wildfly.swarm.jsp.TransformerServlet;
 import org.wildfly.swarm.undertow.WARArchive;
 
 @RunWith(Arquillian.class)
@@ -29,9 +31,9 @@ public class ArquillianTest {
     public void testServices() throws Exception {
         HttpResponse response = Request.Get("http://localhost:8080/services").execute().returnResponse();
         String responseBody = EntityUtils.toString(response.getEntity());
-        System.out.println(responseBody);
         Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-        Assert.assertTrue(responseBody.startsWith("No TransformerFactory could be found!"));
+        // WF14
+        Assert.assertTrue("unexpected response '" + responseBody + "'",
+                responseBody.startsWith("__redirected.__TransformerFactory"));
     }
-
 }
