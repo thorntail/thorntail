@@ -130,12 +130,12 @@ public class InfinispanCustomizer implements Customizer {
         return createActivatorIfSatisfied(this.jpa, "hibernate");
     }
 
-    private ServiceActivator createActivatorIfSatisfied(Instance instance, String cache) {
+    private ServiceActivator createActivatorIfSatisfied(Instance instance, String cacheContainer) {
         if (instance.isUnsatisfied()) {
-            MESSAGES.skippingCacheActivation(cache);
+            MESSAGES.skippingCacheActivation(cacheContainer);
             return null;
         } else {
-            return new CacheActivator(cache);
+            return new CacheActivator(cacheContainer);
         }
     }
 }
