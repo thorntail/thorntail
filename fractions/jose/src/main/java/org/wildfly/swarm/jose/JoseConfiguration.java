@@ -19,8 +19,11 @@ import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
 
+import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_ACCEPT_DECRYPTION_ALIAS;
+import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_ACCEPT_VERIFICATION_ALIAS;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_CONTENT_ENCRYPTION_ALGORITHM;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_INCLUDE_ENCRYPTION_KEY_ALIAS;
+import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_INCLUDE_SIGNATURE_KEY_ALIAS;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_JOSE_FORMAT;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEYSTORE_PASSWORD;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_KEYSTORE_PATH;
@@ -160,6 +163,15 @@ public class JoseConfiguration {
         return this.includeEncryptionKeyAlias.get();
     }
 
+    public boolean includeSignatureKeyAlias() {
+        return includeSignatureKeyAlias.get();
+    }
+
+    public JoseConfiguration includeSignatureKeyAlias(boolean includeSignatureKeyAlias) {
+        this.includeSignatureKeyAlias.set(includeSignatureKeyAlias);
+        return this;
+    }
+
     public JoseConfiguration encryptionKeyPassword(String password) {
         this.encryptionKeyPassword.set(password);
         return this;
@@ -185,6 +197,26 @@ public class JoseConfiguration {
 
     public String contentEncryptionAlgorithm() {
         return this.contentEncryptionAlgorithm.get();
+    }
+
+
+    public JoseConfiguration setAcceptDecryptionAlias(boolean acceptDecryptionAlias) {
+        this.acceptDecryptionAlias.set(acceptDecryptionAlias);
+        return this;
+    }
+
+    public boolean acceptDecryptionAlias() {
+        return acceptDecryptionAlias.get();
+    }
+
+
+    public boolean acceptSignatureAlias() {
+        return acceptSignatureAlias.get();
+    }
+
+    public JoseConfiguration acceptSignatureAlias(boolean acceptSignatureAlias) {
+        this.acceptSignatureAlias.set(acceptSignatureAlias);
+        return this;
     }
 
     /**
@@ -293,6 +325,13 @@ public class JoseConfiguration {
     private Defaultable<Boolean> includeEncryptionKeyAlias = bool(DEFAULT_INCLUDE_ENCRYPTION_KEY_ALIAS);
 
     /**
+     * Include Signature Key Alias as the JOSE 'kid' Header.
+     */
+    @Configurable("thorntail.jose.signature.include.alias")
+    @AttributeDocumentation("Include the signature key alias as the JOSE 'kid' header (defaults to true)")
+    private Defaultable<Boolean> includeSignatureKeyAlias = bool(DEFAULT_INCLUDE_SIGNATURE_KEY_ALIAS);
+
+    /**
      * Encryption Key Alias in the keystore to be used for the encryption.
      */
     @Configurable("thorntail.jose.encryption.out.key.alias")
@@ -319,6 +358,21 @@ public class JoseConfiguration {
     @Configurable("thorntail.jose.signature.in.key.alias")
     @AttributeDocumentation("Alias to the signature key entry in the keystore used for verification only")
     private String signatureKeyAliasIn;
+
+    /**
+     * Accept the alias for decryption.
+     */
+    @Configurable("thorntail.jose.encryption.accept.alias")
+    @AttributeDocumentation("Accept key alias for decryption (defaults to false).")
+    private Defaultable<Boolean> acceptDecryptionAlias = bool(DEFAULT_ACCEPT_DECRYPTION_ALIAS);
+
+
+    /**
+     * Accept the alias for verification.
+     */
+    @Configurable("thorntail.jose.signature.accept.alias")
+    @AttributeDocumentation("Accept signature alias for verification (defaults to false).")
+    private Defaultable<Boolean> acceptSignatureAlias = bool(DEFAULT_ACCEPT_VERIFICATION_ALIAS);
 
 
 }

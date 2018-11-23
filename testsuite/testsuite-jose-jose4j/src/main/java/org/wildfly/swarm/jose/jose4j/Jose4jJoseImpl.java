@@ -72,7 +72,10 @@ public class Jose4jJoseImpl implements Jose {
             jws.getHeaders().setObjectHeaderValue(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, false);
             jws.setCriticalHeaderNames(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD);
         }
-        jws.setKey(getSignatureKey(JoseOperation.SIGN));
+        if (config.includeSignatureKeyAlias()) {
+            jws.setKeyIdHeaderValue(signatureKeyAlias());
+        }
+        jws.setKey(getSignatureKey(jws, JoseOperation.SIGN));
         try {
             return config.signatureDataDetached()
                     ? jws.getDetachedContentCompactSerialization() : jws.getCompactSerialization();
@@ -105,7 +108,7 @@ public class Jose4jJoseImpl implements Jose {
     public VerificationOutput getVerificationOutput(String compactJws, String detached) throws JoseException {
         JsonWebSignature jws = new JsonWebSignature();
         jws.setAlgorithmConstraints(new AlgorithmConstraints(ConstraintType.WHITELIST, config.signatureAlgorithm()));
-        jws.setKey(getSignatureKey(JoseOperation.VERIFICATION));
+        jws.setKey(getSignatureKey(jws, JoseOperation.VERIFICATION));
         try {
             jws.setCompactSerialization(compactJws);
             if (detached != null) {
@@ -119,8 +122,9 @@ public class Jose4jJoseImpl implements Jose {
             throw new JoseException(ex.getMessage(), ex);
         }
         try {
-            String jwsPayload = jws.getPayload();
-            return new VerificationOutput(jwsPayload);
+            int firstDot = compactJws.indexOf(".");
+            String headersJson = new Base64Url().base64UrlDecodeToUtf8String(compactJws.substring(0, firstDot));
+            return new VerificationOutput(JsonUtil.parseJson(headersJson), jws.getPayload());
         } catch (org.jose4j.lang.JoseException ex) {
             throw new JoseException(ex.getMessage(), ex);
         }
@@ -143,7 +147,7 @@ public class Jose4jJoseImpl implements Jose {
         if (config.includeEncryptionKeyAlias()) {
             jwe.setKeyIdHeaderValue(encryptionKeyAlias());
         }
-        jwe.setKey(getEncryptionKey(JoseOperation.ENCRYPTION));
+        jwe.setKey(getEncryptionKey(jwe, JoseOperation.ENCRYPTION));
         try {
             return jwe.getCompactSerialization();
         } catch (org.jose4j.lang.JoseException ex) {
@@ -167,7 +171,7 @@ public class Jose4jJoseImpl implements Jose {
         jwe.setAlgorithmConstraints(new AlgorithmConstraints(ConstraintType.WHITELIST, config.keyEncryptionAlgorithm()));
         jwe.setContentEncryptionAlgorithmConstraints(
                 new AlgorithmConstraints(ConstraintType.WHITELIST, config.contentEncryptionAlgorithm()));
-        jwe.setKey(getEncryptionKey(JoseOperation.DECRYPTION));
+        jwe.setKey(getEncryptionKey(jwe, JoseOperation.DECRYPTION));
         try {
             int firstDot = compactJwe.indexOf(".");
             String headersJson = new Base64Url().base64UrlDecodeToUtf8String(compactJwe.substring(0, firstDot));
@@ -177,29 +181,29 @@ public class Jose4jJoseImpl implements Jose {
         }
     }
 
-    private Key getSignatureKey(JoseOperation operation) {
+    private Key getSignatureKey(JsonWebSignature jws, JoseOperation operation) {
         if ("jwk".equals(this.config.keystoreType())) {
-            return getJwkKey((operation.equals(JoseOperation.SIGN) ? signatureKeyAlias() : verificationKeyAlias()),
+            return getJwkKey((operation.equals(JoseOperation.SIGN) ? signatureKeyAlias() : verificationKeyAlias(jws)),
                     config.signatureAlgorithm());
 
         } else if (operation.equals(JoseOperation.SIGN)) {
             return getJavaStorePrivateKey(signatureKeyAlias(), config.signatureKeyPassword());
 
         } else {
-            return getJavaStorePublicKey(verificationKeyAlias());
+            return getJavaStorePublicKey(verificationKeyAlias(jws));
         }
     }
 
-    private Key getEncryptionKey(JoseOperation operation) {
+    private Key getEncryptionKey(JsonWebEncryption jwe, JoseOperation operation) {
         if ("jwk".equals(this.config.keystoreType())) {
-            return getJwkKey((operation.equals(JoseOperation.ENCRYPTION) ? encryptionKeyAlias() : decryptionKeyAlias()),
+            return getJwkKey((operation.equals(JoseOperation.ENCRYPTION) ? encryptionKeyAlias() : decryptionKeyAlias(jwe)),
                     config.contentEncryptionAlgorithm());
 
         } else if (operation.equals(JoseOperation.ENCRYPTION)) {
             return getJavaStorePublicKey(encryptionKeyAlias());
 
         } else {
-            return getJavaStorePrivateKey(decryptionKeyAlias(), config.encryptionKeyPassword());
+            return getJavaStorePrivateKey(decryptionKeyAlias(jwe), config.encryptionKeyPassword());
         }
     }
 
@@ -271,17 +275,29 @@ public class Jose4jJoseImpl implements Jose {
         return config.signatureKeyAliasOut();
     }
 
-    private String verificationKeyAlias() {
+    private String verificationKeyAlias(JsonWebSignature jws) {
+
+        if (config.acceptSignatureAlias()) {
+            return jws.getKeyIdHeaderValue();
+        }
+
         if (config.signatureKeyAliasIn() == null) {
             return config.signatureKeyAlias();
         }
         return config.signatureKeyAliasIn();
     }
 
-    private String decryptionKeyAlias() {
+    private String decryptionKeyAlias(JsonWebEncryption jwe) {
+
+        if (config.acceptDecryptionAlias()) {
+            return jwe.getKeyIdHeaderValue();
+        }
         if (config.encryptionKeyAliasIn() == null) {
             return config.encryptionKeyAlias();
         }
         return config.encryptionKeyAliasIn();
     }
+
+
+
 }
