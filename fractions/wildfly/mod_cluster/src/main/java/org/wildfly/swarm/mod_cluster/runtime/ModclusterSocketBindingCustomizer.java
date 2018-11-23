@@ -27,17 +27,6 @@ public class ModclusterSocketBindingCustomizer implements Customizer {
 
     @Override
     public void customize() {
-
-        /*
-        if ( this.address == null ) {
-            this.address = "224.0.1.105";
-        }
-
-        if ( this.port == null ) {
-            this.port = 23364;
-        }
-        */
-
         this.group.socketBinding(
                 new SocketBinding("modcluster")
                         .port(0)
