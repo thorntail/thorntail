@@ -29,6 +29,7 @@ public class MicroProfileFaultToleranceExtension implements Extension {
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
         event.addAnnotatedType(beanManager.createAnnotatedType(RequestContextCommandListener.class), RequestContextCommandListener.class.getName());
         event.addAnnotatedType(beanManager.createAnnotatedType(WeldCommandListenersProvider.class), WeldCommandListenersProvider.class.getName());
+        event.addAnnotatedType(beanManager.createAnnotatedType(ThorntailHystrixConcurrencyStrategy.class), ThorntailHystrixConcurrencyStrategy.class.getName());
     }
 
 }

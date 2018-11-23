@@ -52,7 +52,8 @@ public class SyncCircuitBreakerDisabledTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+        return ShrinkWrap.create(WebArchive.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsWebInfResource(new FileAsset(new File("src/test/resources/jboss-deployment-structure.xml")), "jboss-deployment-structure.xml")
                 .addAsResource(new FileAsset(new File("src/test/resources/project-defaults.yml")), "project-defaults.yml")
                 .addPackage(SyncCircuitBreakerDisabledTest.class.getPackage());
