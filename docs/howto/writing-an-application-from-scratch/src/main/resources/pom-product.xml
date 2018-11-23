@@ -16,9 +16,9 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    
+
     <!-- Specify the JDK builder image used to build your application. -->
-    <fabric8.generator.from>{open-jdk-builder-image-name}</fabric8.generator.from>
+    <fabric8.generator.from>{name-s2i-image-openjdk}</fabric8.generator.from>
   </properties>
 
   <dependencyManagement>
