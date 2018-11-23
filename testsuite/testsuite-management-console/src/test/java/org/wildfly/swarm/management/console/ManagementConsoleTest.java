@@ -1,7 +1,5 @@
 package org.wildfly.swarm.management.console;
 
-import java.io.IOException;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
@@ -31,9 +29,8 @@ public class ManagementConsoleTest {
 
     @Test
     @RunAsClient
-    public void testHomePageShouldHaveCorrectTitle() throws IOException {
+    public void testHomePageShouldHaveCorrectTitle() {
         browser.navigate().to("http://localhost:8080/console");
-        assertThat(browser.getTitle()).isEqualToIgnoringCase("Management Interface");
+        assertThat(browser.getTitle()).isEqualToIgnoringCase("HAL Management Console");
     }
-
 }
