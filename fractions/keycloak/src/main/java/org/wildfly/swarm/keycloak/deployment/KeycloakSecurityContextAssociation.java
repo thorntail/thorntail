@@ -26,8 +26,7 @@ public class KeycloakSecurityContextAssociation {
     }
 
     public static KeycloakSecurityContext get() {
-        KeycloakSecurityContext context = SECURITY_CONTEXT.get();
-        return context;
+        return SECURITY_CONTEXT.get();
     }
 
     public static void associate(KeycloakSecurityContext context) {

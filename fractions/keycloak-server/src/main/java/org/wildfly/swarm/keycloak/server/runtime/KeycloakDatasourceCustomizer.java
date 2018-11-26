@@ -49,7 +49,7 @@ public class KeycloakDatasourceCustomizer implements Customizer {
             datasources.dataSource("KeycloakDS", (ds) -> {
                 ds.jndiName("java:jboss/datasources/KeycloakDS");
                 ds.useJavaContext(true);
-                ds.connectionUrl("jdbc:h2:${wildfly.swarm.keycloak.server.db:./keycloak};AUTO_SERVER=TRUE");
+                ds.connectionUrl("jdbc:h2:${thorntail.keycloak.server.db:./keycloak};AUTO_SERVER=TRUE");
                 ds.driverName("h2");
                 ds.userName("sa");
                 ds.password("sa");

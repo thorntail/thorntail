@@ -43,5 +43,4 @@ public class SecurityContextServletExtension implements ServletExtension {
             }
         });
     }
-
 }
