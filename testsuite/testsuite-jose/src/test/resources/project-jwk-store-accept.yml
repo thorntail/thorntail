@@ -1,0 +1,21 @@
+swarm:
+  jose:
+    keystore:
+      path: jwk.keys
+      type: jwk
+    signature:
+      include:
+        alias: true
+      out:
+        key:
+          alias: HMacKey
+      accept:
+        alias: true
+      algorithm: HS256
+    encryption:
+      out:
+        key:
+          alias: AesGcmKey
+      accept:
+        alias: true
+      keyAlgorithm: dir

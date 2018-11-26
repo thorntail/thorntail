@@ -70,6 +70,9 @@ public class DefaultJoseImpl implements Jose {
         if (!config.signatureDataEncoding()) {
             headers.setPayloadEncodingStatus(false);
         }
+        if (config.includeSignatureKeyAlias()) {
+            headers.setKeyId(signatureKeyAlias());
+        }
         Properties props = prepareSignatureVerificationProperties(JoseOperation.SIGN);
         headers.setSignatureAlgorithm(SignatureAlgorithm.getAlgorithm(config.signatureAlgorithm()));
         JwsSignatureProvider provider =
@@ -129,6 +132,12 @@ public class DefaultJoseImpl implements Jose {
     private VerificationOutput verifyCompact(Properties props, String jws, String detachedData) {
         try {
             JwsCompactConsumer consumer = new JwsCompactConsumer(jws, detachedData);
+
+            if (config.acceptSignatureAlias()) {
+                JwsHeaders header = consumer.getJwsHeaders();
+                props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, header.getKeyId());
+            }
+
             JwsSignatureVerifier verifier =
                     JwsUtils.loadSignatureVerifier(props, consumer.getJwsHeaders());
             if (!consumer.verifySignatureWith(verifier)) {
@@ -152,6 +161,12 @@ public class DefaultJoseImpl implements Jose {
                         + " only a single recipient is supported at the moment");
             }
             JwsJsonSignatureEntry entry = entries.get(0);
+
+            if (config.acceptSignatureAlias()) {
+                JwsHeaders header = entry.getProtectedHeader();
+                props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, header.getKeyId());
+            }
+
             JwsSignatureVerifier verifier = JwsUtils.loadSignatureVerifier(props, entry.getProtectedHeader());
             if (!entry.verifySignatureWith(verifier)) {
                 throw new JoseException("JWS JSON Signature Verification Failure");
@@ -219,6 +234,12 @@ public class DefaultJoseImpl implements Jose {
     private DecryptionOutput decryptCompact(Properties props, String jwe) {
         try {
             JweCompactConsumer consumer = new JweCompactConsumer(jwe);
+
+            if (config.acceptDecryptionAlias()) {
+                JweHeaders header = consumer.getJweHeaders();
+                props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, header.getKeyId());
+            }
+
             JweDecryptionProvider decryptor = JweUtils.loadDecryptionProvider(props, consumer.getJweHeaders());
             String decryptedData = consumer.getDecryptedContentText(decryptor);
             return new DecryptionOutput(consumer.getJweHeaders().asMap(),
@@ -231,10 +252,17 @@ public class DefaultJoseImpl implements Jose {
     private DecryptionOutput decryptJson(Properties props, String jwe) {
         try {
             JweJsonConsumer consumer = new JweJsonConsumer(jwe);
+
             if (consumer.getRecipients().size() > 1) {
                 throw new JoseException("JWE JSON Decryption Failure:"
                         + " only a single recipient is supported at the moment");
             }
+
+            if (config.acceptDecryptionAlias()) {
+                JweHeaders header = consumer.getProtectedHeader();
+                props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, header.getKeyId());
+            }
+
             JweDecryptionProvider decryptor = JweUtils.loadDecryptionProvider(props, consumer.getProtectedHeader());
             JweDecryptionOutput output = consumer.decryptWith(decryptor);
             return new DecryptionOutput(consumer.getProtectedHeader().asMap(),
