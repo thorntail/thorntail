@@ -76,7 +76,7 @@
 
     <version.flyway>4.2.0</version.flyway>
 
-    <version.gradle>3.0</version.gradle>
+    <version.gradle>3.1</version.gradle>
     <version.gradle.plugins>1.12</version.gradle.plugins>
     <version.groovy>2.4.3</version.groovy>
 

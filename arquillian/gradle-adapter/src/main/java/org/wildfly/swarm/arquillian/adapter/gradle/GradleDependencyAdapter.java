@@ -15,19 +15,28 @@
  */
 package org.wildfly.swarm.arquillian.adapter.gradle;
 
+import java.io.File;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
 import org.gradle.tooling.model.ExternalDependency;
 import org.gradle.tooling.model.GradleModuleVersion;
 import org.gradle.tooling.model.idea.IdeaModule;
+import org.gradle.tooling.model.idea.IdeaModuleDependency;
 import org.gradle.tooling.model.idea.IdeaProject;
 import org.wildfly.swarm.tools.ArtifactSpec;
 import org.wildfly.swarm.tools.DeclaredDependencies;
+
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
 
 /**
  * Get the dependency details for a Gradle project. This adapter makes use of the IdeaProject definition that is provided by
@@ -42,53 +51,118 @@ public class GradleDependencyAdapter {
         this.rootPath = projectDir;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     public DeclaredDependencies getProjectDependencies() {
-        GradleConnector connector = GradleConnector.newConnector().forProjectDirectory(rootPath.toFile());
-        ProjectConnection connection = connector.connect();
-        try {
-            return getProjectDependencies(connection);
-        } finally {
-            connection.close();
-        }
+        return PREVIOUSLY_COMPUTED_VALUES.computeIfAbsent(rootPath, __ -> {
+            DeclaredDependencies declaredDependencies = new DeclaredDependencies();
+
+            File projectDir = rootPath.toFile();
+            GradleConnector connector = GradleConnector.newConnector().forProjectDirectory(projectDir);
+            ProjectConnection connection = connector.connect();
+            try {
+                // 1. Get the IdeaProject model from the Gradle connection.
+                IdeaProject prj = connection.getModel(IdeaProject.class);
+                prj.getModules().forEach(this::computeProjectDependencies);
+
+                // 2. Find the IdeaModule that maps to the project that we are looking at.
+                Optional<? extends IdeaModule> prjModule = prj.getModules().stream()
+                        .filter(m -> m.getGradleProject().getProjectDirectory().toPath().equals(rootPath))
+                        .findFirst();
+
+
+                // We need to return the following collection of dependencies,
+                // 1. For the current project, return all artifacts that are marked as ["COMPILE", "TEST"]
+                // 2. From the upstream-projects, add all dependencies that are marked as ["COMPILE"]
+                // 3. For the current project, iterate through each dependencies marked as ["PROVIDED"] and do the following,
+                //      a.) Check if they are already available from 1 & 2. If yes, then nothing to do here.
+                //      b.) Check if this entry is defined as ["TEST"] in the upstream-projects. If yes, then include it.
+                //          -- The reason for doing this is because of the optimization that Gradle does on the IdeaModule library set.
+                Set<ArtifactSpec> collectedDependencies = new HashSet<>();
+                prjModule.ifPresent(m -> {
+                    Map<String, Set<ArtifactSpec>> currentPrjDeps = ARTIFACT_DEPS_OF_PRJ.get(m.getName());
+                    Set<String> upstreamProjects = PRJ_DEPS_OF_PRJ.getOrDefault(m.getName(), emptySet());
+
+                    collectedDependencies.addAll(currentPrjDeps.getOrDefault(DEP_SCOPE_COMPILE, emptySet()));
+                    collectedDependencies.addAll(currentPrjDeps.getOrDefault(DEP_SCOPE_TEST, emptySet()));
+
+                    upstreamProjects.forEach(moduleName -> {
+                        Map<String, Set<ArtifactSpec>> moduleDeps = ARTIFACT_DEPS_OF_PRJ.getOrDefault(moduleName, emptyMap());
+                        collectedDependencies.addAll(moduleDeps.getOrDefault(DEP_SCOPE_COMPILE, emptySet()));
+                    });
+
+                    Set<ArtifactSpec> providedScopeDeps = currentPrjDeps.getOrDefault(DEP_SCOPE_PROVIDED, emptySet());
+                    providedScopeDeps.removeAll(collectedDependencies);
+
+                    if (!providedScopeDeps.isEmpty()) {
+                        List<ArtifactSpec> testScopedLibs = new ArrayList<>();
+
+                        upstreamProjects.forEach(moduleName -> testScopedLibs.addAll(
+                                ARTIFACT_DEPS_OF_PRJ.getOrDefault(moduleName, emptyMap())
+                                        .getOrDefault(DEP_SCOPE_TEST, emptySet())));
+                        providedScopeDeps.stream().filter(testScopedLibs::contains).forEach(collectedDependencies::add);
+                    }
+
+                });
+
+                collectedDependencies.forEach(declaredDependencies::add);
+            } finally {
+                connection.close();
+            }
+
+            return declaredDependencies;
+        });
     }
 
     /**
-     * Retrieve the project dependencies by analyzing the IdeaProject model.
+     * Compute the dependencies of a given {@code IdeaModule} and group them by their scope.
      *
-     * @param connection the Gradle project connection.
-     * @return the project dependencies.
+     * Note: This method does not follow project->project dependencies. It just makes a note of them in a separate collection.
+     *
+     * @param module the IdeaModule reference.
      */
-    private DeclaredDependencies getProjectDependencies(ProjectConnection connection) {
-        // Of the 4 available scopes for a IdeaDependency scope, we ignore "PROVIDED" & "RUNTIME".
-        final List<String> APPLICABLE_SCOPES = Arrays.asList("COMPILE", "TEST");
-        DeclaredDependencies dependencies = new DeclaredDependencies();
-
-        // 1. Get the IdeaProject model from the Gradle connection.
-        IdeaProject prj = connection.getModel(IdeaProject.class);
-
-        // 2. Find the IdeaModule that maps to the project that we are looking at.
-        Optional<? extends IdeaModule> result = prj.getModules().stream()
-                .filter(m -> m.getGradleProject().getProjectDirectory().toPath().equals(rootPath))
-                .findFirst();
-
-        // 3. Parse the dependencies and add them to the return object.
-        result.ifPresent(m -> m.getDependencies().stream()
-                .filter(d -> APPLICABLE_SCOPES.contains(d.getScope().getScope().toUpperCase()) && d instanceof ExternalDependency)
-                .forEach(d -> {
-                    // Construct the ArtifactSpec and add to the declared dependencies.
-                    ExternalDependency extDep = (ExternalDependency) d;
+    @SuppressWarnings("UnstableApiUsage")
+    private void computeProjectDependencies(IdeaModule module) {
+        ARTIFACT_DEPS_OF_PRJ.computeIfAbsent(module.getName(), moduleName -> {
+            Map<String, Set<ArtifactSpec>> dependencies = new HashMap<>();
+            module.getDependencies().forEach(dep -> {
+                if (dep instanceof IdeaModuleDependency) {
+                    // Add the dependency to the list.
+                    String name = ((IdeaModuleDependency) dep).getTargetModuleName();
+                    PRJ_DEPS_OF_PRJ.computeIfAbsent(moduleName, key -> new HashSet<>()).add(name);
+                } else if (dep instanceof ExternalDependency) {
+                    ExternalDependency extDep = (ExternalDependency) dep;
                     GradleModuleVersion gav = extDep.getGradleModuleVersion();
-                    if (gav != null) {
-                        ArtifactSpec spec = new ArtifactSpec("compile", gav.getGroup(), gav.getName(), gav.getVersion(),
-                                                             "jar", null, extDep.getFile());
-                        dependencies.add(spec);
-                    } else {
-                        System.err.println("Skipping artifact since it doesn't have any GAV coordinates: " + d.toString());
-                    }
-                }));
-
-        return dependencies;
+                    ArtifactSpec spec = new ArtifactSpec("compile", gav.getGroup(), gav.getName(), gav.getVersion(),
+                                                         "jar", null, extDep.getFile());
+                    String depScope = dep.getScope().getScope();
+                    dependencies.computeIfAbsent(depScope, s -> new HashSet<>()).add(spec);
+                }
+            });
+            return dependencies;
+        });
     }
 
     private Path rootPath;
+
+    // For a given Gradle build, we should be computing the dependencies only once per project.
+    // This cache improves the build speed.
+    private static final Map<Path, DeclaredDependencies> PREVIOUSLY_COMPUTED_VALUES = new HashMap<>();
+
+    // What are the artifacts that a given project depends on?
+    // Map < module-name, Map< scope, collection of artifacts > >
+    private static final Map<String, Map<String, Set<ArtifactSpec>>> ARTIFACT_DEPS_OF_PRJ = new HashMap<>();
+
+    // What are the projects that a given project depends on?
+    private static final Map<String, Set<String>> PRJ_DEPS_OF_PRJ = new HashMap<>();
+
+    ///
+    /// Scopes used by the Idea Project model of Gradle.
+    ///
+    private static final String DEP_SCOPE_COMPILE = "COMPILE";
+
+    private static final String DEP_SCOPE_TEST = "TEST";
+
+    private static final String DEP_SCOPE_PROVIDED = "PROVIDED";
+
+    // private static final String DEP_SCOPE_RUNTIME = "RUNTIME";
 }
