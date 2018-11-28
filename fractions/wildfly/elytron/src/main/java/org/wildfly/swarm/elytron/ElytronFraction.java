@@ -69,6 +69,7 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public ElytronFraction applyDefaults() {
         finalProviders(COMBINED_PROVIDERS);
         disallowedProvider("OracleUcrypto");

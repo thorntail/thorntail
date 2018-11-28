@@ -34,7 +34,7 @@ public class InjectConfigViewExtension implements Extension {
     private static ConfigView configView;
 
     public void addConfigView(@Observes BeforeBeanDiscovery bbd, BeanManager beanManager) {
-        bbd.addAnnotatedType(beanManager.createAnnotatedType(ConfigurationValueProducer.class));
+        bbd.addAnnotatedType(beanManager.createAnnotatedType(ConfigurationValueProducer.class), ConfigurationValueProducer.class.getName());
     }
 
     void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager beanManager) {

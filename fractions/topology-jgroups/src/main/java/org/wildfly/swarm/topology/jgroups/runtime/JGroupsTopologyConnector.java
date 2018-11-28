@@ -104,12 +104,12 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
     public synchronized void unadvertise(String appName, SocketBinding binding) throws Exception {
         Registration registration = this.registrations.remove(appName + ":" + binding.getName());
         if (registration != null) {
-            this.dispatcher.submitOnCluster(new UnadvertiseCommand(registration));
+            this.dispatcher.executeOnGroup(new UnadvertiseCommand(registration));
         }
     }
 
     protected void requestAdvertisements() throws Exception {
-        this.dispatcher.submitOnCluster(new RequestAdvertisementsCommand(), this.node);
+        this.dispatcher.executeOnGroup(new RequestAdvertisementsCommand(), this.node);
     }
 
     protected synchronized void advertiseAll() throws Exception {
@@ -119,7 +119,7 @@ public class JGroupsTopologyConnector implements Service<JGroupsTopologyConnecto
     }
 
     protected void doAdvertise(Registration registration) throws Exception {
-        this.dispatcher.submitOnCluster(new AdvertiseCommand(registration));
+        this.dispatcher.executeOnGroup(new AdvertiseCommand(registration));
     }
 
     void register(Registration registration) {

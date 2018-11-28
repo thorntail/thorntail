@@ -4,10 +4,10 @@
     <profiles>
         <!-- Configure the Thorntail Maven repository -->
         <profile>
-            <id>swarm-repository</id>
+            <id>thorntail-repository</id>
             <repositories>
                 <repository>
-                    <id>swarm-repository</id>
+                    <id>thorntail-repository</id>
                     <url>file:///path/to/repo/${repositoryName}/maven-repository</url>
                     <releases>
                         <enabled>true</enabled>
@@ -19,7 +19,7 @@
             </repositories>
             <pluginRepositories>
                 <pluginRepository>
-                    <id>swarm-repository</id>
+                    <id>thorntail-repository</id>
                     <url>file:///path/to/repo/${repositoryName}/maven-repository</url>
                     <releases>
                         <enabled>true</enabled>
@@ -33,6 +33,6 @@
     </profiles>
     <activeProfiles>
         <!-- Optionally, make the repository active by default -->
-        <activeProfile>swarm-repository</activeProfile>
+        <activeProfile>thorntail-repository</activeProfile>
     </activeProfiles>
 </settings>

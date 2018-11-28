@@ -15,7 +15,7 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
-import org.jboss.modules.DependencySpec;
+import org.jboss.modules.ModuleDependencySpecBuilder;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
@@ -37,104 +37,122 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
     @Override
     public void buildModule(ModuleSpec.Builder builder, ModuleLoader delegateLoader) throws ModuleLoadException {
         builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        "org.wildfly.swarm.spi", false));
+                new ModuleDependencySpecBuilder()
+                        .setImportFilter(PathFilters.acceptAll())
+                        .setExportFilter(PathFilters.acceptAll())
+                        .setResourceImportFilter(PathFilters.acceptAll())
+                        .setResourceExportFilter(PathFilters.acceptAll())
+                        .setClassImportFilter(ClassFilters.acceptAll())
+                        .setClassExportFilter(ClassFilters.acceptAll())
+                        .setModuleLoader(null)
+                        .setName("org.wildfly.swarm.spi")
+                        .setOptional(false)
+                        .build());
 
         builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        "org.wildfly.swarm.container:runtime", false));
+                new ModuleDependencySpecBuilder()
+                        .setImportFilter(PathFilters.acceptAll())
+                        .setExportFilter(PathFilters.acceptAll())
+                        .setResourceImportFilter(PathFilters.acceptAll())
+                        .setResourceExportFilter(PathFilters.acceptAll())
+                        .setClassImportFilter(ClassFilters.acceptAll())
+                        .setClassExportFilter(ClassFilters.acceptAll())
+                        .setModuleLoader(null)
+                        .setName("org.wildfly.swarm.container:runtime")
+                        .setOptional(false)
+                        .build());
 
         builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        "org.wildfly.swarm.bootstrap", false));
+                new ModuleDependencySpecBuilder()
+                        .setImportFilter(PathFilters.acceptAll())
+                        .setExportFilter(PathFilters.acceptAll())
+                        .setResourceImportFilter(PathFilters.acceptAll())
+                        .setResourceExportFilter(PathFilters.acceptAll())
+                        .setClassImportFilter(ClassFilters.acceptAll())
+                        .setClassExportFilter(ClassFilters.acceptAll())
+                        .setModuleLoader(null)
+                        .setName("org.wildfly.swarm.bootstrap")
+                        .setOptional(false)
+                        .build());
 
 
         builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        "org.jboss.jandex", false));
+                new ModuleDependencySpecBuilder()
+                        .setImportFilter(PathFilters.acceptAll())
+                        .setExportFilter(PathFilters.acceptAll())
+                        .setResourceImportFilter(PathFilters.acceptAll())
+                        .setResourceExportFilter(PathFilters.acceptAll())
+                        .setClassImportFilter(ClassFilters.acceptAll())
+                        .setClassExportFilter(ClassFilters.acceptAll())
+                        .setModuleLoader(null)
+                        .setName("org.jboss.jandex")
+                        .setOptional(false)
+                        .build());
 
         builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        "org.jboss.weld.se", false));
+                new ModuleDependencySpecBuilder()
+                        .setImportFilter(PathFilters.acceptAll())
+                        .setExportFilter(PathFilters.acceptAll())
+                        .setResourceImportFilter(PathFilters.acceptAll())
+                        .setResourceExportFilter(PathFilters.acceptAll())
+                        .setClassImportFilter(ClassFilters.acceptAll())
+                        .setClassExportFilter(ClassFilters.acceptAll())
+                        .setModuleLoader(null)
+                        .setName("org.jboss.weld.se")
+                        .setOptional(false)
+                        .build());
 
         builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        "javax.enterprise.api", false));
+                new ModuleDependencySpecBuilder()
+                        .setImportFilter(PathFilters.acceptAll())
+                        .setExportFilter(PathFilters.acceptAll())
+                        .setResourceImportFilter(PathFilters.acceptAll())
+                        .setResourceExportFilter(PathFilters.acceptAll())
+                        .setClassImportFilter(ClassFilters.acceptAll())
+                        .setClassExportFilter(ClassFilters.acceptAll())
+                        .setModuleLoader(null)
+                        .setName("javax.enterprise.api")
+                        .setOptional(false)
+                        .build());
 
         builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        "org.apache.xalan", true));
+                new ModuleDependencySpecBuilder()
+                        .setImportFilter(PathFilters.acceptAll())
+                        .setExportFilter(PathFilters.acceptAll())
+                        .setResourceImportFilter(PathFilters.acceptAll())
+                        .setResourceExportFilter(PathFilters.acceptAll())
+                        .setClassImportFilter(ClassFilters.acceptAll())
+                        .setClassExportFilter(ClassFilters.acceptAll())
+                        .setModuleLoader(null)
+                        .setName("org.apache.xalan")
+                        .setOptional(true)
+                        .build());
 
         builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        "org.apache.xerces", false));
+                new ModuleDependencySpecBuilder()
+                        .setImportFilter(PathFilters.acceptAll())
+                        .setExportFilter(PathFilters.acceptAll())
+                        .setResourceImportFilter(PathFilters.acceptAll())
+                        .setResourceExportFilter(PathFilters.acceptAll())
+                        .setClassImportFilter(ClassFilters.acceptAll())
+                        .setClassExportFilter(ClassFilters.acceptAll())
+                        .setModuleLoader(null)
+                        .setName("org.apache.xerces")
+                        .setOptional(false)
+                        .build());
 
         builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        "org.codehaus.woodstox", false));
+                new ModuleDependencySpecBuilder()
+                        .setImportFilter(PathFilters.acceptAll())
+                        .setExportFilter(PathFilters.acceptAll())
+                        .setResourceImportFilter(PathFilters.acceptAll())
+                        .setResourceExportFilter(PathFilters.acceptAll())
+                        .setClassImportFilter(ClassFilters.acceptAll())
+                        .setClassExportFilter(ClassFilters.acceptAll())
+                        .setModuleLoader(null)
+                        .setName("org.codehaus.woodstox")
+                        .setOptional(false)
+                        .build());
 
 
         ApplicationEnvironment environment = ApplicationEnvironment.get();
@@ -142,15 +160,17 @@ public class ContainerModuleFinder extends AbstractSingleModuleFinder {
         environment.bootstrapModules()
                 .forEach((module) -> {
                     builder.addDependency(
-                            DependencySpec.createModuleDependencySpec(
-                                    PathFilters.acceptAll(),
-                                    PathFilters.acceptAll(),
-                                    PathFilters.acceptAll(),
-                                    PathFilters.acceptAll(),
-                                    ClassFilters.acceptAll(),
-                                    ClassFilters.acceptAll(),
-                                    null,
-                                    module + ":" + RUNTIME_SLOT, false));
+                            new ModuleDependencySpecBuilder()
+                                    .setImportFilter(PathFilters.acceptAll())
+                                    .setExportFilter(PathFilters.acceptAll())
+                                    .setResourceImportFilter(PathFilters.acceptAll())
+                                    .setResourceExportFilter(PathFilters.acceptAll())
+                                    .setClassImportFilter(ClassFilters.acceptAll())
+                                    .setClassExportFilter(ClassFilters.acceptAll())
+                                    .setModuleLoader(null)
+                                    .setName(module + ":" + RUNTIME_SLOT)
+                                    .setOptional(false)
+                                    .build());
                 });
     }
 

@@ -43,6 +43,13 @@
               <mainClass>org.wildfly.swarm.swarmtool.Main</mainClass>
             </transformer>
           </transformers>
+          <artifactSet>
+            <excludes>
+              <!-- the 'bootstrap' artifact contains JBoss Modules and SnakeYAML, see /core/bootstrap/pom.xml -->
+              <exclude>org.jboss.modules</exclude>
+              <exclude>org.yaml</exclude>
+            </excludes>
+          </artifactSet>
         </configuration>
         <executions>
           <execution>

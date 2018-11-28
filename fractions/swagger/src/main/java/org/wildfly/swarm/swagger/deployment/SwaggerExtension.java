@@ -45,7 +45,7 @@ public class SwaggerExtension implements Extension {
      */
     public void processBeforeBeanDiscovery(@Observes BeforeBeanDiscovery event, BeanManager beanManager) {
         event.addInterceptorBinding(beanManager.createAnnotatedType(AddSwaggerResources.class));
-        event.addAnnotatedType(beanManager.createAnnotatedType(SwaggerRestApplicationInterceptor.class));
+        event.addAnnotatedType(beanManager.createAnnotatedType(SwaggerRestApplicationInterceptor.class), SwaggerRestApplicationInterceptor.class.getName());
     }
 
     /**

@@ -226,7 +226,6 @@ public class Swarm {
             try {
                 Thread.currentThread().setContextClassLoader(loggingModule.getClassLoader());
                 System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
-                System.setProperty("org.jboss.logmanager.configurator", "org.wildfly.swarm.container.runtime.wildfly.LoggingConfigurator");
                 //force logging init
                 LogManager.getLogManager();
                 Class<?> logManagerClass = loggingModule.getClassLoader().loadClass("org.wildfly.swarm.container.runtime.logging.JBossLoggingManager");

@@ -26,6 +26,7 @@ import java.util.jar.JarFile;
 
 import org.jboss.modules.DependencySpec;
 import org.jboss.modules.Module;
+import org.jboss.modules.ModuleDependencySpecBuilder;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleSpec;
 import org.jboss.modules.ResourceLoaderSpec;
@@ -90,7 +91,9 @@ public abstract class DriverModuleBuilder {
                 }
 
                 for (String eachModuleIdentifier : driverModuleDependencies) {
-                    builder.addDependency(DependencySpec.createModuleDependencySpec(eachModuleIdentifier));
+                    builder.addDependency(new ModuleDependencySpecBuilder()
+                            .setName(eachModuleIdentifier)
+                            .build());
                 }
                 builder.addDependency(DependencySpec.createLocalDependencySpec());
 

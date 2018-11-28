@@ -107,7 +107,7 @@ public class ClasspathModuleFinder implements ModuleFinder {
                             MavenResolvers.get(),
                             (explodedJar == null ? "/" : explodedJar.toAbsolutePath().toString()),
                             in,
-                            path.toString(),
+                            path,
                             delegateLoader,
                             simpleIdentifier);
 

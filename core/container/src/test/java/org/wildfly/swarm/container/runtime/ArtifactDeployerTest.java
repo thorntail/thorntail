@@ -160,7 +160,7 @@ public class ArtifactDeployerTest {
 
     private RuntimeDeployer stubRuntimeDeployer(ArtifactDeployer artifactDeployer) throws NoSuchFieldException, IllegalAccessException {
         RuntimeDeployer runtimeDeployer = mock(RuntimeDeployer.class);
-        Instance<RuntimeDeployer> runtimeDeployerInstance = mock(Instance.class);
+        Instance runtimeDeployerInstance = mock(Instance.class);
         when(runtimeDeployerInstance.get()).thenReturn(runtimeDeployer);
         Field deployer = ArtifactDeployer.class.getDeclaredField("deployer");
         deployer.setAccessible(true);

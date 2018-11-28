@@ -5,18 +5,18 @@
   <formats>
     <format>zip</format>
   </formats>
-  <baseDirectory>wfs-${project.version}-maven-repository</baseDirectory>
+  <baseDirectory>thorntail-${project.version}-maven-repository</baseDirectory>
   <fileSets>
     <fileSet>
       <directory>./../m2repo/</directory>
-      <outputDirectory>/maven-repository</outputDirectory>
+      <outputDirectory>maven-repository</outputDirectory>
       <includes>
         <include>${m2repo.include.pattern}</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>./../../../src/main/resources/m2repo/</directory>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory></outputDirectory>
       <filtered>true</filtered>
     </fileSet>
   </fileSets>

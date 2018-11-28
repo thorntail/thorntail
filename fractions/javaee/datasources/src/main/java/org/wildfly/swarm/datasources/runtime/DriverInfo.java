@@ -26,6 +26,7 @@ import java.util.jar.JarFile;
 
 import org.jboss.modules.DependencySpec;
 import org.jboss.modules.Module;
+import org.jboss.modules.ModuleDependencySpecBuilder;
 import org.jboss.modules.ModuleIdentifier;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleSpec;
@@ -105,7 +106,7 @@ public abstract class DriverInfo {
             optionalJars.add(primaryJar);
 
             fraction.jdbcDriver(this.name, (driver) -> {
-                //noinspection deprecation
+                @SuppressWarnings("deprecation")
                 ModuleIdentifier identifier = ModuleIdentifier.fromString(this.moduleIdentifier);
                 driver.driverModuleName(identifier.getName());
                 driver.moduleSlot(identifier.getSlot());
@@ -127,8 +128,14 @@ public abstract class DriverInfo {
                     }
                 }
 
-                builder.addDependency(DependencySpec.createModuleDependencySpec("javax.api"));
-                builder.addDependency(DependencySpec.createModuleDependencySpec("javax.transactions.api", false, true));
+                builder.addDependency(new ModuleDependencySpecBuilder()
+                        .setName("javax.api")
+                        .build());
+                builder.addDependency(new ModuleDependencySpecBuilder()
+                        .setName("javax.transactions.api")
+                        .setExport(false)
+                        .setOptional(true)
+                        .build());
                 builder.addDependency(DependencySpec.createLocalDependencySpec());
                 addModuleDependencies(builder);
 

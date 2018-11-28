@@ -88,11 +88,6 @@ public class BootstrapPersister implements ExtensibleConfigurationPersister {
     }
 
     @Override
-    public String snapshot() throws ConfigurationPersistenceException {
-        return null;
-    }
-
-    @Override
     public SnapshotInfo listSnapshots() {
         return ConfigurationPersister.NULL_SNAPSHOT_INFO;
     }

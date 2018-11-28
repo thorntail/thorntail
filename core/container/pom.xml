@@ -70,7 +70,7 @@
                      <goal>run</goal>
                   </goals>
                   <configuration>
-                     <tasks>
+                     <target>
                         <fail message="Weld SE version ${version.weld-se} does not align with version provided by the WildFly feature pack!">
                            <condition>
                               <not>
@@ -78,7 +78,7 @@
                               </not>
                            </condition>
                         </fail>
-                     </tasks>
+                     </target>
                   </configuration>
                </execution>
             </executions>

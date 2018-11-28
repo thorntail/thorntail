@@ -9,7 +9,7 @@
   <fileSets>
     <fileSet>
       <directory>./../site/${project.version}/apidocs/</directory>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory></outputDirectory>
     </fileSet>
   </fileSets>
 

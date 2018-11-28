@@ -52,22 +52,20 @@ public class ExtraArtifactsHandler {
      * @return list of extra artifacts
      */
     public static List<DependencyNode> getExtraDependencies(List<DependencyNode> nodes) {
-
         ExtraArtifactsHandler fetcher = new ExtraArtifactsHandler(nodes);
+
         if (isSet("thorntail.download.sources")) {
-            System.out.println("will download sources");
             fetcher.addWithClassifier("sources");
         }
 
         if (isSet("thorntail.download.poms")) {
-            System.out.println("will download poms");
             fetcher.addWithExtension("pom");
         }
 
         if (isSet("thorntail.download.javadocs")) {
-            System.out.println("will download javadocs");
             fetcher.addWithClassifier("javadoc");
         }
+
         return fetcher.output;
     }
 

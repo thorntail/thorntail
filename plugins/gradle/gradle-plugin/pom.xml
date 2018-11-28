@@ -27,7 +27,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkCount>0</forkCount>
-          <forkMode>never</forkMode>
         </configuration>
       </plugin>
     </plugins>

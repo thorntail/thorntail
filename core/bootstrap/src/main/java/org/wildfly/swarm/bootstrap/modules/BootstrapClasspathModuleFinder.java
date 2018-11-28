@@ -81,7 +81,7 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
                         MavenResolvers.get(),
                         "/",
                         in,
-                        path.toString(),
+                        path,
                         delegateLoader,
                         simpleIdentifier);
 

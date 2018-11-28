@@ -26,13 +26,13 @@ public class MySingletonBean implements MySingleton {
 
     @PostConstruct
     public void postConstruct() {
-        System.err.println("constructed");
+        System.out.println("constructed");
     }
 
     @Override
     public String sayHowdy() {
         String howdy = "howdy!";
-        System.err.println(howdy);
+        System.out.println(howdy);
         return howdy;
     }
 }
