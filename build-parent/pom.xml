@@ -114,7 +114,7 @@
     <version.microprofile-openapi>1.0.1</version.microprofile-openapi>
     <version.microprofile-opentracing>1.1</version.microprofile-opentracing>
     <!-- MP Config implementation -->
-    <version.microprofile-config-wildfly>1.5.0</version.microprofile-config-wildfly>
+    <version.microprofile-config-wildfly>1.5.1</version.microprofile-config-wildfly>
     <version.smallrye.config>1.3.4</version.smallrye.config>
     <version.smallrye.health>1.0.2</version.smallrye.health>
     <version.smallrye.opentracing>1.1.1</version.smallrye.opentracing>
