@@ -27,6 +27,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -125,9 +126,13 @@ public class Runner {
                 .map(URL::getFile)
                 .collect(Collectors.joining(File.pathSeparator));
 
-        List<String> command = buildCommand(fatJar, classpath);
+        List<String> command = buildCommand(fatJar);
 
-        Process fatJarBuilder = new ProcessBuilder(command)
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+
+        processBuilder.environment().put("CLASSPATH", classpath);
+
+        Process fatJarBuilder = processBuilder
                 .inheritIO()
                 .start();
 
@@ -140,15 +145,10 @@ public class Runner {
 
     /*
     builds a command like:
-    /my/path/to/java -cp all:elements:of:classpath -Dall -Dsystem=properties JarBuilderClassName pathToTargetJar
+    /my/path/to/java -Dall -Dsystem=properties JarBuilderClassName pathToTargetJar
      */
-    private static List<String> buildCommand(File fatJar, String classpath) {
-        List<String> command = new ArrayList<>(
-                asList(
-                        javaCommand(),
-                        "-cp",
-                        classpath)
-        );
+    private static List<String> buildCommand(File fatJar) {
+        List<String> command = new ArrayList<>(Collections.singleton(javaCommand()));
 
         command.addAll(properties());
         command.addAll(asList(
