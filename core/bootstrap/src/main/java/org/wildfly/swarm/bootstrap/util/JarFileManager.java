@@ -31,6 +31,10 @@ public class JarFileManager {
     private JarFileManager() {
     }
 
+    public JarFile getJarFile(File file) throws IOException {
+        return TempFileManager.INSTANCE.isTempFile(file) ? addJarFile(file) : new JarFile(file);
+    }
+
     public JarFile addJarFile(File file) throws IOException {
 
         JarFile jarFile = jarFileToClose.get(file);

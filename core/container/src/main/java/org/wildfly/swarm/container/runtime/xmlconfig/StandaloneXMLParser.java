@@ -62,7 +62,6 @@ public class StandaloneXMLParser {
     private Set<QName> recognizedNames = new HashSet<>();
 
     public StandaloneXMLParser() {
-        // WF14 this is similar to BootstrapPersister.createDelegate, so should be OK, but better review once more
         ExtensionRegistry extensionRegistry = new ExtensionRegistry(
                 ProcessType.SELF_CONTAINED,
                 new RunningModeControl(RunningMode.NORMAL),

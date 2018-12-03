@@ -17,10 +17,10 @@ package org.wildfly.swarm.bootstrap.modules;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Enumeration;
-import java.util.jar.JarFile;
 
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleLoadException;
@@ -31,6 +31,7 @@ import org.jboss.modules.xml.ModuleXmlParser;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.performance.Performance;
+import org.wildfly.swarm.bootstrap.util.JarFileManager;
 
 /**
  * @author Bob McWhirter
@@ -92,14 +93,9 @@ public class ClasspathModuleFinder implements ModuleFinder {
                 try {
                     moduleSpec = ModuleXmlParser.parseModuleXml(
                             (rootPath, loaderPath, loaderName) -> {
-                                // WF14 temp files handling
                                 if ("".equals(rootPath)) { // Maven artifact TODO is there a better way to recognize this?
-                                    JarFile jarFile = new JarFile(loaderPath, true); // JDKSpecific.getJarFile(fp, true);
-//                                    Matcher matcher = tempFilePattern.matcher(fp.getName());
-//                                    if (matcher.matches()) {
-//                                        JarFileManager.INSTANCE.addExisting(fp, jarFile);
-//                                    }
-                                    return ResourceLoaders.createJarResourceLoader(loaderName, jarFile);
+                                    return ResourceLoaders.createJarResourceLoader(loaderName,
+                                        JarFileManager.INSTANCE.getJarFile(new File(loaderPath)));
                                 } else { // resource root
                                     return NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName);
                                 }

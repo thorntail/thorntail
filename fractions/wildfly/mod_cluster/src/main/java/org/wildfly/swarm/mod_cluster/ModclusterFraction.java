@@ -48,9 +48,6 @@ public class ModclusterFraction extends Modcluster<ModclusterFraction> implement
     }
 
     public ModclusterFraction applyDefaults() {
-        //WF14, http://wildscribe.github.io/WildFly/14.0/subsystem/modcluster/proxy/index.html
-        // The old ConfigurationModClusterConfig.connector documentation implies
-        // that it was Proxy which was indirectly configured
         return proxy(new Proxy("modcluster")
                 .advertiseSocket("modcluster")
                 .advertise(true)

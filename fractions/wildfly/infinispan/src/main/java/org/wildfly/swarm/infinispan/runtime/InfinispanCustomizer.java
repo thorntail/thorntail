@@ -64,7 +64,6 @@ public class InfinispanCustomizer implements Customizer {
     }
 
     private void localCustomization() {
-        //WF14 - LocalCache has no more evictionComponent method
         this.fraction.cacheContainer("server",
                 cc -> cc.defaultCache(DEFAULT)
                         .module("org.wildfly.clustering.server")
