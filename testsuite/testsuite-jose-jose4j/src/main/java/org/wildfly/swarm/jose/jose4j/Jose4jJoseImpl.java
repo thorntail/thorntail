@@ -289,7 +289,7 @@ public class Jose4jJoseImpl implements Jose {
 
     private String decryptionKeyAlias(JsonWebEncryption jwe) {
 
-        if (config.acceptDecryptionAlias()) {
+        if (config.acceptEncryptionAlias()) {
             return jwe.getKeyIdHeaderValue();
         }
         if (config.encryptionKeyAliasIn() == null) {

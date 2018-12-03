@@ -15,11 +15,7 @@
  */
 package org.wildfly.swarm.jose;
 
-import org.wildfly.swarm.config.runtime.AttributeDocumentation;
-import org.wildfly.swarm.spi.api.Defaultable;
-import org.wildfly.swarm.spi.api.annotations.Configurable;
-
-import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_ACCEPT_DECRYPTION_ALIAS;
+import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_ACCEPT_ENCRYPTION_ALIAS;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_ACCEPT_VERIFICATION_ALIAS;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_CONTENT_ENCRYPTION_ALGORITHM;
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_INCLUDE_ENCRYPTION_KEY_ALIAS;
@@ -36,6 +32,12 @@ import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_DATA_DETAC
 import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_DATA_ENCODING;
 import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.string;
+
+import java.util.Optional;
+
+import org.wildfly.swarm.config.runtime.AttributeDocumentation;
+import org.wildfly.swarm.spi.api.Defaultable;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 
 public class JoseConfiguration {
 
@@ -73,6 +75,15 @@ public class JoseConfiguration {
 
     public String keystorePath() {
         return this.keystorePath.get();
+    }
+
+    public JoseConfiguration inlinedKeystoreJwkSet(String jwkSet) {
+        this.inlinedKeystoreJwkSet = Optional.of(jwkSet);
+        return this;
+    }
+
+    public Optional<String> inlinedKeystoreJwkSet() {
+        return this.inlinedKeystoreJwkSet;
     }
 
     public JoseConfiguration signatureKeyAlias(String keyAlias) {
@@ -200,13 +211,13 @@ public class JoseConfiguration {
     }
 
 
-    public JoseConfiguration setAcceptDecryptionAlias(boolean acceptDecryptionAlias) {
-        this.acceptDecryptionAlias.set(acceptDecryptionAlias);
+    public JoseConfiguration setAcceptEncryptionAlias(boolean acceptEncryptionAlias) {
+        this.acceptEncryptionAlias.set(acceptEncryptionAlias);
         return this;
     }
 
-    public boolean acceptDecryptionAlias() {
-        return acceptDecryptionAlias.get();
+    public boolean acceptEncryptionAlias() {
+        return acceptEncryptionAlias.get();
     }
 
 
@@ -232,6 +243,13 @@ public class JoseConfiguration {
     @Configurable("thorntail.jose.keystore.path")
     @AttributeDocumentation("Path to the keystore, only the classpath is currently supported")
     private Defaultable<String> keystorePath = string(DEFAULT_KEYSTORE_PATH);
+
+    /**
+     * JWK keystore JWK Set.
+     */
+    @Configurable("thorntail.jose.keystore.jwkset")
+    @AttributeDocumentation("Inlined keystore Json Web Key Set")
+    private Optional<String> inlinedKeystoreJwkSet = Optional.ofNullable(null);
 
     /**
      * Password for the keystore.
@@ -360,15 +378,15 @@ public class JoseConfiguration {
     private String signatureKeyAliasIn;
 
     /**
-     * Accept the alias for decryption.
+     * Accept the encryption alias for decryption.
      */
     @Configurable("thorntail.jose.encryption.accept.alias")
     @AttributeDocumentation("Accept key alias for decryption (defaults to false).")
-    private Defaultable<Boolean> acceptDecryptionAlias = bool(DEFAULT_ACCEPT_DECRYPTION_ALIAS);
+    private Defaultable<Boolean> acceptEncryptionAlias = bool(DEFAULT_ACCEPT_ENCRYPTION_ALIAS);
 
 
     /**
-     * Accept the alias for verification.
+     * Accept the signature alias for verification.
      */
     @Configurable("thorntail.jose.signature.accept.alias")
     @AttributeDocumentation("Accept signature alias for verification (defaults to false).")
