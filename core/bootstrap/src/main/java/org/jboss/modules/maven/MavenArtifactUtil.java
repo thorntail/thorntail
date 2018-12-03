@@ -30,8 +30,6 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.jar.JarFile;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
@@ -61,8 +59,6 @@ public final class MavenArtifactUtil {
     private static final XPath xpath = XPathFactory.newInstance().newXPath();
 
     private static XPathExpression snapshotVersionXpath;
-
-    private static final Pattern tempFilePattern = Pattern.compile("thorntail\\S+[0-9]{5,}.\\S{5,}");
 
     static {
         try {
