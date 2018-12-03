@@ -2,9 +2,7 @@
 <module xmlns="urn:jboss:module:1.3" name="org.jboss.arquillian" slot="main">
 
   <resources>
-    <artifact name="org.jboss.arquillian.test:arquillian-test-spi:${version.org.arquillian}"/>
-    <artifact name="org.jboss.arquillian.test:arquillian-test-api:${version.org.arquillian}"/>
-    <artifact name="org.jboss.arquillian.test:arquillian-test-impl-base:${version.org.arquillian}"/>
+    <artifact name="org.jboss.arquillian.config:arquillian-config-api:${version.org.arquillian}"/>
     <artifact name="org.jboss.arquillian.container:arquillian-container-spi:${version.org.arquillian}"/>
     <artifact name="org.jboss.arquillian.container:arquillian-container-test-api:${version.org.arquillian}"/>
     <artifact name="org.jboss.arquillian.container:arquillian-container-test-spi:${version.org.arquillian}"/>
@@ -13,6 +11,7 @@
     <artifact name="org.jboss.arquillian.core:arquillian-core-spi:${version.org.arquillian}"/>
     <artifact name="org.jboss.arquillian.test:arquillian-test-api:${version.org.arquillian}"/>
     <artifact name="org.jboss.arquillian.test:arquillian-test-spi:${version.org.arquillian}"/>
+    <artifact name="org.jboss.arquillian.test:arquillian-test-impl-base:${version.org.arquillian}"/>
   </resources>
 
   <dependencies>
@@ -20,6 +19,7 @@
     <module name="javax.ejb.api" export="true"/>
     <module name="javax.enterprise.api" export="true"/>
     <module name="org.jboss.shrinkwrap" export="true"/>
+    <module name="org.jboss.shrinkwrap.descriptors" export="true"/>
     <module name="javax.api"/>
   </dependencies>
 </module>
