@@ -17,14 +17,11 @@ package org.wildfly.swarm.undertow;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.jboss.shrinkwrap.descriptor.api.Descriptors;
-import org.jboss.shrinkwrap.descriptor.api.webapp31.WebAppDescriptor;
-import org.jboss.shrinkwrap.descriptor.api.webcommon31.SecurityConstraintType;
+import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.junit.Test;
 import org.wildfly.swarm.undertow.descriptors.SecurityConstraint;
 import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
@@ -135,5 +132,100 @@ public class WebXmlAssetTest {
         }
         assertThat(tmp.toString()).contains("security-constraint");
         assertThat(tmp.toString()).doesNotContain("auth-constraint");
+    }
+
+    @Test
+    public void testNoRepeatedServlets() throws IOException {
+        ClassLoaderAsset existing = new ClassLoaderAsset("web.xml");
+        WebXmlAsset asset = new WebXmlAsset(existing.openStream());
+
+        asset.addServlet("HelloServlet", "com.example.HelloServlet")
+                .withUrlPattern("/hello");
+
+        for (int i = 0; i < 10; i++) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(asset.openStream()))) {
+                String webXml = reader.lines().collect(Collectors.joining("\n"));
+
+                assertThat(countOccurences("<servlet-class>com.example.HelloServlet</servlet-class>", webXml))
+                        .as("Expected only 1 occurence of <servlet-class>com.example.HelloServlet</servlet-class>")
+                        .isEqualTo(1);
+                assertThat(countOccurences("/hello", webXml))
+                        .as("Expected only 1 occurence of /hello")
+                        .isEqualTo(1);
+
+                assertThat(countOccurences("<servlet-class>com.app.MyServletClass</servlet-class>", webXml))
+                        .as("Expected only 1 occurence of <servlet-class>com.app.MyServletClass</servlet-class>")
+                        .isEqualTo(1);
+                assertThat(countOccurences("/me", webXml))
+                        .as("Expected only 1 occurence of /me")
+                        .isEqualTo(1);
+            }
+        }
+    }
+
+    @Test
+    public void testNoRepeatedSecurityConstraints() throws IOException {
+        ClassLoaderAsset existing = new ClassLoaderAsset("web.xml");
+        WebXmlAsset asset = new WebXmlAsset(existing.openStream());
+
+        String urlPattern = "/hello";
+        asset.protect(urlPattern)
+                .withMethod("GET")
+                .withMethod("POST")
+                .withRole("guest")
+                .withRole("admin");
+
+        for (int i = 0; i < 10; i++) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(asset.openStream()))) {
+                String webXml = reader.lines().collect(Collectors.joining("\n"));
+
+                // TODO unfortunately, our class SecurityConstraint isn't well equipped to fully represent
+                // the relevant part of web.xml, so we allow duplicity for now
+                //
+                // when this is fixed, the .isEqualTo() lines should be uncommented
+                // and the .isGreaterThanOrEqualTo() lines should be deleted
+
+                assertThat(countOccurences("<url-pattern>/hello</url-pattern>", webXml))
+                        .as("Expected only 1 occurence of <url-pattern>/hello</url-pattern>")
+                        .isGreaterThanOrEqualTo(1);
+                        //.isEqualTo(1);
+                assertThat(countOccurences("<http-method>GET</http-method>", webXml))
+                        .as("Expected only 1 occurence of <http-method>GET</http-method>")
+                        .isGreaterThanOrEqualTo(1);
+                        //.isEqualTo(1);
+                assertThat(countOccurences("<http-method>POST</http-method>", webXml))
+                        .as("Expected only 1 occurence of <http-method>POST</http-method>")
+                        .isGreaterThanOrEqualTo(1);
+                        //.isEqualTo(1);
+                assertThat(countOccurences("<role-name>guest</role-name>", webXml))
+                        .as("Expected only 2 occurences of <role-name>guest</role-name> (once under <security-constraint>, once under <security-role>)")
+                        .isGreaterThanOrEqualTo(2);
+                        //.isEqualTo(2);
+                assertThat(countOccurences("<role-name>admin</role-name>", webXml))
+                        .as("Expected only 2 occurences of <role-name>admin</role-name> (once under <security-constraint>, once under <security-role>)")
+                        .isGreaterThanOrEqualTo(2);
+                        //.isEqualTo(2);
+
+                assertThat(countOccurences("<url-pattern>/foobar</url-pattern>", webXml))
+                        .as("Expected only 1 occurence of <url-pattern>/foobar</url-pattern>")
+                        .isEqualTo(1);
+                assertThat(countOccurences("<http-method>DELETE</http-method>", webXml))
+                        .as("Expected only 1 occurence of <http-method>DELETE</http-method>")
+                        .isEqualTo(1);
+                assertThat(countOccurences("<role-name>superuser</role-name>", webXml))
+                        .as("Expected only 2 occurences of <role-name>superuser</role-name> (once under <security-constraint>, once under <security-role>)")
+                        .isEqualTo(2);
+            }
+        }
+    }
+
+    private static int countOccurences(String substring, String string) {
+        int counter = 0;
+        int index = 0;
+        while (string.indexOf(substring, index) > 0) {
+            counter++;
+            index = string.indexOf(substring, index) + substring.length();
+        }
+        return counter;
     }
 }

@@ -18,4 +18,17 @@
     <servlet-name>MyServlet</servlet-name>
     <url-pattern>/me</url-pattern>
   </servlet-mapping>
+
+  <security-constraint>
+    <web-resource-collection>
+      <url-pattern>/foobar</url-pattern>
+      <http-method>DELETE</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>superuser</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-role>
+    <role-name>superuser</role-name>
+  </security-role>
 </web-app>

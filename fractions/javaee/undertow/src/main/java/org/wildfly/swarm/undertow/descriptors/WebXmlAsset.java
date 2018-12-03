@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,6 +32,7 @@ import org.jboss.shrinkwrap.descriptor.api.javaee7.ParamValueType;
 import org.jboss.shrinkwrap.descriptor.api.webapp31.WebAppDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.webcommon31.LoginConfigType;
 import org.jboss.shrinkwrap.descriptor.api.webcommon31.SecurityConstraintType;
+import org.jboss.shrinkwrap.descriptor.api.webcommon31.ServletMappingType;
 import org.jboss.shrinkwrap.descriptor.api.webcommon31.ServletType;
 
 import static org.wildfly.swarm.spi.api.ClassLoading.withTCCL;
@@ -45,16 +45,25 @@ public class WebXmlAsset implements NamedAsset {
     public static final String NAME = "WEB-INF/web.xml";
 
     public WebXmlAsset() {
-        this.descriptor =
-                withTCCL(Descriptors.class.getClassLoader(),
-                         () -> Descriptors.create(WebAppDescriptor.class));
+        this.descriptor = withTCCL(Descriptors.class.getClassLoader(),
+                () -> Descriptors.create(WebAppDescriptor.class));
     }
 
     public WebXmlAsset(InputStream fromStream) {
-        this.descriptor =
-                withTCCL(Descriptors.class.getClassLoader(),
-                         () -> Descriptors.importAs(WebAppDescriptor.class)
-                                 .fromStream(fromStream));
+        this.descriptor = withTCCL(Descriptors.class.getClassLoader(),
+                () -> Descriptors.importAs(WebAppDescriptor.class).fromStream(fromStream));
+
+        // Import servlets and security constraints into internal structure
+        List<ServletType<WebAppDescriptor>> servlets = this.descriptor.getAllServlet();
+        if (servlets != null) {
+            this.servlets.addAll(
+                    servlets.stream()
+                            .map(this::convert)
+                            .collect(Collectors.toList())
+            );
+        }
+        // TODO unfortunately, our class SecurityConstraint isn't well equipped to fully represent
+        // the relevant part of web.xml, so we allow duplicity for now
     }
 
     public void setContextParam(String name, String... values) {
@@ -68,9 +77,12 @@ public class WebXmlAsset implements NamedAsset {
             return null;
         }
 
-        Optional<ParamValueType<WebAppDescriptor>> paramValue = this.descriptor.getAllContextParam().stream().filter(p -> p.getParamName().equals(name)).findFirst();
-
-        return paramValue.isPresent() ? paramValue.get().getParamValue() : null;
+        return this.descriptor.getAllContextParam()
+                .stream()
+                .filter(p -> p.getParamName().equals(name))
+                .findFirst()
+                .map(ParamValueType::getParamValue)
+                .orElse(null);
     }
 
     public Servlet addServlet(String servletName, String servletClass) {
@@ -83,7 +95,8 @@ public class WebXmlAsset implements NamedAsset {
         ServletType<WebAppDescriptor> descriptorServlet = this.descriptor.getAllServlet()
                 .stream()
                 .filter(s -> s.getServletClass().equals(servletClass))
-                .findFirst().get();
+                .findFirst()
+                .get();
 
         return convert(descriptorServlet);
     }
@@ -108,9 +121,12 @@ public class WebXmlAsset implements NamedAsset {
             return null;
         }
 
-        Optional<LoginConfigType<WebAppDescriptor>> loginConfig = this.descriptor.getAllLoginConfig().stream().filter(l -> l.getAuthMethod().equals(authMethod)).findFirst();
-
-        return loginConfig.isPresent() ? loginConfig.get().getRealmName() : null;
+        return this.descriptor.getAllLoginConfig()
+                .stream()
+                .filter(l -> l.getAuthMethod().equals(authMethod))
+                .findFirst()
+                .map(LoginConfigType::getRealmName)
+                .orElse(null);
     }
 
     public void addListener(String listener) {
@@ -119,7 +135,10 @@ public class WebXmlAsset implements NamedAsset {
     }
 
     public List<String> allListenersClasses() {
-        return this.descriptor.getAllListener().stream().map(ListenerType::getListenerClass).collect(Collectors.toList());
+        return this.descriptor.getAllListener()
+                .stream()
+                .map(ListenerType::getListenerClass)
+                .collect(Collectors.toList());
     }
 
     public SecurityConstraint protect() {
@@ -144,8 +163,12 @@ public class WebXmlAsset implements NamedAsset {
      * @return the list of <code>url-pattern</code> elements or an empty list if no mapping is present
      */
     public List<String> getServletMapping(String servletName) {
-        return this.descriptor.getAllServletMapping().stream().filter((mapping) -> mapping.getServletName().equals(servletName)).findFirst()
-                .map(m -> m.getAllUrlPattern()).orElse(Collections.emptyList());
+        return this.descriptor.getAllServletMapping()
+                .stream()
+                .filter((mapping) -> mapping.getServletName().equals(servletName))
+                .findFirst()
+                .map(ServletMappingType::getAllUrlPattern)
+                .orElse(Collections.emptyList());
     }
 
     @Override
@@ -153,6 +176,10 @@ public class WebXmlAsset implements NamedAsset {
         // Add Security Constraints
         Set<String> allRoles = new HashSet<>();
 
+        // TODO unfortunately, our class SecurityConstraint isn't well equipped to fully represent
+        // the relevant part of web.xml, so we allow duplicity for now
+//        this.descriptor.removeAllSecurityConstraint();
+//        this.descriptor.removeAllSecurityRole();
         for (SecurityConstraint each : this.constraints) {
             SecurityConstraintType<WebAppDescriptor> sc = this.descriptor.createSecurityConstraint()
                     .createWebResourceCollection()
@@ -169,14 +196,15 @@ public class WebXmlAsset implements NamedAsset {
         }
 
         for (String eachRole : allRoles) {
-            this.descriptor.getOrCreateSecurityRole()
+            this.descriptor.createSecurityRole()
                     .roleName(eachRole);
         }
 
         // Add Servlets
+        this.descriptor.removeAllServlet();
+        this.descriptor.removeAllServletMapping();
         for (Servlet each : this.servlets) {
-            ServletType<WebAppDescriptor> servlet =
-                    this.descriptor.createServlet()
+            ServletType<WebAppDescriptor> servlet = this.descriptor.createServlet()
                             .servletName(each.servletName())
                             .servletClass(each.servletClass())
                             .displayName(each.displayName())
@@ -251,7 +279,9 @@ public class WebXmlAsset implements NamedAsset {
         servlet.withUrlPatterns(this.descriptor.getAllServletMapping()
                                         .stream()
                                         .filter(mapping -> mapping.getServletName().equals(servlet.servletName()))
-                                        .findFirst().get().getAllUrlPattern());
+                                        .findFirst()
+                                        .get()
+                                        .getAllUrlPattern());
         return servlet;
     }
 
