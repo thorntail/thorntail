@@ -49,9 +49,9 @@ public class HealthExtension implements Extension {
         }
     }
 
-    public <T> void observeResources(@Observes ProcessAnnotatedType<T> event) {
+    public void observeResources(@Observes ProcessAnnotatedType<? extends SmallRyeHealthReporter> event) {
 
-        AnnotatedType<T> annotatedType = event.getAnnotatedType();
+        AnnotatedType<? extends SmallRyeHealthReporter> annotatedType = event.getAnnotatedType();
 
         if (SmallRyeHealthReporter.class == annotatedType.getJavaClass()) {
             delegate = annotatedType;
@@ -62,7 +62,7 @@ public class HealthExtension implements Extension {
         try {
             if (delegate != null) {
                 Unmanaged<SmallRyeHealthReporter> unmanagedHealthCheck =
-                    new Unmanaged<SmallRyeHealthReporter>(beanManager, SmallRyeHealthReporter.class);
+                    new Unmanaged<>(beanManager, SmallRyeHealthReporter.class);
                 reporterInstance = unmanagedHealthCheck.newInstance();
                 reporter =  reporterInstance.produce().inject().postConstruct().get();
                 monitor.registerHealthReporter(reporter);

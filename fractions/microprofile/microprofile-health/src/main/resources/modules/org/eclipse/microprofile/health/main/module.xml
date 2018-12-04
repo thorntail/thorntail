@@ -3,11 +3,11 @@
     <resources>
         <artifact name="org.eclipse.microprofile.health:microprofile-health-api:${version.microprofile-health}"/>
         <artifact name="io.smallrye:smallrye-health:${version.smallrye.health}"/>
-        <artifact name="org.glassfish:javax.json:${version.org.glassfish.javax.json}"/>
     </resources>
 
     <dependencies>
         <module name="javax.enterprise.api"/>
+        <module name="javax.json.api"/>
         <module name="org.wildfly.swarm.undertow" slot="main"/>
         <module name="org.eclipse.microprofile.config.api" export="true"/>
         <module name="org.wildfly.extension.microprofile.config" export="true"/>
