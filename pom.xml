@@ -1214,6 +1214,7 @@
         <module>testsuite/testsuite-jsf</module>
         <module>testsuite/testsuite-jsonp</module>
         <module>testsuite/testsuite-jsp</module>
+        <module>testsuite/testsuite-microprofile</module>
         <module>testsuite/testsuite-microprofile-jwt</module>
         <module>testsuite/testsuite-microprofile-metrics</module>
         <module>testsuite/testsuite-microprofile-fault-tolerance</module>

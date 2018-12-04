@@ -21,15 +21,18 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
-import org.wildfly.swarm.undertow.WARArchive;
+import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
 /**
  * @author Pavol Loffay
  */
 @DeploymentScoped
 public class TracingInstaller implements DeploymentProcessor {
+  private static final String RESTEASY_PROVIDERS = "resteasy.providers";
+
   private static final String DEPLOYMENT_PACKAGE = "org.wildfly.swarm.mpopentracing.deployment";
-  private static final String RESTEASY_PROVIDERS = "io.smallrye.opentracing.SmallRyeTracingDynamicFeature";
+  private static final String TRACING_FEATURE = "io.smallrye.opentracing.SmallRyeTracingDynamicFeature";
+
   private static final String CONTEXT_LISTENER = DEPLOYMENT_PACKAGE + ".OpenTracingContextInitializer";
 
   private final Archive<?> archive;
@@ -42,13 +45,21 @@ public class TracingInstaller implements DeploymentProcessor {
   @Override
   public void process() throws Exception {
     if (archive.getName().endsWith(".war")) {
-      WARArchive warArchive = archive.as(WARArchive.class);
-      warArchive.findWebXmlAsset()
-          .addListener(CONTEXT_LISTENER);
-
       JAXRSArchive jaxrsArchive = archive.as(JAXRSArchive.class);
-      jaxrsArchive.findWebXmlAsset()
-          .setContextParam("resteasy.providers", RESTEASY_PROVIDERS);
+
+      WebXmlAsset webXmlAsset = jaxrsArchive.findWebXmlAsset();
+
+      webXmlAsset.addListener(CONTEXT_LISTENER);
+
+      String userProviders = webXmlAsset.getContextParam(RESTEASY_PROVIDERS);
+
+      String providers =
+              userProviders == null
+                      ? TRACING_FEATURE
+                      : userProviders + "," + TRACING_FEATURE;
+
+
+      webXmlAsset.setContextParam(RESTEASY_PROVIDERS, providers);
     }
   }
 }
