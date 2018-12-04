@@ -30,6 +30,7 @@ import org.wildfly.swarm.jose.Jose;
 import org.wildfly.swarm.jose.JoseConfiguration;
 import org.wildfly.swarm.jose.JoseException;
 import org.wildfly.swarm.jose.JoseOperation;
+import org.wildfly.swarm.jose.JoseProperties;
 import org.wildfly.swarm.jose.SignatureInput;
 import org.wildfly.swarm.jose.VerificationOutput;
 
@@ -209,12 +210,17 @@ public class Jose4jJoseImpl implements Jose {
 
     private Key getJwkKey(String kid, String keyAlgorithm) {
 
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
         String jwkSetJson = null;
-        try (BufferedReader is = new BufferedReader(new InputStreamReader(cl.getResourceAsStream(config.keystorePath())))) {
-            jwkSetJson = is.lines().collect(Collectors.joining("\n"));
-        } catch (IOException ex) {
-            throw new JoseException("Keystore can not be loaded", ex);
+        if (JoseProperties.JWK_KEYSTORE_INLINE.equals(config.keystorePath())
+            && !config.inlinedKeystoreJwkSet().isEmpty()) {
+            jwkSetJson = config.inlinedKeystoreJwkSet();
+        } else {
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            try (BufferedReader is = new BufferedReader(new InputStreamReader(cl.getResourceAsStream(config.keystorePath())))) {
+                jwkSetJson = is.lines().collect(Collectors.joining("\n"));
+            } catch (IOException ex) {
+                throw new JoseException("Keystore can not be loaded", ex);
+            }
         }
         JsonWebKeySet jwkSet = null;
         try {
