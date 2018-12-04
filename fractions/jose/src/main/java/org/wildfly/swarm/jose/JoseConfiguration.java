@@ -33,8 +33,6 @@ import static org.wildfly.swarm.jose.JoseProperties.DEFAULT_SIGNATURE_DATA_ENCOD
 import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.string;
 
-import java.util.Optional;
-
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.annotations.Configurable;
@@ -78,12 +76,12 @@ public class JoseConfiguration {
     }
 
     public JoseConfiguration inlinedKeystoreJwkSet(String jwkSet) {
-        this.inlinedKeystoreJwkSet = Optional.of(jwkSet);
+        this.inlinedKeystoreJwkSet.set(jwkSet);
         return this;
     }
 
-    public Optional<String> inlinedKeystoreJwkSet() {
-        return this.inlinedKeystoreJwkSet;
+    public String inlinedKeystoreJwkSet() {
+        return this.inlinedKeystoreJwkSet.get();
     }
 
     public JoseConfiguration signatureKeyAlias(String keyAlias) {
@@ -249,7 +247,7 @@ public class JoseConfiguration {
      */
     @Configurable("thorntail.jose.keystore.jwkset")
     @AttributeDocumentation("Inlined keystore Json Web Key Set")
-    private Optional<String> inlinedKeystoreJwkSet = Optional.ofNullable(null);
+    private Defaultable<String> inlinedKeystoreJwkSet = string("");
 
     /**
      * Password for the keystore.

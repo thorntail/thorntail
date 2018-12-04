@@ -24,6 +24,7 @@ import org.apache.cxf.common.util.Base64UrlUtility;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.rs.security.jose.common.JoseConstants;
 import org.apache.cxf.rs.security.jose.jwa.ContentAlgorithm;
+import org.apache.cxf.rs.security.jose.jwa.KeyAlgorithm;
 import org.apache.cxf.rs.security.jose.jwa.SignatureAlgorithm;
 import org.apache.cxf.rs.security.jose.jwe.JweCompactConsumer;
 import org.apache.cxf.rs.security.jose.jwe.JweCompactProducer;
@@ -251,7 +252,7 @@ public class DefaultJoseImpl implements Jose {
                 props.setProperty(JoseConstants.RSSEC_KEY_STORE_ALIAS, header.getKeyId());
             }
 
-            JweDecryptionProvider decryptor = JweUtils.loadDecryptionProvider(props, consumer.getJweHeaders());
+            JweDecryptionProvider decryptor = getDecryptionProvider(props, consumer.getJweHeaders());
             String decryptedData = consumer.getDecryptedContentText(decryptor);
             return new DecryptionOutput(consumer.getJweHeaders().asMap(), decryptedData);
         } catch (Exception ex) {
@@ -285,7 +286,11 @@ public class DefaultJoseImpl implements Jose {
 
     private JweEncryptionProvider getEncryptionProvider(Properties props, JweHeaders headers) {
         if (isInlinedJwkSetAvailable()) {
-            return JweUtils.createJweEncryptionProvider(loadJsonWebKey(encryptionKeyAlias()), headers);
+            if (KeyAlgorithm.DIRECT == KeyAlgorithm.getAlgorithm(config.keyEncryptionAlgorithm())) {
+                return JweUtils.getDirectKeyJweEncryption(loadJsonWebKey(encryptionKeyAlias()));
+            } else {
+                return JweUtils.createJweEncryptionProvider(loadJsonWebKey(encryptionKeyAlias()), headers);
+            }
         } else {
             return JweUtils.loadEncryptionProvider(props, headers);
         }
@@ -297,8 +302,12 @@ public class DefaultJoseImpl implements Jose {
         }
 
         if (isInlinedJwkSetAvailable()) {
-            return JweUtils.createJweDecryptionProvider(loadJsonWebKey(encryptionKeyAlias()),
-                ContentAlgorithm.getAlgorithm(config.contentEncryptionAlgorithm()));
+            if (KeyAlgorithm.DIRECT == KeyAlgorithm.getAlgorithm(config.keyEncryptionAlgorithm())) {
+                return JweUtils.getDirectKeyJweDecryption(loadJsonWebKey(encryptionKeyAlias()));
+            } else {
+                return JweUtils.createJweDecryptionProvider(loadJsonWebKey(encryptionKeyAlias()),
+                    ContentAlgorithm.getAlgorithm(config.contentEncryptionAlgorithm()));
+            }
         } else {
             return JweUtils.loadDecryptionProvider(props, headers);
         }
@@ -306,15 +315,14 @@ public class DefaultJoseImpl implements Jose {
 
     private boolean isInlinedJwkSetAvailable() {
         return "jwk".equals(config.keystoreType()) && JoseProperties.JWK_KEYSTORE_INLINE.equals(config.keystorePath())
-            && config.inlinedKeystoreJwkSet().isPresent();
+            && !config.inlinedKeystoreJwkSet().isEmpty();
     }
 
     private JsonWebKey loadJsonWebKey(String kid) {
-        JsonWebKeys jwkSet = JwkUtils.readJwkSet(config.inlinedKeystoreJwkSet().get());
-        JsonWebKey jwkKey = kid == null && jwkSet.size() == 1
-            ? jwkSet.getKeys().get(0) : jwkSet.getKey(kid);
+        JsonWebKeys jwkSet = JwkUtils.readJwkSet(config.inlinedKeystoreJwkSet());
+        JsonWebKey jwkKey = jwkSet.getKey(kid);
         if (jwkKey == null) {
-            throw new JoseException("No signature public key is available");
+            throw new JoseException("JWK key is not available");
         }
         return jwkKey;
     }
