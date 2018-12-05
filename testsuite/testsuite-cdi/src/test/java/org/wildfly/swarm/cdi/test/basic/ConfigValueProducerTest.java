@@ -16,11 +16,9 @@
 package org.wildfly.swarm.cdi.test.basic;
 
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
-import org.wildfly.swarm.cdi.test.basic.ConfigAwareBean;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,8 +27,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Martin Kouba
  */
 @RunWith(Arquillian.class)
-@Ignore
-@DefaultDeployment(type = DefaultDeployment.Type.JAR)
+@DefaultDeployment
 public class ConfigValueProducerTest {
 
     @Test
