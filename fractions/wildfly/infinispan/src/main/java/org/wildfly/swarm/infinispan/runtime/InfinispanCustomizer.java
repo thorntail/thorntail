@@ -108,33 +108,33 @@ public class InfinispanCustomizer implements Customizer {
     @Produces
     @Dependent
     public ServiceActivator defaultActivator() {
-        return new CacheActivator("server");
+        return new CacheActivator("server", CacheActivator.Type.DEFAULT_CACHE);
     }
 
     @Produces
     @Dependent
     public ServiceActivator undertowActivator() {
-        return createActivatorIfSatisfied(this.undertow, "web");
+        return createActivatorIfSatisfied(this.undertow, "web", CacheActivator.Type.DEFAULT_CACHE);
     }
 
     @Produces
     @Dependent
     public ServiceActivator ejbActivator() {
-        return createActivatorIfSatisfied(this.ejb, "ejb");
+        return createActivatorIfSatisfied(this.ejb, "ejb", CacheActivator.Type.DEFAULT_CACHE);
     }
 
     @Produces
     @Dependent
     public ServiceActivator jpaActivator() {
-        return createActivatorIfSatisfied(this.jpa, "hibernate");
+        return createActivatorIfSatisfied(this.jpa, "hibernate", CacheActivator.Type.CACHE_CONTAINER_CONFIGURATION);
     }
 
-    private ServiceActivator createActivatorIfSatisfied(Instance instance, String cacheContainer) {
+    private ServiceActivator createActivatorIfSatisfied(Instance instance, String cacheContainer, CacheActivator.Type type) {
         if (instance.isUnsatisfied()) {
             MESSAGES.skippingCacheActivation(cacheContainer);
             return null;
         } else {
-            return new CacheActivator(cacheContainer);
+            return new CacheActivator(cacheContainer, type);
         }
     }
 }
