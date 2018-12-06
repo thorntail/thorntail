@@ -92,7 +92,7 @@ public class InfinispanCustomizer implements Customizer {
 
         if (!this.jpa.isUnsatisfied()) {
             this.fraction.cacheContainer("hibernate",
-                    cc -> cc.module("org.hibernate.infinispan")
+                    cc -> cc.module("org.infinispan.hibernate-cache")
                             .localCache("entity",
                                     c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
                                             .objectMemory(om -> om.size(10000L))

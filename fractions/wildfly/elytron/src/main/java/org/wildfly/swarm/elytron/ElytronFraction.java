@@ -121,6 +121,7 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
         });
         */
 
+        // TODO
         customRealm(APPLICATION_REALM, (realm) -> {
             realm.module("org.wildfly.swarm.elytron:runtime");
             realm.className("org.wildfly.swarm.elytron.runtime.Realm");
@@ -137,42 +138,43 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
                 put("principals", new ArrayList() {{
                     add("anonymous");
                 }});
-                put("permissions", new ArrayList() {{
+                put("permission-sets", new ArrayList() {{
                     add(new HashMap() {{
-                        put(CLASS_NAME, "org.wildfly.extension.batch.jberet.deployment.BatchPermission");
-                        put(MODULE, "org.wildfly.extension.batch.jberet");
-                        put(TARGET_NAME, "*");
-                    }});
-                    add(new HashMap() {{
-                        put(CLASS_NAME, "org.wildfly.transaction.client.RemoteTransactionPermission");
-                        put(MODULE, "org.wildfly.transaction.client");
-                    }});
-                    add(new HashMap() {{
-                        put(CLASS_NAME, "org.jboss.ejb.client.RemoteEJBPermission");
-                        put(MODULE, "org.jboss.ejb-client");
+                        put("permission-set", "default-permissions");
                     }});
                 }});
             }});
             mapper.permissionMapping(new HashMap() {{
                 put("match-all", true);
-                put("permissions", new ArrayList() {{
+                put("permission-sets", new ArrayList() {{
                     add(new HashMap() {{
-                        put(CLASS_NAME, "org.wildfly.security.auth.permission.LoginPermission");
+                        put("permission-set", "login-permission");
                     }});
                     add(new HashMap() {{
-                        put(CLASS_NAME, "org.wildfly.extension.batch.jberet.deployment.BatchPermission");
-                        put(MODULE, "org.wildfly.extension.batch.jberet");
-                        put(TARGET_NAME, "*");
-                    }});
-                    add(new HashMap() {{
-                        put(CLASS_NAME, "org.wildfly.transaction.client.RemoteTransactionPermission");
-                        put(MODULE, "org.wildfly.transaction.client");
-                    }});
-                    add(new HashMap() {{
-                        put(CLASS_NAME, "org.jboss.ejb.client.RemoteEJBPermission");
-                        put(MODULE, "org.jboss.ejb-client");
+                        put("permission-set", "default-permissions");
                     }});
                 }});
+            }});
+        });
+
+        permissionSet("login-permission", permissionSet -> {
+            permissionSet.permission(new HashMap() {{
+                put(CLASS_NAME, "org.wildfly.security.auth.permission.LoginPermission");
+            }});
+        });
+        permissionSet("default-permissions", permissionSet -> {
+            permissionSet.permission(new HashMap() {{
+                put(CLASS_NAME, "org.wildfly.extension.batch.jberet.deployment.BatchPermission");
+                put(MODULE, "org.wildfly.extension.batch.jberet");
+                put(TARGET_NAME, "*");
+            }});
+            permissionSet.permission(new HashMap() {{
+                put(CLASS_NAME, "org.wildfly.transaction.client.RemoteTransactionPermission");
+                put(MODULE, "org.wildfly.transaction.client");
+            }});
+            permissionSet.permission(new HashMap() {{
+                put(CLASS_NAME, "org.jboss.ejb.client.RemoteEJBPermission");
+                put(MODULE, "org.jboss.ejb-client");
             }});
         });
 
@@ -198,22 +200,6 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
                         put(REALM_NAME, MANAGEMENT_REALM);
                     }});
                 }});
-            }});
-        });
-
-        httpAuthenticationFactory("application-http-authentication", (auth) -> {
-            auth.httpServerMechanismFactory(GLOBAL);
-            auth.securityDomain(APPLICATION_DOMAIN);
-            auth.mechanismConfiguration(new HashMap() {{
-                put(MECHANISM_NAME, "BASIC");
-                put(MECHANISM_REALM_CONFIGURATIONS, new ArrayList() {{
-                    add(new HashMap() {{
-                        put(REALM_NAME, "Application Realm");
-                    }});
-                }});
-            }});
-            auth.mechanismConfiguration(new HashMap() {{
-                put(MECHANISM_NAME, "FORM");
             }});
         });
 
