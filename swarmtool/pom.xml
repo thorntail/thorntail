@@ -93,12 +93,6 @@
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>tools</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.sql</groupId>
-          <artifactId>jboss-javax-sql-api_7.0_spec</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>

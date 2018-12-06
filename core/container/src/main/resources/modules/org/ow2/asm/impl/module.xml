@@ -10,8 +10,8 @@
     <property name="jboss.api" value="private"/>
   </properties>
   <resources>
-    <artifact name="org.ow2.asm:asm:${version.org.objectweb.asm}"/>
-    <artifact name="org.ow2.asm:asm-commons:${version.org.objectweb.asm}"/>
+    <artifact name="org.ow2.asm:asm:${version.org.ow2.asm}"/>
+    <artifact name="org.ow2.asm:asm-commons:${version.org.ow2.asm}"/>
   </resources>
 
 </module>
