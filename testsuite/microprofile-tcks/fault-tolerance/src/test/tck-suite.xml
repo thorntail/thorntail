@@ -20,39 +20,37 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
-<suite name="MicroProfile 1.2 TCKs" verbose="1" preserve-order="true" configfailurepolicy="continue" >
+<suite name="MicroProfile 1.4 TCKs" verbose="1" preserve-order="true" configfailurepolicy="continue" >
 
-   <test name="microprofile-fault-tolerance 1.0 TCK">
+   <test name="microprofile-fault-tolerance 1.1.3 TCK">
       <packages>
          <package name="org.eclipse.microprofile.fault.tolerance.tck.*" />
       </packages>
 
       <classes>
          <!-- Issues in the TCK -->
+         <!-- https://github.com/eclipse/microprofile-fault-tolerance/pull/333 -->
          <class
-            name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadSynchRetryTest">
+             name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchRetryTest">
             <methods>
-               <!-- https://github.com/eclipse/microprofile-fault-tolerance/issues/227 -->
-               <exclude name="testBulkheadQueReplacesDueToClassRetryFailures" />
-               <exclude name="testBulkheadRetryClassSynchronous55" />
-               <exclude name="testBulkheadQueReplacesDueToClassRetryFailures" />
-               <exclude name="testNoRetriesBulkhead" />
-            </methods>
-         </class>
-         <class
-            name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchRetryTest">
-            <methods>
-               <!-- https://github.com/eclipse/microprofile-fault-tolerance/issues/232 -->
-               <exclude name="testBulkheadMethodAsynchronousRetry55Trip" />
-               <!-- https://github.com/eclipse/microprofile-fault-tolerance/issues/250 -->
                <exclude name="testBulkheadClassAsynchronous55RetryOverload"/>
                <exclude name="testBulkheadMethodAsynchronous55RetryOverload"/>
-               <!-- https://github.com/eclipse/microprofile-fault-tolerance/issues/227 -->
-               <exclude name="testBulkheadMethodAsynchronousQueueing10"/>
+            </methods>
+         </class>
+         <!-- https://github.com/eclipse/microprofile-fault-tolerance/issues/323 -->
+         <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerTest">
+            <methods>
+               <exclude name="testCircuitInitialSuccessDefaultSuccessThreshold"/>
+               <exclude name="testCircuitLateSuccessDefaultSuccessThreshold"/>
+            </methods>
+         </class>
+         <!-- https://github.com/eclipse/microprofile-fault-tolerance/issues/336 -->
+         <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.BulkheadMetricTest">
+            <methods>
+               <exclude name="bulkheadMetricAsyncTest"/>
             </methods>
          </class>
       </classes>
-
    </test>
 
 </suite>

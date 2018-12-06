@@ -63,6 +63,11 @@
       </dependency>
 
       <dependency>
+         <groupId>org.hamcrest</groupId>
+         <artifactId>hamcrest-all</artifactId>
+      </dependency>
+
+      <dependency>
          <groupId>io.thorntail</groupId>
          <artifactId>arquillian</artifactId>
          <scope>test</scope>
