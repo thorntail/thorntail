@@ -164,11 +164,6 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
         });
         permissionSet("default-permissions", permissionSet -> {
             permissionSet.permission(new HashMap() {{
-                put(CLASS_NAME, "org.wildfly.extension.batch.jberet.deployment.BatchPermission");
-                put(MODULE, "org.wildfly.extension.batch.jberet");
-                put(TARGET_NAME, "*");
-            }});
-            permissionSet.permission(new HashMap() {{
                 put(CLASS_NAME, "org.wildfly.transaction.client.RemoteTransactionPermission");
                 put(MODULE, "org.wildfly.transaction.client");
             }});

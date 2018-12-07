@@ -32,7 +32,6 @@ public class ArquillianTest {
         HttpResponse response = Request.Get("http://localhost:8080/services").execute().returnResponse();
         String responseBody = EntityUtils.toString(response.getEntity());
         Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-        // WF14
         Assert.assertTrue("unexpected response '" + responseBody + "'",
                 responseBody.startsWith("__redirected.__TransformerFactory"));
     }
