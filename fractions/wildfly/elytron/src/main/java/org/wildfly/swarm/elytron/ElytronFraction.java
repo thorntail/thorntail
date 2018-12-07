@@ -162,16 +162,7 @@ public class ElytronFraction extends Elytron<ElytronFraction> implements Fractio
                 put(CLASS_NAME, "org.wildfly.security.auth.permission.LoginPermission");
             }});
         });
-        permissionSet("default-permissions", permissionSet -> {
-            permissionSet.permission(new HashMap() {{
-                put(CLASS_NAME, "org.wildfly.transaction.client.RemoteTransactionPermission");
-                put(MODULE, "org.wildfly.transaction.client");
-            }});
-            permissionSet.permission(new HashMap() {{
-                put(CLASS_NAME, "org.jboss.ejb.client.RemoteEJBPermission");
-                put(MODULE, "org.jboss.ejb-client");
-            }});
-        });
+        permissionSet("default-permissions");
 
         constantRealmMapper(LOCAL, (mapper) -> {
             mapper.realmName(LOCAL);
