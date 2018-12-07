@@ -22,6 +22,7 @@
     <version.arquillian>1.1.12.Final</version.arquillian>
     <version.arquillian-drone>2.0.1.Final</version.arquillian-drone>
     <version.arquillian-graphene>2.1.0.Alpha2</version.arquillian-graphene>
+    <version.guava>19.0</version.guava>
     <version.junit>4.11</version.junit>
     <version.h2>1.4.187</version.h2>
     <version.jaxrs-api>1.0.0.Final</version.jaxrs-api>
@@ -118,6 +119,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${version.guava}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
