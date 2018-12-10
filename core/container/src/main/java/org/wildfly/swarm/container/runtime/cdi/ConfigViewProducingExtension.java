@@ -16,12 +16,12 @@
 package org.wildfly.swarm.container.runtime.cdi;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.inject.Singleton;
 
-import org.jboss.weld.literal.DefaultLiteral;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.spi.api.cdi.CommonBean;
 import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
@@ -46,7 +46,7 @@ public class ConfigViewProducingExtension implements Extension {
             CommonBean<ConfigView> configViewBean = CommonBeanBuilder.newBuilder(ConfigView.class)
                     .beanClass(ConfigViewProducingExtension.class)
                     .scope(Singleton.class)
-                    .addQualifier(DefaultLiteral.INSTANCE)
+                    .addQualifier(Default.Literal.INSTANCE)
                     .createSupplier(() -> configView)
                     .addType(ConfigView.class)
                     .addType(Object.class).build();

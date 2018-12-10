@@ -39,7 +39,7 @@ public class ResteasyClientTracingRegistrarProvider implements ClientTracingRegi
   public ClientBuilder configure(ClientBuilder clientBuilder, ExecutorService executorService) {
     ResteasyClientBuilder resteasyClientBuilder = (ResteasyClientBuilder)clientBuilder;
     Tracer tracer = CDI.current().select(Tracer.class).get();
-    return resteasyClientBuilder.asyncExecutor(new TracedExecutorService(executorService, tracer))
+    return resteasyClientBuilder.executorService(new TracedExecutorService(executorService, tracer))
       .register(new Builder(tracer)
           .withTraceSerialization(false)
           .build());

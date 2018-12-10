@@ -1,0 +1,3 @@
+= JSON-B
+
+Provides support for JSON Binding according to JSR-367.

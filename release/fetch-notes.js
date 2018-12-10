@@ -45,7 +45,7 @@ https.get( 'https://issues.jboss.org/rest/api/latest/search?maxResults=100&jql=p
           console.log( '* [https://issues.jboss.org/browse/' + e.key + '[' + e.key + ']] ' + e.fields.summary + ' (' + e.fields.resolution.name + ')' );
         }
       } );
-      console.log( " " );
+      console.log();
     } );
     if (breaking.length > 0) {
       console.log("== Breaking changes");

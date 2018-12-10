@@ -38,12 +38,13 @@ public class AsynchronousRequestContextTest {
 
     @Deployment
     public static WebArchive createTestArchive() {
-        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+        return ShrinkWrap.create(WebArchive.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addPackage(AsynchronousRequestContextTest.class.getPackage());
     }
 
     @Test
-    public void testRequestContextActive(AsyncService asyncService) throws IOException, InterruptedException, ExecutionException {
+    public void testRequestContextActive(AsyncService asyncService) throws InterruptedException, ExecutionException {
         RequestFoo.DESTROYED.set(false);
         assertEquals("ok", asyncService.perform().get());
         assertTrue(RequestFoo.DESTROYED.get());

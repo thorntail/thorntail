@@ -266,6 +266,11 @@ final class InVMConnection extends ServerConnection {
         return "mock";
     }
 
+    @Override
+    public boolean isRequestTrailerFieldsSupported() {
+        return false;
+    }
+
     private boolean closed;
 
     private final InetSocketAddress address;

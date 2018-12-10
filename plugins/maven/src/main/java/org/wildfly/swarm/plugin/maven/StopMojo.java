@@ -87,6 +87,6 @@ public class StopMojo extends AbstractSwarmMojo {
         }
     }
 
-    private static final Pattern tempFilePattern = Pattern.compile("wfswarm\\S+[0-9]{5,}.\\S{5,}");
+    private static final Pattern tempFilePattern = Pattern.compile("thorntail\\S+[0-9]{5,}.\\S{5,}");
 }
 

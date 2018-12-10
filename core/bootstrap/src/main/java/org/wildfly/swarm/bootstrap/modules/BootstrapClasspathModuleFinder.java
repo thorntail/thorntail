@@ -17,14 +17,17 @@ package org.wildfly.swarm.bootstrap.modules;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
 import java.net.URL;
 
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
+import org.jboss.modules.ResourceLoaders;
 import org.jboss.modules.xml.ModuleXmlParser;
 import org.wildfly.swarm.bootstrap.performance.Performance;
+import org.wildfly.swarm.bootstrap.util.JarFileManager;
 
 /**
  * Used only for loading dependencies of org.wildfly.bootstrap:main from its own jar.
@@ -63,11 +66,18 @@ public class BootstrapClasspathModuleFinder implements ModuleFinder {
                 final URL base = new URL(url, "./");
                 in = url.openStream();
                 moduleSpec = ModuleXmlParser.parseModuleXml(
-                        (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName),
+                        (rootPath, loaderPath, loaderName) -> {
+                            if ("".equals(rootPath)) { // Maven artifact TODO is there a better way to recognize this?
+                                return ResourceLoaders.createJarResourceLoader(loaderName,
+                                        JarFileManager.INSTANCE.getJarFile(new File(loaderPath)));
+                            } else { // resource root
+                                return NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName);
+                            }
+                        },
                         MavenResolvers.get(),
                         "/",
                         in,
-                        path.toString(),
+                        path,
                         delegateLoader,
                         simpleIdentifier);
 

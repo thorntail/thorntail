@@ -20,15 +20,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.wildfly.swarm.config.messaging.activemq.DiscoveryGroup;
+import org.wildfly.swarm.config.messaging.activemq.HTTPConnector;
+import org.wildfly.swarm.config.messaging.activemq.PooledConnectionFactory;
 import org.wildfly.swarm.config.messaging.activemq.server.BroadcastGroup;
 import org.wildfly.swarm.config.messaging.activemq.server.ClusterConnection;
 import org.wildfly.swarm.config.messaging.activemq.server.ConnectionFactory;
-import org.wildfly.swarm.config.messaging.activemq.server.DiscoveryGroup;
 import org.wildfly.swarm.config.messaging.activemq.server.HTTPAcceptor;
-import org.wildfly.swarm.config.messaging.activemq.server.HTTPConnector;
 import org.wildfly.swarm.config.messaging.activemq.server.JMSQueueConsumer;
 import org.wildfly.swarm.config.messaging.activemq.server.JMSTopicConsumer;
-import org.wildfly.swarm.config.messaging.activemq.server.PooledConnectionFactory;
 
 /**
  * @author Bob McWhirter

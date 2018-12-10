@@ -15,8 +15,7 @@
  */
 package org.wildfly.swarm.bootstrap.modules;
 
-import java.io.IOException;
-
+import org.jboss.modules.JDKModuleFinder;
 import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleLoader;
 
@@ -25,8 +24,9 @@ import org.jboss.modules.ModuleLoader;
  */
 public class BootModuleLoader extends ModuleLoader {
 
-    public BootModuleLoader() throws IOException {
+    public BootModuleLoader() {
         super(new ModuleFinder[]{
+                JDKModuleFinder.getInstance(),
                 new BootstrapClasspathModuleFinder(),
                 new BootstrapModuleFinder(),
                 new ClasspathModuleFinder(),

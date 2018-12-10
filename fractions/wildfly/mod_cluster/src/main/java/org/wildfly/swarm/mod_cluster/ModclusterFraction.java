@@ -18,7 +18,7 @@ package org.wildfly.swarm.mod_cluster;
 import javax.annotation.PostConstruct;
 
 import org.wildfly.swarm.config.Modcluster;
-import org.wildfly.swarm.config.modcluster.ConfigurationModClusterConfig;
+import org.wildfly.swarm.config.modcluster.Proxy;
 import org.wildfly.swarm.config.runtime.AttributeDocumentation;
 import org.wildfly.swarm.spi.api.Defaultable;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -48,10 +48,10 @@ public class ModclusterFraction extends Modcluster<ModclusterFraction> implement
     }
 
     public ModclusterFraction applyDefaults() {
-        return configurationModClusterConfig(new ConfigurationModClusterConfig()
-                                                     .advertiseSocket("modcluster")
-                                                     .advertise(true)
-                                                     .connector("default"));
+        return proxy(new Proxy("modcluster")
+                .advertiseSocket("modcluster")
+                .advertise(true)
+                .listener("default"));
     }
 
     public ModclusterFraction multicastAddress(String address) {

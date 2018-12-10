@@ -35,12 +35,12 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.jboss.as.controller.ModelController;
+import org.jboss.as.controller.ModelControllerClientFactory;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.controller.persistence.ExtensibleConfigurationPersister;
 import org.jboss.as.server.Bootstrap;
 import org.jboss.as.server.ServerEnvironment;
-import org.jboss.as.server.Services;
+import org.jboss.as.server.ServerService;
 import org.jboss.dmr.ModelNode;
 import org.jboss.msc.service.ServiceActivator;
 import org.jboss.msc.service.ServiceContainer;
@@ -217,9 +217,9 @@ public class RuntimeServer implements Server {
                 for (ServiceName serviceName : serviceContainer.getServiceNames()) {
                     ServiceController<?> serviceController = serviceContainer.getService(serviceName);
                     /*
-                    if (serviceController.getImmediateUnavailableDependencies().size() > 0) {
+                    if (!serviceController.getUnavailableDependencies().isEmpty()) {
                         System.err.println("Service missing dependencies: " + serviceController.getName());
-                        for (ServiceName name : serviceController.getImmediateUnavailableDependencies()) {
+                        for (ServiceName name : serviceController.getUnavailableDependencies()) {
                             System.err.println("  - " + name);
                         }
                     }
@@ -237,19 +237,17 @@ public class RuntimeServer implements Server {
             }
             */
 
-            ModelController controller = (ModelController) serviceContainer.getService(Services.JBOSS_SERVER_CONTROLLER).getValue();
-            Executor executor = Executors.newSingleThreadExecutor();
-
             try (AutoCloseable creatingControllerClient = Performance.time("Creating controller client")) {
-                // Can't use controller.getClientFactory() due to non-public nature of that method.
-                //noinspection deprecation
-                this.client = controller.createClient(executor);
+                Executor executor = Executors.newSingleThreadExecutor();
+                ModelControllerClientFactory clientFactory = (ModelControllerClientFactory) serviceContainer.getService(
+                        ServerService.JBOSS_SERVER_CLIENT_FACTORY).getValue();
+                this.client = clientFactory.createSuperUserClient(executor);
             }
 
             RuntimeDeployer deployer = this.deployer.get();
 
             try (AutoCloseable installDeployer = Performance.time("Installing deployer")) {
-                serviceContainer.addService(ServiceName.of("thorntail", "deployer"), new ValueService<>(new ImmediateValue<Deployer>(deployer))).install();
+                serviceContainer.addService(ServiceName.of("thorntail", "deployer"), new ValueService<>(new ImmediateValue<>(deployer))).install();
             }
 
             try (AutoCloseable configUserSpaceExt = Performance.time("Configure user-space extensions")) {

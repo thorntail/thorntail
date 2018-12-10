@@ -23,9 +23,9 @@ import java.util.Set;
  * A Java EE technology that is used in the testing project. It always corresponds to a fraction.
  */
 public enum IncludedTechnology {
-    SERVLET("undertow", "org.jboss.spec.javax.servlet", "jboss-servlet-api_3.0_spec", "1.0.2.Final"),
-    JAX_RS("jaxrs", "org.jboss.spec.javax.ws.rs", "jboss-jaxrs-api_2.0_spec", "1.0.0.Final", SERVLET),
-    EJB("ejb", "org.jboss.spec.javax.ejb", "jboss-ejb-api_3.2_spec", "1.0.0.Final", SERVLET), // transitively depends on servlet
+    SERVLET("undertow", "org.jboss.spec.javax.servlet", "jboss-servlet-api_4.0_spec", "1.0.0.Final"),
+    JAX_RS("jaxrs", "org.jboss.spec.javax.ws.rs", "jboss-jaxrs-api_2.1_spec", "1.0.1.Final", SERVLET),
+    EJB("ejb", "org.jboss.spec.javax.ejb", "jboss-ejb-api_3.2_spec", "1.0.1.Final", SERVLET), // transitively depends on servlet
     // the remaining technologies are NOT supposed to be used in the testing project;
     // instead, they are listed to facilitate checking that they aren't present by some mistake
     EJB_REMOTE("ejb-remote", null, null, null),

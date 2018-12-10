@@ -23,7 +23,7 @@ public class MyResource {
     public String get() throws Exception {
         EmbeddedCacheManager cacheContainer
                 = (EmbeddedCacheManager) new InitialContext().lookup("java:jboss/infinispan/container/server");
-        Cache<String,String> cache = cacheContainer.getCache("server");
+        Cache<String,String> cache = cacheContainer.getCache("default");
         if (cache.keySet().contains(key)) {
             return (String) cache.get(key);
         }

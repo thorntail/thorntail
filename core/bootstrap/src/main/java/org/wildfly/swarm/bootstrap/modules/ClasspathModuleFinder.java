@@ -17,6 +17,7 @@ package org.wildfly.swarm.bootstrap.modules;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Enumeration;
@@ -25,10 +26,12 @@ import org.jboss.modules.ModuleFinder;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
+import org.jboss.modules.ResourceLoaders;
 import org.jboss.modules.xml.ModuleXmlParser;
 import org.wildfly.swarm.bootstrap.env.ApplicationEnvironment;
 import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.performance.Performance;
+import org.wildfly.swarm.bootstrap.util.JarFileManager;
 
 /**
  * @author Bob McWhirter
@@ -89,11 +92,18 @@ public class ClasspathModuleFinder implements ModuleFinder {
                 ModuleSpec moduleSpec = null;
                 try {
                     moduleSpec = ModuleXmlParser.parseModuleXml(
-                            (rootPath, loaderPath, loaderName) -> NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName),
+                            (rootPath, loaderPath, loaderName) -> {
+                                if ("".equals(rootPath)) { // Maven artifact TODO is there a better way to recognize this?
+                                    return ResourceLoaders.createJarResourceLoader(loaderName,
+                                        JarFileManager.INSTANCE.getJarFile(new File(loaderPath)));
+                                } else { // resource root
+                                    return NestedJarResourceLoader.loaderFor(base, rootPath, loaderPath, loaderName);
+                                }
+                            },
                             MavenResolvers.get(),
                             (explodedJar == null ? "/" : explodedJar.toAbsolutePath().toString()),
                             in,
-                            path.toString(),
+                            path,
                             delegateLoader,
                             simpleIdentifier);
 

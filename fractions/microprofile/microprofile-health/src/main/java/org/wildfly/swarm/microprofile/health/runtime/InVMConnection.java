@@ -269,4 +269,9 @@ final class InVMConnection extends ServerConnection {
     private boolean closed;
 
     private final InetSocketAddress address;
+
+    @Override
+    public boolean isRequestTrailerFieldsSupported() {
+        return false;
+    }
 }

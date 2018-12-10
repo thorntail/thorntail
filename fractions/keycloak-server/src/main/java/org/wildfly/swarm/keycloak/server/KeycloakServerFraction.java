@@ -39,7 +39,6 @@ public class KeycloakServerFraction extends KeycloakServer<KeycloakServerFractio
     public static final String BASIC = "basic";
 
     public KeycloakServerFraction() {
-
     }
 
     @Override
@@ -49,23 +48,11 @@ public class KeycloakServerFraction extends KeycloakServer<KeycloakServerFractio
         scheduledTaskInterval(900L);
 
         spi("eventsStore", (eventStore) -> {
-            eventStore.defaultProvider("jpa");
-            eventStore.provider("jpa", (provider) -> {
+            eventStore.defaultProvider(JPA);
+            eventStore.provider(JPA, (provider) -> {
                 provider.enabled(true);
                 provider.property("exclude-events", "[\"REFRESH_TOKEN\"]");
             });
-        });
-
-        spi("realm", (spi) -> {
-            spi.defaultProvider(JPA);
-        });
-
-        spi("user", (spi) -> {
-            spi.defaultProvider(JPA);
-        });
-
-        spi("userFederatedStorage", (spi) -> {
-            spi.defaultProvider(JPA);
         });
 
         spi("userCache", (spi) -> {
@@ -75,10 +62,6 @@ public class KeycloakServerFraction extends KeycloakServer<KeycloakServerFractio
         });
 
         spi("userSessionPersister", (spi) -> {
-            spi.defaultProvider(JPA);
-        });
-
-        spi("authorizationPersister", (spi) -> {
             spi.defaultProvider(JPA);
         });
 
@@ -112,7 +95,7 @@ public class KeycloakServerFraction extends KeycloakServer<KeycloakServerFractio
             spi.defaultProvider(DEFAULT);
             spi.provider(DEFAULT, (provider) -> {
                 provider.enabled(true);
-                provider.property("cacheContainer", "java:comp/env/infinispan/Keycloak");
+                provider.property("cacheContainer", "java:jboss/infinispan/container/keycloak");
             });
         });
 
@@ -130,6 +113,22 @@ public class KeycloakServerFraction extends KeycloakServer<KeycloakServerFractio
             });
         });
 
+        spi("x509cert-lookup", (spi) -> {
+            spi.defaultProvider("${keycloak.x509cert.lookup.provider:default}");
+            spi.provider("default", (provider) -> {
+                provider.enabled(true);
+            });
+        });
+
+        spi("hostname", (spi) -> {
+            spi.defaultProvider("request");
+            spi.provider("fixed", (provider) -> {
+                provider.enabled(true);
+                provider.property("hostname", "localhost");
+                provider.property("httpPort", -1);
+                provider.property("httpsPort", -1);
+            });
+        });
 
         return this;
     }

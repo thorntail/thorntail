@@ -15,8 +15,15 @@
  */
 package org.wildfly.swarm.spi.api;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -407,13 +414,16 @@ public class JBossDeploymentStructureAssetTest {
         JBossDeploymentStructureAsset asset =
                 new JBossDeploymentStructureAsset(this.getClass().getClassLoader().getResourceAsStream("jboss-deployment-structure.xml"));
 
-        assertThat(asset.deploymentExclusions().size()).isEqualTo(0);
         assertThat(asset.deploymentModules().size()).isEqualTo(1);
-
         Module module = asset.deploymentModules().get(0);
         assertThat(module.name()).isEqualTo("org.apache.httpcomponents");
         assertThat(module.export()).isTrue();
         assertThat(module.services()).isEqualTo(Module.ServiceHandling.EXPORT);
+
+        assertThat(asset.deploymentExclusions().size()).isEqualTo(1);
+        Module exclusion = asset.deploymentExclusions().get(0);
+        assertThat(exclusion.name()).isEqualTo("com.example.existing.module");
+        assertThat(exclusion.slot()).isEqualTo("extra");
 
         JBossDeploymentStructureAsset asset2 = new JBossDeploymentStructureAsset(asset.openStream());
 
@@ -421,5 +431,50 @@ public class JBossDeploymentStructureAssetTest {
         assertThat(module.name()).isEqualTo("org.apache.httpcomponents");
         assertThat(module.export()).isTrue();
         assertThat(module.services()).isEqualTo(Module.ServiceHandling.EXPORT);
+
+        exclusion = asset2.deploymentExclusions().get(0);
+        assertThat(exclusion.name()).isEqualTo("com.example.existing.module");
+        assertThat(exclusion.slot()).isEqualTo("extra");
+    }
+
+    @Test
+    public void testNoRepeatedModules() throws IOException {
+        ClassLoaderAsset existing = new ClassLoaderAsset("jboss-deployment-structure.xml");
+        JBossDeploymentStructureAsset asset = new JBossDeploymentStructureAsset(existing.openStream());
+
+        asset.addModule("com.example.module");
+        asset.excludeModule("com.example.another.module");
+
+        for (int i = 0; i < 10; i++) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(asset.openStream()))) {
+                String xml = reader.lines().collect(Collectors.joining("\n"));
+
+                assertThat(countOccurences("<module.*? name=\"com.example.module\"", xml))
+                        .as("Expected only 1 occurence of <module name=\"com.example.module\"")
+                        .isEqualTo(1);
+                assertThat(countOccurences("<module.*? name=\"com.example.another.module\"", xml))
+                        .as("Expected only 1 occurence of <module name=\"com.example.another.module\"")
+                        .isEqualTo(1);
+
+                assertThat(countOccurences("<module.*? name=\"org.apache.httpcomponents\"", xml))
+                        .as("Expected only 1 occurence of <module name=\"org.apache.httpcomponents\"")
+                        .isEqualTo(1);
+                assertThat(countOccurences("<module.*? name=\"com.example.existing.module\"", xml))
+                        .as("Expected only 1 occurence of <module name=\"com.example.existing.module\"")
+                        .isEqualTo(1);
+            }
+        }
+    }
+
+    private static int countOccurences(String regexp, String string) {
+        Pattern pattern = Pattern.compile(regexp);
+        int counter = 0;
+        int index = 0;
+        Matcher matcher = pattern.matcher(string);
+        while (matcher.find(index)) {
+            counter++;
+            index = matcher.start() + 1;
+        }
+        return counter;
     }
 }

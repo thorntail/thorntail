@@ -178,7 +178,7 @@ public class NestedJarResourceLoader {
                     loaderPath,
                     new File(urlString.substring(5))
             );
-        } else {
+        } else { // TODO remove this else branch entirely, this should never happen and throwing an exception is the right thing to do
             return new AbstractResourceLoader() {
             };
         }

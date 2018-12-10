@@ -21,13 +21,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.literal.NamedLiteral;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Named;
 
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.NamedLiteral;
 import org.wildfly.swarm.spi.api.SocketBindingGroup;
 import org.wildfly.swarm.spi.api.cdi.CommonBean;
 import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
@@ -64,7 +64,7 @@ public class SocketBindingGroupExtension extends AbstractNetworkExtension<Socket
 
         List<SimpleKey> configuredGroups = this.configView.simpleSubkeys(ROOT);
         for (SimpleKey groupName : configuredGroups) {
-            Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, AnyLiteral.INSTANCE);
+            Set<Bean<?>> groups = beanManager.getBeans(SocketBindingGroup.class, Any.Literal.INSTANCE);
             AtomicBoolean producerRequired = new AtomicBoolean(false);
             if (groups
                     .stream()
@@ -80,8 +80,8 @@ public class SocketBindingGroupExtension extends AbstractNetworkExtension<Socket
                     CommonBean<SocketBindingGroup> interfaceBean = CommonBeanBuilder.newBuilder(SocketBindingGroup.class)
                             .beanClass(SocketBindingGroupExtension.class)
                             .scope(ApplicationScoped.class)
-                            .addQualifier(AnyLiteral.INSTANCE)
-                            .addQualifier(new NamedLiteral(group.name()))
+                            .addQualifier(Any.Literal.INSTANCE)
+                            .addQualifier(NamedLiteral.of(group.name()))
                             .createSupplier(() -> group)
                             .addType(SocketBindingGroup.class)
                             .addType(Object.class)

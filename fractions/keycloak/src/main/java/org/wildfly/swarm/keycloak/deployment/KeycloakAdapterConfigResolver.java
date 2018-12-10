@@ -29,13 +29,13 @@ import org.keycloak.adapters.OIDCHttpFacade;
 public class KeycloakAdapterConfigResolver implements KeycloakConfigResolver {
 
     private static Map<String, KeycloakDeployment> pathDeployments;
+
     public static void setPathDeployments(Map<String, KeycloakDeployment> map) {
         pathDeployments = map;
     }
 
     @Override
     public KeycloakDeployment resolve(OIDCHttpFacade.Request request) {
-
         // Select the deployment using the relative request path
         String path = request.getRelativePath();
 
@@ -44,12 +44,16 @@ public class KeycloakAdapterConfigResolver implements KeycloakConfigResolver {
 
         // If no exact match exists then iterate over the pathDeployments entries
         // and find the first deployment whose entry path is a prefix of the request path
-        return dep.orElse(getMatchingPathDeployment(path).orElseThrow(throwException(path)));
+        return dep.orElse(getMatchingPathDeployment(path)
+                .orElseThrow(throwException(path)));
     }
 
     private Optional<KeycloakDeployment> getMatchingPathDeployment(String path) {
-        return pathDeployments.entrySet().stream().filter(e -> path.startsWith(e.getKey()))
-            .findFirst().map(e -> e.getValue());
+        return pathDeployments.entrySet()
+                .stream()
+                .filter(e -> path.startsWith(e.getKey()))
+                .findFirst()
+                .map(Map.Entry::getValue);
     }
 
     private static Supplier<IllegalStateException> throwException(String path) {

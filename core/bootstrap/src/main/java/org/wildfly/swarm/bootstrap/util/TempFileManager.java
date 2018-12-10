@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 /**
  * @author Bob McWhirter
@@ -37,6 +38,8 @@ public class TempFileManager {
     public static final String WFSWARM_TMP_PREFIX = "thorntail";
 
     public static final TempFileManager INSTANCE = new TempFileManager();
+
+    private static final Pattern tempFilePattern = Pattern.compile(WFSWARM_TMP_PREFIX + "\\S+[0-9]{5,}.\\S{5,}");
 
     private TempFileManager() {
         String tmpDir = System.getProperty(TMPDIR_PROPERTY);
@@ -50,6 +53,10 @@ public class TempFileManager {
                 }
             }
         }
+    }
+
+    public static boolean isTempFile(File fp) {
+        return tempFilePattern.matcher(fp.getName()).matches();
     }
 
     public File newTempDirectory(String base, String ext) throws IOException {

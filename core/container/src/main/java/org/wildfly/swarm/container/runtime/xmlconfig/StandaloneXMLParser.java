@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import javax.enterprise.inject.Vetoed;
@@ -30,6 +31,12 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.jboss.as.controller.ProcessType;
+import org.jboss.as.controller.RunningMode;
+import org.jboss.as.controller.RunningModeControl;
+import org.jboss.as.controller.extension.ExtensionRegistry;
+import org.jboss.as.controller.extension.RuntimeHostControllerInfoAccessor;
+import org.jboss.as.controller.parsing.DeferredExtensionContext;
 import org.jboss.as.controller.parsing.Namespace;
 import org.jboss.as.controller.parsing.ProfileParsingCompletionHandler;
 import org.jboss.as.server.parsing.ExtensionHandler;
@@ -40,6 +47,7 @@ import org.jboss.staxmapper.XMLElementReader;
 import org.jboss.staxmapper.XMLExtendedStreamReader;
 import org.jboss.staxmapper.XMLExtendedStreamWriter;
 import org.jboss.staxmapper.XMLMapper;
+import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 
 /**
  * @author Heiko Braun
@@ -54,23 +62,35 @@ public class StandaloneXMLParser {
     private Set<QName> recognizedNames = new HashSet<>();
 
     public StandaloneXMLParser() {
+        ExtensionRegistry extensionRegistry = new ExtensionRegistry(
+                ProcessType.SELF_CONTAINED,
+                new RunningModeControl(RunningMode.NORMAL),
+                null,
+                null,
+                null,
+                RuntimeHostControllerInfoAccessor.SERVER
+        );
+        DeferredExtensionContext deferredExtensionContext =
+            new DeferredExtensionContext(new BootModuleLoader(), extensionRegistry, Executors.newSingleThreadExecutor());
+        parserDelegate = new StandaloneXml(
+            new ExtensionHandler() {
+                @Override
+                public void parseExtensions(XMLExtendedStreamReader reader, ModelNode address, Namespace namespace, List<ModelNode> list) throws XMLStreamException {
+                    reader.discardRemainder(); // noop
+                }
 
-        parserDelegate = new StandaloneXml(new ExtensionHandler() {
-            @Override
-            public void parseExtensions(XMLExtendedStreamReader reader, ModelNode address, Namespace namespace, List<ModelNode> list) throws XMLStreamException {
-                reader.discardRemainder(); // noop
-            }
+                @Override
+                public Set<ProfileParsingCompletionHandler> getProfileParsingCompletionHandlers() {
+                    return Collections.emptySet();
+                }
 
-            @Override
-            public Set<ProfileParsingCompletionHandler> getProfileParsingCompletionHandlers() {
-                return Collections.emptySet();
-            }
-
-            @Override
-            public void writeExtensions(XMLExtendedStreamWriter writer, ModelNode modelNode) throws XMLStreamException {
-                // noop
-            }
-        }, ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
+                @Override
+                public void writeExtensions(XMLExtendedStreamWriter writer, ModelNode modelNode) throws XMLStreamException {
+                    // noop
+                }
+            },
+            deferredExtensionContext,
+            ParsingOption.IGNORE_SUBSYSTEM_FAILURES);
 
         xmlMapper = XMLMapper.Factory.create();
 

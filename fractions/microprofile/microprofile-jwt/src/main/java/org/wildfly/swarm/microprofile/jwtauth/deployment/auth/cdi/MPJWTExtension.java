@@ -74,12 +74,17 @@ public class MPJWTExtension implements Extension {
      */
     public void observeBeforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager beanManager) {
         log.debugf("MPJWTExtension(), adding producers");
-        bbd.addAnnotatedType(beanManager.createAnnotatedType(JWTAuthContextInfoProvider.class));
-        bbd.addAnnotatedType(beanManager.createAnnotatedType(MPJWTProducer.class));
-        bbd.addAnnotatedType(beanManager.createAnnotatedType(PrincipalProducer.class));
-        bbd.addAnnotatedType(beanManager.createAnnotatedType(RawClaimTypeProducer.class));
-        bbd.addAnnotatedType(beanManager.createAnnotatedType(ClaimValueProducer.class));
-        bbd.addAnnotatedType(beanManager.createAnnotatedType(JsonValueProducer.class));
+        String extensionName = MPJWTExtension.class.getName();
+        for (Class<?> clazz : new Class<?>[] {
+                JWTAuthContextInfoProvider.class,
+                MPJWTProducer.class,
+                PrincipalProducer.class,
+                RawClaimTypeProducer.class,
+                ClaimValueProducer.class,
+                JsonValueProducer.class,
+        }) {
+            bbd.addAnnotatedType(beanManager.createAnnotatedType(clazz), extensionName + "_" + clazz.getName());
+        }
     }
 
     /**

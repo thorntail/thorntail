@@ -5,5 +5,8 @@
       <!-- required to use existing Apache HttpClient pool with managed RESTEasy Client -->
       <module name="org.apache.httpcomponents" services="export" export="true"/>
     </dependencies>
+    <exclusions>
+      <module name="com.example.existing.module" slot="extra"/>
+    </exclusions>
   </deployment>
 </jboss-deployment-structure>

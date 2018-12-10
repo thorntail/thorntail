@@ -15,6 +15,31 @@
  */
 package org.jboss.modules.maven;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
+
+import org.jboss.modules.xml.MXParser;
+import org.jboss.modules.xml.XmlPullParser;
+import org.jboss.modules.xml.XmlPullParserException;
+
 import static org.jboss.modules.maven.MavenArtifactUtil.doIo;
 import static org.jboss.modules.xml.ModuleXmlParser.endOfDocument;
 import static org.jboss.modules.xml.ModuleXmlParser.unexpectedContent;
@@ -22,22 +47,6 @@ import static org.jboss.modules.xml.XmlPullParser.END_DOCUMENT;
 import static org.jboss.modules.xml.XmlPullParser.END_TAG;
 import static org.jboss.modules.xml.XmlPullParser.FEATURE_PROCESS_NAMESPACES;
 import static org.jboss.modules.xml.XmlPullParser.START_TAG;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.jboss.modules.xml.MXParser;
-import org.jboss.modules.xml.XmlPullParser;
-import org.jboss.modules.xml.XmlPullParserException;
 
 /**
  * @author Tomaz Cerar (c) 2014 Red Hat Inc.
@@ -55,6 +64,8 @@ final class MavenSettings {
 
     private final List<String> activeProfileNames = new LinkedList<>();
 
+    private final List<Proxy> proxies = new ArrayList<>();
+
     MavenSettings() {
         configureDefaults();
     }
@@ -70,8 +81,17 @@ final class MavenSettings {
             return mavenSettings = doIo(() -> {
                 MavenSettings settings = new MavenSettings();
 
+                Path settingsPath = null;
+
+                if ( System.getProperty( "jboss.modules.settings.xml.url" ) != null ) {
+                    settingsPath = Paths.get( new URL(System.getProperty( "jboss.modules.settings.xml.url")).toURI());
+                }
+
                 Path m2 = Paths.get(System.getProperty("user.home"), ".m2");
-                Path settingsPath = m2.resolve("settings.xml");
+
+                if ( settingsPath == null ) {
+                    settingsPath = m2.resolve("settings.xml");
+                }
 
                 if (Files.notExists(settingsPath)) {
                     String mavenHome = System.getenv("M2_HOME");
@@ -94,8 +114,7 @@ final class MavenSettings {
 
     static MavenSettings parseSettingsXml(Path settings, MavenSettings mavenSettings) throws IOException {
         final MXParser reader = new MXParser();
-
-        try (InputStream source = Files.newInputStream(settings, StandardOpenOption.READ)){
+        try (InputStream source = Files.newInputStream(settings, StandardOpenOption.READ)) {
             reader.setFeature(FEATURE_PROCESS_NAMESPACES, false);
             reader.setInput(source, null);
             int eventType;
@@ -135,6 +154,21 @@ final class MavenSettings {
                             String localRepository = reader.nextText();
                             if (localRepository != null && !localRepository.trim().isEmpty()) {
                                 mavenSettings.setLocalRepository(Paths.get(interpolateVariables(localRepository)));
+                            }
+                            break;
+                        }
+                        case "proxies": {
+                            while ((eventType = reader.nextTag()) != END_DOCUMENT) {
+                                if (eventType == START_TAG) {
+                                    switch (reader.getName()) {
+                                        case "proxy": {
+                                            parseProxy(reader, mavenSettings);
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    break;
+                                }
                             }
                             break;
                         }
@@ -182,6 +216,55 @@ final class MavenSettings {
             }
         }
         throw endOfDocument(reader);
+    }
+
+    static void parseProxy(final XmlPullParser reader, MavenSettings mavenSettings) throws XmlPullParserException, IOException {
+        int eventType;
+        Proxy proxy = new Proxy();
+        while ((eventType = reader.nextTag()) != END_DOCUMENT) {
+            if (eventType == START_TAG) {
+                switch (reader.getName()) {
+                    case "id": {
+                        proxy.setId(reader.nextText());
+                        break;
+                    }
+                    case "active": {
+                        proxy.setActive(Boolean.parseBoolean(reader.nextText()));
+                        break;
+                    }
+                    case "protocol": {
+                        proxy.setProtocol(reader.nextText());
+                        break;
+                    }
+                    case "host": {
+                        proxy.setHost(reader.nextText());
+                        break;
+                    }
+                    case "port": {
+                        proxy.setPort(Integer.parseInt(reader.nextText()));
+                        break;
+                    }
+                    case "username": {
+                        proxy.setUsername(reader.nextText());
+                        break;
+                    }
+                    case "password": {
+                        proxy.setPassword(reader.nextText());
+                        break;
+                    }
+                    case "nonProxyHosts": {
+                        proxy.setNonProxyHosts(reader.nextText());
+                        break;
+                    }
+                    default: {
+                        skip(reader);
+                    }
+                }
+            } else {
+                break;
+            }
+        }
+        mavenSettings.addProxy(proxy);
     }
 
     static void parseProfile(final XmlPullParser reader, MavenSettings mavenSettings) throws XmlPullParserException, IOException {
@@ -302,6 +385,45 @@ final class MavenSettings {
         activeProfileNames.add(profileName);
     }
 
+    public void addProxy(Proxy proxy) {
+        this.proxies.add(proxy);
+    }
+
+    public List<Proxy> getProxies() {
+        return this.proxies;
+    }
+
+    public Proxy getProxyFor(URL url) {
+        for (Proxy proxy : this.proxies) {
+            if (proxy.canProxyFor(url)) {
+                return proxy;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Opens a connection with appropriate proxy and credentials, if required.
+     *
+     * @param url The URL to open.
+     * @return The opened connection.
+     * @throws IOException If an error occurs establishing the connection.
+     */
+    public URLConnection openConnection(URL url) throws IOException {
+        Proxy proxy = getProxyFor(url);
+        URLConnection conn = null;
+
+        if (proxy != null) {
+            conn = url.openConnection(proxy.getProxy());
+            proxy.authenticate(conn);
+        } else {
+            conn = url.openConnection();
+        }
+
+        return conn;
+    }
+
     void resolveActiveSettings() {
         for (String name : activeProfileNames) {
             Profile p = profiles.get(name);
@@ -345,6 +467,139 @@ final class MavenSettings {
         return out.toString();
     }
 
+    static final class Proxy {
+        private String id;
+
+        private boolean active = true;
+
+        private String protocol = "http";
+
+        private String host;
+
+        private int port;
+
+        private String username;
+
+        private String password;
+
+        private Set<NonProxyHost> nonProxyHosts = new HashSet<>();
+
+        private AtomicReference<java.net.Proxy> netProxy = new AtomicReference<>();
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+
+        public String getProtocol() {
+            return protocol;
+        }
+
+        public void setProtocol(String protocol) {
+            this.protocol = protocol;
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public void setPort(int port) {
+            this.port = port;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public void setNonProxyHosts(String nonProxyHosts) {
+            String[] specs = nonProxyHosts.split("\\|");
+            this.nonProxyHosts.clear();
+            for (String spec : specs) {
+                this.nonProxyHosts.add(new NonProxyHost(spec));
+            }
+        }
+
+        public boolean canProxyFor(URL url) {
+            for (NonProxyHost nonProxyHost : this.nonProxyHosts) {
+                if (nonProxyHost.matches(url)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public java.net.Proxy getProxy() {
+            return this.netProxy.updateAndGet(proxy -> {
+                if (proxy == null) {
+                    proxy = new java.net.Proxy(java.net.Proxy.Type.HTTP,
+                                               new InetSocketAddress(getHost(), getPort()));
+                }
+
+                return proxy;
+            });
+        }
+
+        public String getCredentialsBase64() {
+            Base64.Encoder encoder = Base64.getEncoder();
+            return encoder.encodeToString((this.username + ":" + this.password).getBytes());
+        }
+
+        public void authenticate(URLConnection conn) {
+            if (this.username == null && this.password == null) {
+                return;
+            }
+            String authz = "Basic " + getCredentialsBase64();
+            conn.addRequestProperty("Proxy-Authorization", authz);
+        }
+    }
+
+    static final class NonProxyHost {
+        private final Pattern pattern;
+
+        NonProxyHost(String spec) {
+
+            spec = spec.replace(".", "\\.");
+            spec = spec.replace("*", ".*");
+            spec = "^" + spec + "$";
+            this.pattern = Pattern.compile(spec);
+        }
+
+        boolean matches(URL url) {
+            return this.pattern.matcher(url.getHost()).matches();
+        }
+    }
 
     static final class Profile {
         private String id;
@@ -375,4 +630,3 @@ final class MavenSettings {
         }
     }
 }
-

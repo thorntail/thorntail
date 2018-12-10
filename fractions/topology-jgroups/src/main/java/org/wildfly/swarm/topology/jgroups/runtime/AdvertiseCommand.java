@@ -28,7 +28,7 @@ public class AdvertiseCommand implements Command<Void, JGroupsTopologyConnector>
     }
 
     @Override
-    public Void execute(JGroupsTopologyConnector context) throws Exception {
+    public Void execute(JGroupsTopologyConnector context) {
         context.register(this.registration);
         return null;
     }

@@ -25,7 +25,6 @@ import org.jboss.msc.service.ServiceActivator;
 import org.wildfly.swarm.config.EJB3;
 import org.wildfly.swarm.config.JPA;
 import org.wildfly.swarm.config.Undertow;
-import org.wildfly.swarm.config.infinispan.cache_container.EvictionComponent;
 import org.wildfly.swarm.config.infinispan.cache_container.LockingComponent;
 import org.wildfly.swarm.config.infinispan.cache_container.TransactionComponent;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
@@ -93,13 +92,13 @@ public class InfinispanCustomizer implements Customizer {
 
         if (!this.jpa.isUnsatisfied()) {
             this.fraction.cacheContainer("hibernate",
-                    cc -> cc.module("org.hibernate.infinispan")
+                    cc -> cc.module("org.infinispan.hibernate-cache")
                             .localCache("entity",
                                     c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
-                                            .evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
+                                            .objectMemory(om -> om.size(10000L))
                                             .expirationComponent(e -> e.maxIdle(100000L)))
                             .localCache("local-query",
-                                    c -> c.evictionComponent(e -> e.strategy(EvictionComponent.Strategy.LRU).maxEntries(10000L))
+                                    c -> c.objectMemory(om -> om.size(10000L))
                                             .expirationComponent(e -> e.maxIdle(100000L)))
                             .localCache("timestamps"));
         }
@@ -109,33 +108,33 @@ public class InfinispanCustomizer implements Customizer {
     @Produces
     @Dependent
     public ServiceActivator defaultActivator() {
-        return new CacheActivator("server");
+        return new CacheActivator("server", CacheActivator.Type.DEFAULT_CACHE);
     }
 
     @Produces
     @Dependent
     public ServiceActivator undertowActivator() {
-        return createActivatorIfSatisfied(this.undertow, "web");
+        return createActivatorIfSatisfied(this.undertow, "web", CacheActivator.Type.DEFAULT_CACHE);
     }
 
     @Produces
     @Dependent
     public ServiceActivator ejbActivator() {
-        return createActivatorIfSatisfied(this.ejb, "ejb");
+        return createActivatorIfSatisfied(this.ejb, "ejb", CacheActivator.Type.DEFAULT_CACHE);
     }
 
     @Produces
     @Dependent
     public ServiceActivator jpaActivator() {
-        return createActivatorIfSatisfied(this.jpa, "hibernate");
+        return createActivatorIfSatisfied(this.jpa, "hibernate", CacheActivator.Type.CACHE_CONTAINER_CONFIGURATION);
     }
 
-    private ServiceActivator createActivatorIfSatisfied(Instance instance, String cache) {
+    private ServiceActivator createActivatorIfSatisfied(Instance instance, String cacheContainer, CacheActivator.Type type) {
         if (instance.isUnsatisfied()) {
-            MESSAGES.skippingCacheActivation(cache);
+            MESSAGES.skippingCacheActivation(cacheContainer);
             return null;
         } else {
-            return new CacheActivator(cache);
+            return new CacheActivator(cacheContainer, type);
         }
     }
 }

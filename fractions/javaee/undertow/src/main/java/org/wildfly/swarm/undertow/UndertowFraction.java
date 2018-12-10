@@ -35,11 +35,13 @@ import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.ifAnyExplicitlySet;
 import static org.wildfly.swarm.spi.api.Defaultable.integer;
 import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_AJP_PORT;
+import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_BUFFER_CACHE;
 import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HOST;
 import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HTTPS_PORT;
 import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HTTP_LISTENER;
 import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_HTTP_PORT;
 import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_SERVER;
+import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_SERVLET_CONTAINER;
 
 /**
  * @author Bob McWhirter
@@ -60,13 +62,17 @@ public class UndertowFraction extends Undertow<UndertowFraction> implements Frac
     }
 
     public UndertowFraction applyDefaults() {
-        server(new Server(DEFAULT_SERVER)
-                .httpListener(DEFAULT_HTTP_LISTENER, (listener) -> {
-                    listener.socketBinding("http");
-                })
-                .host(new Host(DEFAULT_HOST)))
-                .bufferCache(new BufferCache("default"))
-                .servletContainer(new ServletContainer("default")
+        defaultServer(DEFAULT_SERVER)
+                .defaultVirtualHost(DEFAULT_HOST)
+                .defaultServletContainer(DEFAULT_SERVLET_CONTAINER)
+                .defaultSecurityDomain("other")
+                .server(new Server(DEFAULT_SERVER)
+                        .httpListener(DEFAULT_HTTP_LISTENER, (listener) -> {
+                            listener.socketBinding("http");
+                        })
+                        .host(new Host(DEFAULT_HOST)))
+                .bufferCache(new BufferCache(DEFAULT_BUFFER_CACHE))
+                .servletContainer(new ServletContainer(DEFAULT_SERVLET_CONTAINER)
                         .websocketsSetting(new WebsocketsSetting())
                         .jspSetting(new JSPSetting()))
                 .handlerConfiguration(new HandlerConfiguration());

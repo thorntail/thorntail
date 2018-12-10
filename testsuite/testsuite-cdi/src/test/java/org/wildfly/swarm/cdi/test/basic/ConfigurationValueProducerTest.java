@@ -30,7 +30,7 @@ import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
  * @author George Gastaldi
  */
 @RunWith(Arquillian.class)
-@DefaultDeployment(type = DefaultDeployment.Type.JAR)
+@DefaultDeployment
 public class ConfigurationValueProducerTest {
 
     @Inject

@@ -20,13 +20,13 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.literal.NamedLiteral;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Named;
 
-import org.jboss.weld.literal.AnyLiteral;
-import org.jboss.weld.literal.NamedLiteral;
 import org.wildfly.swarm.container.Interface;
 import org.wildfly.swarm.spi.api.cdi.CommonBean;
 import org.wildfly.swarm.spi.api.cdi.CommonBeanBuilder;
@@ -60,7 +60,7 @@ public class InterfaceExtension extends AbstractNetworkExtension<Interface> {
 
         for (SimpleKey interfaceName : configuredInterfaces) {
 
-            Set<Bean<?>> ifaces = beanManager.getBeans(Interface.class, AnyLiteral.INSTANCE);
+            Set<Bean<?>> ifaces = beanManager.getBeans(Interface.class, Any.Literal.INSTANCE);
 
             if (ifaces
                     .stream()
@@ -73,8 +73,8 @@ public class InterfaceExtension extends AbstractNetworkExtension<Interface> {
                 CommonBean<Interface> interfaceBean = CommonBeanBuilder.newBuilder(Interface.class)
                             .beanClass(InterfaceExtension.class)
                             .scope(ApplicationScoped.class)
-                            .addQualifier(AnyLiteral.INSTANCE)
-                            .addQualifier(new NamedLiteral(interfaceName.name() + "-interface"))
+                            .addQualifier(Any.Literal.INSTANCE)
+                            .addQualifier(NamedLiteral.of(interfaceName.name() + "-interface"))
                             .createSupplier(() -> iface)
                             .addType(Interface.class)
                             .addType(Object.class)

@@ -1,0 +1,33 @@
+= Management Console
+
+Provides HAL, the {WildFly} management console.
+It can access an existing WildFly or Thorntail server over the HTTP management protocol.
+In both cases, management API of the target server must be configured for Cross-Origin Resource Sharing.
+
+In the examples below, we assume that the console is accessible on `http://localhost:8080/console`.
+
+.WildFly
+
+Run the following WildFly CLI commands to let the console access the management API:
+
+[source]
+--
+/core-service=management/management-interface=http-interface:list-add(name=allowed-origins,value='http://localhost:8080')
+
+reload
+--
+
+.Thorntail
+
+Make sure your Thorntail application includes the `management` fraction.
+
+Include the following in your `project-defaults.yml`:
+
+[source]
+--
+thorntail:
+  management:
+    http-interface-management-interface:
+      allowed-origins:
+      - "http://localhost:8080"
+--

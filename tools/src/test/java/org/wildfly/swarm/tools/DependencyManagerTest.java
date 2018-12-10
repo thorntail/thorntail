@@ -36,8 +36,8 @@ public class DependencyManagerTest {
 
     private static MockArtifactResolver RESOLVER = new MockArtifactResolver();
 
-    private static ArtifactSpec SERVLET_SPEC = simple("org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec:jar:1.0.0.Final");
-    private static ArtifactSpec JAXRS_SPEC = simple("org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec:1.0.0.Final", (config)->{
+    private static ArtifactSpec SERVLET_SPEC = simple("org.jboss.spec.javax.servlet:jboss-servlet-api_4.0_spec:jar:1.0.0.Final");
+    private static ArtifactSpec JAXRS_SPEC = simple("org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.1_spec:1.0.1.Final", (config)->{
         config.addDependency( SERVLET_SPEC );
     });
 

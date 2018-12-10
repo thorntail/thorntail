@@ -82,10 +82,10 @@ public class EEFraction extends EE<EEFraction> implements Fraction<EEFraction> {
                         .keepaliveTime(3000L));
 
         defaultBindingsService((bindings) -> {
-            bindings.contextService("java:jboss/ee/concurrency/context/default");
-            bindings.managedExecutorService("java:jboss/ee/concurrency/executor/default");
-            bindings.managedScheduledExecutorService("java:jboss/ee/concurrency/scheduler/default");
-            bindings.managedThreadFactory("java:jboss/ee/concurrency/factory/default");
+            bindings.contextService(CONCURRENCY_CONTEXT_DEFAULT);
+            bindings.managedExecutorService(CONCURRENCY_EXECUTOR_DEFAULT);
+            bindings.managedScheduledExecutorService(CONCURRENCY_SCHEDULER_DEFAULT);
+            bindings.managedThreadFactory(CONCURRENCY_FACTORY_DEFAULT);
             if (config != null) {
                 config.accept(bindings);
             }

@@ -23,13 +23,12 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
-
-import org.jboss.weld.literal.DefaultLiteral;
 
 /**
  * Created by bob on 5/12/17.
@@ -65,8 +64,7 @@ public class DeploymentScopedExtension implements Extension {
 
             @Override
             public Set<Annotation> getQualifiers() {
-                //return ImmutableSet.of(DefaultLiteral.INSTANCE);
-                return Collections.unmodifiableSet(Collections.singleton(DefaultLiteral.INSTANCE));
+                return Collections.unmodifiableSet(Collections.singleton(Default.Literal.INSTANCE));
             }
 
             @Override

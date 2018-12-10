@@ -23,6 +23,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.jar.JarFile;
 
 import org.jboss.modules.DependencySpec;
+import org.jboss.modules.ModuleDependencySpecBuilder;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
@@ -63,16 +64,17 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
         env.bootstrapModules()
                 .forEach((module) -> {
                     builder.addDependency(
-                            DependencySpec.createModuleDependencySpec(
-                                    PathFilters.acceptAll(),
-                                    PathFilters.acceptAll(),
-                                    PathFilters.acceptAll(),
-                                    PathFilters.acceptAll(),
-                                    ClassFilters.acceptAll(),
-                                    ClassFilters.acceptAll(),
-                                    null,
-                                    module,
-                                    false));
+                            new ModuleDependencySpecBuilder()
+                                    .setImportFilter(PathFilters.acceptAll())
+                                    .setExportFilter(PathFilters.acceptAll())
+                                    .setResourceImportFilter(PathFilters.acceptAll())
+                                    .setResourceExportFilter(PathFilters.acceptAll())
+                                    .setClassImportFilter(ClassFilters.acceptAll())
+                                    .setClassExportFilter(ClassFilters.acceptAll())
+                                    .setModuleLoader(null)
+                                    .setName(module)
+                                    .setOptional(false)
+                                    .build());
 
                 });
 
@@ -90,21 +92,35 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
             throw new ModuleLoadException(e);
         }
 
-        builder.addDependency(DependencySpec.createModuleDependencySpec("org.jboss.modules"));
-        builder.addDependency(DependencySpec.createModuleDependencySpec("org.jboss.shrinkwrap"));
-        builder.addDependency(DependencySpec.createModuleDependencySpec("org.wildfly.swarm.configuration", false, true));
-        builder.addDependency(DependencySpec.createModuleDependencySpec("sun.jdk", false, true));
+        builder.addDependency(new ModuleDependencySpecBuilder()
+                .setName("org.jboss.modules")
+                .build());
+        builder.addDependency(new ModuleDependencySpecBuilder()
+                .setName("org.jboss.shrinkwrap")
+                .build());
+        builder.addDependency(new ModuleDependencySpecBuilder()
+                .setName("org.wildfly.swarm.configuration")
+                .setExport(false)
+                .setOptional(true)
+                .build());
+        builder.addDependency(new ModuleDependencySpecBuilder()
+                .setName("sun.jdk")
+                .setExport(false)
+                .setOptional(true)
+                .build());
 
         builder.addDependency(
-                DependencySpec.createModuleDependencySpec(
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        PathFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        ClassFilters.acceptAll(),
-                        null,
-                        "org.wildfly.swarm.container:api", true));
+                new ModuleDependencySpecBuilder()
+                        .setImportFilter(PathFilters.acceptAll())
+                        .setExportFilter(PathFilters.acceptAll())
+                        .setResourceImportFilter(PathFilters.acceptAll())
+                        .setResourceExportFilter(PathFilters.acceptAll())
+                        .setClassImportFilter(ClassFilters.acceptAll())
+                        .setClassExportFilter(ClassFilters.acceptAll())
+                        .setModuleLoader(null)
+                        .setName("org.wildfly.swarm.container:api")
+                        .setOptional(true)
+                        .build());
 
         builder.addDependency(DependencySpec.createLocalDependencySpec());
     }

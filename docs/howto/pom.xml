@@ -22,11 +22,15 @@
     <version.arquillian>1.1.12.Final</version.arquillian>
     <version.arquillian-drone>2.0.1.Final</version.arquillian-drone>
     <version.arquillian-graphene>2.1.0.Alpha2</version.arquillian-graphene>
+    <version.guava>19.0</version.guava>
     <version.junit>4.11</version.junit>
     <version.h2>1.4.187</version.h2>
     <version.jaxrs-api>1.0.0.Final</version.jaxrs-api>
     <version.postgresql>9.4.1207</version.postgresql>
     <version.mysql>5.1.38</version.mysql>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
   <modules>
@@ -89,18 +93,6 @@
     </resources>
     <plugins>
       <plugin>
-        <groupId>io.thorntail</groupId>
-        <artifactId>thorntail-maven-plugin</artifactId>
-        <version>${version.thorntail}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>package</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>${version.maven-war-plugin}</version>
@@ -127,6 +119,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${version.guava}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.jboss.arquillian</groupId>

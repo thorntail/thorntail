@@ -53,6 +53,10 @@
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>
+      <artifactId>infinispan</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.thorntail</groupId>
       <artifactId>bootstrap</artifactId>
     </dependency>
     <dependency>
@@ -110,8 +114,8 @@
     </dependency>
     <!-- Provided APIs -->
     <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <groupId>javax.persistence</groupId>
+      <artifactId>javax.persistence-api</artifactId>
     </dependency>
   </dependencies>
 

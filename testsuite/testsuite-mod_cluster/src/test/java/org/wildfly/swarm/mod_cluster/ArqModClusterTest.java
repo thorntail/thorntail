@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.mod_cluster;
 
-import java.util.concurrent.CountDownLatch;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -49,8 +47,8 @@ public class ArqModClusterTest {
     private ServiceRegistry registry;
 
     @Test
-    public void testActive() throws InterruptedException {
-        ServiceController<?> config = registry.getService(ServiceName.parse("org.wildfly.mod_cluster.config"));
+    public void testActive() {
+        ServiceController<?> config = registry.getService(ServiceName.parse("org.wildfly.mod_cluster.service.modcluster"));
         assertNotNull(config);
         ServiceController<?> socketBinding = registry.getService(ServiceName.parse("org.wildfly.network.socket-binding.modcluster"));
         assertNotNull(socketBinding);

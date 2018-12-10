@@ -20,7 +20,6 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.wildfly.swarm.config.infinispan.CacheContainer;
-import org.wildfly.swarm.config.infinispan.cache_container.EvictionComponent;
 import org.wildfly.swarm.infinispan.InfinispanFraction;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
@@ -42,18 +41,12 @@ public class KeycloakCacheCustomizer implements Customizer {
 
         CacheContainer cache = infinispan.subresources().cacheContainer("keycloak");
         if (cache == null) {
-            infinispan.cacheContainer("keycloak", (c) -> c.jndiName("infinispan/Keycloak")
-                    .localCache("realms", (localCache) -> {
-                        localCache.evictionComponent((evict) -> {
-                            evict.maxEntries(10000L);
-                            evict.strategy(EvictionComponent.Strategy.LRU);
-                        });
+            infinispan.cacheContainer("keycloak", (c) ->
+                    c.localCache("realms", (localCache) -> {
+                        localCache.objectMemory(om -> om.size(10000L));
                     })
                     .localCache("users", (localCache) -> {
-                        localCache.evictionComponent((evict) -> {
-                            evict.maxEntries(10000L);
-                            evict.strategy(EvictionComponent.Strategy.LRU);
-                        });
+                        localCache.objectMemory(om -> om.size(10000L));
                     })
                     .localCache("sessions")
                     .localCache("authenticationSessions")
@@ -63,26 +56,16 @@ public class KeycloakCacheCustomizer implements Customizer {
                     .localCache("loginFailures")
                     .localCache("work")
                     .localCache("authorization", (localCache) -> {
-                        localCache.evictionComponent((evict) -> {
-                            evict.strategy(EvictionComponent.Strategy.LRU);
-                            evict.maxEntries(100L);
-
-                        });
+                        localCache.objectMemory(om -> om.size(100L));
                     })
                     .localCache("keys", (localCache) -> {
-                        localCache.evictionComponent((evict) -> {
-                            evict.strategy(EvictionComponent.Strategy.LRU);
-                            evict.maxEntries(1000L);
-                        });
+                        localCache.objectMemory(om -> om.size(1000L));
                         localCache.expirationComponent((expire) -> {
                             expire.maxIdle(3600000L);
                         });
                     })
                     .localCache("actionTokens", (localCache) -> {
-                        localCache.evictionComponent((evict) -> {
-                            evict.strategy(EvictionComponent.Strategy.NONE);
-                            evict.maxEntries((long) -1);
-                        });
+                        localCache.objectMemory(om -> om.size((long)-1));
                         localCache.expirationComponent((expire) -> {
                             expire.maxIdle((long) -1);
                             expire.interval((long) 300000);

@@ -41,19 +41,16 @@ import static org.wildfly.swarm.spi.api.ClassLoading.withTCCL;
 public class JBossDeploymentStructureAsset implements Asset {
 
     public JBossDeploymentStructureAsset() {
-        this.descriptor =
-                withTCCL(Descriptors.class.getClassLoader(),
-                        () -> Descriptors.create(JBossDeploymentStructureDescriptor.class));
+        this.descriptor = withTCCL(Descriptors.class.getClassLoader(),
+                () -> Descriptors.create(JBossDeploymentStructureDescriptor.class));
     }
 
     public JBossDeploymentStructureAsset(InputStream fromStream) {
-        this.descriptor =
-                withTCCL(Descriptors.class.getClassLoader(),
-                        () -> Descriptors.importAs(JBossDeploymentStructureDescriptor.class)
-                                .fromStream(fromStream));
+        this.descriptor = withTCCL(Descriptors.class.getClassLoader(),
+                () -> Descriptors.importAs(JBossDeploymentStructureDescriptor.class).fromStream(fromStream));
 
         // Import dependencies and exclusions into internal structure
-        DeploymentType<JBossDeploymentStructureDescriptor> deployment = this.descriptor.getAllDeployment().get(0);
+        DeploymentType<JBossDeploymentStructureDescriptor> deployment = this.descriptor.getOrCreateDeployment();
         if (deployment != null) {
             DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>> dependencies = deployment.getOrCreateDependencies();
             if (dependencies != null) {
@@ -63,8 +60,6 @@ public class JBossDeploymentStructureAsset implements Asset {
                                 .map(this::convert)
                                 .collect(Collectors.toList())
                 );
-
-                dependencies.removeAllModule();
             }
 
             ExclusionsType<DeploymentType<JBossDeploymentStructureDescriptor>> exclusions = deployment.getOrCreateExclusions();
@@ -131,6 +126,7 @@ public class JBossDeploymentStructureAsset implements Asset {
         if (this.deploymentExclusions.size() > 0 || this.deploymentModules.size() > 0) {
             deployment = this.descriptor.getOrCreateDeployment();
 
+            deployment.getOrCreateDependencies().removeAllModule();
             for (Module deploymentModule : this.deploymentModules) {
                 ModuleDependencyType<DependenciesType<DeploymentType<JBossDeploymentStructureDescriptor>>> module =
                         deployment.getOrCreateDependencies()
@@ -183,6 +179,7 @@ public class JBossDeploymentStructureAsset implements Asset {
                 }
             }
 
+            deployment.getOrCreateExclusions().removeAllModule();
             for (Module excludedModule : this.deploymentExclusions) {
                 deployment.getOrCreateExclusions()
                         .createModule()

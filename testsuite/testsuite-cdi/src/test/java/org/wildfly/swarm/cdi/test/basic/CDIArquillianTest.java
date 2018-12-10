@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-@DefaultDeployment(type = DefaultDeployment.Type.JAR)
+@DefaultDeployment
 public class CDIArquillianTest {
 
     @Inject

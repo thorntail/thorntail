@@ -30,7 +30,7 @@ import org.wildfly.swarm.arquillian.DefaultDeployment;
  * @author Martin Kouba
  */
 @RunWith(Arquillian.class)
-@DefaultDeployment(type = DefaultDeployment.Type.WAR)
+@DefaultDeployment
 public class DefaultDeploymentProjectDependencyTest {
 
     @Inject

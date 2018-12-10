@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.jar.JarFile;
 
 import org.jboss.modules.DependencySpec;
+import org.jboss.modules.ModuleDependencySpecBuilder;
 import org.jboss.modules.ModuleLoadException;
 import org.jboss.modules.ModuleLoader;
 import org.jboss.modules.ModuleSpec;
@@ -84,9 +85,15 @@ public class BootstrapModuleFinder extends AbstractSingleModuleFinder {
                     });
 
             builder.addDependency(DependencySpec.createLocalDependencySpec());
-            builder.addDependency(DependencySpec.createModuleDependencySpec("org.jboss.modules"));
-            builder.addDependency(DependencySpec.createModuleDependencySpec("org.jboss.shrinkwrap"));
-            builder.addDependency(DependencySpec.createModuleDependencySpec("org.yaml.snakeyaml"));
+            builder.addDependency(new ModuleDependencySpecBuilder()
+                    .setName("org.jboss.modules")
+                    .build());
+            builder.addDependency(new ModuleDependencySpecBuilder()
+                    .setName("org.jboss.shrinkwrap")
+                    .build());
+            builder.addDependency(new ModuleDependencySpecBuilder()
+                    .setName("org.yaml.snakeyaml")
+                    .build());
 
             HashSet<String> paths = new HashSet<>();
             paths.add("org/wildfly/swarm/bootstrap/env");

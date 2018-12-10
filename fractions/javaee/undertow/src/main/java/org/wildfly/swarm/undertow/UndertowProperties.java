@@ -32,4 +32,6 @@ public interface UndertowProperties {
     String DEFAULT_HTTP_LISTENER = "default";
     String DEFAULT_HTTPS_LISTENER = "default-https";
     String DEFAULT_HOST = "default-host";
+    String DEFAULT_SERVLET_CONTAINER = "default";
+    String DEFAULT_BUFFER_CACHE = "default";
 }

@@ -23,13 +23,13 @@
 
   <packaging>pom</packaging>
 
-  <url>http://wildfly-swarm.io/</url>
+  <url>http://thorntail.io/</url>
   <developers>
     <developer>
-      <id>wildfly-swarm.io</id>
+      <id>thorntail.io</id>
       <name>Thorntail Community</name>
       <organization>Thorntail</organization>
-      <organizationUrl>http://wildfly-swarm.io/</organizationUrl>
+      <organizationUrl>http://thorntail.io/</organizationUrl>
     </developer>
   </developers>
 

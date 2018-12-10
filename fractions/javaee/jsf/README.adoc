@@ -1,3 +1,3 @@
 = JSF
 
-Provides support for JavaServer Faces according to JSR-344.
+Provides support for JavaServer Faces 2.3 according to JSR-372.
