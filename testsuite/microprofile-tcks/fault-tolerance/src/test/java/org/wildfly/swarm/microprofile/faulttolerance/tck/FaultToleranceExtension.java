@@ -16,6 +16,7 @@
 package org.wildfly.swarm.microprofile.faulttolerance.tck;
 
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
+import org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**
@@ -27,6 +28,7 @@ public class FaultToleranceExtension implements LoadableExtension {
     @Override
     public void register(ExtensionBuilder builder) {
         builder.service(ApplicationArchiveProcessor.class, FaultToleranceApplicationArchiveProcessor.class);
+        builder.service(AuxiliaryArchiveAppender.class, FaultToleranceAuxiliaryArchiveAppender.class);
     }
 
 }
