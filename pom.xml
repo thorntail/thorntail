@@ -355,72 +355,6 @@
 
       <dependency>
         <groupId>io.thorntail</groupId>
-        <artifactId>camel-core</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>camel-activemq</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>camel-cdi</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>camel-cxf</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>camel-ejb</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>camel-jaxb</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>camel-jms</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>camel-jmx</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>camel-jpa</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>camel-mail</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>camel-ognl</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>camel-swagger</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
-        <artifactId>camel-undertow</artifactId>
-        <version>2.3.0.Final-SNAPSHOT</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.thorntail</groupId>
         <artifactId>cdi</artifactId>
         <version>2.3.0.Final-SNAPSHOT</version>
       </dependency>
@@ -1139,7 +1073,6 @@
         <module>fractions/wildfly/jgroups</module>
 
         <module>fractions/asciidoctorj</module>
-        <module>fractions/camel</module>
         <module>fractions/drools-server</module>
         <module>fractions/fluentd</module>
         <module>fractions/flyway</module>
@@ -1285,14 +1218,6 @@
         <module>testsuite/testsuite-jose</module>
         <module>testsuite/testsuite-asciidoctorj</module>
         <module>testsuite/testsuite-batch-jberet</module>
-        <module>testsuite/testsuite-camel-cdi</module>
-        <module>testsuite/testsuite-camel-core</module>
-        <module>testsuite/testsuite-camel-cxf</module>
-        <module>testsuite/testsuite-camel-ejb</module>
-        <module>testsuite/testsuite-camel-jms</module>
-        <module>testsuite/testsuite-camel-jmx</module>
-        <module>testsuite/testsuite-camel-jpa</module>
-        <module>testsuite/testsuite-camel-ognl</module>
         <module>testsuite/testsuite-cdi-jaxrsapi</module>
         <module>testsuite/testsuite-cdi-jaxws</module>
         <module>testsuite/testsuite-classloader</module>

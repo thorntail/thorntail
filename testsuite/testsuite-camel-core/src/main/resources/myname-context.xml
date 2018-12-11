@@ -1,6 +1,0 @@
-<route id="myname">
-  <from uri="direct:start"/>
-  <transform>
-    <simple>Hello #{body}</simple>
-  </transform>
-</route>
