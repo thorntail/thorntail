@@ -25,10 +25,14 @@
       <module name="javax.enterprise.concurrent.api" slot="main"/>
       <module name="org.jboss.logging" slot="main"/>
       <module name="org.eclipse.microprofile.config.api" export="true"/>
+      <module name="io.smallrye.metrics" export="true"/>
       <module name="org.wildfly.extension.microprofile.config" export="true"/>
       <module name="org.wildfly.swarm.configuration.microprofile.config" slot="main"/>
+      <module name="org.wildfly.swarm.microprofile.metrics" slot="main"/>
       <module name="org.wildfly.swarm.microprofile.faulttolerance" slot="deployment"/>
       <module name="org.eclipse.microprofile.faulttolerance" export="true"/>
       <module name="com.netflix.hystrix" slot="main"/>
+      <module name="org.jboss.weld.core" export="true"/>
+      <module name="org.jboss.weld.spi" export="true"/>
    </dependencies>
 </module>

@@ -13,3 +13,10 @@ swarm:
               # Do not interrupt command execution when a timeout occurs - needed for bulkhead tests
               interruptOnTimeout:
                 false
+              timeoutInMilliseconds:
+                3500
+        fallback:
+          isolation:
+            semaphore:
+              maxConcurrentRequests:
+                50
