@@ -1,5 +1,0 @@
-
-swarm:
-  camel:
-    contexts:
-      myname: myname-context.xml
