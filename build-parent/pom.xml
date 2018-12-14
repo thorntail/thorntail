@@ -104,6 +104,9 @@
 
     <version.maven.aether>3.2.5</version.maven.aether>
 
+    <version.resteasy>3.6.1.Final</version.resteasy>
+    <version.org.glassfish.javax.json>1.1.2</version.org.glassfish.javax.json>
+
     <!-- MicroProfile APIs -->
     <!-- NOTE: we cannot use MP BOM as it does not define dependencyManagement -->
     <version.microprofile-config>1.3</version.microprofile-config>
@@ -450,6 +453,18 @@
         <groupId>org.eclipse.microprofile.jwt</groupId>
         <artifactId>microprofile-jwt-auth-api</artifactId>
         <version>${version.microprofile-jwt-auth}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxrs</artifactId>
+        <version>${version.resteasy}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-client</artifactId>
+        <version>${version.resteasy}</version>
       </dependency>
 
       <dependency>
