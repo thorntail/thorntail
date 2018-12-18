@@ -1,0 +1,6 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="3.0">
+  <context-param>
+    <param-name>skipOpenTracingResolver</param-name>
+    <param-value>true</param-value>
+  </context-param>
+</web-app>
