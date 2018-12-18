@@ -41,6 +41,6 @@ public class DeploymentProcessor implements ApplicationArchiveProcessor {
 
     WebArchive war = WebArchive.class.cast(archive);
     war.addAsLibraries(extensionsJar);
-
+    war.setWebXML("web.xml");
   }
 }

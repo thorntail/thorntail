@@ -16,10 +16,8 @@
 
 package org.wildfly.swarm.mpopentracing.deployment;
 
-import io.opentracing.Tracer;
 import io.opentracing.contrib.jaxrs2.server.SpanFinishingFilter;
 import java.util.EnumSet;
-import javax.inject.Inject;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration.Dynamic;
 import javax.servlet.ServletContext;
@@ -33,14 +31,11 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class OpenTracingContextInitializer implements ServletContextListener {
 
-  @Inject
-  private Tracer tracer;
-
   @Override
   public void contextInitialized(ServletContextEvent servletContextEvent) {
     ServletContext servletContext = servletContextEvent.getServletContext();
     Dynamic filterRegistration = servletContext
-        .addFilter("tracingFilter", new SpanFinishingFilter(tracer));
+        .addFilter("tracingFilter", new SpanFinishingFilter());
     filterRegistration.setAsyncSupported(true);
     filterRegistration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*");
   }

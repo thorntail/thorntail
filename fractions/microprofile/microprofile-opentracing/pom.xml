@@ -57,6 +57,10 @@
       <artifactId>opentracing-tracerresolver</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>microprofile-config</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -85,6 +89,11 @@
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-jaxrs2</artifactId>
       <version>${version.opentracing.jaxrs}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-interceptors</artifactId>
+      <version>${version.opentracing.interceptors}</version>
     </dependency>
 
     <dependency>
