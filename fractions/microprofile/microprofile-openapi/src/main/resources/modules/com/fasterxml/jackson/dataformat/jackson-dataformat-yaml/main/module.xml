@@ -15,7 +15,7 @@
   -->
 <module xmlns="urn:jboss:module:1.3" name="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml">
    <resources>
-      <artifact name="com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${version.com.fasterxml.jackson.dataformat}"/>
+      <artifact name="com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${version.com.fasterxml.jackson}"/>
       <artifact name="org.yaml:snakeyaml:${version.org.snakeyaml}" />
    </resources>
    <dependencies>
