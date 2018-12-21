@@ -985,7 +985,6 @@
     <module>fractions/microprofile/microprofile-config</module>
     <module>fractions/microprofile/microprofile-health</module>
     <module>fractions/microprofile/microprofile-jwt</module>
-    <module>fractions/microprofile/microprofile-jwt-keycloak</module>
     <module>fractions/microprofile/microprofile-metrics</module>
     <module>fractions/microprofile/microprofile-openapi</module>
     <module>fractions/microprofile/microprofile-fault-tolerance</module>
