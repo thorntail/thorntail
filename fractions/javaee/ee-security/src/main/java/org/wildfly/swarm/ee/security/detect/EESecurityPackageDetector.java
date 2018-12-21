@@ -20,7 +20,7 @@ import org.wildfly.swarm.spi.meta.PackageFractionDetector;
 public class EESecurityPackageDetector extends PackageFractionDetector {
 
     public EESecurityPackageDetector() {
-        anyPackageOf("javax.enterprise.security");
+        anyPackageOf("javax.security.enterprise");
     }
 
     @Override
