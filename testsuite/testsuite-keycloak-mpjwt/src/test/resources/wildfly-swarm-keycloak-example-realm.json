@@ -1,0 +1,127 @@
+{
+  "id" : "wildfly-swarm-keycloak-example",
+  "realm" : "wildfly-swarm-keycloak-example",
+  "enabled" : true,
+  "sslRequired" : "external",
+  "roles" : {
+    "realm" : [ {
+      "id" : "86cc4c9c-9c6f-47cc-87b8-7755618c1d56",
+      "name" : "admin",
+      "scopeParamRequired" : false,
+      "composite" : false,
+      "clientRole" : false,
+      "containerId" : "wildfly-swarm-keycloak-example"
+    } ],
+    "client" : {
+      "curl" : [ ],
+      "realm-management" : [ ],
+      "wildfly-swarm-keycloak-example" : [ ],
+      "security-admin-console" : [ ],
+      "admin-cli" : [ ],
+      "broker" : [ ],
+      "account" : [ ]
+    }
+  },
+  "requiredCredentials" : [ "password" ],
+  "users" : [ {
+    "id" : "6ea705a3-f523-45a4-aca3-dc22e6c24f4f",
+    "createdTimestamp" : 1484340557451,
+    "username" : "user1",
+    "enabled" : true,
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "gjPMPgJ42FC2u/erwTWG3jgBlDSgI97iv50kLvHJJBlXSQ7snHzLrUojPtjkQTdswIv4eGYt7k3mrZBewc5nIg==",
+      "salt" : "g1OYhdfFGct8WcvSEg+FRg==",
+      "hashIterations" : 20000,
+      "algorithm" : "pbkdf2",
+      "createdDate" : 1484340574721
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "realmRoles" : [ "admin", "offline_access", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    }
+  } ],
+  "clientScopeMappings" : {
+    "realm-management" : [ {
+      "client" : "admin-cli",
+      "roles" : [ "realm-admin" ]
+    }, {
+      "client" : "security-admin-console",
+      "roles" : [ "realm-admin" ]
+    } ]
+  },
+  "clients" : [ {
+    "id" : "04bc7653-26d3-45fa-9da2-0df7eeb50d4b",
+    "clientId" : "account",
+    "name" : "${client_account}",
+    "baseUrl" : "/auth/realms/wildfly-swarm-keycloak-example/account",
+    "enabled" : true,
+    "clientAuthenticatorType" : "client-secret",
+    "secret" : "da8f7949-c802-4b66-8bf1-33dd312d8cab",
+    "defaultRoles" : [ "view-profile", "manage-account" ],
+    "redirectUris" : [ "/auth/realms/wildfly-swarm-keycloak-example/account/*" ]
+  }, {
+    "id" : "5f0f33e4-9c15-41f9-8539-6d5140c74f0a",
+    "clientId" : "admin-cli",
+    "name" : "${client_admin-cli}",
+    "enabled" : true,
+    "clientAuthenticatorType" : "client-secret",
+    "secret" : "f7e5e7f0-5b89-4bb1-89c4-9f95ae25ea32",
+    "directAccessGrantsEnabled" : true,
+    "publicClient" : true
+  }, {
+    "id" : "30c09f91-5f0e-4a85-a738-8bf4de61b76d",
+    "clientId" : "broker",
+    "name" : "${client_broker}",
+    "enabled" : true,
+    "clientAuthenticatorType" : "client-secret",
+    "secret" : "f6146ff3-fa95-4a25-a3fb-a1364f16dffc",
+    "standardFlowEnabled" : true
+  }, {
+    "id" : "75987370-84eb-4474-8a40-0e550c601f84",
+    "clientId" : "curl",
+    "enabled" : true,
+    "clientAuthenticatorType" : "client-secret",
+    "secret" : "056b73c1-7078-411d-80ec-87d41c55c3b4",
+    "redirectUris" : [ "http://localhost" ],
+    "standardFlowEnabled" : true,
+    "directAccessGrantsEnabled" : true,
+    "publicClient" : true,
+    "protocol" : "openid-connect",
+    "fullScopeAllowed" : true
+  }, {
+    "id" : "accdf776-8089-4ee1-a6cc-733750b8e2ca",
+    "clientId" : "realm-management",
+    "name" : "${client_realm-management}",
+    "enabled" : true,
+    "clientAuthenticatorType" : "client-secret",
+    "secret" : "e3ff909c-cf84-4718-847a-7ea59cfcebee",
+    "bearerOnly" : true,
+    "standardFlowEnabled" : true
+  }, {
+    "id" : "dfc8c058-3a8c-4e79-804e-dde00ebedac8",
+    "clientId" : "security-admin-console",
+    "name" : "${client_security-admin-console}",
+    "baseUrl" : "/auth/admin/wildfly-swarm-keycloak-example/console/index.html",
+    "enabled" : true,
+    "clientAuthenticatorType" : "client-secret",
+    "secret" : "b5f18632-d218-43f6-906b-4a4fd63019d1",
+    "redirectUris" : [ "/auth/admin/wildfly-swarm-keycloak-example/console/*" ],
+    "standardFlowEnabled" : true,
+    "publicClient" : true
+  }, {
+    "id" : "71a2ca91-0e4d-4ebe-822c-fdab6f6c63d4",
+    "clientId" : "wildfly-swarm-keycloak-example",
+    "enabled" : true,
+    "clientAuthenticatorType" : "client-secret",
+    "secret" : "b4ef589e-b369-419c-aa99-fe48e521a373",
+    "bearerOnly" : true,
+    "standardFlowEnabled" : true,
+    "directAccessGrantsEnabled" : true,
+    "protocol" : "openid-connect",
+    "fullScopeAllowed" : true
+  } ],
+  
+  "keycloakVersion" : "3.4.0.Final"
+}

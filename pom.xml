@@ -985,6 +985,7 @@
     <module>fractions/microprofile/microprofile-config</module>
     <module>fractions/microprofile/microprofile-health</module>
     <module>fractions/microprofile/microprofile-jwt</module>
+    <module>fractions/microprofile/microprofile-jwt-keycloak</module>
     <module>fractions/microprofile/microprofile-metrics</module>
     <module>fractions/microprofile/microprofile-openapi</module>
     <module>fractions/microprofile/microprofile-fault-tolerance</module>
@@ -1231,6 +1232,7 @@
         <module>testsuite/testsuite-jolokia</module>
         <module>testsuite/testsuite-jolokia-keycloak</module>
         <module>testsuite/testsuite-keycloak</module>
+        <module>testsuite/testsuite-keycloak-mpjwt</module>
         <module>testsuite/testsuite-keycloak-server</module>
         <module>testsuite/testsuite-logstash</module>
         <module>testsuite/testsuite-mail</module>
