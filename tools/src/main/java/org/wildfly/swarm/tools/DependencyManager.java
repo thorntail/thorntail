@@ -70,7 +70,7 @@ public class DependencyManager implements ResolvedDependencies {
 
     @Override
     public ArtifactSpec findWildFlySwarmBootstrapJar() {
-        return findArtifact(FractionDescriptor.THORNTAIL_GROUP_ID, WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID, null, JAR, null, false);
+        return findArtifact(FractionDescriptor.THORNTAIL_GROUP_ID, WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID, null, JAR, null, true);
     }
 
     @Override
