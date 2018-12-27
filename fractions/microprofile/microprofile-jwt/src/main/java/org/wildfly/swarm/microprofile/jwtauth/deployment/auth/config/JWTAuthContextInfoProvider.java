@@ -75,14 +75,14 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
         is repaired.
          */
         if (NONE.equals(publicKeyPemEnc.get()) && NONE.equals(jwksUri.get()) &&
-                NONE.equals(super.getMpJwtublicKey().get()) && NONE.equals(super.getMpJwtLocation().get())) {
+                NONE.equals(super.getMpJwtPublicKey().get()) && NONE.equals(super.getMpJwtLocation().get())) {
             return Optional.empty();
         }
         JWTAuthContextInfo contextInfo = new JWTAuthContextInfo();
         // Look to MP-JWT values first
-        if (super.getMpJwtublicKey().isPresent() && !NONE.equals(super.getMpJwtublicKey().get())) {
+        if (super.getMpJwtPublicKey().isPresent() && !NONE.equals(super.getMpJwtPublicKey().get())) {
             // Need to decode what this is...
-            Optional<String> mpJwtublicKey = super.getMpJwtublicKey();
+            Optional<String> mpJwtublicKey = super.getMpJwtPublicKey();
             try {
                 RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodeJWKSPublicKey(mpJwtublicKey.get());
                 contextInfo.setSignerKey(pk);

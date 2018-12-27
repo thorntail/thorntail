@@ -89,11 +89,11 @@ public class KeycloakMicroprofileJwtTest {
     @RunAsClient
     public void testResourceIsSecured() throws Exception {
         final String tokenUri =
-            "http://localhost:8080/auth/realms/wildfly-swarm-keycloak-example/protocol/openid-connect/token";
+            "http://localhost:8080/auth/realms/thorntail-cmd-client/protocol/openid-connect/token";
         String response =
             ClientBuilder.newClient().target(tokenUri).request()
                 .post(Entity.form(
-                        new Form().param("grant_type", "password").param("client_id", "curl")
+                        new Form().param("grant_type", "password").param("client_id", "thorntail-cmd-client-example")
                                   .param("username", "user1").param("password", "password1")),
                         String.class);
         String accessToken = getAccessTokenFromResponse(response);
