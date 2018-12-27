@@ -62,6 +62,8 @@ public class ThorntailExtension implements ThorntailConfiguration {
 
     private Map<DependencyDescriptor, Set<DependencyDescriptor>> dependencyMap;
 
+    private Map<DependencyDescriptor, Set<DependencyDescriptor>> testDependencyMap;
+
     // Transient references that will not be included as part of Gradle's cache serialization.
     private transient Project project;
 
@@ -256,9 +258,20 @@ public class ThorntailExtension implements ThorntailConfiguration {
     @Override
     public Map<DependencyDescriptor, Set<DependencyDescriptor>> getDependencies() {
         if (dependencyMap == null) {
-            dependencyMap = GradleDependencyResolutionHelper.determineProjectDependencies(project, "default");
+            dependencyMap = GradleDependencyResolutionHelper.determineProjectDependencies(project, "runtimeClasspath", false);
         }
         return dependencyMap;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<DependencyDescriptor, Set<DependencyDescriptor>> getTestDependencies() {
+        if (testDependencyMap == null) {
+            testDependencyMap = GradleDependencyResolutionHelper.determineProjectDependencies(project, "testRuntimeClasspath", true);
+        }
+        return testDependencyMap;
     }
 
     /**
