@@ -16,7 +16,10 @@
 package org.wildfly.swarm.plugin.gradle;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -270,6 +273,34 @@ public class ThorntailExtension implements ThorntailConfiguration {
     public Map<DependencyDescriptor, Set<DependencyDescriptor>> getTestDependencies() {
         if (testDependencyMap == null) {
             testDependencyMap = GradleDependencyResolutionHelper.determineProjectDependencies(project, "testRuntimeClasspath", true);
+
+            // The Arquillian adapter uses its own ArtifactResolver which makes things a little challenging.
+            // We need to prune the map for "project" dependencies and make sure they have no dependencies explicitly called out.
+            // This will ensure that there is no transitive resolution being performed on it as "isPresolved" will return true.
+            Set<DependencyDescriptor> addFinally = new HashSet<>();
+            Map<DependencyDescriptor, Set<DependencyDescriptor>> depPrj = new HashMap<>();
+            testDependencyMap.forEach((key, values) -> {
+
+                // Check if any of the elements in the "value" set represent a dependent project-module.
+                // If they do, then move it to the top level.
+                Iterator<DependencyDescriptor> itr = values.iterator();
+                while (itr.hasNext()) {
+                    DependencyDescriptor d = itr.next();
+                    if (GradleDependencyResolutionHelper.isProject(project, d)) {
+                        itr.remove();
+                        addFinally.add(d);
+                    }
+                }
+
+                // Check if the "key" itself represents a dependent project-module.
+                // If it does, then move all the children to top-level.
+                if (GradleDependencyResolutionHelper.isProject(project, key)) {
+                    addFinally.addAll(values);
+                    values.clear();
+                }
+            });
+
+            addFinally.forEach(d -> testDependencyMap.putIfAbsent(d, Collections.emptySet()));
         }
         return testDependencyMap;
     }

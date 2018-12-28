@@ -78,6 +78,19 @@ public final class GradleDependencyResolutionHelper {
         return pluginVersion;
     }
 
+
+    /**
+     * Convenience method to determine if the given dependency descriptor represents an internal Gradle project or not.
+     *
+     * @param project    the Gradle project reference.
+     * @param descriptor the dependency descriptor.
+     * @return true if the descriptor represents a Gradle project, false otherwise.
+     */
+    public static boolean isProject(Project project, DependencyDescriptor descriptor) {
+        final String specGAV = String.format("%s:%s:%s", descriptor.getGroup(), descriptor.getName(), descriptor.getVersion());
+        return getAllProjects(project).containsKey(specGAV);
+    }
+
     /**
      * Resolve the given artifact specifications.
      *
