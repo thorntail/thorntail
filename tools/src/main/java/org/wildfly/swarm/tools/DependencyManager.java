@@ -15,13 +15,6 @@
  */
 package org.wildfly.swarm.tools;
 
-import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.api.asset.Asset;
-import org.wildfly.swarm.bootstrap.env.FractionManifest;
-import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
-import org.wildfly.swarm.fractions.FractionDescriptor;
-import org.wildfly.swarm.tools.utils.ChecksumUtil;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,6 +33,13 @@ import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
+
+import org.jboss.shrinkwrap.api.Node;
+import org.jboss.shrinkwrap.api.asset.Asset;
+import org.wildfly.swarm.bootstrap.env.FractionManifest;
+import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
+import org.wildfly.swarm.fractions.FractionDescriptor;
+import org.wildfly.swarm.tools.utils.ChecksumUtil;
 
 import static java.util.Arrays.asList;
 
@@ -275,9 +275,20 @@ public class DependencyManager implements ResolvedDependencies {
             List<ArtifactSpec> nonBootstrapDeps = new ArrayList<>();
             nonBootstrapDeps.addAll(declaredDependencies.getDirectDependencies());
             nonBootstrapDeps.removeAll(bootstrapDeps);
+            Collection<ArtifactSpec> nonBootstrapTransitive;
             // re-resolve the application's dependencies minus any of our swarm dependencies
-            // [hb] TODO this can be improved to use the previous results if the data-structure allows to reason about the parent of transitive deps
-            Collection<ArtifactSpec> nonBootstrapTransitive = resolver.resolveAllArtifactsTransitively(nonBootstrapDeps, true);
+            if (declaredDependencies.isPresolved()) {
+                // Add the dependencies without querying for anything else.
+                nonBootstrapTransitive = new HashSet<>();
+                nonBootstrapDeps.stream()
+                        .filter(s -> !FractionDescriptor.THORNTAIL_GROUP_ID.equals(s.groupId()))
+                        .forEach(s -> {
+                            nonBootstrapTransitive.add(s);
+                            nonBootstrapTransitive.addAll(declaredDependencies.getTransientDependencies(s));
+                        });
+            } else {
+                nonBootstrapTransitive = resolver.resolveAllArtifactsTransitively(nonBootstrapDeps, true);
+            }
 
             // do not remove .war or .rar or anything else weird-o like.
             Set<ArtifactSpec> justJars = this.dependencies

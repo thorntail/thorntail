@@ -61,6 +61,16 @@ public class DependencyTree<T> {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Is the given parent identified as a direct dependency in this tree?
+     *
+     * @param parent the dependency to look up in this tree.
+     * @return true if the parent is a direct dependency, false otherwise.
+     */
+    public boolean isDirectDep(T parent) {
+        return depTree.containsKey(parent);
+    }
+
     protected int comparator(T first, T second) {
         return 0;
     }
@@ -73,6 +83,6 @@ public class DependencyTree<T> {
         return deps;
     }
 
-    protected Map<T, Set<T>> depTree = new HashMap<>();
+    private Map<T, Set<T>> depTree = new HashMap<>();
 
 }
