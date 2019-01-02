@@ -15,14 +15,10 @@
  */
 package org.wildfly.swarm.arquillian.adapter.gradle;
 
-import java.io.File;
 import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.wildfly.swarm.arquillian.adapter.DependencyDeclarationFactory;
 import org.wildfly.swarm.arquillian.resolver.ShrinkwrapArtifactResolvingHelper;
-import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.internal.FileSystemLayout;
 import org.wildfly.swarm.internal.GradleFileSystemLayout;
 import org.wildfly.swarm.tools.ArtifactSpec;
@@ -58,12 +54,18 @@ public class GradleDependencyDeclarationFactory implements DependencyDeclaration
      * @param collection the collection artifact specifications.
      */
     private static void resolveDependencies(Collection<ArtifactSpec> collection, ShrinkwrapArtifactResolvingHelper helper) {
-        // The Shrinkwrap resolving helper returns a new collection of artifacts and doesn't update the existing ones.
-        // Looks like the code contracts broke at some point in time. For now, let us just iterate through the collection twice.
-        Map<String, File> resolvedArtifactMap = helper.resolveAll(collection, false, true).stream()
-                .collect(Collectors.toMap(MavenArtifactDescriptor::mavenGav, s -> s.file));
-        collection.parallelStream().forEach(s -> {
-            resolvedArtifactMap.computeIfPresent(s.mavenGav(), (k, file) -> s.file = file);
+        // Identify the artifact specs that need resolution.
+        // Ideally, there should be none at this point.
+        collection.forEach(spec -> {
+            if (spec.file == null) {
+                // Resolve it.
+                ArtifactSpec resolved = helper.resolve(spec);
+                if (resolved != null) {
+                    spec.file = resolved.file;
+                } else {
+                    throw new IllegalStateException("Unable to resolve artifact: " + spec.toString());
+                }
+            }
         });
     }
 }

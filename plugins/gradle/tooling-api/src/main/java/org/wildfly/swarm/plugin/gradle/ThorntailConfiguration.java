@@ -212,6 +212,15 @@ public interface ThorntailConfiguration extends Serializable {
     }
 
     /**
+     * Get the test-scoped dependency information for the current project. This method will return a map with keys being the
+     * direct dependencies and the values being the key's resolved dependencies. This method is useful primarily from a tooling
+     * perspective and is not meant to be used by consumers directly.
+     */
+    default Map<DependencyDescriptor, Set<DependencyDescriptor>> getTestDependencies() {
+        return Collections.emptyMap();
+    }
+
+    /**
      * Get the collection of declared fractions. This method will translate the fractions specified in the
      * {@link #getFractions() plugin configuration} section in to the appropriate {@code ArtifactSpec} instances.
      *
