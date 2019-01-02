@@ -46,6 +46,7 @@ import io.smallrye.jwt.auth.principal.JWTCallerPrincipalFactory;
 /**
  * @author Bob McWhirter
  */
+@SuppressWarnings("deprecation")
 @RunWith(Arquillian.class)
 public class KeycloakMicroprofileJwtTest {
 
@@ -65,12 +66,13 @@ public class KeycloakMicroprofileJwtTest {
                 "org.keycloak:keycloak-core",
                 "org.keycloak:keycloak-adapter-core",
                 "org.keycloak:keycloak-admin-cli",
+                //TODO: remove
                 "org.bitbucket.b_c:jose4j"
         };
         File[] dependencies = Maven.resolver().loadPomFromFile(new File("pom.xml")).resolve(deps).withTransitivity().asFile();
         deployment.addAsLibraries(dependencies);
         
-        //TODO: Remove
+        //TODO: remove, there should be no need to include it with KC keycloak.json providing all the info
         deployment.addAsManifestResource(new ClassLoaderAsset("keys/public-key.pem"), "/MP-JWT-SIGNER");
         return deployment;
     }
