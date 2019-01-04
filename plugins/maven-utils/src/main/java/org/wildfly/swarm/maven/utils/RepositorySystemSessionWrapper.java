@@ -39,6 +39,7 @@ import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.resolution.ArtifactDescriptorPolicy;
 import org.eclipse.aether.resolution.ResolutionErrorPolicy;
 import org.eclipse.aether.transfer.TransferListener;
+import org.eclipse.aether.transform.FileTransformerManager;
 import org.eclipse.aether.util.graph.transformer.ConflictResolver;
 import org.eclipse.aether.util.graph.transformer.JavaScopeDeriver;
 import org.eclipse.aether.util.graph.transformer.JavaScopeSelector;
@@ -192,6 +193,11 @@ public final class RepositorySystemSessionWrapper implements RepositorySystemSes
     @Override
     public RepositoryCache getCache() {
         return delegate.getCache();
+    }
+
+    @Override
+    public FileTransformerManager getFileTransformerManager() {
+        return delegate.getFileTransformerManager();
     }
 
     private RepositorySystemSession delegate;
