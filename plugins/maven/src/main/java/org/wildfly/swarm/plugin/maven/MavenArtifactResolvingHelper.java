@@ -22,7 +22,9 @@ import org.apache.maven.model.DependencyManagement;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.ArtifactProperties;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.DefaultArtifactType;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.graph.DefaultDependencyNode;
@@ -91,7 +93,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
     public ArtifactSpec resolve(ArtifactSpec spec) {
         if (spec.file == null) {
             final DefaultArtifact artifact = new DefaultArtifact(spec.groupId(), spec.artifactId(), spec.classifier(),
-                                                                 spec.type(), spec.version());
+                    typeToExtension(spec.type()), spec.version(), new DefaultArtifactType(spec.type()));
 
             final LocalArtifactResult localResult = this.session.getLocalRepositoryManager()
                     .find(this.session, new LocalArtifactRequest(artifact, this.remoteRepositories, null));
@@ -134,8 +136,10 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                             DefaultArtifact artifact = new DefaultArtifact(
                                     mavenDep.getGroupId(),
                                     mavenDep.getArtifactId(),
-                                    mavenDep.getType(),
-                                    mavenDep.getVersion()
+                                    mavenDep.getClassifier(),
+                                    typeToExtension(mavenDep.getType()),
+                                    mavenDep.getVersion(),
+                                    new DefaultArtifactType(mavenDep.getType())
                             );
                             return new Dependency(artifact, mavenDep.getScope());
                         })
@@ -146,11 +150,12 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
             specs.forEach(spec -> request
                     .addDependency(new Dependency(new DefaultArtifact(spec.groupId(),
-                                                                      spec.artifactId(),
-                                                                      spec.classifier(),
-                                                                      spec.type(),
-                                                                      spec.version()),
-                                                  "compile")));
+                            spec.artifactId(),
+                            spec.classifier(),
+                            typeToExtension(spec.type()),
+                            spec.version(),
+                            new DefaultArtifactType(spec.type())),
+                            "compile")));
 
             RepositorySystemSession tempSession
                     = new RepositorySystemSessionWrapper(this.session, defaultExcludes
@@ -163,11 +168,12 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
             nodes = new ArrayList<>();
             for (ArtifactSpec spec : specs) {
                 Dependency dependency = new Dependency(new DefaultArtifact(spec.groupId(),
-                                                                           spec.artifactId(),
-                                                                           spec.classifier(),
-                                                                           spec.type(),
-                                                                           spec.version()),
-                                                       "compile");
+                        spec.artifactId(),
+                        spec.classifier(),
+                        typeToExtension(spec.type()),
+                        spec.version(),
+                        new DefaultArtifactType(spec.type())),
+                        "compile");
                 DefaultDependencyNode node = new DefaultDependencyNode(dependency);
                 nodes.add(node);
             }
@@ -184,16 +190,29 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                 .map(node -> {
                     final Artifact artifact = node.getArtifact();
                     return new ArtifactSpec(node.getDependency().getScope(),
-                                            artifact.getGroupId(),
-                                            artifact.getArtifactId(),
-                                            artifact.getVersion(),
-                                            artifact.getExtension(),
-                                            artifact.getClassifier(),
-                                            null);
+                            artifact.getGroupId(),
+                            artifact.getArtifactId(),
+                            artifact.getVersion(),
+                            artifact.getProperty(ArtifactProperties.TYPE, null),
+                            artifact.getClassifier(),
+                            null);
                 })
                 .map(this::resolve)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+    }
+
+    private String typeToExtension(String type) {
+        switch (type) {
+            case "pom":
+            case "jar":
+            case "war":
+            case "ear":
+            case "rar":
+                return type;
+            default:
+                return "jar";
+        }
     }
 
     /**
