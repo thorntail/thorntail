@@ -28,8 +28,8 @@
 
     <version.wildfly.config-api>1.6.0</version.wildfly.config-api>
 
-    <version.keycloak.config-api>1.6.0</version.keycloak.config-api>
-    <version.keycloak>4.7.0.Final</version.keycloak>
+    <version.keycloak.config-api>1.6.1</version.keycloak.config-api>
+    <version.keycloak>4.8.1.Final</version.keycloak>
     <version.mongo.config-api>1.6.0</version.mongo.config-api>
     <version.cassandra.config-api>1.6.0</version.cassandra.config-api>
     <version.neo4j.config-api>1.6.0</version.neo4j.config-api>
