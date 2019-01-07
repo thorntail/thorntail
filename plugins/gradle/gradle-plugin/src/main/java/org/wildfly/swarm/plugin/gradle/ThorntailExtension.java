@@ -261,7 +261,7 @@ public class ThorntailExtension implements ThorntailConfiguration {
     @Override
     public Map<DependencyDescriptor, Set<DependencyDescriptor>> getDependencies() {
         if (dependencyMap == null) {
-            dependencyMap = GradleDependencyResolutionHelper.determineProjectDependencies(project, "runtimeClasspath", false);
+            dependencyMap = GradleDependencyResolutionHelper.determineProjectDependencies(project, "runtimeClasspath", true);
         }
         return dependencyMap;
     }
