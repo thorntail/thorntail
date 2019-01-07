@@ -98,28 +98,19 @@ public class MavenPluginTest {
                     // SWARM-814
                     new TestingProject(Packaging.WAR, Dependencies.JAVA_EE_APIS, Autodetection.WHEN_MISSING,
                                        new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.EJB},
-                                       AdditionalDependency.NONE, AdditionalFraction.NONE),
+                                       AdditionalDependency.NONE, AdditionalFraction.NONE)
                     // SWARM-970
 /*
                     new TestingProject(Packaging.WAR, Dependencies.FRACTIONS, Autodetection.FORCE,
                                        new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.EJB},
                                        AdditionalDependency.NONE, AdditionalFraction.NONE),
 */
-                    new TestingProject(Packaging.WAR_WITH_MAIN, Dependencies.FRACTIONS, Autodetection.NEVER,
-                                       new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.JAX_RS},
-                                       AdditionalDependency.NON_JAVA_EE, AdditionalFraction.NOT_YET_PRESENT),
-                    new TestingProject(Packaging.WAR_WITH_MAIN, Dependencies.JAVA_EE_APIS, Autodetection.WHEN_MISSING,
-                                       new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.JAX_RS},
-                                       AdditionalDependency.USING_JAVA_EE, AdditionalFraction.NONE),
                     // SWARM-869
 /*
                     new TestingProject(Packaging.JAR_WITH_MAIN, Dependencies.FRACTIONS, Autodetection.WHEN_MISSING,
                                        new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.JAX_RS},
                                        AdditionalDependency.USING_JAVA_EE, AdditionalFraction.NOT_YET_PRESENT),
 */
-                    new TestingProject(Packaging.JAR_WITH_MAIN, Dependencies.JAVA_EE_APIS, Autodetection.FORCE,
-                                       new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.JAX_RS},
-                                       AdditionalDependency.NONE, AdditionalFraction.ALREADY_PRESENT)
             );
         }
 
@@ -256,22 +247,7 @@ public class MavenPluginTest {
         String log = new String(Files.readAllBytes(logPath), StandardCharsets.UTF_8);
 
         assertThat(log).doesNotContain("[ERROR]");
-        if (testingProject.packaging.hasCustomMain()) {
-            int count = 0;
-            int index = 0;
-            while ((index = log.indexOf("[WARNING]", index)) != -1) {
-                count++;
-                index++;
-            }
-
-            assertThat(log).contains("Custom main() usage is intended to be deprecated in a future release");
-            // 1st warning for thorntail:package
-            // 2nd warning possibly for thorntail:start for tests
-            // 3rd warning possibly for thorntail:stop for tests
-            assertThat(count).as("There should only be 1 to 3 warnings").isIn(1, 2, 3);
-        } else {
-            assertThat(log).doesNotContain("[WARNING]");
-        }
+        assertThat(log).doesNotContain("[WARNING]");
 
         assertThat(log).contains("BUILD SUCCESS");
 
@@ -320,11 +296,7 @@ public class MavenPluginTest {
         assertThat(javaManifest).doesNotContain("org.wildfly.swarm.test.Main");
 
         String swarmManifest = readFileFromArchive(uberjar, "META-INF/wildfly-swarm-manifest.yaml");
-        if (testingProject.packaging.hasCustomMain()) {
-            assertThat(swarmManifest).contains("main-class: org.wildfly.swarm.test.Main");
-        } else {
-            assertThat(swarmManifest).doesNotContain("main-class: org.wildfly.swarm.test.Main");
-        }
+        assertThat(swarmManifest).doesNotContain("main-class: org.wildfly.swarm.test.Main");
     }
 
     @After

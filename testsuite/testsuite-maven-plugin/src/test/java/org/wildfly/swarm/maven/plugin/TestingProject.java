@@ -25,14 +25,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * Holds the testing Maven project setup and is able to prepare the {@code testing-project} directory to the desired state.
  * This means filling the blanks in {@code pom.xml}, ensuring that only one {@code web.xml} exists in the project,
- * adjusting {@code Main.java} and making sure that excluded {@code .java} files are deleted.
+ * and making sure that excluded {@code .java} files are deleted.
  *
  * @see Packaging
  * @see Dependencies
@@ -68,9 +67,6 @@ public final class TestingProject {
                         + ", you also have to include " + includedTechnology.dependsOn());
             }
         }
-        if (packaging == Packaging.JAR_WITH_MAIN && !techs.contains(IncludedTechnology.SERVLET)) {
-            throw new IllegalArgumentException("Project with JAR packaging needs SERVLET for the custom Main class");
-        }
         this.includedTechnologies = Collections.unmodifiableSet(techs);
         this.additionalDependency = additionalDependency;
         this.additionalFraction = additionalFraction;
@@ -89,10 +85,10 @@ public final class TestingProject {
         Files.write(pomXml, pomXmlContent.getBytes(StandardCharsets.UTF_8));
 
         // web.xml
-        if (packaging == Packaging.WAR || packaging == Packaging.WAR_WITH_MAIN) {
+        if (packaging == Packaging.WAR) {
             Files.delete(dir.resolve(Paths.get("src", "main", "resources", "web.xml")));
             Files.delete(dir.resolve(Paths.get("src", "main", "resources")));
-        } else if (packaging == Packaging.JAR_WITH_MAIN) {
+        } else if (packaging == Packaging.JAR) {
             Files.delete(dir.resolve(Paths.get("src", "main", "webapp", "WEB-INF", "web.xml")));
             Files.delete(dir.resolve(Paths.get("src", "main", "webapp", "WEB-INF")));
             Files.delete(dir.resolve(Paths.get("src", "main", "webapp")));
@@ -102,29 +98,6 @@ public final class TestingProject {
 
         Path javaFiles = dir.resolve(Paths.get("src", "main", "java", "org", "wildfly", "swarm", "test"));
         Path testJavaFiles = dir.resolve(Paths.get("src", "test", "java", "org", "wildfly", "swarm", "test"));
-
-        // Main.java
-        Path mainClass = javaFiles.resolve("Main.java");
-        if (this.packaging.hasCustomMain()) {
-            String mainClassContent = new String(Files.readAllBytes(mainClass), StandardCharsets.UTF_8);
-
-            for (Packaging packaging : Packaging.values()) {
-                // only retain one section /*BEGIN:custom main:<packaging>*/ ... /*END:custom main:<packaging>*/;
-                // the one that corresponds to the project's packaging
-                if (this.packaging == packaging) {
-                    continue;
-                }
-
-                String beginning = Pattern.quote("/*BEGIN:custom main:" + packaging + "*/");
-                String ending = Pattern.quote("/*END:custom main:" + packaging + "*/");
-
-                mainClassContent = mainClassContent.replaceAll("(?s)" + beginning + ".*?" + ending, "");
-            }
-
-            Files.write(mainClass, mainClassContent.getBytes(StandardCharsets.UTF_8));
-        } else {
-            Files.delete(mainClass);
-        }
 
         // remaining *.java
         if (!includedTechnologies.contains(IncludedTechnology.SERVLET)) {
@@ -146,15 +119,7 @@ public final class TestingProject {
     private String dependenciesSnippet(String swarmVersion) {
         StringBuilder result = new StringBuilder();
 
-        if (packaging.hasCustomMain()) {
-            result.append("<dependency>\n" +
-                          "  <groupId>io.thorntail</groupId>\n" +
-                          "  <artifactId>container</artifactId>\n" +
-                          "  <version>" + swarmVersion + "</version>\n" +
-                          "</dependency>\n");
-        }
-
-        if (packaging == Packaging.JAR_WITH_MAIN && dependencies == Dependencies.JAVA_EE_APIS) {
+        if (packaging == Packaging.JAR && dependencies == Dependencies.JAVA_EE_APIS) {
             // for the Main class
             result.append("<dependency>\n" +
                           "  <groupId>io.thorntail</groupId>\n" +
@@ -174,10 +139,6 @@ public final class TestingProject {
     private String swarmPluginConfigurationSnippet() {
         String result = "<fractionDetectMode>" + autodetection.toSwarmPluginValue() + "</fractionDetectMode>\n";
 
-        if (packaging.hasCustomMain()) {
-            result += "<mainClass>org.wildfly.swarm.test.Main</mainClass>\n";
-        }
-
         Optional<String> anotherFraction = additionalFraction.shouldBringFraction();
         if (anotherFraction.isPresent()) {
             result += "<fractions><fraction>" + anotherFraction.get() + "</fraction></fractions>\n";
@@ -188,7 +149,7 @@ public final class TestingProject {
 
     public boolean hasExplicitFractionDependencies() {
         // with custom main, org.wildfly.swarm:container is always added, and that's an explicit fraction dependency
-        return dependencies == Dependencies.FRACTIONS || packaging.hasCustomMain();
+        return dependencies == Dependencies.FRACTIONS;
     }
 
     public boolean doesAutodetectionHappen() {
@@ -223,7 +184,7 @@ public final class TestingProject {
 
         if (dependencies == Dependencies.JAVA_EE_APIS && !doesAutodetectionHappen()) {
             expectedFractions = new HashSet<>();
-            if (packaging == Packaging.JAR_WITH_MAIN) {
+            if (packaging == Packaging.JAR) {
                 // always included for the custom main class
                 expectedFractions.add(IncludedTechnology.SERVLET.fraction());
             }

@@ -21,17 +21,12 @@ package org.wildfly.swarm.maven.plugin;
  */
 public enum Packaging {
     WAR("war"),
-    WAR_WITH_MAIN("war"),
-    JAR_WITH_MAIN("jar");
+    JAR("jar");
 
     private final String value;
 
     Packaging(String value) {
         this.value = value;
-    }
-
-    public boolean hasCustomMain() {
-        return this != WAR;
     }
 
     public String packagingType() {
