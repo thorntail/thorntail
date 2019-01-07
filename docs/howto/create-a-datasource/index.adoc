@@ -25,7 +25,13 @@ include::auto-detecting-jdbc-drivers.adoc[leveloffset=+2]
 
 include::configuring-the-jdbc-driver-manually.adoc[leveloffset=+2]
 
-include::configuring-a-datasource.adoc[leveloffset=+1]
+== Configuring a Datasource
+
+There are two options for how to configure a datasource:
+
+include::using-default-datasource.adoc[leveloffset=+2]
+
+include::configuring-a-datasource-manually.adoc[leveloffset=+2]
 
 == Example full project-defaults.yml file
 

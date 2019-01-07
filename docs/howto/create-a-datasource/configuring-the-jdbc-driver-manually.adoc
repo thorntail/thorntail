@@ -6,7 +6,7 @@
 == Prerequisites
 
 * A Maven-based application.
-* The `module.xml` file created according to relevant {WildFly} instructions.
+* The `module.xml` file created in `src/main/resources/modules` directory according to relevant {WildFly} instructions.
   This file is necessary to expose the driver through JBoss Modules.
 
 [discrete]
@@ -28,6 +28,7 @@
 +
 In the `thorntail` -> `datasources` -> `jdbc-drivers` tree, define the driver by
 key, which will be used later for connecting it to the datasource.
+Set `driver-module-name` to that defined by the `module.xml` from earlier.
 +
 [source,yaml]
 ----

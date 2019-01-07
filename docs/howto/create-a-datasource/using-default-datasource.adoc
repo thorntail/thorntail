@@ -1,0 +1,16 @@
+
+[id='using-default-datasource_{context}']
+= Using the default datasource
+
+[discrete]
+== Prerequisites
+
+* A Maven-based application.
+* A JDBC Driver configured, either auto detected or manually.
+
+[discrete]
+== Procedure
+
+The presence of a JDBC driver will automatically create a datasource with the name `ExampleDS`.
+
+The property `thorntail.ds.name` can be used to customize the name of the datasource that is automatically created.
