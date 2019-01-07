@@ -148,7 +148,6 @@ public final class TestingProject {
     }
 
     public boolean hasExplicitFractionDependencies() {
-        // with custom main, org.wildfly.swarm:container is always added, and that's an explicit fraction dependency
         return dependencies == Dependencies.FRACTIONS;
     }
 
