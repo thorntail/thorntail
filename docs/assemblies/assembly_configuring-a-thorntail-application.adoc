@@ -26,7 +26,10 @@ include::../modules/proc_specifying-jdbc-drivers-for-hollow-jars.adoc[leveloffse
 [id='configuring-a-thorntail-application-using-environment-variables_{context}']
 == Environment Variables
 
-Using environment variables for configuring your application, or overriding values provided in YAML files, is advantageous for environments like Docker, Kubernetes, and OpenShift.
+Use environment variables to configure your application or override values stored in YAML files.
+ifndef::product[]
+This approach is useful when deploying to environments like Docker, Kubernetes, or OpenShift.
+endif::[]
 
 include::../modules/con_application-configuration-using-environment-variables.adoc[leveloffset=+2]
 
