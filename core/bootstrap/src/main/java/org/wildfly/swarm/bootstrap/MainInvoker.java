@@ -26,12 +26,16 @@ import java.util.List;
 
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleLoadException;
+import org.jboss.modules.ModuleNotFoundException;
+import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.modules.BootModuleLoader;
 
 /**
  * @author Bob McWhirter
  */
 public class MainInvoker {
+
+    private static BootstrapLogger LOGGER = BootstrapLogger.logger("org.wildfly.swarm.bootstrap");
 
     private static final String BOOT_MODULE_PROPERTY = "boot.module.loader";
 
@@ -113,6 +117,9 @@ public class MainInvoker {
             ClassLoader cl = module.getClassLoader();
             mainClass = cl.loadClass(mainClassName);
         } catch (ClassNotFoundException | ModuleLoadException e) {
+            if (e instanceof ModuleNotFoundException) {
+                LOGGER.warn("Module not found: " + e.getMessage());
+            }
             ClassLoader cl = ClassLoader.getSystemClassLoader();
             mainClass = cl.loadClass(mainClassName);
         }
