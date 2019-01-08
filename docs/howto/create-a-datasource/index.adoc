@@ -19,7 +19,7 @@ a pool of connections to a particular database using the driver.
 
 == Configuring a JDBC driver
 
-There are two options how to configure JDBC drivers:
+There are the following options how to configure JDBC drivers:
 
 include::auto-detecting-jdbc-drivers.adoc[leveloffset=+2]
 
@@ -27,7 +27,7 @@ include::configuring-the-jdbc-driver-manually.adoc[leveloffset=+2]
 
 == Configuring a Datasource
 
-There are two options for how to configure a datasource:
+There are the following options for how to configure a datasource:
 
 include::using-default-datasource.adoc[leveloffset=+2]
 
