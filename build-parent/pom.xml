@@ -26,18 +26,18 @@
 
     <version.org.snakeyaml>1.18</version.org.snakeyaml>
 
-    <version.wildfly.config-api>1.6.0</version.wildfly.config-api>
+    <version.wildfly.config-api>1.6.1</version.wildfly.config-api>
 
-    <version.keycloak.config-api>1.6.1</version.keycloak.config-api>
+    <version.keycloak.config-api>1.6.2</version.keycloak.config-api>
     <version.keycloak>4.8.1.Final</version.keycloak>
-    <version.mongo.config-api>1.6.0</version.mongo.config-api>
-    <version.cassandra.config-api>1.6.0</version.cassandra.config-api>
-    <version.neo4j.config-api>1.6.0</version.neo4j.config-api>
-    <version.orientdb.config-api>1.6.0</version.orientdb.config-api>
+    <version.mongo.config-api>1.6.1</version.mongo.config-api>
+    <version.cassandra.config-api>1.6.1</version.cassandra.config-api>
+    <version.neo4j.config-api>1.6.1</version.neo4j.config-api>
+    <version.orientdb.config-api>1.6.1</version.orientdb.config-api>
     <version.wildfly.nosql.feature-pack>1.0.1.Final</version.wildfly.nosql.feature-pack>
 
-    <version.jboss-modules>1.8.6.Final</version.jboss-modules>
-    <version.wildfly>15.0.0.Final</version.wildfly>
+    <version.jboss-modules>1.8.7.Final</version.jboss-modules>
+    <version.wildfly>15.0.1.Final</version.wildfly>
     <version.org.wildfly.core>7.0.0.Final</version.org.wildfly.core>
     <version.jboss-logmanager-ext>1.0.0.Alpha5</version.jboss-logmanager-ext>
     <!-- Weld SE version must be aligned with the version used in WildFly -->
@@ -118,7 +118,7 @@
     <version.microprofile-openapi>1.0.1</version.microprofile-openapi>
     <version.microprofile-opentracing>1.2.1</version.microprofile-opentracing>
     <!-- MP Config implementation -->
-    <version.microprofile-config-wildfly>1.6.0</version.microprofile-config-wildfly>
+    <version.microprofile-config-wildfly>1.6.1</version.microprofile-config-wildfly>
 
     <!-- SmallRye versions -->
     <version.smallrye.config>1.3.5</version.smallrye.config>

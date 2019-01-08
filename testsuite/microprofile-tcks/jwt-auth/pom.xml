@@ -33,12 +33,6 @@
    <artifactId>thorntail-microprofile-tck-jwt-auth</artifactId>
    <name>MicroProfile TCK: JWT</name>
 
-   <properties>
-      <!-- TCK needs a JAX-RS Client -->
-      <!-- Override 3.0.19 due to some odd dependency problems -->
-      <version.resteasy>3.1.4.Final</version.resteasy>
-   </properties>
-
    <dependencies>
 
       <dependency>
