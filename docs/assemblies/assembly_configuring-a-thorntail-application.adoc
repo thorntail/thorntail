@@ -23,6 +23,16 @@ include::../modules/proc_setting-system-properties-using-the-command-line.adoc[l
 
 include::../modules/proc_specifying-jdbc-drivers-for-hollow-jars.adoc[leveloffset=+2]
 
+[id='configuring-a-thorntail-application-using-environment-variables_{context}']
+== Environment Variables
+
+Use environment variables to configure your application or override values stored in YAML files.
+ifndef::product[]
+This approach is useful when deploying to environments like Docker, Kubernetes, or OpenShift.
+endif::[]
+
+include::../modules/con_application-configuration-using-environment-variables.adoc[leveloffset=+2]
+
 [id='configuring-a-thorntail-application-using-yaml-files_{context}']
 == YAML files
 
