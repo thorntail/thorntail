@@ -13,7 +13,9 @@ The presence of a JDBC driver will automatically create a datasource with the na
 [discrete]
 == Procedure
 
-. Edit the `project-defaults.yml` file to customize the datasource name. The configuration is stored under `thorntail`
+. Edit the `project-defaults.yml` file to customize the datasource name.
++
+The configuration is stored under `thorntail`
 -> `ds` -> `name`:
 +
 [source,yaml]
