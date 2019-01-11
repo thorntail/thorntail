@@ -11,10 +11,6 @@
   <artifactId>thorntail-microprofile-tck-opentracing</artifactId>
   <name>MicroProfile TCK: OpenTracing</name>
 
-  <properties>
-    <version.resteasy>3.0.24.Final</version.resteasy>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>io.thorntail</groupId>
