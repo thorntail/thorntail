@@ -1,6 +1,6 @@
 
-[id='configuring-a-datasource_{context}']
-= Configuring a datasource
+[id='configuring-a-datasource_manually_{context}']
+= Configuring a datasource manually
 
 [discrete]
 == Prerequisites
