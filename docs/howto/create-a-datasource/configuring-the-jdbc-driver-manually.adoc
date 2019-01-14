@@ -28,7 +28,7 @@
 +
 In the `thorntail` -> `datasources` -> `jdbc-drivers` tree, define the driver by
 key, which will be used later for connecting it to the datasource.
-Set the `driver-module-name` to that defined in the `module.xml`.
+Set the `driver-module-name` to that defined in the `module.xml` file.
 +
 [source,yaml]
 ----
