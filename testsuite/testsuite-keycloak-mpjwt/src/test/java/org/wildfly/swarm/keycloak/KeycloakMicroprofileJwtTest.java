@@ -16,7 +16,6 @@
 package org.wildfly.swarm.keycloak;
 
 import java.io.File;
-import java.net.URL;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -33,8 +32,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.Swarm;
-import org.wildfly.swarm.arquillian.CreateSwarm;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.microprofile.jwtauth.keycloak.SecuredApplication;
 import org.wildfly.swarm.microprofile.jwtauth.keycloak.SecuredResource;
@@ -46,7 +43,6 @@ import io.smallrye.jwt.auth.principal.JWTCallerPrincipalFactory;
 /**
  * @author Bob McWhirter
  */
-@SuppressWarnings("deprecation")
 @RunWith(Arquillian.class)
 public class KeycloakMicroprofileJwtTest {
 
@@ -58,7 +54,6 @@ public class KeycloakMicroprofileJwtTest {
         deployment.addResource(JWTCallerPrincipalFactory.class);
         deployment.addResource(KeycloakJWTCallerPrincipalFactory.class);
         deployment.addResource(KeycloakJWTCallerPrincipal.class);
-        deployment.addAsResource("wildfly-swarm-keycloak-example-realm.json");
         deployment.addAsResource("keycloak.json");
         deployment.addAsResource("project-no-roles-props.yml", "project-defaults.yml");
         deployment.addAsServiceProvider(JWTCallerPrincipalFactory.class, KeycloakJWTCallerPrincipalFactory.class);
@@ -75,16 +70,6 @@ public class KeycloakMicroprofileJwtTest {
         //TODO: remove, there should be no need to include it with KC keycloak.json providing all the info
         deployment.addAsManifestResource(new ClassLoaderAsset("keys/public-key.pem"), "/MP-JWT-SIGNER");
         return deployment;
-    }
-
-    // For some reason doing this in a static or @BeforeClass doesn't work
-    @CreateSwarm
-    public static Swarm newContainer() throws Exception {
-        URL migrationRealmUrl = KeycloakMicroprofileJwtTest.class.getResource("/wildfly-swarm-keycloak-example-realm.json");
-        System.setProperty("keycloak.migration.file", migrationRealmUrl.toURI().getPath());
-        System.setProperty("keycloak.migration.provider", "singleFile");
-        System.setProperty("keycloak.migration.action", "import");
-        return new Swarm();
     }
 
     @Test
