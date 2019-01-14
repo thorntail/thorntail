@@ -19,6 +19,8 @@ package org.wildfly.swarm.plugin.gradle;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,6 +44,7 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDepen
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency;
 import org.gradle.api.internal.project.DefaultProjectAccessListener;
 import org.gradle.api.internal.project.ProjectInternal;
+import org.gradle.api.logging.LogLevel;
 import org.gradle.api.plugins.ExtraPropertiesExtension;
 import org.gradle.initialization.ProjectAccessListener;
 import org.wildfly.swarm.fractions.FractionDescriptor;
@@ -88,7 +91,7 @@ public final class GradleDependencyResolutionHelper {
      */
     public static boolean isProject(Project project, DependencyDescriptor descriptor) {
         final String specGAV = String.format("%s:%s:%s", descriptor.getGroup(), descriptor.getName(), descriptor.getVersion());
-        return getAllProjects(project).containsKey(specGAV);
+        return getAllProjects(project).containsKey(specGAV) || getIncludedProjectIdentifiers(project).contains(specGAV);
     }
 
     /**
@@ -292,13 +295,16 @@ public final class GradleDependencyResolutionHelper {
      * Temp method for printing out the dependency map.
      */
     private static void printDependencyMap(Map<DependencyDescriptor, Set<DependencyDescriptor>> map, Project project) {
-        StringBuilder builder = new StringBuilder(100);
-        map.forEach((k, v) -> {
-            builder.append(k).append("\n");
-            v.forEach(e -> builder.append("\t").append(e).append("\n"));
-            builder.append("\n");
-        });
-        project.getLogger().info("Resolved dependencies:\n" + builder.toString());
+        final String NEW_LINE = "\n";
+        if (project.getLogger().isEnabled(LogLevel.INFO)) {
+            StringBuilder builder = new StringBuilder(100);
+            map.forEach((k, v) -> {
+                builder.append(k).append(NEW_LINE);
+                v.forEach(e -> builder.append("\t").append(e).append(NEW_LINE));
+                builder.append(NEW_LINE);
+            });
+            project.getLogger().info("Resolved dependencies:\n" + builder.toString());
+        }
     }
 
     /**
@@ -308,7 +314,6 @@ public final class GradleDependencyResolutionHelper {
      * @param project the Gradle project that is being analyzed.
      * @return a map of GAV coordinates for each of the available projects (returned as keys).
      */
-    @SuppressWarnings("unchecked")
     private static Map<String, Project> getAllProjects(final Project project) {
         return getCachedReference(project, "thorntail_project_gav_collection", () -> {
             Map<String, Project> gavMap = new HashMap<>();
@@ -316,6 +321,48 @@ public final class GradleDependencyResolutionHelper {
                 gavMap.put(p.getGroup() + ":" + p.getName() + ":" + p.getVersion(), p);
             });
             return gavMap;
+        });
+    }
+
+    /**
+     * Attempt to load the project identifiers (group:artifact) for projects that have been included. This method isn't
+     * guaranteed to work all the time since there is no good API that we can use and need to rely on reflection for now.
+     *
+     * @param project the project reference.
+     * @return a collection of "included" project identifiers (a.k.a., composite projects).
+     */
+    private static Set<String> getIncludedProjectIdentifiers(final Project project) {
+        return getCachedReference(project, "thorntail_included_project_identifiers", () -> {
+            Set<String> identifiers = new HashSet<>();
+
+            // Check for included builds as well.
+            project.getGradle().getIncludedBuilds().forEach(build -> {
+                // Determine if the given reference has the following method definition,
+                // org.gradle.internal.build.IncludedBuildState#getAvailableModules()
+                try {
+                    Method method = build.getClass().getMethod("getAvailableModules");
+                    Class<?> retType = method.getReturnType();
+                    if (Set.class.isAssignableFrom(retType)) {
+                        // We have identified the right method. Get the values out of it.
+                        Set availableModules = (Set) method.invoke(build);
+                        for (Object entry : availableModules) {
+                            Field field = entry.getClass().getField("left");
+                            Object value = field.get(entry);
+                            if (value instanceof ModuleVersionIdentifier) {
+                                ModuleVersionIdentifier mv = (ModuleVersionIdentifier) value;
+                                identifiers.add(String.format("%s:%s:%s", mv.getGroup(), mv.getName(), mv.getVersion()));
+                            } else {
+                                project.getLogger().debug("Unable to determine field type: {}", field);
+                            }
+                        }
+                    } else {
+                        project.getLogger().debug("Unable to determine method return type: {}", retType);
+                    }
+                } catch (ReflectiveOperationException e) {
+                    project.getLogger().debug("Unable to determine the included projects.", e);
+                }
+            });
+            return identifiers;
         });
     }
 

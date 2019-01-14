@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015-2016 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -146,6 +147,17 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
             return Collections.emptySet();
         }
 
+        final Set<ArtifactSpec> resolvedSpecs = new HashSet<>();
+        // If we don't need transitive dependencies, then perform a dependency resolution only for the artifacts that do not have
+        // a file reference.
+        if (!transitive) {
+            specs.stream().filter(s -> s.file != null).forEach(resolvedSpecs::add);
+            specs.removeAll(resolvedSpecs);
+            if (specs.isEmpty()) {
+                return resolvedSpecs;
+            }
+        }
+
         MavenResolutionStrategy transitivityStrategy = (transitive ? TransitiveStrategy.INSTANCE : NonTransitiveStrategy.INSTANCE);
 
         resetListeners();
@@ -157,16 +169,19 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
                             .as(MavenResolvedArtifact.class);
                 });
 
-        return Arrays.stream(artifacts).map(artifact -> {
-            final MavenCoordinate coord = artifact.getCoordinate();
-            return new ArtifactSpec(artifact.getScope().toString(),
-                                    coord.getGroupId(),
-                                    coord.getArtifactId(),
-                                    coord.getVersion(),
-                                    coord.getPackaging().getId(),
-                                    coord.getClassifier(),
-                                    artifact.asFile());
-        }).collect(Collectors.toSet());
+        resolvedSpecs.addAll(
+                Arrays.stream(artifacts).map(artifact -> {
+                    final MavenCoordinate coord = artifact.getCoordinate();
+                    return new ArtifactSpec(artifact.getScope().toString(),
+                                            coord.getGroupId(),
+                                            coord.getArtifactId(),
+                                            coord.getVersion(),
+                                            coord.getPackaging().getId(),
+                                            coord.getClassifier(),
+                                            artifact.asFile());
+                }).collect(Collectors.toSet())
+        );
+        return resolvedSpecs;
     }
 
     public MavenDependency createMavenDependency(final ArtifactSpec spec) {
