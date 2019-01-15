@@ -29,22 +29,17 @@
     <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-core</artifactId>
-      <version>4.7.0.Final</version>
+      <version>4.8.1.Final</version>
     </dependency>
     <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-adapter-core</artifactId>
-      <version>4.7.0.Final</version>
+      <version>4.8.1.Final</version>
     </dependency>
     <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-admin-cli</artifactId>
-      <version>4.7.0.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bitbucket.b_c</groupId>
-      <artifactId>jose4j</artifactId>
-      <version>0.6.0</version>
+      <version>4.8.1.Final</version>
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>

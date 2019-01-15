@@ -61,8 +61,6 @@ public class KeycloakMicroprofileJwtTest {
                 "org.keycloak:keycloak-core",
                 "org.keycloak:keycloak-adapter-core",
                 "org.keycloak:keycloak-admin-cli",
-                //TODO: remove
-                "org.bitbucket.b_c:jose4j"
         };
         File[] dependencies = Maven.resolver().loadPomFromFile(new File("pom.xml")).resolve(deps).withTransitivity().asFile();
         deployment.addAsLibraries(dependencies);
