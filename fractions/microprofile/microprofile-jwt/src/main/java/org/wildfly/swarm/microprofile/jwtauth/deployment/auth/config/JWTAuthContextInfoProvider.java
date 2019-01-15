@@ -86,14 +86,14 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
             try {
                 RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodeJWKSPublicKey(mpJwtublicKey.get());
                 contextInfo.setSignerKey(pk);
-                log.debugf("mpJwtublicKey parsed as JWK(S)");
+                log.debugf("mpJwtPublicKey parsed as JWK(S)");
             } catch (Exception e) {
                 // Try as PEM key value
-                log.debugf("mpJwtublicKey failed as JWK(S), %s", e.getMessage());
+                log.debugf("mpJwtPublicKey failed as JWK(S), %s", e.getMessage());
                 try {
                     RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodePublicKey(mpJwtublicKey.get());
                     contextInfo.setSignerKey(pk);
-                    log.debugf("mpJwtublicKey parsed as PEM");
+                    log.debugf("mpJwtPublicKey parsed as PEM");
                 } catch (Exception e1) {
                     throw new DeploymentException(e1);
                 }
