@@ -55,7 +55,7 @@ public class KeycloakMicroprofileJwtTest {
         deployment.addResource(KeycloakJWTCallerPrincipalFactory.class);
         deployment.addResource(KeycloakJWTCallerPrincipal.class);
         deployment.addAsResource("keycloak.json");
-        deployment.addAsResource("project-no-roles-props.yml", "project-defaults.yml");
+        deployment.addAsResource("project-defaults.yml");
         deployment.addAsServiceProvider(JWTCallerPrincipalFactory.class, KeycloakJWTCallerPrincipalFactory.class);
         String[] deps = {
                 "org.keycloak:keycloak-core",
