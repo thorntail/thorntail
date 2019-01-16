@@ -10,7 +10,7 @@
   <parent>
     <groupId>io.thorntail</groupId>
     <artifactId>parent</artifactId>
-    <version>10</version>
+    <version>11</version>
   </parent>
 
   <artifactId>thorntail</artifactId>
@@ -1313,18 +1313,6 @@
       </modules>
     </profile>
 
-    <profile>
-      <id>release</id>
-      <activation>
-        <property>
-          <name>!swarm.release.maven.bug.always.be.active</name>
-        </property>
-      </activation>
-      <modules>
-        <module>release</module>
-      </modules>
-    </profile>
-
     <!-- If activated, run TCKs for all MicroProfile specs -->
     <profile>
       <id>microprofile-tck</id>
@@ -1343,6 +1331,18 @@
         <module>testsuite/microprofile-tcks/restclient</module>
         <module>testsuite/microprofile-tcks/openapi</module>
         <module>testsuite/microprofile-tcks/opentracing</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>release</id>
+      <activation>
+        <property>
+          <name>!swarm.release.maven.bug.always.be.active</name>
+        </property>
+      </activation>
+      <modules>
+        <module>release</module>
       </modules>
     </profile>
 

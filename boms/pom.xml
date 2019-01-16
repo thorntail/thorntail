@@ -143,7 +143,9 @@
                 <goal>single</goal>
               </goals>
               <configuration>
-                <descriptor>${project.parent.basedir}/src/main/assembly/javadoc-zip.xml</descriptor>
+                <descriptors>
+                  <descriptor>${project.parent.basedir}/src/main/assembly/javadoc-zip.xml</descriptor>
+                </descriptors>
               </configuration>
             </execution>
             <execution>
@@ -153,7 +155,9 @@
                 <goal>single</goal>
               </goals>
               <configuration>
-                <descriptor>${project.parent.basedir}/src/main/assembly/m2repo-zip.xml</descriptor>
+                <descriptors>
+                  <descriptor>${project.parent.basedir}/src/main/assembly/m2repo-zip.xml</descriptor>
+                </descriptors>
               </configuration>
             </execution>
           </executions>
