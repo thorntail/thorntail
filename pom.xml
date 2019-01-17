@@ -1236,6 +1236,7 @@
         <module>testsuite/testsuite-mail</module>
         <module>testsuite/testsuite-mail-cdi</module>
         <module>testsuite/testsuite-management-console</module>
+        <module>testsuite/testsuite-management-console-openapi</module>
         <module>testsuite/testsuite-messaging</module>
         <module>testsuite/testsuite-messaging-remote</module>
         <module>testsuite/testsuite-microprofile-openapi</module>
@@ -1245,6 +1246,7 @@
         <module>testsuite/testsuite-jaeger-opentracing</module>
         <module>testsuite/testsuite-jaeger-microprofile-opentracing</module>
         <module>testsuite/testsuite-opentracing</module>
+        <module>testsuite/testsuite-scriptengine</module>
         <module>testsuite/testsuite-spring</module>
         <module>testsuite/testsuite-swagger</module>
         <module>testsuite/testsuite-swagger-customized</module>
