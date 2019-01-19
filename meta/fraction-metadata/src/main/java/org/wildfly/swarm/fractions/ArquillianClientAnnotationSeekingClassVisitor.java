@@ -33,7 +33,7 @@ public class ArquillianClientAnnotationSeekingClassVisitor extends ClassVisitor 
     private int containerCounter;
 
     public ArquillianClientAnnotationSeekingClassVisitor() {
-        super(Opcodes.ASM5);
+        super(Opcodes.ASM7);
     }
 
     public boolean isClient() {
@@ -47,7 +47,7 @@ public class ArquillianClientAnnotationSeekingClassVisitor extends ClassVisitor 
                                      final String signature,
                                      final String[] exceptions) {
 
-        return new MethodVisitor(Opcodes.ASM5) {
+        return new MethodVisitor(Opcodes.ASM7) {
             @Override
             public AnnotationVisitor visitAnnotation(final String desc,
                                                      final boolean __) {
@@ -72,7 +72,7 @@ public class ArquillianClientAnnotationSeekingClassVisitor extends ClassVisitor 
     private final class ArquillianAnnotationVisitor extends AnnotationVisitor {
 
             public ArquillianAnnotationVisitor() {
-                super(Opcodes.ASM5);
+                super(Opcodes.ASM7);
             }
 
             @Override
