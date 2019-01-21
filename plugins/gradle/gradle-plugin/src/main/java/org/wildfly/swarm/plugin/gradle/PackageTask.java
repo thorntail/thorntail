@@ -213,7 +213,7 @@ public class PackageTask extends DefaultTask {
     }
 
     @OutputFile
-    private File getOutputFile() {
+    File getOutputFile() {
         return BuildTool.getOutputFile(getBaseName() + UBERJAR_SUFFIX + ".jar", getOutputDirectory());
     }
 

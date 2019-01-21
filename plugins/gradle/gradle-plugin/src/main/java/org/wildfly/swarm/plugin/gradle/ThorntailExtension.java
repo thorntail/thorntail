@@ -17,6 +17,8 @@ package org.wildfly.swarm.plugin.gradle;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -59,6 +61,26 @@ public class ThorntailExtension implements ThorntailConfiguration {
     private BuildTool.FractionDetectionMode fractionDetectMode = BuildTool.FractionDetectionMode.when_missing;
 
     private boolean hollow = false;
+
+    private Integer debugPort = null;
+
+    private File stdoutFile;
+
+    private File stderrFile;
+
+    private List<String> arguments = new ArrayList<>();
+
+    private List<String> jvmArguments = new ArrayList<>();
+
+    private boolean useUberJar = false;
+
+    private int startTimeout = 120;
+
+    private int stopTimeout = 120;
+
+    private Properties environment = new Properties();
+
+    private File environmentFile;
 
     private Map<DependencyDescriptor, Set<DependencyDescriptor>> dependencyMap;
 
@@ -158,6 +180,86 @@ public class ThorntailExtension implements ThorntailConfiguration {
         this.executableScript = executableScript;
     }
 
+    @Override
+    public Integer getDebugPort() {
+        return debugPort;
+    }
+
+    @Override
+    public void setDebugPort(Integer debugPort) {
+        this.debugPort = debugPort;
+    }
+
+    @Override
+    public File getStdoutFile() {
+        return stdoutFile;
+    }
+
+    @Override
+    public void setStdoutFile(File file) {
+        this.stdoutFile = file;
+    }
+
+    @Override
+    public File getStderrFile() {
+        return stderrFile;
+    }
+
+    @Override
+    public void setStderrFile(File file) {
+        this.stderrFile = file;
+    }
+
+    @Override
+    public List<String> getArguments() {
+        return arguments;
+    }
+
+    @Override
+    public void setArguments(List<String> arguments) {
+        this.arguments = arguments;
+    }
+
+    @Override
+    public List<String> getJvmArguments() {
+        return jvmArguments;
+    }
+
+    @Override
+    public void setJvmArguments(List<String> arguments) {
+        this.jvmArguments = arguments;
+    }
+
+    @Override
+    public boolean isUseUberJar() {
+        return useUberJar;
+    }
+
+    @Override
+    public void setUseUberJar(boolean useUberJar) {
+        this.useUberJar = useUberJar;
+    }
+
+    @Override
+    public int getStartTimeout() {
+        return startTimeout;
+    }
+
+    @Override
+    public void setStartTimeout(int startTimeout) {
+        this.startTimeout = startTimeout;
+    }
+
+    @Override
+    public int getStopTimeout() {
+        return stopTimeout;
+    }
+
+    @Override
+    public void setStopTimeout(int stopTimeout) {
+        this.stopTimeout = stopTimeout;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -172,6 +274,29 @@ public class ThorntailExtension implements ThorntailConfiguration {
     @Override
     public void setPropertiesFile(final File propertiesFile) {
         this.propertiesFile = propertiesFile;
+    }
+
+    public void environment(Closure<Properties> closure) {
+        ConfigObject config = new ConfigObject();
+        closure.setResolveStrategy(Closure.DELEGATE_ONLY);
+        closure.setDelegate(config);
+        closure.call();
+        config.flatten(this.environment);
+    }
+
+    @Override
+    public Properties getEnvironment() {
+        return environment;
+    }
+
+    @Override
+    public File getEnvironmentFile() {
+        return environmentFile;
+    }
+
+    @Override
+    public void setEnvironmentFile(File environmentFile) {
+        this.environmentFile = environmentFile;
     }
 
     /**
