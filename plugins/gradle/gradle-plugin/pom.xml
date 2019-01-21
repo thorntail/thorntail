@@ -41,14 +41,6 @@
   <dependencies>
     <dependency>
       <groupId>io.thorntail</groupId>
-      <artifactId>fraction-metadata</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>spi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
       <artifactId>thorntail-gradle-tooling</artifactId>
     </dependency>
     <dependency>
@@ -74,15 +66,6 @@
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>3.0.20</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.resolver</groupId>
-      <artifactId>maven-resolver-util</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>

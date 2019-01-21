@@ -241,7 +241,10 @@ public final class GradleDependencyResolutionHelper {
         Set<DependencyDescriptor> dependencies = new HashSet<>();
         while (!stack.empty()) {
             ResolvedDependency rd = stack.pop();
-            rd.getModuleArtifacts().forEach(a -> dependencies.add(asDescriptor(scope, a)));
+            // Skip the parent's artifacts.
+            if (rd != parent) {
+                rd.getModuleArtifacts().forEach(a -> dependencies.add(asDescriptor(scope, a)));
+            }
             rd.getChildren().forEach(d -> {
                 if (!stack.contains(d)) {
                     stack.add(d);
@@ -298,12 +301,13 @@ public final class GradleDependencyResolutionHelper {
         final String NEW_LINE = "\n";
         if (project.getLogger().isEnabled(LogLevel.INFO)) {
             StringBuilder builder = new StringBuilder(100);
+            builder.append("Resolved dependencies:").append(NEW_LINE);
             map.forEach((k, v) -> {
                 builder.append(k).append(NEW_LINE);
                 v.forEach(e -> builder.append("\t").append(e).append(NEW_LINE));
                 builder.append(NEW_LINE);
             });
-            project.getLogger().info("Resolved dependencies:\n" + builder.toString());
+            project.getLogger().info(builder.toString());
         }
     }
 
