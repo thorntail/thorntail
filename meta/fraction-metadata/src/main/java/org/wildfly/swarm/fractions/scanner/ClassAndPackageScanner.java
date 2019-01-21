@@ -64,7 +64,7 @@ public class ClassAndPackageScanner implements Scanner<String> {
     private static class PackageCollector extends ClassVisitor {
 
         PackageCollector(Collection<FractionDetector<String>> detectors) {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM7);
             this.detectors = detectors;
         }
 
@@ -92,7 +92,7 @@ public class ClassAndPackageScanner implements Scanner<String> {
                                                  final boolean __) {
             addType(desc);
 
-            return new AnnotationVisitor(Opcodes.ASM5) {
+            return new AnnotationVisitor(Opcodes.ASM7) {
                 @Override
                 public void visit(final String __,
                                   final Object value) {
@@ -149,7 +149,7 @@ public class ClassAndPackageScanner implements Scanner<String> {
                 addType(desc);
             }
 
-            return new FieldVisitor(Opcodes.ASM5) {
+            return new FieldVisitor(Opcodes.ASM7) {
                 @Override
                 public AnnotationVisitor visitAnnotation(String desc,
                                                          boolean __) {
@@ -183,7 +183,7 @@ public class ClassAndPackageScanner implements Scanner<String> {
             }
             addInternalTypes(exceptions);
 
-            return new MethodVisitor(Opcodes.ASM5) {
+            return new MethodVisitor(Opcodes.ASM7) {
                 @Override
                 public AnnotationVisitor visitAnnotationDefault() {
                     return ANNOTATION_VISITOR;
@@ -414,7 +414,7 @@ public class ClassAndPackageScanner implements Scanner<String> {
         private Collection<FractionDetector<String>> detectors;
 
         private final AnnotationVisitor ANNOTATION_VISITOR =
-                new AnnotationVisitor(Opcodes.ASM5) {
+                new AnnotationVisitor(Opcodes.ASM7) {
                     @Override
                     public void visit(final String __,
                                       final Object value) {
@@ -445,7 +445,7 @@ public class ClassAndPackageScanner implements Scanner<String> {
                 };
 
         private final SignatureVisitor SIGNATURE_VISITOR =
-                new SignatureVisitor(Opcodes.ASM5) {
+                new SignatureVisitor(Opcodes.ASM7) {
                     @Override
                     public void visitClassType(final String name) {
                         outerName = name;

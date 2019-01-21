@@ -28,7 +28,7 @@ public abstract class AnnotationSeekingClassVisitor extends ClassVisitor {
     private final String[] annotations;
 
     public AnnotationSeekingClassVisitor(String... annotations) {
-        super(Opcodes.ASM5);
+        super(Opcodes.ASM7);
         this.annotations = annotations;
     }
 
@@ -48,7 +48,7 @@ public abstract class AnnotationSeekingClassVisitor extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        return new MethodVisitor(Opcodes.ASM5) {
+        return new MethodVisitor(Opcodes.ASM7) {
             @Override
             public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
                 if (matches(desc)) {
