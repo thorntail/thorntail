@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.runner;
 
+import org.wildfly.swarm.jdk.specific.ClassLoaders;
 import org.wildfly.swarm.runner.cache.RunnerCacheConstants;
 
 import java.io.File;
@@ -25,7 +26,6 @@ import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -118,13 +118,11 @@ public class Runner {
         }
 
         URL jarUrl = fatJar.toURI().toURL();
-        return new URLClassLoader(new URL[]{jarUrl}, null);
+        return new URLClassLoader(new URL[]{jarUrl}, ClassLoaders.getPlatformClassLoader());
     }
 
     private static void buildJar(File fatJar) throws IOException, InterruptedException {
-        String classpath = Arrays.stream(((URLClassLoader) Thread.currentThread().getContextClassLoader()).getURLs())
-                .map(URL::getFile)
-                .collect(Collectors.joining(File.pathSeparator));
+        String classpath = System.getProperty("java.class.path");
 
         List<String> command = buildCommand(fatJar);
 
