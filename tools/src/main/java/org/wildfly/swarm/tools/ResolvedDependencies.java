@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 
 import org.jboss.shrinkwrap.api.Node;
 import org.wildfly.swarm.fractions.FractionDescriptor;
+import org.wildfly.swarm.jdk.specific.JarFiles;
 
 /**
  * Dependencies that have been resolved to local files.
@@ -67,7 +68,7 @@ public interface ResolvedDependencies {
 
     static Stream<ModuleAnalyzer> findModuleXmls(File file) {
         List<ModuleAnalyzer> analyzers = new ArrayList<>();
-        try (JarFile jar = new JarFile(file)) {
+        try (JarFile jar = JarFiles.create(file)) {
 
             Enumeration<JarEntry> entries = jar.entries();
 

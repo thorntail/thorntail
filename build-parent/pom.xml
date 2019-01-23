@@ -24,6 +24,8 @@
   <properties>
     <version.thorntail.fraction.plugin>93</version.thorntail.fraction.plugin>
 
+    <version.thorntail-jdk-specific>1-SNAPSHOT</version.thorntail-jdk-specific>
+
     <version.org.snakeyaml>1.18</version.org.snakeyaml>
 
     <version.wildfly.config-api>1.6.1</version.wildfly.config-api>
@@ -189,6 +191,11 @@
         <version>${version.jboss-modules}</version>
       </dependency>
 
+      <dependency>
+        <groupId>io.thorntail.jdk-specific</groupId>
+        <artifactId>thorntail-jdk-specific</artifactId>
+        <version>${version.thorntail-jdk-specific}</version>
+      </dependency>
 
       <!--
         org.wildfly:wildfly-parent transitively brings in 3.2.1, which breaks ShrinkWrap's resolver.

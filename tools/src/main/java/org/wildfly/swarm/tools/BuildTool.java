@@ -55,6 +55,7 @@ import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.fractions.FractionDescriptor;
 import org.wildfly.swarm.fractions.FractionList;
 import org.wildfly.swarm.fractions.FractionUsageAnalyzer;
+import org.wildfly.swarm.jdk.specific.JarFiles;
 import org.wildfly.swarm.spi.meta.SimpleLogger;
 
 import net.lingala.zip4j.core.ZipFile;
@@ -276,7 +277,7 @@ public class BuildTool {
 
     private boolean bootstrapJarShadesJBossModules(File artifactFile) throws IOException {
         boolean jbossModulesFound = false;
-        try (JarFile jarFile = new JarFile(artifactFile)) {
+        try (JarFile jarFile = JarFiles.create(artifactFile)) {
             Enumeration<JarEntry> entries = jarFile.entries();
             while (entries.hasMoreElements()) {
                 JarEntry each = entries.nextElement();

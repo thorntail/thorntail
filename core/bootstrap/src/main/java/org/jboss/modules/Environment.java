@@ -27,6 +27,8 @@ import java.security.CodeSource;
 import java.util.Collections;
 import java.util.jar.JarFile;
 
+import org.wildfly.swarm.jdk.specific.JarFiles;
+
 /**
  * Resources for the environment the application is being executed in.
  *
@@ -107,7 +109,7 @@ public class Environment {
                     if (codeSource == null) {
                         throw new RuntimeException("The code source could not be determine.");
                     }
-                    JAR_FILE = new JarFile(new File(codeSource.getLocation().toURI()));
+                    JAR_FILE = JarFiles.create(new File(codeSource.getLocation().toURI()));
                 } catch (URISyntaxException | IOException e) {
                     throw new RuntimeException("Could not create FileSystem for " + pathUrl, e);
                 }

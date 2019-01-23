@@ -32,6 +32,10 @@
       <artifactId>bootstrap</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.thorntail.jdk-specific</groupId>
+      <artifactId>thorntail-jdk-specific</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>fraction-metadata</artifactId>
     </dependency>

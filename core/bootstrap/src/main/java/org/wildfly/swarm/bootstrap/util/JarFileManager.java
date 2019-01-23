@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.jar.JarFile;
 
+import org.wildfly.swarm.jdk.specific.JarFiles;
+
 /**
  * @author Juan Gonzalez
  */
@@ -32,14 +34,14 @@ public class JarFileManager {
     }
 
     public JarFile getJarFile(File file) throws IOException {
-        return TempFileManager.INSTANCE.isTempFile(file) ? addJarFile(file) : new JarFile(file);
+        return TempFileManager.isTempFile(file) ? addJarFile(file) : JarFiles.create(file);
     }
 
     public JarFile addJarFile(File file) throws IOException {
 
         JarFile jarFile = jarFileToClose.get(file);
         if (jarFile == null) {
-             jarFile = new JarFile(file);
+             jarFile = JarFiles.create(file);
              jarFileToClose.put(file, jarFile);
         }
 
