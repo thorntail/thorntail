@@ -43,6 +43,9 @@
             <manifest>
               <mainClass>org.wildfly.swarm.bootstrap.Main</mainClass>
             </manifest>
+            <manifestEntries>
+              <Multi-Release>true</Multi-Release>
+            </manifestEntries>
           </archive>
         </configuration>
       </plugin>
@@ -57,7 +60,7 @@
             </goals>
             <configuration>
               <excludeTransitive>true</excludeTransitive>
-              <includeGroupIds>org.jboss.modules,org.yaml</includeGroupIds>
+              <includeGroupIds>org.jboss.modules,io.thorntail.jdk-specific,org.yaml</includeGroupIds>
               <excludes>**\/MavenArtifactUtil.class,**\/ArtifactCoordinates.class,**\/MavenSettings.class</excludes>
               <outputDirectory>${project.build.directory}/classes</outputDirectory>
             </configuration>
