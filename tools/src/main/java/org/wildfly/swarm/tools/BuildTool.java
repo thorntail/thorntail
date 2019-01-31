@@ -108,6 +108,11 @@ public class BuildTool {
         return this;
     }
 
+    public BuildTool filterWebinfLib(boolean filterWebinfLib) {
+        this.filterWebinfLib = filterWebinfLib;
+        return this;
+    }
+
     public BuildTool projectArtifact(String groupId, String artifactId, String version, String packaging, File file) {
         projectArtifact(groupId, artifactId, version, packaging, file, null);
 
@@ -208,7 +213,7 @@ public class BuildTool {
             original.as(ZipImporter.class).importFrom(inputStream);
         }
 
-        WebInfLibFilteringArchive repackaged = new WebInfLibFilteringArchive(original, this.dependencyManager);
+        Archive repackaged = this.filterWebinfLib ? new WebInfLibFilteringArchive(original, this.dependencyManager) : original;
         repackaged.as(ZipExporter.class).exportTo(file, true);
         this.log.info("Repackaged .war: " + file);
     }
@@ -315,7 +320,7 @@ public class BuildTool {
         if (this.hollow) {
             return;
         }
-        this.archive.add(new WebInfLibFilteringArchiveAsset(this.projectAsset, this.dependencyManager));
+        this.archive.add(this.filterWebinfLib ? new WebInfLibFilteringArchiveAsset(this.projectAsset, this.dependencyManager) : this.projectAsset);
     }
 
     private void detectFractions() throws Exception {
@@ -593,6 +598,8 @@ public class BuildTool {
     private String testClass;
 
     private boolean bundleDependencies = true;
+
+    private boolean filterWebinfLib = true;
 
     private boolean executable;
 
