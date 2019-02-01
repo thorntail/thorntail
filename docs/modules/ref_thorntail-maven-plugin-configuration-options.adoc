@@ -66,6 +66,24 @@ A `.properties` file with environment variables to use when executing the applic
 |`multistart`, `run`, `start`
 |===
 
+filterWebInfLib::
+If true, the plugin will remove artifacts from the project WAR's `WEB-INF/lib` directory that are provided by the Thorntail runtime.
+Otherwise, the contents of `WEB-INF/lib` will remain untouched.
++
+[cols="1,2a"]
+|===
+|Property
+|`thorntail.filterWebInfLib`
+
+|Default
+|true
+
+|Used by
+|`package`
+|===
+
+NOTE: This option should generally not be necessary and is provided as a workaround in case the Thorntail plugin removes a dependency required by the application. When false, it is the developer's responsibility to ensure that the `WEB-INF/lib` directory does not contain Thorntail artifacts that would comprimise the functionality of the application. One way to do that is to avoid expressing dependencies on fractions and rely on xref:auto-detecting-fractions_{context}[auto-detection] and/or explicitly listing them with the *fractions* option detailed below.
+
 fractionDetectMode::
 +
 --
