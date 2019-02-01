@@ -60,8 +60,27 @@
             </goals>
             <configuration>
               <excludeTransitive>true</excludeTransitive>
-              <includeGroupIds>org.jboss.modules,io.thorntail.jdk-specific,org.yaml</includeGroupIds>
+              <includeGroupIds>org.jboss.modules,org.yaml</includeGroupIds>
               <excludes>**\/MavenArtifactUtil.class,**\/ArtifactCoordinates.class,**\/MavenSettings.class</excludes>
+              <outputDirectory>${project.build.directory}/classes</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <!--
+              - this is a separate execution because the thorntail-jdk-specific artifact overrides some
+              - JBoss Modules classes and we need to make sure those are unpacked _after_ JBoss Modules themselves
+              -
+              - also we need to make sure that the JBoss Modules overrides in this project don't collide
+              - with the overrides in thorntail-jdk-specific
+              -->
+            <id>unpack-jdk-specific</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <excludeTransitive>true</excludeTransitive>
+              <includeGroupIds>io.thorntail.jdk-specific</includeGroupIds>
               <outputDirectory>${project.build.directory}/classes</outputDirectory>
             </configuration>
           </execution>
