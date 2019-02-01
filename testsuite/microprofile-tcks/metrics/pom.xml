@@ -62,6 +62,11 @@
          <artifactId>commons-logging</artifactId>
       </dependency>
 
+      <dependency>
+         <groupId>org.jboss.spec.javax.xml.bind</groupId>
+         <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+      </dependency>
+
       <!-- This is needed for tests with @ShouldThrowException - the real
          exception is org.jboss.weld.exceptions.DeploymentException -->
       <dependency>
