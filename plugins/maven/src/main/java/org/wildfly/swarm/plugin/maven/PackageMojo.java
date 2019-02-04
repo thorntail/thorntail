@@ -58,6 +58,9 @@ public class PackageMojo extends AbstractSwarmMojo {
     @Parameter(alias = "bundleDependencies", defaultValue = "true", property = "thorntail.bundleDependencies")
     protected boolean bundleDependencies;
 
+    @Parameter(alias = "filterWebInfLib", defaultValue = "true", property = "thorntail.filterWebInfLib")
+    protected boolean filterWebInfLib;
+
     /**
      * Make a fully executable jar for *nix machines by prepending a launch script to the jar.
      */
@@ -138,6 +141,7 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .properties(this.properties)
                 .mainClass(this.mainClass)
                 .bundleDependencies(this.bundleDependencies)
+                .filterWebInfLib(this.filterWebInfLib)
                 .executable(executable)
                 .executableScript(executableScript)
                 .fractionDetectionMode(fractionDetectMode)
