@@ -35,6 +35,7 @@ public class JsfIT {
     @Test
     public void jsf() throws IOException, InterruptedException {
         String result = Request.Get("http://localhost:8080/index.jsf").execute().returnContent().asString();
+        assertThat(result).contains("Action message");
         assertThat(result).contains("Hello from JSF");
         assertThat(result).contains("Message from faces-config.xml bean");
         assertThat(result).contains("Message from custom-library.faces-config.xml bean");
