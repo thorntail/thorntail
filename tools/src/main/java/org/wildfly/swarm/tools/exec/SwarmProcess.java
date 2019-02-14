@@ -105,17 +105,6 @@ public class SwarmProcess {
 
         if (this.processFile != null) {
             this.processFile.delete();
-            long timeoutMillis = timeUnit.toMillis(timeout);
-            long initialTimeMillis = System.currentTimeMillis();
-            while (true) {
-                long currentTimeMillis = System.currentTimeMillis();
-                if (!process.isAlive() || (currentTimeMillis - initialTimeMillis) > timeoutMillis) {
-                    break;
-                }
-            }
-        }
-        if (!this.process.isAlive()) {
-            return process.exitValue();
         }
         this.process.destroy();
         if (!this.process.waitFor(timeout, timeUnit)) {
