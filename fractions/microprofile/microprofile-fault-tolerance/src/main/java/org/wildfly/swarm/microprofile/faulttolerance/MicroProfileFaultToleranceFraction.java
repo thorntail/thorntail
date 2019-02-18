@@ -50,7 +50,7 @@ public class MicroProfileFaultToleranceFraction implements Fraction<MicroProfile
     }
 
     // Keep the attribute for docs generation
-    @AttributeDocumentation("Enable/disable synchronous circuit breaker functionality. If disabled, `CircuitBreaker#successThreshold()` of value greater than 1 is not supported. Moreover, circuit breaker does not necessarily transition from `CLOSED` to `OPEN` immediately when a fault tolerance operation completes. However, applications are encouraged to disable this feature on high-volume circuits.")
+    @AttributeDocumentation("Enable/disable synchronous circuit breaker functionality. If disabled, `CircuitBreaker#successThreshold()` of value greater than 1 is not supported and `CircuitBreaker#failOn()` configuration is ignored. Moreover, circuit breaker does not necessarily transition from `CLOSED` to `OPEN` immediately when a fault tolerance operation completes. However, applications are encouraged to disable this feature on high-volume circuits.")
     @Configurable(SYNC_CIRCUIT_BREAKER_KEY)
     private Defaultable<Boolean> synchronousCircuitBreaker = Defaultable.bool(true);
 

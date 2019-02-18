@@ -34,5 +34,6 @@
       <module name="com.netflix.hystrix" slot="main"/>
       <module name="org.jboss.weld.core" export="true"/>
       <module name="org.jboss.weld.spi" export="true"/>
+      <module name="io.reactivex.rxjava"/>
    </dependencies>
 </module>
