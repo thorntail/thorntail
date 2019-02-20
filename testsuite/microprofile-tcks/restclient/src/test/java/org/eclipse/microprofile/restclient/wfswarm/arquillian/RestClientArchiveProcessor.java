@@ -13,7 +13,7 @@ import org.wildfly.swarm.undertow.WARArchive;
 
 public class RestClientArchiveProcessor implements ApplicationArchiveProcessor {
 
-    private static Logger log = Logger.getLogger(RestClientArchiveProcessor.class.getName());
+    private static final Logger log = Logger.getLogger(RestClientArchiveProcessor.class.getName());
 
     @Override
     public void process(Archive<?> appArchive, TestClass testClass) {
@@ -36,7 +36,7 @@ public class RestClientArchiveProcessor implements ApplicationArchiveProcessor {
 
 
         // TCK Classes that need to present
-        war.addPackages(true, "org.eclipse.microprofile.rest.client.tck.interfaces");
+        war.addPackages(true, "org.eclipse.microprofile.rest.client.tck.ext");
 
         log.fine("Augmented war: \n" + war.toString(true));
     }
