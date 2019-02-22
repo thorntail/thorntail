@@ -19,6 +19,7 @@ package org.wildfly.swarm.plugin.gradle;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -193,6 +194,143 @@ public interface ThorntailConfiguration extends Serializable {
      * @param script the executable file that should be included along with the archive.
      */
     void setExecutableScript(File script);
+
+    /**
+     * @see #setDebugPort(Integer)
+     */
+    Integer getDebugPort();
+
+    /**
+     * When set, Thorntail executor will wait for debugger connection on given port.
+     *
+     * Used by "thorntail-run" and "thorntail-start" tasks.
+     *
+     * @param debugPort debugging port.
+     */
+    void setDebugPort(Integer debugPort);
+
+    /**
+     * @see #setStdoutFile(File)
+     */
+    File getStdoutFile();
+
+    /**
+     * File to log Thorntail executor standard output into.
+     *
+     * Used by "thorntail-run" and "thorntail-start" tasks.
+     *
+     * @param file log file for standard output.
+     */
+    void setStdoutFile(File file);
+
+    /**
+     * @see #setStderrFile(File)
+     */
+    File getStderrFile();
+
+    /**
+     * File to log Thorntail executor error output into.
+     *
+     * Used by "thorntail-run" and "thorntail-start" tasks.
+     *
+     * @param file log file for error output.
+     */
+    void setStderrFile(File file);
+
+    /**
+     * @see #setArguments(List)
+     */
+    List<String> getArguments();
+
+    /**
+     * Arguments to be given to the application main class when executing Thorntail process.
+     *
+     * Used by "thorntail-run" and "thorntail-start" tasks.
+     *
+     * @param arguments arguments for application main class.
+     */
+    void setArguments(List<String> arguments);
+
+    /**
+     * @see #setJvmArguments(List)
+     */
+    List<String> getJvmArguments();
+
+    /**
+     * JVM arguments ti be used when executing Thorntail process.
+     *
+     * Used by "thorntail-run" and "thorntail-start" tasks.
+     *
+     * @param arguments JVM arguments for Thorntail process.
+     */
+    void setJvmArguments(List<String> arguments);
+
+    /**
+     * @see #setUseUberJar(boolean)
+     */
+    boolean isUseUberJar();
+
+    /**
+     * Instead of adding compiled project classes and project dependencies on the classpath, the Thorntail executor will
+     * directly execute the generated Uber-JAR.
+     *
+     * It is the responsibility of a user to ensure that the Uber-JAR exists and is up-to-date by running
+     * "thorntail-package" task as necessary.
+     *
+     * Used by "thorntail-run" and "thorntail-start" tasks.
+     *
+     * @param useUberJar if true execute an Uber-JAR, if false compute and set the classpath.
+     */
+    void setUseUberJar(boolean useUberJar);
+
+    /**
+     * @see #setStartTimeout(int)
+     */
+    int getStartTimeout();
+
+    /**
+     * Sets a timeout for the Thorntail application process to start.
+     *
+     * Used by "thorntail-run" and "thorntail-start" tasks.
+     *
+     * @param startTimeout timeout in seconds.
+     */
+    void setStartTimeout(int startTimeout);
+
+    /**
+     * @see #setStopTimeout(int)
+     */
+    int getStopTimeout();
+
+    /**
+     * Sets a timeout for the Thorntail application process to stop, before it's forcibly destroyed.
+     *
+     * Used by "thorntail-run" and "thorntail-stop" tasks.
+     *
+     * @param stopTimeout timeout in seconds.
+     */
+    void setStopTimeout(int stopTimeout);
+
+    /**
+     * Environment variables that will be set for the Thorntail process.
+     *
+     * Used by "thorntail-run" and "thorntail-start" tasks.
+     *
+     * @return environment variables.
+     */
+    Properties getEnvironment();
+
+    /**
+     * @see #setEnvironmentFile(File)
+     */
+    File getEnvironmentFile();
+
+    /**
+     * Property file containing environment variables to be given to the Thorntail process.
+     *
+     * @param environmentFile property file with environment variables.
+     */
+    void setEnvironmentFile(File environmentFile);
 
     /**
      * Get the version of the plugin configured for the Gradle project. This method is used to determine the version when not
