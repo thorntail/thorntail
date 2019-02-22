@@ -40,9 +40,6 @@ import org.wildfly.swarm.microprofile.jwtauth.keycloak.deployment.principal.Keyc
 
 import io.smallrye.jwt.auth.principal.JWTCallerPrincipalFactory;
 
-/**
- * @author Bob McWhirter
- */
 @RunWith(Arquillian.class)
 public class KeycloakMicroprofileJwtTest {
 
@@ -51,9 +48,9 @@ public class KeycloakMicroprofileJwtTest {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "test.war");
         deployment.addClass(SecuredApplication.class);
         deployment.addClass(SecuredResource.class);
-        deployment.addResource(JWTCallerPrincipalFactory.class);
-        deployment.addResource(KeycloakJWTCallerPrincipalFactory.class);
-        deployment.addResource(KeycloakJWTCallerPrincipal.class);
+        deployment.addClass(JWTCallerPrincipalFactory.class);
+        deployment.addClass(KeycloakJWTCallerPrincipalFactory.class);
+        deployment.addClass(KeycloakJWTCallerPrincipal.class);
         deployment.addAsResource("keycloak.json");
         deployment.addAsResource("project-defaults.yml");
         deployment.addAsServiceProvider(JWTCallerPrincipalFactory.class, KeycloakJWTCallerPrincipalFactory.class);
