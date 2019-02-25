@@ -24,7 +24,7 @@
   <properties>
     <version.thorntail.fraction.plugin>93</version.thorntail.fraction.plugin>
 
-    <version.thorntail-jdk-specific>1-SNAPSHOT</version.thorntail-jdk-specific>
+    <version.thorntail-jdk-specific>1</version.thorntail-jdk-specific>
 
     <version.org.snakeyaml>1.18</version.org.snakeyaml>
 
