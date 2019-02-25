@@ -81,12 +81,12 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
             if (issuedBy == null) {
                 // Try the /META-INF/MP-JWT-ISSUER content
                 URL issURL = loader.getResource("/META-INF/MP-JWT-ISSUER");
-                if (issURL == null) {
-                    throw new IllegalStateException("No issuedBy parameter was found");
+                if (issURL != null) {
+                    issuedBy = readURLContent(issURL);
                 }
-                issuedBy = readURLContent(issURL);
+
                 if (issuedBy == null) {
-                    throw new IllegalStateException("No issuedBy parameter was found");
+                    log.debug("No issuedBy parameter was found");
                 }
                 issuedBy = issuedBy.trim();
             }
@@ -120,22 +120,23 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
                         jwksUri = readURLContent(jwksUriURL);
                     }
                 }
-                if (jwksUri == null) {
-                    throw new IllegalStateException("Neither a static key nor a JWKS URI was set.");
-                }
-                contextInfo.setJwksUri(jwksUri.trim());
+                if (jwksUri != null) {
+                    contextInfo.setJwksUri(jwksUri.trim());
 
-                String jwksRefreshInterval = properties.get("jwksRefreshInterval");
-                if (jwksRefreshInterval == null) {
-                    URL jwksRefreshIntervalURL = loader.getResource("/META-INF/MP-JWT-JWKS-REFRESH");
-                    if (jwksRefreshIntervalURL != null) {
-                        jwksRefreshInterval = readURLContent(jwksRefreshIntervalURL);
+                    String jwksRefreshInterval = properties.get("jwksRefreshInterval");
+                    if (jwksRefreshInterval == null) {
+                        URL jwksRefreshIntervalURL = loader.getResource("/META-INF/MP-JWT-JWKS-REFRESH");
+                        if (jwksRefreshIntervalURL != null) {
+                            jwksRefreshInterval = readURLContent(jwksRefreshIntervalURL);
+                        }
                     }
+                    if (jwksRefreshInterval == null) {
+                        throw new IllegalStateException("JWKS Refresh Interval should be set when JWKS URI is used.");
+                    }
+                    contextInfo.setJwksRefreshInterval(Integer.valueOf(jwksRefreshInterval.trim()));
+                } else {
+                    log.debug("Neither a static key nor a JWKS URI was set.");
                 }
-                if (jwksRefreshInterval == null) {
-                    throw new IllegalStateException("JWKS Refresh Interval should be set when JWKS URI is used.");
-                }
-                contextInfo.setJwksRefreshInterval(Integer.valueOf(jwksRefreshInterval.trim()));
             } else { // PEM key was provided, now parse and set it.
                 // Workaround the double decode issue; https://issues.jboss.org/browse/WFLY-9135
                 String publicKeyPem = publicKeyPemEnc.replace(' ', '+');
