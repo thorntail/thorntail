@@ -980,6 +980,7 @@
     <module>fractions/wildfly/msc</module>
     <module>fractions/wildfly/request-controller</module>
     <module>fractions/wildfly/security</module>
+    <module>fractions/wildfly/infinispan</module>
 
     <module>fractions/keycloak</module>
     <module>fractions/microprofile/microprofile-config</module>
@@ -1069,7 +1070,6 @@
         <module>fractions/javaee/messaging</module>
         <module>fractions/javaee/webservices</module>
 
-        <module>fractions/wildfly/infinispan</module>
         <module>fractions/wildfly/jgroups</module>
 
         <module>fractions/asciidoctorj</module>
