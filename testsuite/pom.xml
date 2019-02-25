@@ -29,6 +29,7 @@
     <version.org.arquillian.graphene>2.1.0.Final</version.org.arquillian.graphene>
 
     <version.h2>1.4.187</version.h2>
+    <version.keycloak>4.8.3.Final</version.keycloak>
     <version.mysql>5.1.39</version.mysql>
     <version.postgresql>9.4.1208</version.postgresql>
 

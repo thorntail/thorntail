@@ -1231,6 +1231,7 @@
         <module>testsuite/testsuite-jolokia</module>
         <module>testsuite/testsuite-jolokia-keycloak</module>
         <module>testsuite/testsuite-keycloak</module>
+        <module>testsuite/testsuite-keycloak-mpjwt</module>
         <module>testsuite/testsuite-keycloak-server</module>
         <module>testsuite/testsuite-logstash</module>
         <module>testsuite/testsuite-mail</module>
