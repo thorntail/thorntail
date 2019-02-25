@@ -52,7 +52,9 @@
     <version.com.googlecode.concurrentlinkedhashmap>1.4.1</version.com.googlecode.concurrentlinkedhashmap>
     <version.com.tinkerpop.blueprints>2.6.0</version.com.tinkerpop.blueprints>
 
-    <version.jruby-maven-plugin>1.1.3</version.jruby-maven-plugin>
+    <version.jruby>9.2.5.0</version.jruby>
+
+    <version.jruby-maven-plugin>1.1.6</version.jruby-maven-plugin>
     <version.maven-plugin-plugin>3.5</version.maven-plugin-plugin>
     <version.maven-shade-plugin>2.4.1</version.maven-shade-plugin>
     <version.build-helper-maven-plugin>1.9.1</version.build-helper-maven-plugin>
@@ -170,6 +172,9 @@
           <groupId>de.saumya.mojo</groupId>
           <artifactId>jruby-maven-plugin</artifactId>
           <version>${version.jruby-maven-plugin}</version>
+          <configuration>
+            <jrubyVersion>${version.jruby}</jrubyVersion>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1237,6 +1242,7 @@
         <module>testsuite/testsuite-mail</module>
         <module>testsuite/testsuite-mail-cdi</module>
         <module>testsuite/testsuite-management-console</module>
+        <module>testsuite/testsuite-management-console-openapi</module>
         <module>testsuite/testsuite-messaging</module>
         <module>testsuite/testsuite-messaging-remote</module>
         <module>testsuite/testsuite-microprofile-openapi</module>
@@ -1246,6 +1252,7 @@
         <module>testsuite/testsuite-jaeger-opentracing</module>
         <module>testsuite/testsuite-jaeger-microprofile-opentracing</module>
         <module>testsuite/testsuite-opentracing</module>
+        <module>testsuite/testsuite-scriptengine</module>
         <module>testsuite/testsuite-spring</module>
         <module>testsuite/testsuite-swagger</module>
         <module>testsuite/testsuite-swagger-customized</module>

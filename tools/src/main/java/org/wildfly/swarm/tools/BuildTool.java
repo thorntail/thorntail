@@ -55,6 +55,7 @@ import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 import org.wildfly.swarm.fractions.FractionDescriptor;
 import org.wildfly.swarm.fractions.FractionList;
 import org.wildfly.swarm.fractions.FractionUsageAnalyzer;
+import org.wildfly.swarm.jdk.specific.JarFiles;
 import org.wildfly.swarm.spi.meta.SimpleLogger;
 
 import net.lingala.zip4j.core.ZipFile;
@@ -276,7 +277,7 @@ public class BuildTool {
 
     private boolean bootstrapJarShadesJBossModules(File artifactFile) throws IOException {
         boolean jbossModulesFound = false;
-        try (JarFile jarFile = new JarFile(artifactFile)) {
+        try (JarFile jarFile = JarFiles.create(artifactFile)) {
             Enumeration<JarEntry> entries = jarFile.entries();
             while (entries.hasMoreElements()) {
                 JarEntry each = entries.nextElement();
@@ -294,13 +295,14 @@ public class BuildTool {
         try {
             ZipFile zipFile = new ZipFile(artifactFile);
             for (FileHeader each : (List<FileHeader>) zipFile.getFileHeaders()) {
-                if (each.getFileName().startsWith("META-INF")) {
+                String fileName = each.getFileName();
+                if (fileName.startsWith("META-INF") && !fileName.startsWith("META-INF/versions")) {
                     continue;
                 }
                 if (each.isDirectory()) {
                     continue;
                 }
-                this.archive.add(new ZipFileHeaderAsset(zipFile, each), each.getFileName());
+                this.archive.add(new ZipFileHeaderAsset(zipFile, each), fileName);
             }
         } catch (ZipException e) {
             throw new IOException(e);
@@ -427,6 +429,7 @@ public class BuildTool {
         Attributes attrs = manifest.getMainAttributes();
         attrs.put(Attributes.Name.MANIFEST_VERSION, "1.0");
         attrs.put(Attributes.Name.MAIN_CLASS, Main.class.getName());
+        attrs.put(new Attributes.Name("Multi-Release"), "true");
 
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();

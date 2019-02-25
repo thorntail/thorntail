@@ -24,7 +24,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.jar.Attributes;
-import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -35,6 +34,7 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
 import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
+import org.wildfly.swarm.jdk.specific.JarFiles;
 
 /**
  * @author Bob McWhirter
@@ -69,7 +69,7 @@ public abstract class AbstractBootstrapIntegrationTestCase {
 
     protected JavaArchive createBootstrapArchive(String mainClassName, String appArtifact) throws IOException {
         JavaArchive archive = ShrinkWrap.create(JavaArchive.class);
-        archive.as(ZipImporter.class).importFrom(new JarFile(findBootstrapJar()));
+        archive.as(ZipImporter.class).importFrom(JarFiles.create(findBootstrapJar()));
 
 
         Properties props = new Properties();

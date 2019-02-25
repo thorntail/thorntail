@@ -60,6 +60,11 @@
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.annotation</groupId>
+      <artifactId>jboss-annotations-api_1.3_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Provided APIs -->
     <dependency>

@@ -37,7 +37,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -50,7 +49,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static org.wildfly.swarm.runner.utils.StringUtils.randomAlphabetic;
@@ -89,16 +87,11 @@ public class FatJarBuilder {
     }
 
     private static List<URL> getClasspathUrls() throws MalformedURLException {
-        URLClassLoader urlLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-        List<String> urlList =
-                Stream.of(urlLoader.getURLs())
-                        .map(URL::toString)
-                        .collect(Collectors.toList());
-
         List<URL> urls = new ArrayList<>();
 
-        for (String urlString : urlList) {
-            urls.add(new URL(urlString));
+        String[] classpath = System.getProperty("java.class.path").split(File.pathSeparator);
+        for (String file : classpath) {
+            urls.add(new File(file).toURI().toURL());
         }
         return urls;
     }

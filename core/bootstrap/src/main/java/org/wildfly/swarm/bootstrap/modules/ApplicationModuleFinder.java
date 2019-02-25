@@ -38,6 +38,7 @@ import org.wildfly.swarm.bootstrap.logging.BootstrapLogger;
 import org.wildfly.swarm.bootstrap.util.BootstrapUtil;
 import org.wildfly.swarm.bootstrap.util.JarFileManager;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
+import org.wildfly.swarm.jdk.specific.JarFiles;
 
 /**
  * Module-finder used only for loading the module <code>swarm.application</code> when run in an fat-jar scenario.
@@ -151,8 +152,8 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
             Files.copy(artifactIn, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
 
-        final String jarName = tmp.getName().toString();
-        final JarFile jarFile = new JarFile(tmp);
+        final String jarName = tmp.getName();
+        final JarFile jarFile = JarFiles.create(tmp);
 
         File tmpDir = TempFileManager.INSTANCE.newTempDirectory(name, ext);
 
@@ -222,7 +223,7 @@ public class ApplicationModuleFinder extends AbstractSingleModuleFinder {
                 if (driverFile.exists()) {
                     builder.addResourceRoot(
                             ResourceLoaderSpec.createResourceLoaderSpec(
-                                    ResourceLoaders.createJarResourceLoader(driverFile.getName(), new JarFile(driverFile))
+                                    ResourceLoaders.createJarResourceLoader(driverFile.getName(), JarFiles.create(driverFile))
                             )
                     );
                 }
