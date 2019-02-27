@@ -95,7 +95,7 @@
     <version.opentracing.servlet>0.2.0</version.opentracing.servlet>
     <version.jaeger>0.30.6</version.jaeger>
     <version.opentracing.concurrent>0.2.0</version.opentracing.concurrent>
-    <version.opentracing.jaxrs>0.3.1</version.opentracing.jaxrs>
+    <version.opentracing.jaxrs>0.4.1</version.opentracing.jaxrs>
     <version.opentracing.interceptors>0.0.4</version.opentracing.interceptors>
     <version.jaeger.apache.thrift>0.11.0</version.jaeger.apache.thrift>
     <version.jaeger.apache.httpclient>4.2.5</version.jaeger.apache.httpclient>
@@ -118,7 +118,7 @@
     <version.microprofile-metrics>1.1</version.microprofile-metrics>
     <version.microprofile.restclient>1.2.1</version.microprofile.restclient>
     <version.microprofile-openapi>1.0.1</version.microprofile-openapi>
-    <version.microprofile-opentracing>1.2.1</version.microprofile-opentracing>
+    <version.microprofile-opentracing>1.3.1</version.microprofile-opentracing>
     <!-- MP Config implementation -->
     <version.microprofile-config-wildfly>1.6.1</version.microprofile-config-wildfly>
 
@@ -126,7 +126,7 @@
     <version.smallrye.config>1.3.5</version.smallrye.config>
     <version.smallrye.health>1.0.2</version.smallrye.health>
     <version.smallrye.openapi>1.0.3</version.smallrye.openapi>
-    <version.smallrye.opentracing>1.2.1</version.smallrye.opentracing>
+    <version.smallrye.opentracing>1.3.0</version.smallrye.opentracing>
     <version.smallrye.metrics>1.1.3</version.smallrye.metrics>
     <version.smallrye.restclient>1.2.0</version.smallrye.restclient>
     <version.smallrye.jwt>1.1.1</version.smallrye.jwt>
