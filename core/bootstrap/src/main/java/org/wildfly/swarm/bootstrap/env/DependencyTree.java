@@ -16,15 +16,16 @@
 package org.wildfly.swarm.bootstrap.env;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Each direct dependency (parent) keeps a bucket of transient dependencies (children)
  * so we can infer the origin (parent) for each transient dependency.
+ *
+ * Insertion order of dependencies is preserved.
  *
  * @author Heiko Braun
  * @author Ken Finnigan
@@ -38,7 +39,7 @@ public class DependencyTree<T> {
      * @param parent
      */
     public void add(T parent, T child) {
-        final Set<T> children = depTree.computeIfAbsent(parent, p -> new HashSet<>());
+        final Set<T> children = depTree.computeIfAbsent(parent, p -> new LinkedHashSet<>());
         if (!child.equals(parent)) {
             children.add(child);
         }
@@ -50,15 +51,11 @@ public class DependencyTree<T> {
      * @param parent
      */
     public void add(T parent) {
-        depTree.computeIfAbsent(parent, p -> new HashSet<>());
+        depTree.computeIfAbsent(parent, p -> new LinkedHashSet<>());
     }
 
     public Collection<T> getDirectDeps() {
-        return depTree
-                .keySet()
-                .stream()
-                .sorted(this::comparator)
-                .collect(Collectors.toList());
+        return depTree.keySet();
     }
 
     /**
@@ -71,10 +68,6 @@ public class DependencyTree<T> {
         return depTree.containsKey(parent);
     }
 
-    protected int comparator(T first, T second) {
-        return 0;
-    }
-
     public Collection<T> getTransientDeps(T parent) {
         Set<T> deps = depTree.get(parent);
         if (null == deps) {
@@ -83,6 +76,6 @@ public class DependencyTree<T> {
         return deps;
     }
 
-    private Map<T, Set<T>> depTree = new HashMap<>();
+    private Map<T, Set<T>> depTree = new LinkedHashMap<>();
 
 }
