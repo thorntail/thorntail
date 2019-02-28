@@ -43,6 +43,9 @@
             <manifest>
               <mainClass>org.wildfly.swarm.bootstrap.Main</mainClass>
             </manifest>
+            <manifestEntries>
+              <Multi-Release>true</Multi-Release>
+            </manifestEntries>
           </archive>
         </configuration>
       </plugin>
@@ -62,6 +65,25 @@
               <outputDirectory>${project.build.directory}/classes</outputDirectory>
             </configuration>
           </execution>
+          <execution>
+            <!--
+              - this is a separate execution because the thorntail-jdk-specific artifact overrides some
+              - JBoss Modules classes and we need to make sure those are unpacked _after_ JBoss Modules themselves
+              -
+              - also we need to make sure that the JBoss Modules overrides in this project don't collide
+              - with the overrides in thorntail-jdk-specific
+              -->
+            <id>unpack-jdk-specific</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <excludeTransitive>true</excludeTransitive>
+              <includeGroupIds>io.thorntail.jdk-specific</includeGroupIds>
+              <outputDirectory>${project.build.directory}/classes</outputDirectory>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>
@@ -71,6 +93,11 @@
     <dependency>
       <groupId>org.jboss.modules</groupId>
       <artifactId>jboss-modules</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.thorntail.jdk-specific</groupId>
+      <artifactId>thorntail-jdk-specific</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

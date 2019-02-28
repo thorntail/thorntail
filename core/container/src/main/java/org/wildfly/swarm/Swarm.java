@@ -87,6 +87,7 @@ import org.wildfly.swarm.container.internal.WeldShutdown;
 import org.wildfly.swarm.internal.OutboundSocketBindingRequest;
 import org.wildfly.swarm.internal.SocketBindingRequest;
 import org.wildfly.swarm.internal.SwarmMessages;
+import org.wildfly.swarm.jdk.specific.JarFiles;
 import org.wildfly.swarm.spi.api.ArtifactLookup;
 import org.wildfly.swarm.spi.api.ConfigurationFilter;
 import org.wildfly.swarm.spi.api.Fraction;
@@ -541,7 +542,7 @@ public class Swarm {
         }
 
         if (Files.isRegularFile(root)) {
-            try (JarFile jar = new JarFile(root.toFile())) {
+            try (JarFile jar = JarFiles.create(root.toFile())) {
                 ZipEntry propsEntry = jar.getEntry("META-INF/wildfly-swarm.properties");
                 if (propsEntry != null) {
                     try (InputStream in = jar.getInputStream(propsEntry)) {

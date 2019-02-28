@@ -43,6 +43,12 @@
       <artifactId>logging</artifactId>
     </dependency>
 
+    <!-- Provided APIs -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+    </dependency>
+
     <!-- Meta SPI -->
     <dependency>
       <groupId>io.thorntail</groupId>

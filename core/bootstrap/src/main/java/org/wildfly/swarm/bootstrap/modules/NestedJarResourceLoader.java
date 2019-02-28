@@ -38,6 +38,7 @@ import org.jboss.modules.ResourceLoaders;
 import org.wildfly.swarm.bootstrap.performance.Performance;
 import org.wildfly.swarm.bootstrap.util.BootstrapUtil;
 import org.wildfly.swarm.bootstrap.util.TempFileManager;
+import org.wildfly.swarm.jdk.specific.JarFiles;
 
 /**
  * @author Bob McWhirter
@@ -66,7 +67,7 @@ public class NestedJarResourceLoader {
                     if (explosionNotRequired.contains(jarPath)) {
                         return false;
                     }
-                    try (JarFile jarFile = new JarFile(jarPath)) {
+                    try (JarFile jarFile = JarFiles.create(jarPath)) {
                         Enumeration<JarEntry> entries = jarFile.entries();
                         while (entries.hasMoreElements()) {
                             JarEntry each = entries.nextElement();
@@ -104,7 +105,7 @@ public class NestedJarResourceLoader {
                     if (exp == null) {
                         try (AutoCloseable explodingHandle = Performance.accumulate("Exploding JAR")) {
                             exp = TempFileManager.INSTANCE.newTempDirectory("module-jar", ".jar_d");
-                            try (JarFile jarFile = new JarFile(jarPath)) {
+                            try (JarFile jarFile = JarFiles.create(jarPath)) {
                                 Enumeration<JarEntry> entries = jarFile.entries();
                                 while (entries.hasMoreElements()) {
                                     JarEntry each = entries.nextElement();
@@ -147,7 +148,7 @@ public class NestedJarResourceLoader {
                 Path resourceRoot = exp.resolve(loaderPath);
                 if (!Files.isDirectory(resourceRoot) && (resourceRoot.getFileName().toString().endsWith(".jar") || resourceRoot.getFileName().toString().endsWith(".war"))) {
                     final File file = resourceRoot.toFile();
-                    final JarFile jarFile = new JarFile(file);
+                    final JarFile jarFile = JarFiles.create(file);
 
                     File tmpDir = TempFileManager.INSTANCE.newTempDirectory("nestedjarloader", null);
                     //Explode jar due to some issues in Windows on stopping (JarFiles cannot be deleted)
@@ -163,7 +164,7 @@ public class NestedJarResourceLoader {
         } else if (urlString.startsWith("file:")) {
             if (loaderName.endsWith(".jar") || loaderName.endsWith(".war")) {
                 final File file = new File(urlString.substring(5), loaderPath);
-                final JarFile jarFile = new JarFile(file);
+                final JarFile jarFile = JarFiles.create(file);
 
                 File tmpDir = TempFileManager.INSTANCE.newTempDirectory("nestedjarloader", null);
                 //Explode jar due to some issues in Windows on stopping (JarFiles cannot be deleted)

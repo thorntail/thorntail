@@ -52,7 +52,7 @@ public class ManagementConsoleAndOpenAPITest {
     public void testBothFractionsWorkTogether() throws Exception {
         // test mgmt console
         browser.navigate().to("http://localhost:8080/console");
-        assertThat(browser.getTitle()).isEqualToIgnoringCase("Management Interface");
+        assertThat(browser.getTitle()).isEqualToIgnoringCase("HAL Management Console");
 
         //test OpenAPI
         String content = getUrlContent("http://localhost:8080/openapi");

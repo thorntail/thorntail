@@ -39,6 +39,7 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 import org.wildfly.swarm.bootstrap.env.FractionManifest;
 import org.wildfly.swarm.bootstrap.env.WildFlySwarmManifest;
 import org.wildfly.swarm.fractions.FractionDescriptor;
+import org.wildfly.swarm.jdk.specific.JarFiles;
 import org.wildfly.swarm.tools.utils.ChecksumUtil;
 
 import static java.util.Arrays.asList;
@@ -356,7 +357,7 @@ public class DependencyManager implements ResolvedDependencies {
             return false;
         }
 
-        try (JarFile jar = new JarFile(file)) {
+        try (JarFile jar = JarFiles.create(file)) {
             return jar.getEntry("wildfly-swarm-modules.conf") != null;
         } catch (IOException e) {
             // ignore
@@ -370,7 +371,7 @@ public class DependencyManager implements ResolvedDependencies {
             return false;
         }
 
-        try (JarFile jar = new JarFile(file)) {
+        try (JarFile jar = JarFiles.create(file)) {
             return jar.getEntry(FractionManifest.CLASSPATH_LOCATION) != null;
         } catch (IOException e) {
             // ignore
@@ -385,7 +386,7 @@ public class DependencyManager implements ResolvedDependencies {
 
         List<String> resultList = new ArrayList<>();
 
-        try (JarFile jar = new JarFile(file)) {
+        try (JarFile jar = JarFiles.create(file)) {
             ZipEntry entry = jar.getEntry("META-INF/maven-dependencies.txt");
             if (entry != null) {
                 InputStream inputStream = jar.getInputStream(entry);
@@ -404,7 +405,7 @@ public class DependencyManager implements ResolvedDependencies {
     }
 
     protected FractionManifest fractionManifest(File file) {
-        try (JarFile jar = new JarFile(file)) {
+        try (JarFile jar = JarFiles.create(file)) {
             ZipEntry entry = jar.getEntry(FractionManifest.CLASSPATH_LOCATION);
             if (entry != null) {
                 try (InputStream in = jar.getInputStream(entry)) {

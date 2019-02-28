@@ -18,13 +18,11 @@ package org.wildfly.swarm.plugin.gradle;
 
 import javax.inject.Inject;
 
-import org.gradle.api.GradleException;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaBasePlugin;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.PluginManager;
-import org.gradle.api.plugins.WarPlugin;
-import org.gradle.api.tasks.TaskCollection;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.bundling.Jar;
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
@@ -39,6 +37,13 @@ public class PackagePlugin extends AbstractThorntailPlugin {
      * The name of the task that is responsible for repackaging the project archive.
      */
     public static final String THORNTAIL_PACKAGE_TASK_NAME = "thorntail-package";
+
+    public static final String THORNTAIL_RUN_TASK_NAME = "thorntail-run";
+    public static final String THORNTAIL_START_TASK_NAME = "thorntail-start";
+    public static final String THORNTAIL_STOP_TASK_NAME = "thorntail-stop";
+
+    public static final String THORNTAIL_PROCESS_PROPERTY = "_thorntail-process";
+
 
     /**
      * Constructs a new instance of {@code PackagePlugin}, which is initialized with the Gradle tooling model builder registry.
@@ -61,41 +66,21 @@ public class PackagePlugin extends AbstractThorntailPlugin {
             final TaskContainer tasks = project.getTasks();
             final PackageTask packageTask = tasks.create(THORNTAIL_PACKAGE_TASK_NAME, PackageTask.class);
 
-            final Jar archiveTask = getArchiveTask(project);
-
-            if (archiveTask == null) {
-                throw new GradleException("No suitable Archive-Task found to include in Swarm Uber-JAR.");
-            }
-
+            final Jar archiveTask = ThorntailUtils.getArchiveTask(project);
             packageTask.jarTask(archiveTask).dependsOn(archiveTask);
 
             tasks.getByName(JavaBasePlugin.BUILD_TASK_NAME).dependsOn(packageTask);
+
+            Task classesTask = tasks.getByName(JavaPlugin.CLASSES_TASK_NAME);
+
+            StartTask runTask = tasks.create(THORNTAIL_RUN_TASK_NAME, StartTask.class, StartTask::waitForProcess);
+            runTask.dependsOn(classesTask);
+
+            StartTask startTask = tasks.create(THORNTAIL_START_TASK_NAME, StartTask.class);
+            startTask.dependsOn(classesTask);
+
+            tasks.create(THORNTAIL_STOP_TASK_NAME, StopTask.class);
         });
-    }
-
-    /**
-     * Returns the most suitable Archive-Task for wrapping in the swarm jar - in the following order:
-     *
-     * 1. Custom-JAR-Task defined in ThorntailExtension 'archiveTask'
-     * 2. WAR-Task
-     * 3. JAR-Task
-     */
-    private Jar getArchiveTask(Project project) {
-
-        TaskCollection<Jar> existingArchiveTasks = project.getTasks().withType(Jar.class);
-        Jar customArchiveTask = project.getExtensions().getByType(ThorntailExtension.class).getArchiveTask();
-
-        if (customArchiveTask != null) {
-            return existingArchiveTasks.getByName(customArchiveTask.getName());
-
-        } else if (existingArchiveTasks.findByName(WarPlugin.WAR_TASK_NAME) != null) {
-            return existingArchiveTasks.getByName(WarPlugin.WAR_TASK_NAME);
-
-        } else if (existingArchiveTasks.findByName(JavaPlugin.JAR_TASK_NAME) != null) {
-            return existingArchiveTasks.getByName(JavaPlugin.JAR_TASK_NAME);
-        }
-
-        return null;
     }
 
 }
