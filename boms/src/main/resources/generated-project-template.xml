@@ -36,14 +36,6 @@
 
   <dependencies>
     FRACTIONS_FROM_BOM
-
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>fraction-metadata</artifactId>
-      <version>SWARM_VERSION</version>
-      <scope>provided</scope>
-    </dependency>
-
   </dependencies>
 
   <build>
