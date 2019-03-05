@@ -23,9 +23,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.wildfly.swarm.bootstrap.env.DependencyTree;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
@@ -76,7 +79,7 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
      * @return the collection of direct dependencies included in this instance.
      */
     public Collection<ArtifactSpec> getDirectDependencies(boolean includeUnsolved, boolean includePresolved) {
-        Set<ArtifactSpec> deps = new HashSet<>();
+        Set<ArtifactSpec> deps = new LinkedHashSet<>();
         if (includeUnsolved) {
             deps.addAll(getDirectDeps());
         }
@@ -246,14 +249,19 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
     }
 
     @Override
-    protected int comparator(ArtifactSpec first, ArtifactSpec second) {
-        if (first.scope.equals("compile") || first.scope.equals("provided")) {
-            return -1;
-        } else if (second.scope.equals("compile") || second.scope.equals("provided")) {
-            return 1;
-        }
-        return 0;
+    public Collection<ArtifactSpec> getDirectDeps() {
+        // Reorder so that compile and provided come first, but otherwise keep the original order. This is important in
+        // case when the final collection is going to be resolved. Different order of direct dependencies may lead to
+        // different resolved transitive dependencies.
+
+        Collection<ArtifactSpec> originalDeps = super.getDirectDeps();
+        List<ArtifactSpec> reordered = new ArrayList<>(originalDeps.size());
+        originalDeps.stream().filter(s -> PRIORITIZED_SCOPES.contains(s.scope)).forEach(reordered::add);
+        originalDeps.stream().filter(s -> !PRIORITIZED_SCOPES.contains(s.scope)).forEach(reordered::add);
+        return reordered;
     }
+
+    private static final Set<String> PRIORITIZED_SCOPES = Stream.of("compile", "provided").collect(Collectors.toSet());
 
     private final DependencyTree<ArtifactSpec> presolvedDependencies = new DependencyTree<>();
 
