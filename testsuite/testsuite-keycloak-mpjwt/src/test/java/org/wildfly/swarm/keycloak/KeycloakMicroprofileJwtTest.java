@@ -34,10 +34,6 @@ import org.junit.runner.RunWith;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.microprofile.jwtauth.keycloak.SecuredApplication;
 import org.wildfly.swarm.microprofile.jwtauth.keycloak.SecuredResource;
-import org.wildfly.swarm.microprofile.jwtauth.keycloak.deployment.principal.KeycloakJWTCallerPrincipal;
-import org.wildfly.swarm.microprofile.jwtauth.keycloak.deployment.principal.KeycloakJWTCallerPrincipalFactory;
-
-import io.smallrye.jwt.auth.principal.JWTCallerPrincipalFactory;
 
 @RunWith(Arquillian.class)
 public class KeycloakMicroprofileJwtTest {
@@ -47,20 +43,8 @@ public class KeycloakMicroprofileJwtTest {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "test.war");
         deployment.addClass(SecuredApplication.class);
         deployment.addClass(SecuredResource.class);
-        deployment.addClass(JWTCallerPrincipalFactory.class);
-        deployment.addClass(KeycloakJWTCallerPrincipalFactory.class);
-        deployment.addClass(KeycloakJWTCallerPrincipal.class);
         deployment.addAsResource("keycloak.json");
         deployment.addAsResource("project-defaults.yml");
-        deployment.addAsServiceProvider(JWTCallerPrincipalFactory.class, KeycloakJWTCallerPrincipalFactory.class);
-        String[] deps = {
-                "org.keycloak:keycloak-core",
-                "org.keycloak:keycloak-adapter-core",
-                "org.keycloak:keycloak-admin-cli",
-        };
-        File[] dependencies = Maven.resolver().loadPomFromFile(new File("pom.xml")).resolve(deps).withTransitivity().asFile();
-        deployment.addAsLibraries(dependencies);
-        
         return deployment;
     }
 

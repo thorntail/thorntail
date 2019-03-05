@@ -24,22 +24,7 @@
   <dependencies>
     <dependency>
       <groupId>io.thorntail</groupId>
-      <artifactId>microprofile-jwt</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-core</artifactId>
-      <version>${version.keycloak}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-adapter-core</artifactId>
-      <version>${version.keycloak}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-admin-cli</artifactId>
-      <version>${version.keycloak}</version>
+      <artifactId>keycloak-microprofile-jwt</artifactId>
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>
