@@ -5,13 +5,13 @@
       <artifact name="org.keycloak:keycloak-common:${version.keycloak}" />
       <artifact name="org.keycloak:keycloak-adapter-core:${version.keycloak}" />
       <artifact name="org.keycloak:keycloak-admin-cli:${version.keycloak}" />
-      <artifact name="com.fasterxml.jackson.core:jackson-core:${version.com.fasterxml.jackson}"/>
-      <artifact name="com.fasterxml.jackson.core:jackson-databind:${version.com.fasterxml.jackson}"/>
-      <artifact name="com.fasterxml.jackson.core:jackson-annotations:${version.com.fasterxml.jackson}"/>
     </resources>
     <dependencies>
         <module name="org.eclipse.microprofile.jwt" export="true" services="import"/>
         <module name="org.wildfly.swarm.keycloak.mpjwt" services="export" export="true" slot="deployment"/>
         <module name="org.jboss.logging" />
+        <module name="com.fasterxml.jackson.core.jackson-core"/>
+        <module name="com.fasterxml.jackson.core.jackson-annotations"/>
+        <module name="com.fasterxml.jackson.core.jackson-databind"/>
     </dependencies>
 </module>
