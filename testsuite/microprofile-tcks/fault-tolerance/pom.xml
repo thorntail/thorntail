@@ -117,6 +117,9 @@
                      <value>8787</value>
                   </property-->
                </systemProperties>
+               <systemPropertyVariables>
+                  <io_smallrye_faulttolerance_asyncTimeout>true</io_smallrye_faulttolerance_asyncTimeout>
+               </systemPropertyVariables>
             </configuration>
          </plugin>
       </plugins>
