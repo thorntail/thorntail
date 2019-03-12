@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 package org.wildfly.swarm.keycloak.mpjwt;
-import static org.wildfly.swarm.spi.api.annotations.DeploymentModule.MetaInfDisposition.IMPORT;
 
 import org.wildfly.swarm.spi.api.Fraction;
-import org.wildfly.swarm.spi.api.Module;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 @DeploymentModule(name = "org.wildfly.swarm.keycloak.mpjwt", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
-@DeploymentModule(name = "keycloak.io.smallrye.jwt", metaInf = IMPORT, export = true, services = Module.ServiceHandling.IMPORT)
 public class KeycloakMicroprofileJwtFraction implements Fraction {
-
 }

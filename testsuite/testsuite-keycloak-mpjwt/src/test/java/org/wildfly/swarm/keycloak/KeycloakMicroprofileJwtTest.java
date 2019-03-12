@@ -15,8 +15,6 @@
  */
 package org.wildfly.swarm.keycloak;
 
-import java.io.File;
-
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
@@ -27,7 +25,6 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +36,7 @@ import org.wildfly.swarm.microprofile.jwtauth.keycloak.SecuredResource;
 public class KeycloakMicroprofileJwtTest {
 
     @Deployment
-    public static Archive<?> createDeployment() throws Exception {
+    public static Archive<?> createDeployment() {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "test.war");
         deployment.addClass(SecuredApplication.class);
         deployment.addClass(SecuredResource.class);
@@ -50,24 +47,24 @@ public class KeycloakMicroprofileJwtTest {
 
     @Test
     @RunAsClient
-    public void testResourceIsSecured() throws Exception {
-        final String tokenUri =
-            "http://localhost:8080/auth/realms/thorntail-cmd-client/protocol/openid-connect/token";
-        String response =
-            ClientBuilder.newClient().target(tokenUri).request()
-                .post(Entity.form(
-                        new Form().param("grant_type", "password").param("client_id", "thorntail-cmd-client-example")
-                                  .param("username", "user1").param("password", "password1")),
-                        String.class);
-        String accessToken = getAccessTokenFromResponse(response);
+    public void testResourceIsSecured() {
+        String authResponse = ClientBuilder.newClient()
+                .target("http://localhost:8080/auth/realms/thorntail-cmd-client/protocol/openid-connect/token")
+                .request()
+                .post(Entity.form(new Form()
+                        .param("grant_type", "password")
+                        .param("client_id", "thorntail-cmd-client-example")
+                        .param("username", "user1")
+                        .param("password", "password1")
+                ), String.class);
+        String accessToken = getAccessTokenFromResponse(authResponse);
 
-        String serviceResponse =
-            ClientBuilder.newClient().target("http://localhost:8080/mpjwt/secured")
+        String serviceResponse = ClientBuilder.newClient()
+                .target("http://localhost:8080/mpjwt/secured")
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .get(String.class);
         Assert.assertEquals("Hi user1, this resource is secured", serviceResponse);
-
     }
 
     private String getAccessTokenFromResponse(String response) {

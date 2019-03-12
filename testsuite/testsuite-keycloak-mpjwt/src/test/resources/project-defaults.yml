@@ -6,12 +6,12 @@ keycloak:
   migration:
     provider: singleFile
     action: import
-    file: ${project.build.testOutputDirectory}/wildfly-swarm-keycloak-example-realm.json
+    file: ${project.build.testOutputDirectory}/thorntail-keycloak-example-realm.json
 swarm:
   microprofile:
     jwtauth:
       token:
-        issuedBy: "http://localhost:8080/auth/realms/wildfly-swarm-keycloak-example"
+        issuedBy: "http://localhost:8080/auth/realms/thorntail-keycloak-example"
   security:
     security-domains:
       testSuiteRealm:

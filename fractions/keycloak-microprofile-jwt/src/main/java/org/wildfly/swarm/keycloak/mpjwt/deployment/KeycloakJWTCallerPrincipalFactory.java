@@ -13,15 +13,14 @@ import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import io.smallrye.jwt.auth.principal.JWTCallerPrincipal;
 import io.smallrye.jwt.auth.principal.JWTCallerPrincipalFactory;
 import io.smallrye.jwt.auth.principal.ParseException;
+
 /**
  * An implementation of the abstract JWTCallerPrincipalFactory that uses the Keycloak token parsing classes.
  */
 public class KeycloakJWTCallerPrincipalFactory extends JWTCallerPrincipalFactory {
     private static final Logger log = Logger.getLogger(KeycloakJWTCallerPrincipalFactory.class);
-    private static final KeycloakDeployment deployment;
-    static {
-        deployment = createDeployment();
-    }
+
+    private static final KeycloakDeployment deployment = createDeployment();
 
     @Override
     public JWTCallerPrincipal parse(final String token, final JWTAuthContextInfo authContextInfo) throws ParseException {
