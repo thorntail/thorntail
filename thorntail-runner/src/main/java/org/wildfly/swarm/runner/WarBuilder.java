@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -54,9 +55,41 @@ public class WarBuilder {
     }
 
     private void build() {
-        classesDirs.forEach(this::addClassesToWar);
+        List<String> warDirs = classesDirs.stream()
+                .filter(this::isWar)
+                .collect(Collectors.toList());
+
+        classesDirs.stream()
+                .filter(d -> !isWar(d))
+                .map(this::buildJar)
+                .forEach(jars::add);
+
+        warDirs.forEach(this::addClassesToWar);
         addWebAppResourcesToWar();
-        jars.stream().forEach(this::addJarToWar);
+
+        jars.forEach(this::addJarToWar);
+    }
+
+    private File buildJar(String classesDir) {
+        try {
+            File jar = File.createTempFile("thorntail-user-jar", ".jar");
+            jar.deleteOnExit();
+
+            try (FileOutputStream fos = new FileOutputStream(jar);
+                 ZipOutputStream out = new ZipOutputStream(fos)) {
+                addClassesToZip(out, "", new File(classesDir));
+            }
+            return jar;
+        } catch (Exception any) {
+            throw new RuntimeException("Unable to build jar from directory: " + classesDir, any);
+        }
+    }
+
+    // the assumption is that the Runner is invoked in the WAR module's directory
+    private boolean isWar(String path) {
+        String currentDir = Paths.get(".").toAbsolutePath().toString();
+        String classesDirPath = Paths.get(path).toAbsolutePath().toString();
+        return classesDirPath.startsWith(currentDir);
     }
 
 
@@ -65,7 +98,7 @@ public class WarBuilder {
         if (!classesDirectory.isDirectory()) {
             throw new RuntimeException("Invalid classes directory on classpath: " + directory);
         }
-        addClassesToWar(classesDirectory);
+        addClassesToZip(output, "/WEB-INF/classes/", classesDirectory);
     }
 
     private void addWebAppResourcesToWar() {
@@ -102,7 +135,7 @@ public class WarBuilder {
     private void addJarToWar(File file) {
         String jarName = file.getName();
         try {
-            writeFileToZip(file, "WEB-INF/lib/" + jarName);
+            writeFileToZip(output, file, "WEB-INF/lib/" + jarName);
         } catch (IOException e) {
             throw new RuntimeException("Failed to add jar " + file.getAbsolutePath() + " to war", e);
         }
@@ -115,29 +148,29 @@ public class WarBuilder {
                 String projectDir = Paths.get("src", "main", "webapp").toFile().getAbsolutePath();
 
                 String fileName = file.getAbsolutePath().replace(projectDir, "");
-                writeFileToZip(file, fileName);
+                writeFileToZip(output, file, fileName);
             } catch (IOException e) {
                 throw new RuntimeException("Unable to add file: " + path.toAbsolutePath() + "  from webapp to the war", e);
             }
         }
     }
 
-    private void addClassesToWar(File classesDirectory) {
+    private void addClassesToZip(ZipOutputStream output, String prefix, File classesDirectory) {
         try {
             Files.walk(classesDirectory.toPath())
                     .map(Path::toFile)
                     .filter(File::isFile)
-                    .forEach(file -> addClassToWar(file, classesDirectory));
+                    .forEach(file -> addClassToZip(output, prefix, file, classesDirectory));
         } catch (IOException e) {
             throw new RuntimeException("Failed to add classes to war", e);
         }
     }
 
-    private void addClassToWar(File file, File classesDirectory) {
+    private void addClassToZip(ZipOutputStream output, String prefix, File file, File classesDirectory) {
         try {
             String name = getRelativePath(file, classesDirectory.getAbsolutePath());
-            name = "/WEB-INF/classes/" + name;
-            writeFileToZip(file, name);
+            name = prefix + name;
+            writeFileToZip(output, file, name);
         } catch (IOException e) {
             throw new RuntimeException("Failed to add file " + file.getAbsolutePath() + " to war", e);
         }
@@ -152,7 +185,9 @@ public class WarBuilder {
         return relativePath;
     }
 
-    private void writeFileToZip(File file, String name) throws IOException {
+    private static void writeFileToZip(ZipOutputStream output,
+                                       File file,
+                                       String name) throws IOException {
         ZipEntry entry = new ZipEntry(name);
         output.putNextEntry(entry);
         try (FileInputStream input = new FileInputStream(file)) {
