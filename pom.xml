@@ -994,7 +994,6 @@
     <module>fractions/wildfly/infinispan</module>
 
     <module>fractions/keycloak</module>
-    <module>fractions/keycloak-microprofile-jwt</module>
     <module>fractions/microprofile/microprofile-config</module>
     <module>fractions/microprofile/microprofile-health</module>
     <module>fractions/microprofile/microprofile-jwt</module>
@@ -1091,6 +1090,7 @@
         <module>fractions/javafx</module>
         <module>fractions/jolokia</module>
         <module>fractions/logstash</module>
+        <module>fractions/keycloak-microprofile-jwt</module>
         <module>fractions/keycloak-server</module>
         <module>fractions/spring</module>
         <module>fractions/swagger</module>
