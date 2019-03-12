@@ -34,7 +34,11 @@ public class KeycloakJWTCallerPrincipalFactory extends JWTCallerPrincipalFactory
     }
 
     private static KeycloakDeployment createDeployment() {
-        InputStream keycloakJson = Thread.currentThread().getContextClassLoader().getResourceAsStream("keycloak.json");
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        InputStream keycloakJson = cl.getResourceAsStream("keycloak.json");
+        if (keycloakJson == null) {
+            keycloakJson = cl.getResourceAsStream("WEB-INF/keycloak.json");
+        }
         if (keycloakJson == null) {
             log.warn("keycloak.json resource is not available");
             return null;
