@@ -35,8 +35,8 @@ public class ModuleAnalyzerTest {
         ModuleAnalyzer analyzer = new ModuleAnalyzer(moduleXml);
         assertThat(analyzer.getDependencies()).hasSize(2);
         List<String> gavs = analyzer.getDependencies().stream().map(e -> e.mscGav()).collect(Collectors.toList());
-        assertThat(gavs).contains("org.wildfly:wildfly-webservices-server-integration:10.0.0.CR4");
-        assertThat(gavs).contains("org.jboss.ws.cxf:jbossws-cxf-resources:5.1.0.Final:wildfly1000");
+        assertThat(gavs).contains("org.wildfly.core:wildfly-version:1.0.0.Final");
+        assertThat(gavs).contains("org.wildfly.common:wildfly-common:1.0.0.Final");
 
         assertThat(analyzer.getDependencies().stream().allMatch(e -> e.shouldGather));
     }

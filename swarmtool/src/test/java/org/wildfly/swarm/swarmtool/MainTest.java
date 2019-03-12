@@ -137,8 +137,8 @@ public class MainTest {
 
     @Test
     public void addingModules() throws Exception {
-        assertThat(getLittleJar().archive.contains("/modules/sun/jdk/main/module.xml")).isTrue();
-        assertThat(getBigJar().archive.contains("/modules/sun/jdk/main/module.xml")).isFalse();
+        assertThat(getLittleJar().archive.contains("/modules/test/module/main/module.xml")).isTrue();
+        assertThat(getBigJar().archive.contains("/modules/test/module/main/module.xml")).isFalse();
     }
 
     @Test
