@@ -40,7 +40,7 @@ public class KeycloakMicroprofileJwtTest {
         JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "test.war");
         deployment.addClass(SecuredApplication.class);
         deployment.addClass(SecuredResource.class);
-        deployment.addAsResource("keycloak.json");
+        deployment.addAsWebInfResource("keycloak.json");
         deployment.addAsResource("project-defaults.yml");
         return deployment;
     }

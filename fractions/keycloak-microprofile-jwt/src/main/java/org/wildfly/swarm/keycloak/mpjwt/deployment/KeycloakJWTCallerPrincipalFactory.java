@@ -2,7 +2,6 @@ package org.wildfly.swarm.keycloak.mpjwt.deployment;
 
 import java.io.InputStream;
 
-import org.jboss.logging.Logger;
 import org.keycloak.adapters.KeycloakDeployment;
 import org.keycloak.adapters.KeycloakDeploymentBuilder;
 import org.keycloak.adapters.rotation.AdapterTokenVerifier;
@@ -18,9 +17,7 @@ import io.smallrye.jwt.auth.principal.ParseException;
  * An implementation of the abstract JWTCallerPrincipalFactory that uses the Keycloak token parsing classes.
  */
 public class KeycloakJWTCallerPrincipalFactory extends JWTCallerPrincipalFactory {
-    private static final Logger log = Logger.getLogger(KeycloakJWTCallerPrincipalFactory.class);
-
-    private static final KeycloakDeployment deployment = createDeployment();
+    private static KeycloakDeployment deployment;
 
     @Override
     public JWTCallerPrincipal parse(final String token, final JWTAuthContextInfo authContextInfo) throws ParseException {
@@ -33,17 +30,7 @@ public class KeycloakJWTCallerPrincipalFactory extends JWTCallerPrincipalFactory
         }
     }
 
-    private static KeycloakDeployment createDeployment() {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        InputStream keycloakJson = cl.getResourceAsStream("keycloak.json");
-        if (keycloakJson == null) {
-            keycloakJson = cl.getResourceAsStream("WEB-INF/keycloak.json");
-        }
-        if (keycloakJson == null) {
-            log.warn("keycloak.json resource is not available");
-            return null;
-        } else {
-            return KeycloakDeploymentBuilder.build(keycloakJson);
-        }
+    public static void createDeploymentFromStream(InputStream keycloakJsonStream) {
+        deployment = KeycloakDeploymentBuilder.build(keycloakJsonStream);
     }
 }
