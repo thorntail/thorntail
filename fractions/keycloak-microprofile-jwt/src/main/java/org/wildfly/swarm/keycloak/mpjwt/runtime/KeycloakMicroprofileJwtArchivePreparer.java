@@ -25,20 +25,17 @@ import org.jboss.logging.Logger;
 import org.jboss.modules.Module;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.wildfly.swarm.bootstrap.util.BootstrapProperties;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
-import org.wildfly.swarm.spi.api.JARArchive;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 
 @DeploymentScoped
 public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcessor {
 
     private static final Logger log = Logger.getLogger(KeycloakMicroprofileJwtArchivePreparer.class);
-
+    private final Archive<?> archive;
     @Inject
     public KeycloakMicroprofileJwtArchivePreparer(Archive archive) {
+        this.archive = archive;
     }
 
     @Override
@@ -57,44 +54,34 @@ public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcess
         }
     }
 
-    private static InputStream getKeycloakJsonFromClasspath(String resourceName) {
+    private InputStream getKeycloakJsonFromClasspath(String resourceName) {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         InputStream keycloakJson = cl.getResourceAsStream(resourceName);
         if (keycloakJson == null) {
 
-            String appArtifact = System.getProperty(BootstrapProperties.APP_ARTIFACT);
-
-            if (appArtifact != null) {
-                try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {
-                    Archive<?> tmpArchive = ShrinkWrap.create(JARArchive.class);
-                    tmpArchive.as(ZipImporter.class).importFrom(in);
-                    Node jsonNode = tmpArchive.get(resourceName);
-                    if (jsonNode == null) {
-                        jsonNode = getKeycloakJsonNodeFromWebInf(tmpArchive, resourceName, true);
-                    }
-                    if (jsonNode == null) {
-                        jsonNode = getKeycloakJsonNodeFromWebInf(tmpArchive, resourceName, false);
-                    }
-                    if (jsonNode != null && jsonNode.getAsset() != null) {
-                        keycloakJson = jsonNode.getAsset().openStream();
-                    }
-                } catch (IOException e) {
-                    // ignore
-                }
+            Node jsonNode = archive.get(resourceName);
+            if (jsonNode == null) {
+                jsonNode = getKeycloakJsonNodeFromWebInf(resourceName, true);
+            }
+            if (jsonNode == null) {
+                jsonNode = getKeycloakJsonNodeFromWebInf(resourceName, false);
+            }
+            if (jsonNode != null && jsonNode.getAsset() != null) {
+                keycloakJson = jsonNode.getAsset().openStream();
             }
         }
         return keycloakJson;
     }
 
-    private static Node getKeycloakJsonNodeFromWebInf(Archive<?> tmpArchive, String resourceName,
+    private Node getKeycloakJsonNodeFromWebInf(String resourceName,
             boolean useForwardSlash) {
         String webInfPath = useForwardSlash ? "/WEB-INF" : "WEB-INF";
         if (!resourceName.startsWith("/")) {
             resourceName = "/" + resourceName;
         }
-        Node jsonNode = tmpArchive.get(webInfPath + resourceName);
+        Node jsonNode = archive.get(webInfPath + resourceName);
         if (jsonNode == null) {
-            jsonNode = tmpArchive.get(webInfPath + "/classes" + resourceName);
+            jsonNode = archive.get(webInfPath + "/classes" + resourceName);
         }
         return jsonNode;
     }
