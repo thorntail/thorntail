@@ -1,0 +1,8 @@
+thorntail:
+  microprofile:
+    jwt:
+      realm: testSuiteRealm
+      roles:
+        file: emptyRoles.properties
+      token:
+        issuedBy: "http://testsuite-jwt-issuer.io"
