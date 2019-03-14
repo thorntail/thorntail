@@ -1,4 +1,4 @@
-package org.wildfly.swarm.microprofile.jwtauth.keycloak.deployment.principal;
+package org.wildfly.swarm.keycloak.mpjwt.deployment;
 
 import java.util.Collection;
 import java.util.HashMap;

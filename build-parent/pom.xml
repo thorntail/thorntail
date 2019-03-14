@@ -413,7 +413,11 @@
         <artifactId>keycloak-themes</artifactId>
         <version>${version.keycloak}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-adapter-core</artifactId>
+        <version>${version.keycloak}</version>
+      </dependency>
       <dependency>
         <groupId>com.openshift</groupId>
         <artifactId>openshift-restclient-java</artifactId>

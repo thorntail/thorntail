@@ -1,0 +1,9 @@
+= Keycloak MicroProfile JWT
+
+Uses Keycloak Adapter API to validate the tokens issued by Keycloak and makes these tokens accessible with MicroProfile JWT API.
+ 
+It depends on the `keycloak.json` configuration file and ignores the MicroProfile JWT configuration properties given that the mapping from the former to the latter is not always possible. It does not use the WildFly Keycloak Adapter subsystem.
+
+Standard MicroProfile JWT `MP-JWT` authentication type is required by this fraction.
+
+
