@@ -44,7 +44,7 @@ public class MPJWTLoginModuleCustomizer implements Customizer {
             security.securityDomain(jwtRealm.get(), (domain) -> {
                 domain.jaspiAuthentication((auth) -> {
                     auth.loginModuleStack("roles-lm-stack", (stack) -> {
-                        stack.loginModule("rm", (module) -> {
+                        stack.loginModule("0", (module) -> {
                             module.code("org.wildfly.swarm.microprofile.jwtauth.deployment.auth.jaas.JWTLoginModule");
                             module.flag(Flag.REQUIRED);
                             if (!rolesPropertiesFile.get().isEmpty()) {
@@ -66,14 +66,14 @@ public class MPJWTLoginModuleCustomizer implements Customizer {
     /**
      * Realm name
      */
-    @Configurable("thorntail.microprofile.jwt.realm")
+    @Configurable("thorntail.microprofile.jwtauth.realm")
     @AttributeDocumentation("Realm name")
     private Defaultable<String> jwtRealm = string("");
 
     /**
      * Roles properties file path
      */
-    @Configurable("thorntail.microprofile.jwt.roles.file")
+    @Configurable("thorntail.microprofile.jwtauth.roles.file")
     @AttributeDocumentation("Roles properties file path")
     private Defaultable<String> rolesPropertiesFile = string("");
 }

@@ -1,6 +1,6 @@
-thorntail:
+swarm:
   microprofile:
-    jwt:
+    jwtauth:
       realm: testSuiteRealm
       roles:
         file: emptyRoles.properties
