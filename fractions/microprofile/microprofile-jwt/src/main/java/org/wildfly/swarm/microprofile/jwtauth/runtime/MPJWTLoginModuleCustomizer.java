@@ -67,7 +67,8 @@ public class MPJWTLoginModuleCustomizer implements Customizer {
      * Realm name
      */
     @Configurable("thorntail.microprofile.jwtauth.realm")
-    @AttributeDocumentation("Realm name")
+    @AttributeDocumentation("If set, a security domain with this name that supports MicroProfile JWT is automatically created"
+                             + "in the security subsystem. The realmName parameter of the @LoginConfig annotation must be set to the same value.")
     private Defaultable<String> jwtRealm = string("");
 
     /**
