@@ -1,0 +1,6 @@
+thorntail:
+  microprofile:
+    jwtauth:
+      realm: testSuiteRealm
+      token:
+        issuedBy: "http://testsuite-jwt-issuer.io"

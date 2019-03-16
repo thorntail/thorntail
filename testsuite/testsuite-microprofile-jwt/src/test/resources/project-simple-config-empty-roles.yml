@@ -1,0 +1,8 @@
+swarm:
+  microprofile:
+    jwtauth:
+      realm: testSuiteRealm
+      roles:
+        file: emptyRoles.properties
+      token:
+        issuedBy: "http://testsuite-jwt-issuer.io"
