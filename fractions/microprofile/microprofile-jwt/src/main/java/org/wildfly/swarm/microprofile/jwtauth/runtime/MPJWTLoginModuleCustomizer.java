@@ -66,6 +66,7 @@ public class MPJWTLoginModuleCustomizer implements Customizer {
     /**
      * Realm name
      */
+    @Configurable("thorntail.microprofile.jwt.realm")
     @Configurable("thorntail.microprofile.jwtauth.realm")
     @AttributeDocumentation("If set, a security domain with this name that supports MicroProfile JWT is automatically created in the security subsystem."
                             + " The realmName parameter of the @LoginConfig annotation must be set to the same value.")
@@ -74,6 +75,7 @@ public class MPJWTLoginModuleCustomizer implements Customizer {
     /**
      * Roles properties file path
      */
+    @Configurable("thorntail.microprofile.jwt.roles.file")
     @Configurable("thorntail.microprofile.jwtauth.roles.file")
     @AttributeDocumentation("Roles properties file path")
     private Defaultable<String> rolesPropertiesFile = string("");
