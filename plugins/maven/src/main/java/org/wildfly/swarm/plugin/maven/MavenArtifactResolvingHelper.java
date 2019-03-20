@@ -204,14 +204,15 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     private String typeToExtension(String type) {
         switch (type) {
-            case "pom":
-            case "jar":
-            case "war":
-            case "ear":
-            case "rar":
-                return type;
-            default:
+            case "test-jar":
+            case "maven-plugin":
+            case "ejb":
+            case "ejb-client":
+            case "java-source":
+            case "javadoc":
                 return "jar";
+            default:
+                return type;
         }
     }
 
