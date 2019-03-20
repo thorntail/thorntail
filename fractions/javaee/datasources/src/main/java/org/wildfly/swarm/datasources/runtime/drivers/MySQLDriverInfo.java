@@ -41,7 +41,13 @@ public class MySQLDriverInfo extends DriverInfo {
 
     @Override
     protected void configureDriver(JDBCDriver driver) {
-        driver.driverXaDatasourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
+        if (isClassPresent("com.mysql.cj.jdbc.MysqlXADataSource")) {
+            // MySQL Connector/J 8.0
+            driver.driverXaDatasourceClassName("com.mysql.cj.jdbc.MysqlXADataSource");
+        } else {
+            // MySQL Connector/J 5.1
+            driver.driverXaDatasourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
+        }
     }
 
     @Override

@@ -229,6 +229,10 @@ public abstract class DriverInfo {
         return System.getProperty("os.name").toLowerCase().contains("win");
     }
 
+    protected boolean isClassPresent(String clazz) {
+        return findLocationOfClass(clazz) != null;
+    }
+
     public boolean isInstalled() {
         return this.installed;
     }
