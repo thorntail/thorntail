@@ -2,12 +2,12 @@
 
 * Login to https://ci.wildfly-swarm.io/
 
-* Ensure "thorntail-linux", "thorntail-windows", "thorntail-deploy", "thorntail-examples-linux" and "thorntail-examples-windows" are all passing before continuing with release.
+* Ensure [thorntail-linux](https://ci.wildfly-swarm.io/job/thorntail-linux/), [thorntail-windows](https://ci.wildfly-swarm.io/job/thorntail-windows/), [thorntail-deploy](https://ci.wildfly-swarm.io/job/thorntail-deploy/), [thorntail-examples-linux](https://ci.wildfly-swarm.io/job/thorntail-examples-linux/) and [thorntail-examples-windows](https://ci.wildfly-swarm.io/job/thorntail-examples-windows/) are all passing before continuing with release.
 
 * Trigger a build of https://ci.wildfly-swarm.io/view/Release/job/thorntail-release/build?delay=0sec
     * Specifying release and next version (with -SNAPSHOT suffix), for example, 2.0.0.Final and 2.0.1.Final-SNAPSHOT.
 
-* Wait until the build updates the master with the next development version and then update `/boms/bom-certified/pom.xml` with this version as well as it doesn't happen in the above command (Maybe add something to CI job to do this?).
+* Wait until the build updates the `master` branch with the next development version and then update `/boms/bom-certified/pom.xml` and `/docs/howto/pom.xml` with this version as well, because it doesn't happen in the above command (maybe add something to CI job to do this?).
 
 * Wait for release to be available in Maven Central before continuing with examples and JIRA releases
 
@@ -21,7 +21,9 @@
 
         mvn versions:set -DnewVersion=2.0.0.Final
 
-* Update `gradle-examples/*/build.gradle` to new version
+* Update `gradle-examples/*/gradle.properties` to new version
+
+        find gradle-examples -name gradle.properties | xargs sed -i -e 's|2.0.0.Final-SNAPSHOT|2.0.0.Final|'
 
 * Then build both regular and uberjar versions
 
@@ -43,7 +45,9 @@
 
         mvn versions:set -DnewVersion=2.0.1.Final-SNAPSHOT
 
-* Update `gradle-examples/*/build.gradle` to next development version
+* Update `gradle-examples/*/gradle.properties` to next development version
+
+        find gradle-examples -name gradle.properties | xargs sed -i -e 's|2.0.0.Final|2.0.1.Final-SNAPSHOT|'
 
 * And commit
 
@@ -51,11 +55,11 @@
 
         git commit -a -m 'Prepare for next development version'
 
-* Then push it all. If you have git repo with both origin and upstream configured, use:
+* Then push it all. If you have git repo with both `origin` and `upstream` configured, use:
 
         git push upstream master --tags
 
-if not, you can use
+  if not, you can use
 
         git push origin master --tags
 
@@ -67,7 +71,7 @@ if not, you can use
 
 * Set the current date, which is the date of the release and then click `Release`.
 
-* Open https://issues.jboss.org/issues/?jql=project%20%3D%20THORN%20AND%20status%20%3D%20Resolved%20AND%20fixVersion%20%3D%20EMPTY%20ORDER%20BY%20priority%20DESC%2C%20updated%20DESC to find all issues that have been resolved without a fixVersion set.
+* Open https://issues.jboss.org/issues/?jql=project%20%3D%20THORN%20AND%20status%20in%20(Resolved%2C%20%22Ready%20for%20QA%22%2C%20%22QA%20In%20Progress%22%2C%20Verified)%20AND%20fixVersion%20%3D%20EMPTY to find all issues that have been resolved without a `fixVersion` set.
 
 * Select `Tools` from top right corner, then `all {x} issues` under `Bulk Change`.
 
@@ -77,9 +81,9 @@ if not, you can use
 
 * Review the changes it will make and select `Confirm`. You will need to acknowledge the updates once they're complete.
 
-* Open https://issues.jboss.org/issues/?jql=project%20%3D%20THORN%20AND%20status%20%3D%20Resolved%20AND%20fixVersion%20%3D%202.0.0.Final%20ORDER%20BY%20priority%20DESC%2C%20updated%20DESC replacing the version that we're releasing in the query.
+* Open https://issues.jboss.org/issues/?jql=project%20%3D%20THORN%20AND%20status%20!%3D%20Closed%20AND%20fixVersion%20%3D%202.0.0.Final replacing the version that we're releasing in the query.
 
-* Once again we need to perform a `Bulk Update` of all the issues, which should now include those that we set the fixVersion on in the previous steps.
+* Once again we need to perform a `Bulk Update` of all the issues, which should now include those that we set the `fixVersion` on in the previous steps.
 
 * Insted of `Edit Issues` we choose `Transition` and select `Resolved -> Closed` as the type of transition.
 
@@ -98,8 +102,8 @@ By default the script relies on the following repositories as peers to the core 
 * `thorntail-examples`
 
 If they have different names, simply pass the appropriate name as an argument
-to `fetch-contributors` after versions. For example, if `thorntail.io` was cloned to 'site'
-and `thorntail-examples` to 'examples' then run:
+to `fetch-contributors` after versions. For example, if `thorntail.io` was cloned to `site`
+and `thorntail-examples` to `examples` then run:
     
     node fetch-contributors.js 2018.5.0 2.0.0.Final site examples
 
@@ -128,5 +132,3 @@ Make sure at least the breaking changes, as listed in the output of `fetch-notes
 # Update Che image
 
 * Submit PR for https://github.com/eclipse/che-dockerfiles/tree/master/recipes/centos_wildfly_swarm/Dockerfile to update to latest version
-
-
