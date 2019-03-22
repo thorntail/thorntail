@@ -26,6 +26,7 @@ import org.wildfly.swarm.config.batch.jberet.JDBCJobRepository;
 import org.wildfly.swarm.config.batch.jberet.ThreadPool;
 import org.wildfly.swarm.datasources.DatasourcesFraction;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
@@ -36,6 +37,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module = "org.wildfly.extension.batch.jberet")
 @MarshalDMR
+@Configurable("thorntail.batch-jberet")
 public class BatchFraction extends BatchJBeret<BatchFraction> implements Fraction<BatchFraction> {
     public static final String DEFAULT_JOB_REPOSITORY_NAME = "in-memory";
 
