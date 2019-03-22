@@ -12,7 +12,6 @@ thorntail:
     jdbc-drivers:
       ### [driver]
       myh2:
-        driver-class-name: org.h2.Driver
-        xa-datasource-name: org.h2.jdbcx.JdbcDataSource
         driver-module-name: com.h2database.h2
+        driver-xa-datasource-class-name: org.h2.jdbcx.JdbcDataSource
       ### [driver]
