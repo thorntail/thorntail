@@ -4,4 +4,4 @@ Provides facilities to configure logging categories, levels and handlers.
 
 When specifying log-levels through properties, since
 they include dots, they should be placed between
-square brackets, such as `swarm.logging.loggers.[com.mycorp.logger].level`.
+square brackets, such as `thorntail.logging.loggers.[com.mycorp.logger].level`.
