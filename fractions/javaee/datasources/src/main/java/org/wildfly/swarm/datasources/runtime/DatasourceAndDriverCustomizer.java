@@ -65,11 +65,11 @@ public class DatasourceAndDriverCustomizer implements Customizer {
     @Configurable("thorntail.ds.username")
     private String datasourceUserName;
 
-    @AttributeDocumentation("Defatul datasource connection password")
+    @AttributeDocumentation("Default datasource connection password")
     @Configurable("thorntail.ds.password")
     private String datasourcePassword;
 
-    @AttributeDocumentation("Defatul datasource JDBC driver name")
+    @AttributeDocumentation("Default datasource JDBC driver name")
     @Configurable("thorntail.jdbc.driver")
     private String driverName;
 

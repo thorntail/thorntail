@@ -5,7 +5,7 @@
 This is a non-exhaustive list of system properties you are likely to use in your application:
 
 .General system properties
-swarm.bind.address:: The interface to bind servers
+thorntail.bind.address:: The interface to bind servers
 +
 [cols="1,2a"]
 |===
@@ -13,7 +13,7 @@ swarm.bind.address:: The interface to bind servers
 |0.0.0.0
 |===
 
-swarm.port.offset:: The global port adjustment
+thorntail.port.offset:: The global port adjustment
 +
 [cols="1,2a"]
 |===
@@ -21,7 +21,7 @@ swarm.port.offset:: The global port adjustment
 |0
 |===
 
-swarm.context.path:: The context path for the deployed application
+thorntail.context.path:: The context path for the deployed application
 +
 [cols="1,2a"]
 |===
@@ -29,7 +29,7 @@ swarm.context.path:: The context path for the deployed application
 |/
 |===
 
-swarm.http.port:: The port for the HTTP server
+thorntail.http.port:: The port for the HTTP server
 +
 [cols="1,2a"]
 |===
@@ -37,7 +37,7 @@ swarm.http.port:: The port for the HTTP server
 |8080
 |===
 
-swarm.https.port:: The port for the HTTPS server
+thorntail.https.port:: The port for the HTTPS server
 +
 [cols="1,2a"]
 |===
@@ -45,10 +45,10 @@ swarm.https.port:: The port for the HTTPS server
 |8483
 |===
 
-swarm.debug.port:: If provided, the swarm process will pause for debugging on the given port.
+thorntail.debug.port:: If provided, the Thorntail process will pause for debugging on the given port.
 +
 --
-This option is only available when running an Arquillian test or starting the application using the `mvn wildfly-swarm:run` command, not when executing a JAR file.
+This option is only available when running an Arquillian test or starting the application using the `mvn thorntail:run` command, not when executing a JAR file.
 The JAR file execution requires normal Java debug agent parameters.
 
 [cols="1,2a"]
@@ -58,10 +58,11 @@ The JAR file execution requires normal Java debug agent parameters.
 |===
 --
 
-With the H2, MySQL, and Postgres database fractions,  use the following properties to configure the datasource:
-
 .Datasource-related system properties
-swarm.ds.name:: The name of the datasource
+
+With JDBC driver autodetection, use the following properties to configure the datasource:
+
+thorntail.ds.name:: The name of the datasource
 +
 [cols="1,2a"]
 |===
@@ -69,7 +70,7 @@ swarm.ds.name:: The name of the datasource
 |ExampleDS
 |===
 
-swarm.ds.username:: The user name to access the database
+thorntail.ds.username:: The user name to access the database
 +
 [cols="1,2a"]
 |===
@@ -77,7 +78,7 @@ swarm.ds.username:: The user name to access the database
 |_driver-specific_
 |===
 
-swarm.ds.password:: The password to access the database
+thorntail.ds.password:: The password to access the database
 +
 [cols="1,2a"]
 |===
@@ -85,7 +86,7 @@ swarm.ds.password:: The password to access the database
 |_driver-specific_
 |===
 
-swarm.ds.connection.url:: The JDBC Connection URL
+thorntail.ds.connection.url:: The JDBC connection URL
 +
 [cols="1,2a"]
 |===
