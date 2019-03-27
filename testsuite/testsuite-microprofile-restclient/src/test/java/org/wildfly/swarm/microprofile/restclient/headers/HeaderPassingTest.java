@@ -15,6 +15,10 @@
  */
 package org.wildfly.swarm.microprofile.restclient.headers;
 
+import java.net.URI;
+import java.net.URL;
+import java.util.Map;
+
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.RestClientDefinitionException;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -27,10 +31,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.microprofile.restclient.JaxRsActivator;
-
-import java.net.URI;
-import java.net.URL;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -51,7 +51,8 @@ public class HeaderPassingTest {
         return ShrinkWrap.create(WebArchive.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsManifestResource(
-                        new StringAsset("org.eclipse.microprofile.rest.client.propagateHeaders=" + HEADER_NAME),
+                        new StringAsset("org.eclipse.microprofile.rest.client.propagateHeaders=" +
+                                                HEADER_NAME + ",ClientHeaderParam"),
                         "microprofile-config.properties"
                 )
                 .addClass(JaxRsActivator.class)
@@ -72,6 +73,6 @@ public class HeaderPassingTest {
         Map<String, String> headers = client.postWithHeader(headerValue, baseUrl);
         assertNotNull(headers);
         assertEquals(headerValue, headers.get(HEADER_NAME));
+        assertEquals(headerValue, headers.get("ClientHeaderParam"));
     }
-
 }

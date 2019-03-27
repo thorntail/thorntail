@@ -15,17 +15,16 @@
  */
 package org.wildfly.swarm.microprofile.restclient.headers;
 
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.net.URI;
-import java.util.Map;
+
+import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 
 /**
  * A resource that consumes a header and should pass it to
@@ -40,5 +39,6 @@ public interface HeaderConsumingClient {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
+    @ClientHeaderParam(name = "ClientHeaderParam", value = "some header value")
     Map<String, String> postWithHeader(@HeaderParam(HeaderConsumingResource.HEADER_NAME) String headerValue, String url);
 }
