@@ -129,6 +129,12 @@ Create thorntail.io/src/posts/announce-2.0.0.Final.adoc, replace 2.0.0.Final wit
 Copy the fetched contributors and change log into this document.
 Make sure at least the breaking changes, as listed in the output of `fetch-notes.js`, are documented in detail.
 
+# Update MP Implementations page
+
+If the release supports new MP specifications or platform release, update https://wiki.eclipse.org/MicroProfile/Implementation.
+For the overall MP platform release, the earliest Thorntail version that implements it should be listed.
+For the individual MP specifications, again the earliest Thorntail version that implements each of the specs should be listed.
+
 # Update Che image
 
 * Submit PR for https://github.com/eclipse/che-dockerfiles/tree/master/recipes/centos_wildfly_swarm/Dockerfile to update to latest version
