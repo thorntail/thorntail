@@ -80,7 +80,7 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     private Defaultable<String> rolesPropertiesFile = string("");
 
     /**
-     * The role properties which are configured directly in the project configuration file 
+     * The role properties which are configured directly in the project configuration file
      */
     @Configurable("thorntail.microprofile.jwt.roles.map")
     @Configurable("thorntail.microprofile.jwtauth.roles.map")
