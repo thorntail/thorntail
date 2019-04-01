@@ -26,6 +26,8 @@ import static org.wildfly.swarm.spi.api.Defaultable.bool;
 import static org.wildfly.swarm.spi.api.Defaultable.integer;
 import static org.wildfly.swarm.spi.api.Defaultable.string;
 
+import java.util.Map;
+
 /**
  * A fraction that adds support for the MicroProfile 1.0 JWT RBAC authentication and authorization spec.
  */
@@ -59,6 +61,31 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @AttributeDocumentation("If a JAX-RS resource has no class-level security metadata, then if this property is set to `true` and at least one resource method has security metadata all other resource methods without security metadata have an implicit `@DenyAll`, otherwise resource methods without security metadata are not secured")
     @Configurable("thorntail.microprofile.jwt.default-missing-method-permissions-deny-access")
     private Defaultable<Boolean> defaultMissingMethodPermissionsDenyAccess = bool(true);
+
+    /**
+     * Realm name
+     */
+    @Configurable("thorntail.microprofile.jwt.realm")
+    @Configurable("thorntail.microprofile.jwtauth.realm")
+    @AttributeDocumentation("If set, a security domain with this name that supports MicroProfile JWT is automatically created in the security subsystem."
+                            + " The realmName parameter of the @LoginConfig annotation must be set to the same value.")
+    private Defaultable<String> jwtRealm = string("");
+
+    /**
+     * Roles properties file path
+     */
+    @Configurable("thorntail.microprofile.jwt.roles.file")
+    @Configurable("thorntail.microprofile.jwtauth.roles.file")
+    @AttributeDocumentation("Roles properties file path, ignored if the roles.map property is set")
+    private Defaultable<String> rolesPropertiesFile = string("");
+
+    /**
+     * The role properties which are configured directly in the project configuration file 
+     */
+    @Configurable("thorntail.microprofile.jwt.roles.map")
+    @Configurable("thorntail.microprofile.jwtauth.roles.map")
+    @AttributeDocumentation("Roles properties map")
+    private Map<String, String> rolesPropertiesMap;
 
     public Defaultable<String> getTokenIssuer() {
         return tokenIssuer;
@@ -102,6 +129,30 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
 
     public boolean isDefaultMissingMethodPermissionsDenyAccess() {
         return defaultMissingMethodPermissionsDenyAccess.get();
+    }
+
+    public Defaultable<String> getJwtRealm() {
+        return jwtRealm;
+    }
+
+    public void setJwtRealm(Defaultable<String> jwtRealm) {
+        this.jwtRealm = jwtRealm;
+    }
+
+    public Defaultable<String> getRolesPropertiesFile() {
+        return rolesPropertiesFile;
+    }
+
+    public void setRolesPropertiesFile(Defaultable<String> rolesPropertiesFile) {
+        this.rolesPropertiesFile = rolesPropertiesFile;
+    }
+
+    public Map<String, String> getRolesPropertiesMap() {
+        return rolesPropertiesMap;
+    }
+
+    public void setRolesPropertiesMap(Map<String, String> rolesPropertiesMap) {
+        this.rolesPropertiesMap = rolesPropertiesMap;
     }
 
 }
