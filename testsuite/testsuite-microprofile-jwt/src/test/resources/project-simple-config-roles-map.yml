@@ -1,0 +1,9 @@
+swarm:
+  microprofile:
+    jwtauth:
+      realm: testSuiteRealm
+      roles:
+        map:
+          Echoer: Echoer2
+      token:
+        issuedBy: "http://testsuite-jwt-issuer.io"
