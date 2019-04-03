@@ -18,11 +18,13 @@ package org.wildfly.swarm.webservices;
 import org.wildfly.swarm.config.Webservices;
 import org.wildfly.swarm.config.webservices.EndpointConfig;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 @WildFlyExtension(module = "org.jboss.as.webservices")
 @MarshalDMR
+@Configurable("thorntail.webservices")
 public class WebServicesFraction extends Webservices<WebServicesFraction> implements Fraction<WebServicesFraction> {
 
     public static WebServicesFraction createDefaultFraction() {
