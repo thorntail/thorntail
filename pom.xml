@@ -1018,8 +1018,6 @@
     <module>standalone-servers</module>
     <module>standalone-servers/microprofile</module>
     <module>standalone-servers/web</module>
-
-    <module>thorntail-runner</module>
   </modules>
 
   <profiles>
@@ -1123,6 +1121,8 @@
         <module>standalone-servers/swagger-ui</module>
         <module>standalone-servers/full</module>
         <module>standalone-servers/microprofile-jpa</module>
+
+        <module>thorntail-runner</module>
 
         <module>boms</module>
         <module>boms/bom</module>
