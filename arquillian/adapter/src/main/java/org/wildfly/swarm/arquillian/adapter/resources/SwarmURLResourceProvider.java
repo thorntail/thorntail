@@ -54,11 +54,8 @@ public class SwarmURLResourceProvider extends OperatesOnDeploymentAwareProvider 
         }
         if (javaVmArguments != null) {
             if (javaVmArguments.contains(SwarmProperties.HTTP_PORT) || javaVmArguments.contains(SwarmProperties.PORT_OFFSET)) {
-                String[] properties = javaVmArguments.split("=| ");
-                // each property must have a value
-                if (properties.length % 2 != 0) {
-                    throw new IllegalArgumentException("Cannot parse java VM arguments " + javaVmArguments);
-                }
+                String[] properties = javaVmArguments.split("=| |\n");
+
                 for (int i = 0; i < properties.length; i++) {
                     if (properties[i].contains(SwarmProperties.HTTP_PORT)) {
                         portDefinedInProperties = properties[i + 1];
