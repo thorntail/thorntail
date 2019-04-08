@@ -22,7 +22,7 @@
   <description>Build Parent to bring in required dependencies</description>
 
   <properties>
-    <version.thorntail.fraction.plugin>95</version.thorntail.fraction.plugin>
+    <version.thorntail.fraction.plugin>96</version.thorntail.fraction.plugin>
 
     <version.thorntail-jdk-specific>1</version.thorntail-jdk-specific>
 
