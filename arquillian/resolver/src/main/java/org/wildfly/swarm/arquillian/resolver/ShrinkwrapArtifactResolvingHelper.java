@@ -76,7 +76,7 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
 
             MavenRemoteRepository gradleTools =
                     MavenRemoteRepositories.createRemoteRepository("gradle",
-                                                                   "http://repo.gradle.org/gradle/libs-releases-local",
+                                                                   "https://repo.gradle.org/gradle/libs-releases-local",
                                                                    "default");
             gradleTools.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
             gradleTools.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
