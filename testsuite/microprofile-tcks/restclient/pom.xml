@@ -42,7 +42,7 @@
 
       <dependency>
          <groupId>io.thorntail</groupId>
-         <artifactId>jaxrs</artifactId>
+         <artifactId>jaxrs-jsonb</artifactId>
       </dependency>
 
       <dependency>
