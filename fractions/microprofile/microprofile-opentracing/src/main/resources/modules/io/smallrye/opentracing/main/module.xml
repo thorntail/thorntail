@@ -3,6 +3,7 @@
     <artifact name="io.opentracing.contrib:opentracing-web-servlet-filter:${version.opentracing.servlet}"/>
     <artifact name="io.opentracing.contrib:opentracing-jaxrs2:${version.opentracing.jaxrs}"/>
     <artifact name="io.opentracing.contrib:opentracing-concurrent:${version.opentracing.concurrent}"/>
+    <artifact name="io.opentracing.contrib:opentracing-interceptors:${version.opentracing.interceptors}"/>
     <artifact name="io.smallrye:smallrye-opentracing:${version.smallrye.opentracing}"/>
   </resources>
 

@@ -16,11 +16,13 @@
 
 package org.wildfly.swarm.mpopentracing.deployment;
 
+import io.opentracing.contrib.interceptors.OpenTracingInterceptor;
+import org.jboss.logging.Logger;
+
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import org.jboss.logging.Logger;
 
 /**
  * @author Pavol Loffay
@@ -34,6 +36,7 @@ public class OpenTracingCDIExtension implements Extension {
     String extensionName = OpenTracingCDIExtension.class.getName();
     for (Class<?> clazz : new Class<?>[] {
             TracerProducer.class,
+            OpenTracingInterceptor.class,
     }) {
       bbd.addAnnotatedType(manager.createAnnotatedType(clazz), extensionName + "_" + clazz.getName());
     }
