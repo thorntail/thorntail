@@ -37,7 +37,7 @@ public class DeploymentProcessor implements ApplicationArchiveProcessor {
     extensionsJar.addAsServiceProvider(Providers.class, ExceptionMapper.class);
     extensionsJar.addClass(MockTracerResolver.class);
     extensionsJar.addClass(ExceptionMapper.class);
-    extensionsJar.addPackages(true, "io.opentracing");
+    extensionsJar.addPackages(true, "io.opentracing.tracerresolver", "io.opentracing.mock");
 
     WebArchive war = WebArchive.class.cast(archive);
     war.addAsLibraries(extensionsJar);
