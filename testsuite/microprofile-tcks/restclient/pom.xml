@@ -42,7 +42,7 @@
 
       <dependency>
          <groupId>io.thorntail</groupId>
-         <artifactId>jaxrs</artifactId>
+         <artifactId>jaxrs-jsonb</artifactId>
       </dependency>
 
       <dependency>
@@ -162,9 +162,9 @@
                </dependenciesToScan>
 
                <excludes>
-                  <!-- see: https://github.com/eclipse/microprofile-rest-client/issues/133 -->
-                  <!-- the test method that is failing is testAsyncInvocationInterceptorProvider -->
-                  <exclude>org.eclipse.microprofile.rest.client.tck.asynctests.AsyncMethodTest</exclude>
+                  <!-- the test contains invalid JSON, it has been fixed in a newer release -->
+                  <!-- bring it back when upgrading -->
+                  <exclude>org.eclipse.microprofile.rest.client.tck.InvokeWithJsonBProviderTest</exclude>
                </excludes>
             </configuration>
          </plugin>
