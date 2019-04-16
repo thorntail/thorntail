@@ -16,6 +16,7 @@
     <module name="io.opentracing.tracer"/>
     <module name="org.wildfly.swarm.mpopentracing" slot="deployment"/>
     <module name="org.eclipse.microprofile.opentracing"/>
+    <module name="org.eclipse.microprofile.restclient"/>
     <module name="org.eclipse.microprofile.config.api" export="true"/>
     <module name="org.wildfly.extension.microprofile.config" export="true"/>
     <module name="org.wildfly.swarm.configuration.microprofile.config" slot="main"/>
