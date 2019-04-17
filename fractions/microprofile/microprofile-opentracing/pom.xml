@@ -61,6 +61,10 @@
       <groupId>io.thorntail</groupId>
       <artifactId>microprofile-config</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>microprofile-restclient</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
