@@ -22,9 +22,9 @@ Many configuration properties in {Thorntail} contain these characters, so you mu
 For example, define the `serveraddress` property as `SERVERADDRESS`.
 * All the _dot_ (.) characters must be replaced with _underscore_ (\_).
 For example, define the `thorntail.bind.address=127.0.0.1` property as `THORNTAIL_BIND_ADDRESS=127.0.0.1`.
-* All _dash/hyphen_ (-) characters must be replaced with the `DASH` string.
+* All _dash/hyphen_ (-) characters must be replaced with the `+_DASH_+` string.
 For example, define the `thorntail.data-sources.foo.url=<url>` property as `THORNTAIL_DATA_DASH_SOURCES_FOO_URL=<url>`.
-* If the property name contains underscores, all _underscore_ (\_) characters must be replaced with the `UNDERSCORE` string.
+* If the property name contains underscores, all _underscore_ (\_) characters must be replaced with the `+_UNDERSCORE_+` string.
 For example, define the `thorntail.data_sources.foo.url=<url>` property as `THORNTAIL_DATA_UNDERSCORE_SOURCES_FOO_URL=<url>`.
 
 .An example data source configuration
