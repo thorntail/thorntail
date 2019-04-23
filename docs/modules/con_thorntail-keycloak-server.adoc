@@ -2,7 +2,7 @@
 [id='thorntail-keycloak-server_{context}']
 = {Thorntail} Keycloak server
 
-https://www.keycloak.org/[Keycloak] is an open source identity and access management solution.
+https://www.keycloak.org/[Keycloak] is an open-source identity and access management solution.
 
 {Thorntail} provides a stand-alone Keycloak server that you can use to test and run Keycloak Server on top of Thorntail.
 
@@ -20,4 +20,3 @@ To start the server, execute the following command:
 ----
 $ java -jar keycloak-{version}-thorntail.jar
 ----
-
