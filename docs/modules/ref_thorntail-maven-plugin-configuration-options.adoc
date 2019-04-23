@@ -22,7 +22,7 @@ Otherwise, they are resolved from `$M2_REPO` or from the network at runtime.
 
 debug::
 The port to use for debugging.
-If set, the "Thorntail" process suspends on start and opens a debugger on this port.
+If set, the Thorntail process suspends on start and opens a debugger on this port.
 +
 [cols="1,2a"]
 |===
