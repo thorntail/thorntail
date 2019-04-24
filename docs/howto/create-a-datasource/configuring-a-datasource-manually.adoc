@@ -1,5 +1,5 @@
 
-[id='configuring-a-datasource_manually_{context}']
+[id='configuring-a-datasource-manually_{context}']
 = Configuring a datasource manually
 
 [discrete]
@@ -22,4 +22,3 @@ thorntail:
     data-sources:
 include::src/main/resources/project-defaults.yml[tag=datasource,indent=6]
 ----
-

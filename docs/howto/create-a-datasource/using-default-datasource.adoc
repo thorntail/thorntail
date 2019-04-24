@@ -1,5 +1,5 @@
 
-[id='using-default-datasource_{context}']
+[id='using-the-default-datasource_{context}']
 = Using the default datasource
 
 The presence of a JDBC driver will automatically create a datasource with the name `ExampleDS`.
