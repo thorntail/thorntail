@@ -1,5 +1,7 @@
 package org.wildfly.swarm.microprofile.jwtauth.deployment.auth.cdi;
 
+import java.util.Set;
+
 import javax.annotation.Priority;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;
@@ -34,11 +36,30 @@ public class PrincipalProducer {
      * @return
      */
     @Produces
+    @RequestScoped
     JsonWebToken currentJWTPrincipalOrNull() {
         JsonWebToken token = null;
         if (account != null) {
             token = (JsonWebToken) account.getPrincipal();
         }
-        return token;
+        return token == null ? new NullJsonWebToken() : token;
+    }
+
+    private static class NullJsonWebToken implements JsonWebToken {
+
+        @Override
+        public String getName() {
+            return null;
+        }
+
+        @Override
+        public Set<String> getClaimNames() {
+            return null;
+        }
+
+        @Override
+        public <T> T getClaim(String claimName) {
+            return null;
+        }
     }
 }

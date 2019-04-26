@@ -122,6 +122,16 @@ public class RawClaimTypeProducer {
         return returnValue;
     }
 
+    @Produces
+    @Claim("")
+    public Optional getOptionalValue(InjectionPoint ip) {
+        log.debugf("getOptionalValue(%s)", ip);
+        if (currentToken == null) {
+            return null;
+        }
+        return currentToken.claim(getName(ip));
+    }
+
     String getName(InjectionPoint ip) {
         String name = null;
         for (Annotation ann : ip.getQualifiers()) {

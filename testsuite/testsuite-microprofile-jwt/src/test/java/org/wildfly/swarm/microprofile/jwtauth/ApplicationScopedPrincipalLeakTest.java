@@ -50,7 +50,6 @@ public class ApplicationScopedPrincipalLeakTest {
 
     @RunAsClient
     @Test
-    @Ignore
     public void subjectShouldNotLeakToNonSecuredRequest() throws Exception {
         // project-no-roles-props.yml restricts the number of worker threads to 1,
         // that is, all requests are processed by the same single thread
