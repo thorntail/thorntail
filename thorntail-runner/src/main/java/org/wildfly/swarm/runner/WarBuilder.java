@@ -87,8 +87,8 @@ public class WarBuilder {
 
     // the assumption is that the Runner is invoked in the WAR module's directory
     private boolean isWar(String path) {
-        String currentDir = Paths.get(".").toAbsolutePath().toString();
-        String classesDirPath = Paths.get(path).toAbsolutePath().toString();
+        String currentDir = Paths.get(".").toAbsolutePath().normalize().toString();
+        String classesDirPath = Paths.get(path).toAbsolutePath().normalize().toString();
         return classesDirPath.startsWith(currentDir);
     }
 
