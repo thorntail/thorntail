@@ -8,7 +8,6 @@ import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.JWTAccount;
 
 /**
  * Override the default CDI Principal bean to allow the injection of a Principal to be a JsonWebToken
@@ -17,31 +16,23 @@ import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.JWTAccount;
 @Alternative
 @RequestScoped
 public class PrincipalProducer {
-    private JWTAccount account;
+    private JsonWebToken token;
 
     public PrincipalProducer() {
     }
 
-    public JWTAccount getAccount() {
-        return account;
-    }
-
-    public void setAccount(JWTAccount account) {
-        this.account = account;
+    public void setJsonWebToken(JsonWebToken token) {
+        this.token = token;
     }
 
     /**
      * The producer method for the current JsonWebToken
      *
-     * @return
+     * @return JsonWebToken
      */
     @Produces
     @RequestScoped
     JsonWebToken currentJWTPrincipalOrNull() {
-        JsonWebToken token = null;
-        if (account != null) {
-            token = (JsonWebToken) account.getPrincipal();
-        }
         return token == null ? new NullJsonWebToken() : token;
     }
 

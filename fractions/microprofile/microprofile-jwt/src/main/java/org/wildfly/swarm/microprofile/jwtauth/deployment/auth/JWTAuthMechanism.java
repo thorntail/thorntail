@@ -85,8 +85,7 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
                         Account account = identityManager.verify(credential.getName(), credential);
                         if (account != null) {
                             JsonWebToken jwtPrincipal = (JsonWebToken) account.getPrincipal();
-                            JWTAccount jwtAccount = new JWTAccount(jwtPrincipal, account);
-                            securityContext.authenticationComplete(jwtAccount, "MP-JWT", false);
+                            securityContext.authenticationComplete(account, "MP-JWT", false);
                             // Workaround authenticated JWTPrincipal not being installed as user principal
                             // https://issues.jboss.org/browse/WFLY-9212
                             org.jboss.security.SecurityContext jbSC = SecurityContextAssociation.getSecurityContext();

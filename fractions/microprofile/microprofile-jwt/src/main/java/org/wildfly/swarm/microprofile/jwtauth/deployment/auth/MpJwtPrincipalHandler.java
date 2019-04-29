@@ -48,9 +48,8 @@ public class MpJwtPrincipalHandler implements HttpHandler {
         Account account = exchange.getSecurityContext().getAuthenticatedAccount();
         if (account != null && account.getPrincipal() instanceof JsonWebToken) {
             JsonWebToken token = (JsonWebToken)account.getPrincipal();
-            JWTAccount jwtAccount = new JWTAccount(token, account);
             PrincipalProducer myInstance = CDI.current().select(PrincipalProducer.class).get();
-            myInstance.setAccount(jwtAccount);
+            myInstance.setJsonWebToken(token);
         }
         next.handleRequest(exchange);
     }
