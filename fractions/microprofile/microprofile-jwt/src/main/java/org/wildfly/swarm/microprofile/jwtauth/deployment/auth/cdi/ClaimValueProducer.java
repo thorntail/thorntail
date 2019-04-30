@@ -18,17 +18,16 @@
 
 package org.wildfly.swarm.microprofile.jwtauth.deployment.auth.cdi;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
 
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.ClaimValue;
-import org.eclipse.microprofile.jwt.Claims;
 
 /**
  * A producer for the ClaimValue<T> wrapper injection sites.
@@ -36,11 +35,14 @@ import org.eclipse.microprofile.jwt.Claims;
  */
 public class ClaimValueProducer<T> {
 
+    @Inject
+    CommonJwtProducer util;
+
     @Produces
     @Claim("")
+    @SuppressWarnings("unchecked")
     ClaimValue<T> produce(InjectionPoint ip) {
-        String name = getName(ip);
-        ClaimValue<Optional<T>> cv = MPJWTProducer.generalClaimValueProducer(name);
+        ClaimValue<Optional<T>> cv = util.generalClaimValueProducer(ip);
         ClaimValue<T> returnValue = (ClaimValue<T>) cv;
         Optional<T> value = cv.getValue();
         // Pull out the ClaimValue<T> T type,
@@ -62,16 +64,5 @@ public class ClaimValueProducer<T> {
             returnValue = wrapper;
         }
         return returnValue;
-    }
-
-    String getName(InjectionPoint ip) {
-        String name = null;
-        for (Annotation ann : ip.getQualifiers()) {
-            if (ann instanceof Claim) {
-                Claim claim = (Claim) ann;
-                name = claim.standard() == Claims.UNKNOWN ? claim.value() : claim.standard().name();
-            }
-        }
-        return name;
     }
 }

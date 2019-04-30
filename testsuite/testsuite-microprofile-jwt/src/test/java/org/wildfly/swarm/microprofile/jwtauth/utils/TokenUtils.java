@@ -36,11 +36,16 @@ public class TokenUtils {
     }
 
     public static final String SUBJECT = "24400320";
+    public static final String SUBJECT2 = "24400322";
 
     public static String createToken(String groupName) throws Exception {
+        return createToken(SUBJECT, groupName);
+    }
+    
+    public static String createToken(String subject, String groupName) throws Exception {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer("http://testsuite-jwt-issuer.io");
-        claims.setSubject(SUBJECT);
+        claims.setSubject(subject);
         claims.setStringListClaim("groups", groupName);
         claims.setClaim("upn", "jdoe@example.com");
         claims.setExpirationTimeMinutesInTheFuture(1);

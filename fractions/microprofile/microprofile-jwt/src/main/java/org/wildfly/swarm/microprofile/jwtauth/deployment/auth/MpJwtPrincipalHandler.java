@@ -15,29 +15,43 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth.deployment.auth;
 
+import javax.enterprise.inject.spi.CDI;
+
+import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.cdi.PrincipalProducer;
+
+import io.undertow.security.idm.Account;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.cdi.MPJWTProducer;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
  * <br>
  * Date: 8/13/18
  */
-public class MpJwtPrincipalCleanupHandler implements HttpHandler {
+public class MpJwtPrincipalHandler implements HttpHandler {
 
     private final HttpHandler next;
 
-    public MpJwtPrincipalCleanupHandler(HttpHandler next) {
+    public MpJwtPrincipalHandler(HttpHandler next) {
         this.next = next;
     }
 
+    /**
+     * If there is a JWTAccount installed in the exchange security context, create
+     *
+     * @param exchange - the request/response exchange
+     * @throws Exception on failure
+     */
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
-        try {
-            next.handleRequest(exchange);
-        } finally {
-            MPJWTProducer.setJWTPrincipal(null);
+        Account account = exchange.getSecurityContext().getAuthenticatedAccount();
+        if (account != null && account.getPrincipal() instanceof JsonWebToken) {
+            JsonWebToken token = (JsonWebToken)account.getPrincipal();
+            PrincipalProducer myInstance = CDI.current().select(PrincipalProducer.class).get();
+            myInstance.setJsonWebToken(token);
         }
+        next.handleRequest(exchange);
     }
+
 }

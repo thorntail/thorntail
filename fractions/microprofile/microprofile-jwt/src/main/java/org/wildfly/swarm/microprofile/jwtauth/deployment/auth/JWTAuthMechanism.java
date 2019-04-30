@@ -16,6 +16,10 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth.deployment.auth;
 
+import static io.undertow.util.Headers.AUTHORIZATION;
+import static io.undertow.util.Headers.WWW_AUTHENTICATE;
+import static io.undertow.util.StatusCodes.UNAUTHORIZED;
+
 import java.security.Principal;
 import java.security.acl.Group;
 import java.util.List;
@@ -24,6 +28,13 @@ import java.util.Optional;
 
 import javax.security.auth.Subject;
 
+import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.jboss.security.SecurityConstants;
+import org.jboss.security.SecurityContextAssociation;
+import org.jboss.security.identity.RoleGroup;
+import org.jboss.security.identity.plugins.SimpleRoleGroup;
+import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.jaas.JWTCredential;
+
 import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import io.undertow.UndertowLogger;
 import io.undertow.security.api.AuthenticationMechanism;
@@ -31,17 +42,6 @@ import io.undertow.security.api.SecurityContext;
 import io.undertow.security.idm.Account;
 import io.undertow.security.idm.IdentityManager;
 import io.undertow.server.HttpServerExchange;
-import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.cdi.MPJWTProducer;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.jaas.JWTCredential;
-import org.jboss.security.SecurityConstants;
-import org.jboss.security.SecurityContextAssociation;
-import org.jboss.security.identity.RoleGroup;
-import org.jboss.security.identity.plugins.SimpleRoleGroup;
-
-import static io.undertow.util.Headers.AUTHORIZATION;
-import static io.undertow.util.Headers.WWW_AUTHENTICATE;
-import static io.undertow.util.StatusCodes.UNAUTHORIZED;
 
 /**
  * An AuthenticationMechanism that validates a caller based on a MicroProfile JWT bearer token
@@ -85,10 +85,8 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
                         Account account = identityManager.verify(credential.getName(), credential);
                         if (account != null) {
                             JsonWebToken jwtPrincipal = (JsonWebToken) account.getPrincipal();
-                            MPJWTProducer.setJWTPrincipal(jwtPrincipal);
-                            JWTAccount jwtAccount = new JWTAccount(jwtPrincipal, account);
-                            securityContext.authenticationComplete(jwtAccount, "MP-JWT", false);
-                            // Workaround authenticated JsonWebToken not being installed as user principal
+                            securityContext.authenticationComplete(account, "MP-JWT", false);
+                            // Workaround authenticated JWTPrincipal not being installed as user principal
                             // https://issues.jboss.org/browse/WFLY-9212
                             org.jboss.security.SecurityContext jbSC = SecurityContextAssociation.getSecurityContext();
                             Subject subject = jbSC.getUtil().getSubject();
