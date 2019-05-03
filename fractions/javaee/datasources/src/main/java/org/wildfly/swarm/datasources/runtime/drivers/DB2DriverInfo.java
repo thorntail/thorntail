@@ -46,7 +46,7 @@ public class DB2DriverInfo extends DriverInfo {
 
     @Override
     protected void configureDriver(JDBCDriver driver) {
-        driver.driverXaDatasourceClassName("com.ibm.db2.jdbc.DB2XADataSource");
+        driver.driverXaDatasourceClassName("com.ibm.db2.jcc.DB2XADataSource");
     }
 
     @Override
