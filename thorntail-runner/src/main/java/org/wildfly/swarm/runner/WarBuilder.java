@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.FileSystems;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -159,7 +159,6 @@ public class WarBuilder {
         try {
             Files.walk(classesDirectory.toPath())
                     .map(Path::toFile)
-                    .filter(File::isFile)
                     .forEach(file -> addClassToZip(output, prefix, file, classesDirectory));
         } catch (IOException e) {
             throw new RuntimeException("Failed to add classes to war", e);
@@ -167,22 +166,20 @@ public class WarBuilder {
     }
 
     private void addClassToZip(ZipOutputStream output, String prefix, File file, File classesDirectory) {
+        URI base = classesDirectory.toURI();
         try {
-            String name = getRelativePath(file, classesDirectory.getAbsolutePath());
+            String name = base.relativize(file.toURI()).getPath();
             name = prefix + name;
-            writeFileToZip(output, file, name);
+            if (file.isDirectory()) {
+              name = name.endsWith("/") ? name : name + "/";
+              output.putNextEntry(new ZipEntry(name));
+              output.closeEntry();
+            } else {
+              writeFileToZip(output, file, name);
+            }
         } catch (IOException e) {
             throw new RuntimeException("Failed to add file " + file.getAbsolutePath() + " to war", e);
         }
-    }
-
-    private String getRelativePath(File file, String parentPath) {
-        String relativePath = file.getAbsolutePath().substring(parentPath.length());
-        String separator = FileSystems.getDefault().getSeparator();
-        if (relativePath.startsWith(separator)) {
-            relativePath = relativePath.substring(separator.length());
-        }
-        return relativePath;
     }
 
     private static void writeFileToZip(ZipOutputStream output,
