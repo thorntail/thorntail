@@ -133,6 +133,12 @@ public class FatJarBuilder {
         uberjarResourcesDir.deleteOnExit();
         tool.uberjarResourcesDirectory(uberjarResourcesDir.toPath());
 
+        String currentDir = Paths.get(".").toAbsolutePath().normalize().toString();
+        File fileModules = Paths.get(currentDir, "target", "classes", "modules").toFile();
+        if (fileModules.exists()) {
+          tool.additionalModule(fileModules.getAbsolutePath());
+        }
+
         File jar = tool.build(target.getName(), target.getParentFile().toPath());
 
         tool.repackageWar(war);
