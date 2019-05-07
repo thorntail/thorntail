@@ -17,8 +17,8 @@
   <groupId>io.thorntail</groupId>
   <artifactId>netflix-guava</artifactId>
 
-  <name> Guava</name>
-  <description> Guava</description>
+  <name>Guava</name>
+  <description>Guava</description>
 
   <packaging>jar</packaging>
 

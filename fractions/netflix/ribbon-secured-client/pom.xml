@@ -17,7 +17,7 @@
   <groupId>io.thorntail</groupId>
   <artifactId>ribbon-secured-client</artifactId>
 
-  <name> Ribbon Secured Client</name>
+  <name>Ribbon Secured Client</name>
   <description>Ribbon Secured Client</description>
 
   <packaging>jar</packaging>
