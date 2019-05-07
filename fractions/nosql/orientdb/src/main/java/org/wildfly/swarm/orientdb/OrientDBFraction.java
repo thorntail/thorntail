@@ -17,6 +17,7 @@ package org.wildfly.swarm.orientdb;
 
 import org.wildfly.swarm.config.Orientdb;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
@@ -26,6 +27,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 @WildFlyExtension(module = "org.wildfly.extension.nosql.orientdb")
 @MarshalDMR
+@Configurable("thorntail.orientdb")
 public class OrientDBFraction extends Orientdb<OrientDBFraction> implements Fraction<OrientDBFraction> {
     public static OrientDBFraction createDefaultFraction() {
         return new OrientDBFraction().applyDefaults();

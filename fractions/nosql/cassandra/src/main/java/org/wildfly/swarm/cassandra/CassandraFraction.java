@@ -17,6 +17,7 @@ package org.wildfly.swarm.cassandra;
 
 import org.wildfly.swarm.config.Cassandradriver;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
@@ -26,6 +27,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 @WildFlyExtension(module = "org.wildfly.extension.nosql.cassandra")
 @MarshalDMR
+@Configurable("thorntail.cassandradriver")
 public class CassandraFraction extends Cassandradriver<CassandraFraction> implements Fraction<CassandraFraction> {
     public static CassandraFraction createDefaultFraction() {
         return new CassandraFraction().applyDefaults();

@@ -17,6 +17,7 @@ package org.wildfly.swarm.neo4j;
 
 import org.wildfly.swarm.config.Neo4jdriver;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
 import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
@@ -26,6 +27,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 @WildFlyExtension(module = "org.wildfly.extension.nosql.neo4j")
 @MarshalDMR
+@Configurable("thorntail.neo4jdriver")
 public class Neo4jFraction extends Neo4jdriver<Neo4jFraction> implements Fraction<Neo4jFraction> {
     public static Neo4jFraction createDefaultFraction() {
         return new Neo4jFraction().applyDefaults();
