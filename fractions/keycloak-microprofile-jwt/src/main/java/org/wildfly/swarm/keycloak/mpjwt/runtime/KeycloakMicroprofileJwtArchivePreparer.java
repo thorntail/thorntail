@@ -19,7 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -71,21 +70,21 @@ public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcess
 
         Map<String, String> kcAdapterSystemProps = new LinkedHashMap<>();
         Properties systemProps = System.getProperties();
-        for (Enumeration<Object> en = systemProps.keys(); en.hasMoreElements();) {
-            String key = en.nextElement().toString();
+        for (Map.Entry<Object, Object> entry : systemProps.entrySet()) {
+            String key = entry.getKey().toString();
             if (key.startsWith(thorntailPrefix)) {
                 kcAdapterSystemProps.put(key.substring(thorntailPrefix.length()),
-                                         systemProps.getProperty(key));
+                                         entry.getValue().toString());
             } else if (key.startsWith(swarmPrefix)) {
                 kcAdapterSystemProps.put(key.substring(swarmPrefix.length()),
-                                         systemProps.getProperty(key));
+                                         entry.getValue().toString());
             }
         }
         InputStream is = null;
         if (!kcAdapterSystemProps.isEmpty()) {
             // Simple JSON builder tailored for the keycloak.json format
             // which can contain simple string or boolean or integer values only
-            // with the only exception being a 'credentials' single entry map 
+            // with the only exception being a 'credentials' single entry map
             StringBuilder sb = new StringBuilder();
             sb.append("{");
             for (Map.Entry<String, String> entry : kcAdapterSystemProps.entrySet()) {
