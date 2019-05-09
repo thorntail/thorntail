@@ -15,9 +15,14 @@
  */
 package org.wildfly.swarm.keycloak.mpjwt.runtime;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.inject.Inject;
 
@@ -33,6 +38,7 @@ public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcess
 
     private static final Logger log = Logger.getLogger(KeycloakMicroprofileJwtArchivePreparer.class);
     private final Archive<?> archive;
+
     @Inject
     public KeycloakMicroprofileJwtArchivePreparer(Archive archive) {
         this.archive = archive;
@@ -41,6 +47,9 @@ public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcess
     @Override
     public void process() throws IOException {
         InputStream keycloakJsonStream = getKeycloakJsonFromClasspath("keycloak.json");
+        if (keycloakJsonStream == null) {
+            keycloakJsonStream = getKeycloakJsonFromSystemProperties();
+        }
         if (keycloakJsonStream != null) {
             try {
                 Module module = Module.getBootModuleLoader().loadModule("org.wildfly.swarm.keycloak.mpjwt:deployment");
@@ -52,6 +61,63 @@ public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcess
                 log.warn("keycloak.json resource is not available", ex);
             }
         }
+    }
+
+    private InputStream getKeycloakJsonFromSystemProperties() {
+        final String thorntailPrefix = "thorntail.keycloak.secure-deployments.[" + archive.getName() + "].";
+        final String swarmPrefix = "swarm.keycloak.secure-deployments.[" + archive.getName() + "].";
+        final String doubleQuote = "\"";
+        final String credentialsSecretProperty = "credentials.secret.value";
+
+        Map<String, String> kcAdapterSystemProps = new LinkedHashMap<>();
+        Properties systemProps = System.getProperties();
+        for (Enumeration<Object> en = systemProps.keys(); en.hasMoreElements();) {
+            String key = en.nextElement().toString();
+            if (key.startsWith(thorntailPrefix)) {
+                kcAdapterSystemProps.put(key.substring(thorntailPrefix.length()),
+                                         systemProps.getProperty(key));
+            } else if (key.startsWith(swarmPrefix)) {
+                kcAdapterSystemProps.put(key.substring(swarmPrefix.length()),
+                                         systemProps.getProperty(key));
+            }
+        }
+        InputStream is = null;
+        if (!kcAdapterSystemProps.isEmpty()) {
+            // Simple JSON builder tailored for the keycloak.json format
+            // which can contain simple string or boolean or integer values only
+            // with the only exception being a 'credentials' single entry map 
+            StringBuilder sb = new StringBuilder();
+            sb.append("{");
+            for (Map.Entry<String, String> entry : kcAdapterSystemProps.entrySet()) {
+                if (sb.length() > 1) {
+                    sb.append(",");
+                }
+                String key = entry.getKey();
+                boolean credentials = entry.getKey().equals(credentialsSecretProperty);
+                if (credentials) {
+                    key = "secret";
+                    sb.append("\"credentials\" : {");
+                }
+                sb.append(doubleQuote).append(key).append(doubleQuote);
+                sb.append(":");
+                String value = !credentials && (isBoolean(entry.getValue()) || isSimpleNumber(entry.getValue()))
+                    ? entry.getValue() : doubleQuote + entry.getValue() + doubleQuote;
+                sb.append(value);
+                if (credentials) {
+                    sb.append("}");
+                }
+            }
+            sb.append("}");
+            is = new ByteArrayInputStream(sb.toString().getBytes());
+        }
+        return is;
+    }
+
+    private static boolean isSimpleNumber(String value) {
+        return value.matches("\\d+");
+    }
+    private static boolean isBoolean(String value) {
+        return "true".equals(value) || "false".equals(value);
     }
 
     private InputStream getKeycloakJsonFromClasspath(String resourceName) {
