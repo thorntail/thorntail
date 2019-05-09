@@ -7,8 +7,8 @@ Creating a simple {Thorntail}{ndash}based application with a REST endpoint from 
 [discrete]
 == Prerequisites
 
-* JDK 8 or newer installed
-* Maven 3.3.x or newer installed
+* OpenJDK 8 or OpenJDK 11 installed
+* Maven 3.5.0 installed
 
 [discrete]
 == Procedure
@@ -92,4 +92,3 @@ myApp
                         ├── HelloWorldEndpoint.java
                         └── RestApplication.java
 ----
-
