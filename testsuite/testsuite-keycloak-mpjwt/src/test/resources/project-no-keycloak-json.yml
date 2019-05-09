@@ -7,7 +7,7 @@ keycloak:
     provider: singleFile
     action: import
     file: ${project.build.testOutputDirectory}/thorntail-keycloak-example-realm.json
-swarm:
+thorntail:
   keycloak:
     secure-deployments:
       test.war:
