@@ -49,6 +49,12 @@ import org.jboss.logging.Logger;
 import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.JWTAuthMechanism;
 import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.config.JWTAuthContextInfoProvider;
 
+import io.smallrye.jwt.auth.cdi.ClaimValueProducer;
+import io.smallrye.jwt.auth.cdi.CommonJwtProducer;
+import io.smallrye.jwt.auth.cdi.JsonValueProducer;
+import io.smallrye.jwt.auth.cdi.PrincipalProducer;
+import io.smallrye.jwt.auth.cdi.RawClaimTypeProducer;
+
 /**
  * A CDI extension that provides a producer for the current authenticated JsonWebToken based on a thread
  * local value that is managed by the {@link JWTAuthMechanism} request
