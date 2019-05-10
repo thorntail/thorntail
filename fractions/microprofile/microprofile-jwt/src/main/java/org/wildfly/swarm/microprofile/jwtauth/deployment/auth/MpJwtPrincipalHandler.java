@@ -18,8 +18,8 @@ package org.wildfly.swarm.microprofile.jwtauth.deployment.auth;
 import javax.enterprise.inject.spi.CDI;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.cdi.PrincipalProducer;
 
+import io.smallrye.jwt.auth.cdi.PrincipalProducer;
 import io.undertow.security.idm.Account;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
