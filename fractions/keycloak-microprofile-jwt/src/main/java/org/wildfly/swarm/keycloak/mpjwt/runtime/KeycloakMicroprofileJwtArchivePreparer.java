@@ -16,6 +16,7 @@
 package org.wildfly.swarm.keycloak.mpjwt.runtime;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -31,6 +32,10 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Node;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
+
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 @DeploymentScoped
 public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcessor {
@@ -65,7 +70,6 @@ public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcess
     private InputStream getKeycloakJsonFromSystemProperties() {
         final String thorntailPrefix = "thorntail.keycloak.secure-deployments.[" + archive.getName() + "].";
         final String swarmPrefix = "swarm.keycloak.secure-deployments.[" + archive.getName() + "].";
-        final String doubleQuote = "\"";
         final String credentialsSecretProperty = "credentials.secret.value";
 
         Map<String, String> kcAdapterSystemProps = new LinkedHashMap<>();
@@ -82,32 +86,36 @@ public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcess
         }
         InputStream is = null;
         if (!kcAdapterSystemProps.isEmpty()) {
-            // Simple JSON builder tailored for the keycloak.json format
-            // which can contain simple string or boolean or integer values only
-            // with the only exception being a 'credentials' single entry map
-            StringBuilder sb = new StringBuilder();
-            sb.append("{");
-            for (Map.Entry<String, String> entry : kcAdapterSystemProps.entrySet()) {
-                if (sb.length() > 1) {
-                    sb.append(",");
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            try {
+                JsonGenerator jg = new JsonFactory().createGenerator(out, JsonEncoding.UTF8);
+                jg.writeStartObject();
+                for (Map.Entry<String, String> entry : kcAdapterSystemProps.entrySet()) {
+                    String key = entry.getKey();
+                    boolean credentials = entry.getKey().equals(credentialsSecretProperty);
+                    if (credentials) {
+                        key = "secret";
+                        jg.writeFieldName("credentials");
+                        jg.writeStartObject();
+                    }
+                    jg.writeFieldName(key);
+                    if (isBoolean(entry.getValue())) {
+                        jg.writeBoolean(Boolean.valueOf(entry.getValue()));
+                    } else if (!credentials && isSimpleNumber(entry.getValue())) {
+                        jg.writeNumber(Integer.valueOf(entry.getValue()));
+                    } else {
+                        jg.writeString(entry.getValue());
+                    }
+                    if (credentials) {
+                        jg.writeEndObject();
+                    }
                 }
-                String key = entry.getKey();
-                boolean credentials = entry.getKey().equals(credentialsSecretProperty);
-                if (credentials) {
-                    key = "secret";
-                    sb.append("\"credentials\" : {");
-                }
-                sb.append(doubleQuote).append(key).append(doubleQuote);
-                sb.append(":");
-                String value = !credentials && (isBoolean(entry.getValue()) || isSimpleNumber(entry.getValue()))
-                    ? entry.getValue() : doubleQuote + entry.getValue() + doubleQuote;
-                sb.append(value);
-                if (credentials) {
-                    sb.append("}");
-                }
+                jg.writeEndObject();
+                jg.close();
+                is = new ByteArrayInputStream(out.toByteArray());
+            } catch (IOException ex) {
+                log.warn("keycloak.json can not be auto-generated", ex);
             }
-            sb.append("}");
-            is = new ByteArrayInputStream(sb.toString().getBytes());
         }
         return is;
     }
