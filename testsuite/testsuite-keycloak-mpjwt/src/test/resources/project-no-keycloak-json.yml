@@ -1,0 +1,23 @@
+# keycloak-server fraction requires keycloak.migration.* system properties to initialize itself
+# for the purpose of this test. These migration properties are set as YAML properties but
+# Thorntail automatically creates system properties out of them.
+  
+keycloak:
+  migration:
+    provider: singleFile
+    action: import
+    file: ${project.build.testOutputDirectory}/thorntail-keycloak-example-realm.json
+thorntail:
+  keycloak:
+    secure-deployments:
+      test.war:
+        auth-server-url: "http://localhost:8080/auth"
+        realm: thorntail-cmd-client
+        resource: thorntail-keycloak-example
+        bearer-only: true
+        ssl-required: external
+  microprofile:
+    jwtauth:
+      realm: testSuiteRealm
+      token:
+        issuedBy: "http://localhost:8080/auth/realms/thorntail-keycloak-example"

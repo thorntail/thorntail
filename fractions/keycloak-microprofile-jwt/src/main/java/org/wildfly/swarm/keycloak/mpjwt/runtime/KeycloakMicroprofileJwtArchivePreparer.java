@@ -15,9 +15,14 @@
  */
 package org.wildfly.swarm.keycloak.mpjwt.runtime;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.inject.Inject;
 
@@ -28,11 +33,16 @@ import org.jboss.shrinkwrap.api.Node;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+
 @DeploymentScoped
 public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcessor {
 
     private static final Logger log = Logger.getLogger(KeycloakMicroprofileJwtArchivePreparer.class);
     private final Archive<?> archive;
+
     @Inject
     public KeycloakMicroprofileJwtArchivePreparer(Archive archive) {
         this.archive = archive;
@@ -41,6 +51,9 @@ public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcess
     @Override
     public void process() throws IOException {
         InputStream keycloakJsonStream = getKeycloakJsonFromClasspath("keycloak.json");
+        if (keycloakJsonStream == null) {
+            keycloakJsonStream = getKeycloakJsonFromSystemProperties();
+        }
         if (keycloakJsonStream != null) {
             try {
                 Module module = Module.getBootModuleLoader().loadModule("org.wildfly.swarm.keycloak.mpjwt:deployment");
@@ -52,6 +65,64 @@ public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcess
                 log.warn("keycloak.json resource is not available", ex);
             }
         }
+    }
+
+    private InputStream getKeycloakJsonFromSystemProperties() {
+        final String thorntailPrefix = "thorntail.keycloak.secure-deployments.[" + archive.getName() + "].";
+        final String swarmPrefix = "swarm.keycloak.secure-deployments.[" + archive.getName() + "].";
+        final String credentialsSecretProperty = "credentials.secret.value";
+
+        Map<String, String> kcAdapterSystemProps = new LinkedHashMap<>();
+        Properties systemProps = System.getProperties();
+        for (Map.Entry<Object, Object> entry : systemProps.entrySet()) {
+            String key = entry.getKey().toString();
+            if (key.startsWith(thorntailPrefix)) {
+                kcAdapterSystemProps.put(key.substring(thorntailPrefix.length()),
+                                         entry.getValue().toString());
+            } else if (key.startsWith(swarmPrefix)) {
+                kcAdapterSystemProps.put(key.substring(swarmPrefix.length()),
+                                         entry.getValue().toString());
+            }
+        }
+        InputStream is = null;
+        if (!kcAdapterSystemProps.isEmpty()) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            try {
+                JsonGenerator jg = new JsonFactory().createGenerator(out, JsonEncoding.UTF8);
+                jg.writeStartObject();
+                for (Map.Entry<String, String> entry : kcAdapterSystemProps.entrySet()) {
+                    if (entry.getKey().equals(credentialsSecretProperty)) {
+                        jg.writeFieldName("credentials");
+                        jg.writeStartObject();
+                        jg.writeFieldName("secret");
+                        jg.writeString(entry.getValue());
+                        jg.writeEndObject();
+                    } else {
+                        jg.writeFieldName(entry.getKey());
+                        if (isBoolean(entry.getValue())) {
+                            jg.writeBoolean(Boolean.valueOf(entry.getValue()));
+                        } else if (isSimpleNumber(entry.getValue())) {
+                            jg.writeNumber(Long.valueOf(entry.getValue()));
+                        } else {
+                            jg.writeString(entry.getValue());
+                        }
+                    }
+                }
+                jg.writeEndObject();
+                jg.close();
+                is = new ByteArrayInputStream(out.toByteArray());
+            } catch (IOException ex) {
+                log.warn("keycloak.json can not be auto-generated", ex);
+            }
+        }
+        return is;
+    }
+
+    private static boolean isSimpleNumber(String value) {
+        return value.matches("\\d+");
+    }
+    private static boolean isBoolean(String value) {
+        return "true".equals(value) || "false".equals(value);
     }
 
     private InputStream getKeycloakJsonFromClasspath(String resourceName) {
