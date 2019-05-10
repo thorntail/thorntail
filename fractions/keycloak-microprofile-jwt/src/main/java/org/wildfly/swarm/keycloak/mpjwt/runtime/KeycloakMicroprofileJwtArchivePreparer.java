@@ -91,23 +91,21 @@ public class KeycloakMicroprofileJwtArchivePreparer implements DeploymentProcess
                 JsonGenerator jg = new JsonFactory().createGenerator(out, JsonEncoding.UTF8);
                 jg.writeStartObject();
                 for (Map.Entry<String, String> entry : kcAdapterSystemProps.entrySet()) {
-                    String key = entry.getKey();
-                    boolean credentials = entry.getKey().equals(credentialsSecretProperty);
-                    if (credentials) {
-                        key = "secret";
+                    if (entry.getKey().equals(credentialsSecretProperty)) {
                         jg.writeFieldName("credentials");
                         jg.writeStartObject();
-                    }
-                    jg.writeFieldName(key);
-                    if (isBoolean(entry.getValue())) {
-                        jg.writeBoolean(Boolean.valueOf(entry.getValue()));
-                    } else if (!credentials && isSimpleNumber(entry.getValue())) {
-                        jg.writeNumber(Integer.valueOf(entry.getValue()));
-                    } else {
+                        jg.writeFieldName("secret");
                         jg.writeString(entry.getValue());
-                    }
-                    if (credentials) {
                         jg.writeEndObject();
+                    } else {
+                        jg.writeFieldName(entry.getKey());
+                        if (isBoolean(entry.getValue())) {
+                            jg.writeBoolean(Boolean.valueOf(entry.getValue()));
+                        } else if (isSimpleNumber(entry.getValue())) {
+                            jg.writeNumber(Long.valueOf(entry.getValue()));
+                        } else {
+                            jg.writeString(entry.getValue());
+                        }
                     }
                 }
                 jg.writeEndObject();
