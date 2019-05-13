@@ -32,11 +32,11 @@
 
     <version.keycloak.config-api>1.6.5</version.keycloak.config-api>
     <version.keycloak>4.8.3.Final</version.keycloak>
-    <version.mongo.config-api>1.6.1</version.mongo.config-api>
-    <version.cassandra.config-api>1.6.1</version.cassandra.config-api>
-    <version.neo4j.config-api>1.6.1</version.neo4j.config-api>
-    <version.orientdb.config-api>1.6.1</version.orientdb.config-api>
-    <version.wildfly.nosql.feature-pack>1.0.1.Final</version.wildfly.nosql.feature-pack>
+    <version.mongo.config-api>1.6.3</version.mongo.config-api>
+    <version.cassandra.config-api>1.6.3</version.cassandra.config-api>
+    <version.neo4j.config-api>1.6.3</version.neo4j.config-api>
+    <version.orientdb.config-api>1.6.3</version.orientdb.config-api>
+    <version.wildfly.nosql.feature-pack>1.0.2.Final</version.wildfly.nosql.feature-pack>
 
     <version.jboss-modules>1.8.7.Final</version.jboss-modules>
     <version.wildfly>15.0.1.Final</version.wildfly>

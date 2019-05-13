@@ -3,6 +3,8 @@ swarm:
     mongos:
       mongodbtestprofile:  
         database: mongotestdb
+#       replicaSet: myreplicaset
+#       adminDatabase: mongoadmin
         jndi-name:  java:jboss/mongodb/test
         id: mongodbtestprofile
         module:  org.mongodb.driver.custom
