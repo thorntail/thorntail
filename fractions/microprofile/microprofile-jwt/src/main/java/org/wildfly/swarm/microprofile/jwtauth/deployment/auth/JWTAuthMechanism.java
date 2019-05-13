@@ -17,12 +17,12 @@
 package org.wildfly.swarm.microprofile.jwtauth.deployment.auth;
 
 import static io.undertow.util.Headers.AUTHORIZATION;
+import static io.undertow.util.Headers.COOKIE;
 import static io.undertow.util.Headers.WWW_AUTHENTICATE;
 import static io.undertow.util.StatusCodes.UNAUTHORIZED;
 
 import java.security.Principal;
 import java.security.acl.Group;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -42,6 +42,7 @@ import io.undertow.security.api.SecurityContext;
 import io.undertow.security.idm.Account;
 import io.undertow.security.idm.IdentityManager;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.server.handlers.Cookie;
 
 /**
  * An AuthenticationMechanism that validates a caller based on a MicroProfile JWT bearer token
@@ -64,52 +65,63 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
      * @param securityContext - the current security context that
      * @return one of AUTHENTICATED, NOT_AUTHENTICATED or NOT_ATTEMPTED depending on the header and authentication outcome.
      */
+    @SuppressWarnings("deprecation")
     @Override
     public AuthenticationMechanismOutcome authenticate(HttpServerExchange exchange, SecurityContext securityContext) {
-        List<String> authHeaders = exchange.getRequestHeaders().get(AUTHORIZATION);
-        if (authHeaders != null) {
-            String bearerToken = null;
-            for (String current : authHeaders) {
-                if (current.toLowerCase(Locale.ENGLISH).startsWith("bearer ")) {
-                    bearerToken = current.substring(7);
-                    if (UndertowLogger.SECURITY_LOGGER.isTraceEnabled()) {
-                        UndertowLogger.SECURITY_LOGGER.tracef("Bearer token: %s", bearerToken);
-                    }
-                    try {
-                        identityManager = securityContext.getIdentityManager();
-                        JWTCredential credential = new JWTCredential(bearerToken, authContextInfo);
-                        if (UndertowLogger.SECURITY_LOGGER.isTraceEnabled()) {
-                            UndertowLogger.SECURITY_LOGGER.tracef("Bearer token: %s", bearerToken);
-                        }
-                        // Install the JWT principal as the caller
-                        Account account = identityManager.verify(credential.getName(), credential);
-                        if (account != null) {
-                            JsonWebToken jwtPrincipal = (JsonWebToken) account.getPrincipal();
-                            securityContext.authenticationComplete(account, "MP-JWT", false);
-                            // Workaround authenticated JWTPrincipal not being installed as user principal
-                            // https://issues.jboss.org/browse/WFLY-9212
-                            org.jboss.security.SecurityContext jbSC = SecurityContextAssociation.getSecurityContext();
-                            Subject subject = jbSC.getUtil().getSubject();
-                            jbSC.getUtil().createSubjectInfo(jwtPrincipal, bearerToken, subject);
-                            RoleGroup roles = extract(subject);
-                            jbSC.getUtil().setRoles(roles);
-                            UndertowLogger.SECURITY_LOGGER.debugf("Authenticated caller(%s) for path(%s) with roles: %s",
-                                    credential.getName(), exchange.getRequestPath(), account.getRoles());
-                            return AuthenticationMechanismOutcome.AUTHENTICATED;
-                        } else {
-                            UndertowLogger.SECURITY_LOGGER.info("Failed to authenticate JWT bearer token");
-                            return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
-                        }
-                    } catch (Exception e) {
-                        UndertowLogger.SECURITY_LOGGER.infof(e, "Failed to validate JWT bearer token");
-                        return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
-                    }
+        String jwtToken = getJwtToken(exchange);
+        if (jwtToken != null) {
+            try {
+                identityManager = securityContext.getIdentityManager();
+                JWTCredential credential = new JWTCredential(jwtToken, authContextInfo);
+                // Install the JWT principal as the caller
+                Account account = identityManager.verify(credential.getName(), credential);
+                if (account != null) {
+                    JsonWebToken jwtPrincipal = (JsonWebToken) account.getPrincipal();
+                    securityContext.authenticationComplete(account, "MP-JWT", false);
+                    // Workaround authenticated JWTPrincipal not being installed as user principal
+                    // https://issues.jboss.org/browse/WFLY-9212
+                    org.jboss.security.SecurityContext jbSC = SecurityContextAssociation.getSecurityContext();
+                    Subject subject = jbSC.getUtil().getSubject();
+                    jbSC.getUtil().createSubjectInfo(jwtPrincipal, jwtToken, subject);
+                    RoleGroup roles = extract(subject);
+                    jbSC.getUtil().setRoles(roles);
+                    UndertowLogger.SECURITY_LOGGER.debugf("Authenticated caller(%s) for path(%s) with roles: %s",
+                            credential.getName(), exchange.getRequestPath(), account.getRoles());
+                    return AuthenticationMechanismOutcome.AUTHENTICATED;
+                } else {
+                    UndertowLogger.SECURITY_LOGGER.info("Failed to authenticate JWT bearer token");
+                    return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
                 }
+            } catch (Exception e) {
+                UndertowLogger.SECURITY_LOGGER.infof(e, "Failed to validate JWT bearer token");
+                return AuthenticationMechanismOutcome.NOT_AUTHENTICATED;
             }
         }
 
         // No suitable header has been found in this request,
         return AuthenticationMechanismOutcome.NOT_ATTEMPTED;
+    }
+
+    private String getJwtToken(HttpServerExchange exchange) {
+        String bearerToken = null;
+        if (AUTHORIZATION.toString().equals(authContextInfo.getTokenHeader())) {
+            String authScheme = exchange.getRequestHeaders().getFirst(authContextInfo.getTokenHeader());
+            if (authScheme != null && authScheme.toLowerCase(Locale.ENGLISH).startsWith("bearer ")) {
+                bearerToken = authScheme.substring(7);
+            }
+        } else if (COOKIE.toString().equals(authContextInfo.getTokenHeader())
+            && authContextInfo.getTokenCookie() != null) {
+            Cookie cookie = exchange.getRequestCookies().get(authContextInfo.getTokenCookie());
+            if (cookie != null) {
+                bearerToken = cookie.getValue();
+            }
+        } else {
+            bearerToken = exchange.getRequestHeaders().getFirst(authContextInfo.getTokenHeader());
+        }
+        if (bearerToken != null && UndertowLogger.SECURITY_LOGGER.isTraceEnabled()) {
+            UndertowLogger.SECURITY_LOGGER.tracef("Bearer token: %s", bearerToken);
+        }
+        return bearerToken;
     }
 
     @Override

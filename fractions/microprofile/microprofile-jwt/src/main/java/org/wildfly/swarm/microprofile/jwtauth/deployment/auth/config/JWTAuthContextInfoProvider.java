@@ -20,15 +20,17 @@ package org.wildfly.swarm.microprofile.jwtauth.deployment.auth.config;
 
 import java.security.interfaces.RSAPublicKey;
 import java.util.Optional;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.DeploymentException;
 import javax.inject.Inject;
 
-import io.smallrye.jwt.KeyUtils;
-import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
+
+import io.smallrye.jwt.KeyUtils;
+import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 
 /**
  * An extension of the SmallRey CDI provider for the JWTAuthContextInfo that extends the information from
@@ -81,23 +83,7 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
         JWTAuthContextInfo contextInfo = new JWTAuthContextInfo();
         // Look to MP-JWT values first
         if (super.getMpJwtPublicKey().isPresent() && !NONE.equals(super.getMpJwtPublicKey().get())) {
-            // Need to decode what this is...
-            Optional<String> mpJwtublicKey = super.getMpJwtPublicKey();
-            try {
-                RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodeJWKSPublicKey(mpJwtublicKey.get());
-                contextInfo.setSignerKey(pk);
-                log.debugf("mpJwtPublicKey parsed as JWK(S)");
-            } catch (Exception e) {
-                // Try as PEM key value
-                log.debugf("mpJwtPublicKey failed as JWK(S), %s", e.getMessage());
-                try {
-                    RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodePublicKey(mpJwtublicKey.get());
-                    contextInfo.setSignerKey(pk);
-                    log.debugf("mpJwtPublicKey parsed as PEM");
-                } catch (Exception e1) {
-                    throw new DeploymentException(e1);
-                }
-            }
+            super.decodeMpJwtPublicKey(contextInfo);
         } else if (publicKeyPemEnc.isPresent() && !NONE.equals(publicKeyPemEnc.get())) {
             try {
                 RSAPublicKey pk = (RSAPublicKey) KeyUtils.decodePublicKey(publicKeyPemEnc.get());
@@ -128,8 +114,7 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
         // The MP-JWT location can be a PEM, JWK or JWKS
         Optional<String> mpJwtLocation = super.getMpJwtLocation();
         if (mpJwtLocation.isPresent() && !NONE.equals(mpJwtLocation.get())) {
-            contextInfo.setJwksUri(mpJwtLocation.get());
-            contextInfo.setFollowMpJwt11Rules(true);
+            super.setMpJwtLocation(contextInfo);
         } else if (jwksUri.isPresent() && !NONE.equals(jwksUri.get())) {
             contextInfo.setJwksUri(jwksUri.get());
         }
@@ -137,6 +122,7 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
             contextInfo.setJwksRefreshInterval(jwksRefreshInterval.get());
         }
 
+        super.setTokenHeadersAndGroups(contextInfo);
         return Optional.of(contextInfo);
     }
 

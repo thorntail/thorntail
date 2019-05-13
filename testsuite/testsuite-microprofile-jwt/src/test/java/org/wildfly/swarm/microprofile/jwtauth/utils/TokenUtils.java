@@ -46,7 +46,9 @@ public class TokenUtils {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer("http://testsuite-jwt-issuer.io");
         claims.setSubject(subject);
-        claims.setStringListClaim("groups", groupName);
+        if (groupName != null) {
+            claims.setStringListClaim("groups", groupName);
+        }
         claims.setClaim("upn", "jdoe@example.com");
         claims.setExpirationTimeMinutesInTheFuture(1);
 
