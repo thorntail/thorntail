@@ -17,8 +17,8 @@
   <groupId>io.thorntail</groupId>
   <artifactId>netflix-rxnetty</artifactId>
 
-  <name> RX-Netty</name>
-  <description> RX-Netty</description>
+  <name>RX-Netty</name>
+  <description>RX-Netty</description>
 
   <packaging>jar</packaging>
 

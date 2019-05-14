@@ -17,8 +17,8 @@
   <groupId>io.thorntail</groupId>
   <artifactId>servo</artifactId>
 
-  <name> Servo</name>
-  <description> Servo</description>
+  <name>Servo</name>
+  <description>Servo</description>
 
   <packaging>jar</packaging>
 

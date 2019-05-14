@@ -17,8 +17,8 @@
   <groupId>io.thorntail</groupId>
   <artifactId>netflix-rxjava</artifactId>
 
-  <name> RX-Java</name>
-  <description> RX-Java</description>
+  <name>RX-Java</name>
+  <description>RX-Java</description>
 
   <packaging>jar</packaging>
 

@@ -17,8 +17,8 @@
   <groupId>io.thorntail</groupId>
   <artifactId>arquillian-resolver</artifactId>
 
-  <name> Arquillian Resolver</name>
-  <description> Arquillian Resolver</description>
+  <name>Arquillian Resolver</name>
+  <description>Arquillian Resolver</description>
 
   <packaging>jar</packaging>
 

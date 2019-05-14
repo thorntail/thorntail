@@ -16,8 +16,8 @@
 
   <artifactId>arquillian-test</artifactId>
 
-  <name> Arquillian Test</name>
-  <description> Arquillian Test</description>
+  <name>Arquillian Test</name>
+  <description>Arquillian Test</description>
 
   <packaging>jar</packaging>
 
