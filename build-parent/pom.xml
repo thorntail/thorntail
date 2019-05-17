@@ -91,12 +91,8 @@
     <version.opentracing.concurrent>0.2.0</version.opentracing.concurrent>
     <version.opentracing.jaxrs>0.4.1</version.opentracing.jaxrs>
     <version.opentracing.interceptors>0.0.4</version.opentracing.interceptors>
-    <version.jaeger>0.30.6</version.jaeger>
-    <version.jaeger.apache.thrift>0.11.0</version.jaeger.apache.thrift>
-    <version.jaeger.apache.httpclient>4.2.5</version.jaeger.apache.httpclient>
-    <version.jaeger.commons.logging>1.1.1</version.jaeger.commons.logging>
-    <version.jaeger.commons.codec>1.6</version.jaeger.commons.codec>
-    <version.jaeger.apache.httpcore>4.2.4</version.jaeger.apache.httpcore>
+    <version.jaeger>0.34.0</version.jaeger>
+    <version.jaeger.apache.thrift>0.12.0</version.jaeger.apache.thrift>
     <version.jaeger.gson>2.8.2</version.jaeger.gson>
 
     <version.maven.resolver.provider>3.6.0</version.maven.resolver.provider>
