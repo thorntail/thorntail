@@ -42,7 +42,7 @@ thorntail.https.port:: The port for the HTTPS server
 [cols="1,2a"]
 |===
 |Default
-|8483
+|8443
 |===
 
 thorntail.debug.port:: If provided, the Thorntail process will pause for debugging on the given port.
