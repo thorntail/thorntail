@@ -36,12 +36,13 @@ import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.microprofile.jwtauth.MicroProfileJWTAuthFraction;
-import org.wildfly.swarm.microprofile.jwtauth.MpJwtFilterRegistrar;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.descriptors.JBossWebAsset;
 import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
+
+import io.smallrye.jwt.auth.jaxrs.JWTAuthzFilterRegistrar;
 
 /**
  * A DeploymentProcessor implementation for the MP-JWT custom authentication mechanism that adds support
@@ -153,7 +154,7 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         WebXmlAsset webXmlAsset = jaxrsArchive.findWebXmlAsset();
         String userProviders = webXmlAsset.getContextParam(RESTEASY_PROVIDERS);
 
-        String filterRegistrar = MpJwtFilterRegistrar.class.getName();
+        String filterRegistrar = JWTAuthzFilterRegistrar.class.getName();
 
         String providers =
                 userProviders == null
