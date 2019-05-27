@@ -27,7 +27,6 @@ import java.util.Locale;
 import java.util.Optional;
 
 import javax.enterprise.inject.spi.CDI;
-import javax.inject.Inject;
 import javax.security.auth.Subject;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -51,8 +50,6 @@ import io.undertow.server.handlers.Cookie;
  * An AuthenticationMechanism that validates a caller based on a MicroProfile JWT bearer token
  */
 public class JWTAuthMechanism implements AuthenticationMechanism {
-    @Inject
-    PrincipalProducer principalProducer;
     private JWTAuthContextInfo authContextInfo;
 
     private IdentityManager identityManager;
@@ -82,8 +79,7 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
                 Account account = identityManager.verify(credential.getName(), credential);
                 if (account != null) {
                     JsonWebToken jwtPrincipal = (JsonWebToken) account.getPrincipal();
-                    PrincipalProducer principalProducer = CDI.current().select(PrincipalProducer.class).get();
-                    principalProducer.setJsonWebToken(jwtPrincipal);
+                    preparePrincipalProducer(jwtPrincipal);
                     securityContext.authenticationComplete(account, "MP-JWT", false);
                     // Workaround authenticated JWTPrincipal not being installed as user principal
                     // https://issues.jboss.org/browse/WFLY-9212
@@ -107,6 +103,11 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
 
         // No suitable header has been found in this request,
         return AuthenticationMechanismOutcome.NOT_ATTEMPTED;
+    }
+
+    private void preparePrincipalProducer(JsonWebToken jwtPrincipal) {
+        PrincipalProducer principalProducer = CDI.current().select(PrincipalProducer.class).get();
+        principalProducer.setJsonWebToken(jwtPrincipal);
     }
 
     private String getJwtToken(HttpServerExchange exchange) {
