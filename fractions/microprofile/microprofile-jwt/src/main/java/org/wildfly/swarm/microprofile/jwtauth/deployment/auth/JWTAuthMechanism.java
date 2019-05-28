@@ -26,6 +26,7 @@ import java.security.acl.Group;
 import java.util.Locale;
 import java.util.Optional;
 
+import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -35,6 +36,7 @@ import org.jboss.security.identity.RoleGroup;
 import org.jboss.security.identity.plugins.SimpleRoleGroup;
 import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.jaas.JWTCredential;
 
+import io.smallrye.jwt.auth.cdi.PrincipalProducer;
 import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import io.undertow.UndertowLogger;
 import io.undertow.security.api.AuthenticationMechanism;
@@ -77,6 +79,7 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
                 Account account = identityManager.verify(credential.getName(), credential);
                 if (account != null) {
                     JsonWebToken jwtPrincipal = (JsonWebToken) account.getPrincipal();
+                    preparePrincipalProducer(jwtPrincipal);
                     securityContext.authenticationComplete(account, "MP-JWT", false);
                     // Workaround authenticated JWTPrincipal not being installed as user principal
                     // https://issues.jboss.org/browse/WFLY-9212
@@ -100,6 +103,11 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
 
         // No suitable header has been found in this request,
         return AuthenticationMechanismOutcome.NOT_ATTEMPTED;
+    }
+
+    private void preparePrincipalProducer(JsonWebToken jwtPrincipal) {
+        PrincipalProducer principalProducer = CDI.current().select(PrincipalProducer.class).get();
+        principalProducer.setJsonWebToken(jwtPrincipal);
     }
 
     private String getJwtToken(HttpServerExchange exchange) {
