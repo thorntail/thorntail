@@ -42,7 +42,7 @@ import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.descriptors.JBossWebAsset;
 import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
 
-import io.smallrye.jwt.auth.jaxrs.JWTAuthzFilterRegistrar;
+import io.smallrye.jwt.auth.jaxrs.JWTAuthorizationFilterRegistrar;
 
 /**
  * A DeploymentProcessor implementation for the MP-JWT custom authentication mechanism that adds support
@@ -154,7 +154,7 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         WebXmlAsset webXmlAsset = jaxrsArchive.findWebXmlAsset();
         String userProviders = webXmlAsset.getContextParam(RESTEASY_PROVIDERS);
 
-        String filterRegistrar = JWTAuthzFilterRegistrar.class.getName();
+        String filterRegistrar = JWTAuthorizationFilterRegistrar.class.getName();
 
         String providers =
                 userProviders == null

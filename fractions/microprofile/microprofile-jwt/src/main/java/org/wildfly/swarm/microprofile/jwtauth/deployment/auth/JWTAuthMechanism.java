@@ -16,14 +16,11 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth.deployment.auth;
 
-import static io.undertow.util.Headers.AUTHORIZATION;
-import static io.undertow.util.Headers.COOKIE;
 import static io.undertow.util.Headers.WWW_AUTHENTICATE;
 import static io.undertow.util.StatusCodes.UNAUTHORIZED;
 
 import java.security.Principal;
 import java.security.acl.Group;
-import java.util.Locale;
 import java.util.Optional;
 
 import javax.security.auth.Subject;
@@ -35,6 +32,7 @@ import org.jboss.security.identity.RoleGroup;
 import org.jboss.security.identity.plugins.SimpleRoleGroup;
 import org.wildfly.swarm.microprofile.jwtauth.deployment.auth.jaas.JWTCredential;
 
+import io.smallrye.jwt.auth.AbstractBearerTokenExtractor;
 import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import io.undertow.UndertowLogger;
 import io.undertow.security.api.AuthenticationMechanism;
@@ -68,7 +66,7 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
     @SuppressWarnings("deprecation")
     @Override
     public AuthenticationMechanismOutcome authenticate(HttpServerExchange exchange, SecurityContext securityContext) {
-        String jwtToken = getJwtToken(exchange);
+        String jwtToken = new UndertowTokenExtractor(authContextInfo, exchange).getBearerToken();
         if (jwtToken != null) {
             try {
                 identityManager = securityContext.getIdentityManager();
@@ -102,28 +100,6 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
         return AuthenticationMechanismOutcome.NOT_ATTEMPTED;
     }
 
-    private String getJwtToken(HttpServerExchange exchange) {
-        String bearerToken = null;
-        if (AUTHORIZATION.toString().equals(authContextInfo.getTokenHeader())) {
-            String authScheme = exchange.getRequestHeaders().getFirst(authContextInfo.getTokenHeader());
-            if (authScheme != null && authScheme.toLowerCase(Locale.ENGLISH).startsWith("bearer ")) {
-                bearerToken = authScheme.substring(7);
-            }
-        } else if (COOKIE.toString().equals(authContextInfo.getTokenHeader())
-            && authContextInfo.getTokenCookie() != null) {
-            Cookie cookie = exchange.getRequestCookies().get(authContextInfo.getTokenCookie());
-            if (cookie != null) {
-                bearerToken = cookie.getValue();
-            }
-        } else {
-            bearerToken = exchange.getRequestHeaders().getFirst(authContextInfo.getTokenHeader());
-        }
-        if (bearerToken != null && UndertowLogger.SECURITY_LOGGER.isTraceEnabled()) {
-            UndertowLogger.SECURITY_LOGGER.tracef("Bearer token: %s", bearerToken);
-        }
-        return bearerToken;
-    }
-
     @Override
     public ChallengeResult sendChallenge(HttpServerExchange exchange, SecurityContext securityContext) {
         exchange.getResponseHeaders().add(WWW_AUTHENTICATE, "Bearer {token}");
@@ -145,5 +121,24 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
         Group rolesGroup = (Group) match.get();
         RoleGroup roles = new SimpleRoleGroup(rolesGroup);
         return roles;
+    }
+
+    private static class UndertowTokenExtractor extends AbstractBearerTokenExtractor {
+        private HttpServerExchange httpExchange;
+        UndertowTokenExtractor(JWTAuthContextInfo authContextInfo, HttpServerExchange exchange) {
+            super(authContextInfo);
+            this.httpExchange = exchange;
+        }
+
+        @Override
+        protected String getHeaderValue(String headerName) {
+            return httpExchange.getRequestHeaders().getFirst(headerName);
+        }
+
+        @Override
+        protected String getCookieValue(String cookieName) {
+            Cookie cookie = httpExchange.getRequestCookies().get(cookieName);
+            return cookie != null ? cookie.getValue() : null;
+        }
     }
 }
