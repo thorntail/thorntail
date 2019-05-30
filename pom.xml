@@ -423,6 +423,12 @@
 
       <dependency>
         <groupId>io.thorntail</groupId>
+        <artifactId>ejb-mdb</artifactId>
+        <version>2.4.1.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.thorntail</groupId>
         <artifactId>ejb-remote</artifactId>
         <version>2.4.1.Final-SNAPSHOT</version>
       </dependency>
@@ -959,6 +965,7 @@
     <module>fractions/javaee/ee</module>
     <module>fractions/javaee/ee-security</module>
     <module>fractions/javaee/ejb</module>
+    <module>fractions/javaee/ejb-mdb</module>
 
     <module>fractions/javaee/jaxrs</module>
     <module>fractions/javaee/jaxrs-cdi</module>
