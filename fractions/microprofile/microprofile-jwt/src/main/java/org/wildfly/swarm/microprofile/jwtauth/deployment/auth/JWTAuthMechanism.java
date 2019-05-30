@@ -66,7 +66,7 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
     @SuppressWarnings("deprecation")
     @Override
     public AuthenticationMechanismOutcome authenticate(HttpServerExchange exchange, SecurityContext securityContext) {
-        String jwtToken = new UndertowTokenExtractor(authContextInfo, exchange).getBearerToken();
+        String jwtToken = new UndertowBearerTokenExtractor(authContextInfo, exchange).getBearerToken();
         if (jwtToken != null) {
             try {
                 identityManager = securityContext.getIdentityManager();
@@ -123,9 +123,9 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
         return roles;
     }
 
-    private static class UndertowTokenExtractor extends AbstractBearerTokenExtractor {
+    private static class UndertowBearerTokenExtractor extends AbstractBearerTokenExtractor {
         private HttpServerExchange httpExchange;
-        UndertowTokenExtractor(JWTAuthContextInfo authContextInfo, HttpServerExchange exchange) {
+        UndertowBearerTokenExtractor(JWTAuthContextInfo authContextInfo, HttpServerExchange exchange) {
             super(authContextInfo);
             this.httpExchange = exchange;
         }
