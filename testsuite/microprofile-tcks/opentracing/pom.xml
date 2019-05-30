@@ -58,6 +58,11 @@
       <version>${version.microprofile-opentracing}</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.microprofile.opentracing</groupId>
+      <artifactId>microprofile-opentracing-tck-rest-client</artifactId>
+      <version>${version.microprofile-opentracing}</version>
+    </dependency>
+    <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <version>6.9.9</version>
