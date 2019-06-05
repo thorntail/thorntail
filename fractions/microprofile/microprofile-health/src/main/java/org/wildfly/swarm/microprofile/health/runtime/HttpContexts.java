@@ -18,6 +18,7 @@ package org.wildfly.swarm.microprofile.health.runtime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 import javax.enterprise.inject.Vetoed;
 import javax.naming.NamingException;
@@ -68,7 +69,13 @@ public class HttpContexts implements HttpHandler {
             threads(exchange);
             return;
         } else if (HEALTH.equals(exchange.getRequestPath())) {
-            health(exchange);
+            health(exchange, SmallRyeHealthReporter::getHealth);
+            return;
+        } else if (HEALTH_LIVE.equals(exchange.getRequestPath())) {
+            health(exchange, SmallRyeHealthReporter::getLiveness);
+            return;
+        } else if (HEALTH_READY.equals(exchange.getRequestPath())) {
+            health(exchange, SmallRyeHealthReporter::getReadiness);
             return;
         }
 
@@ -84,7 +91,7 @@ public class HttpContexts implements HttpHandler {
         exchange.getResponseHeaders().put(new HttpString("Access-Control-Max-Age"), "1209600");
     }
 
-    private void health(HttpServerExchange exchange) {
+    private void health(HttpServerExchange exchange, Function<SmallRyeHealthReporter, SmallRyeHealth> healthFunction) {
         if (monitor.getHealthReporter() != null) {
             SmallRyeHealthReporter reporter = (SmallRyeHealthReporter) monitor.getHealthReporter();
             SmallRyeHealth health;
@@ -93,7 +100,7 @@ public class HttpContexts implements HttpHandler {
             ClassLoader oldTccl = WildFlySecurityManager.getCurrentContextClassLoaderPrivileged();
             try {
                 WildFlySecurityManager.setCurrentContextClassLoaderPrivileged(monitor.getContextClassLoader());
-                health = reporter.getHealth();
+                health = healthFunction.apply(reporter);
             } finally {
                 WildFlySecurityManager.setCurrentContextClassLoaderPrivileged(oldTccl);
             }
@@ -114,7 +121,7 @@ public class HttpContexts implements HttpHandler {
     private void defaultHealthInfo(HttpServerExchange exchange) {
         exchange.setStatusCode(200);
         responseHeaders(exchange);
-        exchange.getResponseSender().send("{\"outcome\":\"UP\", \"checks\":[]}");
+        exchange.getResponseSender().send("{\"status\":\"UP\", \"checks\":[]}");
         exchange.endExchange();
     }
 
@@ -144,6 +151,10 @@ public class HttpContexts implements HttpHandler {
     public static final String THREADS = "/threads";
 
     public static final String HEALTH = "/health";
+
+    public static final String HEALTH_LIVE = "/health/live";
+
+    public static final String HEALTH_READY = "/health/ready";
 
     static final String EPHEMERAL_TOKEN = UUID.randomUUID().toString();
 

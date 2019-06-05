@@ -43,7 +43,7 @@ public class HealthAnnotationProcessor implements DeploymentProcessor {
 
     public static final DotName HEALTH = DotName.createSimple("org.wildfly.swarm.health.Health");
 
-    public static final DotName MP_HEALTH = DotName.createSimple("org.eclipse.microprofile.health.inject.Health");
+    public static final DotName MP_HEALTH = DotName.createSimple("org.eclipse.microprofile.health.Health");
 
     public static final DotName PATH = DotName.createSimple("javax.ws.rs.Path");
 
