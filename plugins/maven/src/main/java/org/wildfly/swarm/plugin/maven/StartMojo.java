@@ -64,11 +64,8 @@ public class StartMojo extends AbstractSwarmMojo {
     @Parameter(alias = "stderrFile", property = "thorntail.stderr")
     public File stderrFile;
 
-    @Parameter(defaultValue = "${wildfly-swarm.useUberJar}")
-    public boolean oldUseUberJar;
-
     @Parameter(alias = "useUberJar", property = "thorntail.useUberJar")
-    public String useUberJar;
+    public boolean useUberJar;
 
     @Parameter(alias = "debug", property = SwarmProperties.DEBUG_PORT)
     public Integer debugPort;
@@ -93,7 +90,7 @@ public class StartMojo extends AbstractSwarmMojo {
 
         final SwarmExecutor executor;
 
-        if (useUberjar()) {
+        if (useUberJar) {
             executor = uberJarExecutor();
         } else if (this.project.getPackaging().equals(WAR)) {
             executor = warExecutor();
@@ -380,9 +377,4 @@ public class StartMojo extends AbstractSwarmMojo {
                 .map(m -> Paths.get(this.project.getBuild().getOutputDirectory(), m))
                 .collect(Collectors.toList());
     }
-
-    private boolean useUberjar() {
-        return useUberJar != null ? true : oldUseUberJar;
-    }
-
 }
