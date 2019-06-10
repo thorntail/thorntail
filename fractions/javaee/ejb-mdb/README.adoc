@@ -1,0 +1,50 @@
+= EJB MDB
+
+Provides support for Message Driven Beans.
+
+For this to work, you need to deploy a resource adapter for an external messaging server.
+The name of this resource adapter must be configured in the `ejb3` subsystem.
+If the resource adapter's connection factory is bound to a different JNDI name than `java:jboss/DefaultJMSConnectionFactory`, the JNDI name must be configured in the `ee` subsystem.
+For example:
+
+```yaml
+thorntail:
+  # deploy AMQP resource adapter
+  deployment:
+    org.amqphub.jca:resource-adapter.rar:
+  # configure the resource adapter
+  resource-adapters:
+    resource-adapters:
+      # the resource adapter is called `default`
+      default:
+        archive: resource-adapter.rar
+        transaction-support: NoTransaction
+        connection-definitions:
+          default:
+            # the connection factory is bound to JNDI name `java:global/jms/default`
+            jndi-name: java:global/jms/default
+            class-name: org.jboss.resource.adapter.jms.JmsManagedConnectionFactory
+            config-properties:
+              ConnectionFactory:
+                value: factory1
+              UserName:
+                value: username
+              Password:
+                value: password
+              JndiParameters:
+                value: "java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory;connectionFactory.factory1=amqp://${env.MESSAGING_SERVICE_HOST:localhost}:${env.MESSAGING_SERVICE_PORT:5672}"
+  # configure the `ejb3` and `ee` subsystems
+  ejb3:
+    default-resource-adapter-name: default
+  ee:
+    annotation-property-replacement: true
+    default-bindings-service:
+      jms-connection-factory: java:global/jms/default
+```
+
+ifndef::product[]
+== The `messaging` fraction
+
+This fraction provides a minimum subset of the `messaging` fraction, enough to use message driven beans.
+If you use the `messaging` fraction, don't use this fraction.
+endif::product[]
