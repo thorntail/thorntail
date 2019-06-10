@@ -48,7 +48,6 @@
       <dependency>
          <groupId>io.thorntail</groupId>
          <artifactId>microprofile-metrics</artifactId>
-         <scope>test</scope>
       </dependency>
 
       <dependency>

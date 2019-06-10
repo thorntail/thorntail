@@ -28,16 +28,16 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
 @Produces(MediaType.TEXT_PLAIN)
 public interface HelloMetricsClient {
 
-    static final String TIMED_NAME = "hello-time";
+    String TIMED_NAME = "hello-time";
 
-    static final String COUNTED_NAME = "hello-count";
+    String COUNTED_NAME = "hello-count";
 
     @Timed(unit = MetricUnits.MILLISECONDS, name = TIMED_NAME, absolute = true)
     @GET
     @Path("/hello")
     String helloTimed();
 
-    @Counted(name = COUNTED_NAME, absolute = true, monotonic = true)
+    @Counted(name = COUNTED_NAME, absolute = true)
     @GET
     @Path("/hello")
     String helloCounted();

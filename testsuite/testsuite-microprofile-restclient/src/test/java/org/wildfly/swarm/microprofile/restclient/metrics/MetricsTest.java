@@ -18,11 +18,11 @@ package org.wildfly.swarm.microprofile.restclient.metrics;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
@@ -68,20 +68,20 @@ public class MetricsTest {
     }
 
     @Test
-    public void testTimed() throws InterruptedException, IllegalStateException, RestClientDefinitionException, MalformedURLException {
+    public void testTimed() throws IllegalStateException, RestClientDefinitionException {
         counter.reset(1);
         timer.reset(0);
 
         HelloMetricsClient helloClient = RestClientBuilder.newBuilder().baseUrl(url).build(HelloMetricsClient.class);
         assertEquals("OK1", helloClient.helloTimed());
 
-        org.eclipse.microprofile.metrics.Timer metricsTimer = registry.getTimers().get(HelloMetricsClient.TIMED_NAME);
+        org.eclipse.microprofile.metrics.Timer metricsTimer = registry.getTimers().get(new MetricID(HelloMetricsClient.TIMED_NAME));
         assertNotNull(metricsTimer);
         assertEquals(1, metricsTimer.getCount());
     }
 
     @Test
-    public void testCounted() throws InterruptedException, IllegalStateException, RestClientDefinitionException, MalformedURLException {
+    public void testCounted() throws IllegalStateException, RestClientDefinitionException {
         counter.reset(1);
         timer.reset(0);
 
@@ -90,13 +90,13 @@ public class MetricsTest {
         assertEquals("OK2", helloClient.helloCounted());
         assertEquals("OK3", helloClient.helloCounted());
 
-        org.eclipse.microprofile.metrics.Counter metricsCounter = registry.getCounters().get(HelloMetricsClient.COUNTED_NAME);
+        org.eclipse.microprofile.metrics.Counter metricsCounter = registry.getCounters().get(new MetricID(HelloMetricsClient.COUNTED_NAME));
         assertNotNull(metricsCounter);
         assertEquals(3, metricsCounter.getCount());
     }
 
     @Test
-    public void testClassLevelCounted() throws InterruptedException, IllegalStateException, RestClientDefinitionException, MalformedURLException {
+    public void testClassLevelCounted() throws IllegalStateException, RestClientDefinitionException {
         counter.reset(1);
         timer.reset(0);
 
@@ -104,7 +104,7 @@ public class MetricsTest {
         assertEquals("OK1", helloClient.hello());
         assertEquals("OK2", helloClient.hello());
 
-        org.eclipse.microprofile.metrics.Counter metricsCounter = registry.getCounters().get(HelloMetricsClassLevelClient.class.getName() + "." + "hello");
+        org.eclipse.microprofile.metrics.Counter metricsCounter = registry.getCounters().get(new MetricID(HelloMetricsClassLevelClient.class.getName() + "." + "hello"));
         assertNotNull(metricsCounter);
         assertEquals(2, metricsCounter.getCount());
     }

@@ -15,7 +15,7 @@
   -->
 <module xmlns="urn:jboss:module:1.3" name="io.smallrye.faulttolerance">
    <resources>
-      <artifact name="io.smallrye:smallrye-fault-tolerance:${version.smallrye-fault-tolerance}" />
+      <artifact name="io.smallrye:smallrye-fault-tolerance-2.0:${version.smallrye.fault-tolerance-2.0}" />
    </resources>
 
    <dependencies>

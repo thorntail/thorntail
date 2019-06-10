@@ -235,10 +235,9 @@ public class SwarmExecutor {
 
         if (!this.classpath.isEmpty()) {
             cli.add("-classpath");
-            cli.add(String.join(File.pathSeparator,
-                                this.classpath.stream()
-                                        .map(e -> e.toString())
-                                        .collect(Collectors.toList())));
+            cli.add(this.classpath.stream()
+                    .map(Path::toString)
+                    .collect(Collectors.joining(File.pathSeparator)));
         }
 
         cli.addAll(this.executable.toArguments());

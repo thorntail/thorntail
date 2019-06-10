@@ -158,13 +158,6 @@
             <artifactId>microprofile-metrics-api-tck</artifactId>
             <version>${version.microprofile-metrics}</version>
             <scope>test</scope>
-            <!-- https://github.com/eclipse/microprofile-metrics/issues/185 -->
-            <exclusions>
-               <exclusion>
-                  <groupId>org.jboss.arquillian.container</groupId>
-                  <artifactId>arquillian-wlp-managed-8.5</artifactId>
-               </exclusion>
-            </exclusions>
          </dependency>
 
          <dependency>

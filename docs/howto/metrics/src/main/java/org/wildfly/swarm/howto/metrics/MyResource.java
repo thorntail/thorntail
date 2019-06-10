@@ -25,7 +25,7 @@ import javax.ws.rs.Path;
 public class MyResource {
     // tag::metrics-resource-method[]
     @GET
-    @Counted(monotonic = true, name = "hello-count", absolute = true)
+    @Counted(name = "hello-count", absolute = true)
     @Timed(name = "hello-time", absolute = true)
     public String get() {
         return "Hello from counted and timed endpoint";

@@ -24,7 +24,7 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
 @ApplicationScoped
 public class HelloService {
 
-    @Counted(monotonic = true, name = "hello-count", absolute = true, displayName = "Hello Count", description = "Number of hello invocations")
+    @Counted(name = "hello-count", absolute = true, displayName = "Hello Count", description = "Number of hello invocations")
     public String hello() {
         return "Hello from counted method";
     }

@@ -349,11 +349,10 @@ public class BuildTool {
 
         this.log.info(String.format("Detected %sfractions: %s",
                 this.fractions.isEmpty() ? "" : "additional ",
-                String.join(", ",
-                        detectedFractions.stream()
-                                .map(FractionDescriptor::av)
-                                .sorted()
-                                .collect(Collectors.toList()))));
+                detectedFractions.stream()
+                        .map(FractionDescriptor::av)
+                        .sorted()
+                        .collect(Collectors.joining(", "))));
         detectedFractions.stream()
                 .map(ArtifactSpec::fromFractionDescriptor)
                 .forEach(this::fraction);
@@ -377,11 +376,10 @@ public class BuildTool {
                 .filter(d -> resolvedDependencies.findArtifact(d.groupId(), d.artifactId(), null, null, null) == null)
                 .forEach(allFractions::add);
 
-        this.log.info("Adding fractions: " +
-                String.join(", ", allFractions.stream()
-                        .map(BuildTool::strippedSwarmGav)
-                        .sorted()
-                        .collect(Collectors.toList())));
+        this.log.info("Adding fractions: " + allFractions.stream()
+                .map(BuildTool::strippedSwarmGav)
+                .sorted()
+                .collect(Collectors.joining(", ")));
 
         allFractions.forEach(f -> this.declaredDependencies.add(f));
         analyzeDependencies(true);
