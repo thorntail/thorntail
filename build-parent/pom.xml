@@ -28,14 +28,15 @@
 
     <version.org.snakeyaml>1.18</version.org.snakeyaml>
 
-    <version.wildfly.config-api>1.6.1</version.wildfly.config-api>
+    <version.wildfly.config-api>1.7.0</version.wildfly.config-api>
 
-    <version.keycloak.config-api>1.6.5</version.keycloak.config-api>
+    <version.keycloak.config-api>1.7.0</version.keycloak.config-api>
     <version.keycloak>4.8.3.Final</version.keycloak>
-    <version.mongo.config-api>1.6.3</version.mongo.config-api>
-    <version.cassandra.config-api>1.6.3</version.cassandra.config-api>
-    <version.neo4j.config-api>1.6.3</version.neo4j.config-api>
-    <version.orientdb.config-api>1.6.3</version.orientdb.config-api>
+
+    <version.mongo.config-api>1.7.0</version.mongo.config-api>
+    <version.cassandra.config-api>1.7.0</version.cassandra.config-api>
+    <version.neo4j.config-api>1.7.0</version.neo4j.config-api>
+    <version.orientdb.config-api>1.7.0</version.orientdb.config-api>
     <version.wildfly.nosql.feature-pack>1.0.2.Final</version.wildfly.nosql.feature-pack>
 
     <version.jboss-modules>1.8.7.Final</version.jboss-modules>
@@ -101,7 +102,6 @@
     <version.org.glassfish.javax.json>1.1.2</version.org.glassfish.javax.json>
 
     <!-- MicroProfile APIs -->
-    <!-- NOTE: we cannot use MP BOM as it does not define dependencyManagement -->
     <version.microprofile-config>1.3</version.microprofile-config>
     <version.microprofile-health>2.0.1</version.microprofile-health>
     <version.microprofile-fault-tolerance>2.0</version.microprofile-fault-tolerance>
@@ -110,8 +110,9 @@
     <version.microprofile.restclient>1.2.1</version.microprofile.restclient>
     <version.microprofile-openapi>1.1.2</version.microprofile-openapi>
     <version.microprofile-opentracing>1.3.1</version.microprofile-opentracing>
-    <!-- MP Config implementation -->
-    <version.microprofile-config-wildfly>1.6.1</version.microprofile-config-wildfly>
+
+    <!-- MP Config WildFly subsystem -->
+    <version.microprofile-config-wildfly>1.7.0</version.microprofile-config-wildfly>
 
     <!-- SmallRye versions -->
     <version.smallrye.config>1.3.7</version.smallrye.config>
