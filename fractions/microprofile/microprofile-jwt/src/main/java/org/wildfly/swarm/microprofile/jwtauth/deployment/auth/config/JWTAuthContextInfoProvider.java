@@ -59,7 +59,6 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
     @Inject
     @ConfigProperty(name = "mpjwt.jwksRefreshInterval", defaultValue = "60")
     private Optional<Integer> jwksRefreshInterval;
-
     /**
      * Produce the JWTAuthContextInfo from a combination of the MP-JWT properties and the extended
      * fraction defined properties.
@@ -122,7 +121,14 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
             contextInfo.setJwksRefreshInterval(jwksRefreshInterval.get());
         }
 
-        super.setTokenHeadersAndGroups(contextInfo);
+        if (super.getTokenHeader() != null) {
+            contextInfo.setTokenHeader(super.getTokenHeader());
+        }
+        setTokenCookie(contextInfo, super.getTokenCookie());
+        if (super.getDefaultGroupsClaim() != null && super.getDefaultGroupsClaim().isPresent()) {
+            contextInfo.setDefaultGroupsClaim(super.getDefaultGroupsClaim().get());
+        }
+
         return Optional.of(contextInfo);
     }
 

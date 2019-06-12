@@ -62,8 +62,6 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
      */
     @Override
     public AuthenticationMechanism create(String mechanismName, FormParserFactory formParserFactory, Map<String, String> properties) {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
         JWTAuthContextInfo contextInfo;
         Optional<JWTAuthContextInfo> optContextInfo = Optional.empty();
         try {
@@ -77,63 +75,22 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
         if (!optContextInfo.isPresent()) {
             // Try building the JWTAuthContextInfo from the properties and/or the deployment resources
             contextInfo = new JWTAuthContextInfo();
-            String issuedBy = properties.get("issuedBy");
-            if (issuedBy == null) {
-                // Try the /META-INF/MP-JWT-ISSUER content
-                URL issURL = loader.getResource("/META-INF/MP-JWT-ISSUER");
-                if (issURL != null) {
-                    issuedBy = readURLContent(issURL);
-                }
-
-                if (issuedBy == null) {
-                    log.debug("No issuedBy parameter was found");
-                }
-                issuedBy = issuedBy.trim();
-            }
-            contextInfo.setIssuedBy(issuedBy);
-
-            String publicKeyPemEnc = properties.get("signerPubKey");
-            if (publicKeyPemEnc == null) {
-                // Try the /META-INF/MP-JWT-SIGNER content
-                URL pkURL = loader.getResource("/META-INF/MP-JWT-SIGNER");
-                if (pkURL != null) {
-                    publicKeyPemEnc = readURLContent(pkURL);
-                }
+            String issuedBy = getResource(properties, "issuedBy", "MP-JWT-ISSUER");
+            if (issuedBy != null) {
+                contextInfo.setIssuedBy(issuedBy);
             }
 
-            String expGracePeriod = properties.get("expGracePeriod");
-            if (expGracePeriod == null) {
-                URL expGracePeriodUrl = loader.getResource("/META-INF/MP-JWT-EXP-GRACE");
-                if (expGracePeriodUrl != null) {
-                    expGracePeriod = readURLContent(expGracePeriodUrl);
-                }
-            }
-            if (expGracePeriod != null) {
-                contextInfo.setExpGracePeriodSecs(Integer.parseInt(expGracePeriod.trim()));
-            }
-
+            String publicKeyPemEnc = getResource(properties, "signerPubKey", "MP-JWT-SIGNER");
             if (publicKeyPemEnc == null) { // signerPubKey and MP-JWT-Signer was empty, now trying for JWKS URI.
-                String jwksUri = properties.get("jwksUri");
-                if (jwksUri == null) {
-                    URL jwksUriURL = loader.getResource("/META-INF/MP-JWT-JWKS");
-                    if (jwksUriURL != null) {
-                        jwksUri = readURLContent(jwksUriURL);
-                    }
-                }
+                String jwksUri = getResource(properties, "jwksUri", "MP-JWT-JWKS");
                 if (jwksUri != null) {
-                    contextInfo.setJwksUri(jwksUri.trim());
+                    contextInfo.setJwksUri(jwksUri);
 
-                    String jwksRefreshInterval = properties.get("jwksRefreshInterval");
-                    if (jwksRefreshInterval == null) {
-                        URL jwksRefreshIntervalURL = loader.getResource("/META-INF/MP-JWT-JWKS-REFRESH");
-                        if (jwksRefreshIntervalURL != null) {
-                            jwksRefreshInterval = readURLContent(jwksRefreshIntervalURL);
-                        }
-                    }
+                    String jwksRefreshInterval = getResource(properties, "jwksRefreshInterval", "MP-JWT-JWKS-REFRESH");
                     if (jwksRefreshInterval == null) {
                         throw new IllegalStateException("JWKS Refresh Interval should be set when JWKS URI is used.");
                     }
-                    contextInfo.setJwksRefreshInterval(Integer.valueOf(jwksRefreshInterval.trim()));
+                    contextInfo.setJwksRefreshInterval(Integer.valueOf(jwksRefreshInterval));
                 } else {
                     log.debug("Neither a static key nor a JWKS URI was set.");
                 }
@@ -148,6 +105,27 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
                 }
             }
 
+            String expGracePeriod = getResource(properties, "expGracePeriod", "MP-JWT-EXP-GRACE");
+            if (expGracePeriod != null) {
+                contextInfo.setExpGracePeriodSecs(Integer.parseInt(expGracePeriod));
+            }
+
+            String tokenHeader = getResource(properties, "tokenHeader", "MP-JWT-TOKEN-HEADER");
+            if (tokenHeader != null) {
+                contextInfo.setTokenHeader(tokenHeader);
+            }
+            String tokenCookie = getResource(properties, "tokenCookie", "MP-JWT-TOKEN-COOKIE");
+            if (tokenCookie != null) {
+                if (!"Cookie".equals(tokenHeader)) {
+                    log.warn("Token header is not 'Cookie', the cookie name value will be ignored");
+                } else {
+                    contextInfo.setTokenCookie(tokenCookie);
+                }
+            }
+            String defaultGroupsClaim = getResource(properties, "defaultGroupsClaim", "MP-JWT-DEFAULT-GROUPS-CLAIM");
+            if (defaultGroupsClaim != null) {
+                contextInfo.setDefaultGroupsClaim(defaultGroupsClaim);
+            }
         } else {
             contextInfo = optContextInfo.get();
         }
@@ -155,6 +133,19 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
         return new JWTAuthMechanism(contextInfo);
     }
 
+    private String getResource(Map<String, String> properties, String propName, String metaInfName) {
+        String value = properties.get(propName);
+        if (value == null) {
+            URL valueURL = Thread.currentThread().getContextClassLoader().getResource("/META-INF/" + metaInfName);
+            if (valueURL != null) {
+                value = readURLContent(valueURL);
+            }
+        }
+        if (value == null) {
+            log.debug("No " + propName + " parameter was found");
+        }
+        return value;
+    }
     private String readURLContent(URL url) {
         StringBuilder content = new StringBuilder();
         try {
@@ -170,6 +161,6 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
         } catch (IOException e) {
             log.warnf("Failed to read content from: %s, error=%s", url, e.getMessage());
         }
-        return content.toString();
+        return content.toString().trim();
     }
 }

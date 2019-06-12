@@ -58,7 +58,6 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
     private static Logger log = Logger.getLogger(MPJWTAuthExtensionArchivePreparer.class);
 
     private static final DotName LOGIN_CONFIG = DotName.createSimple("org.eclipse.microprofile.auth.LoginConfig");
-    private static final DotName APP_PATH = DotName.createSimple("javax.ws.rs.ApplicationPath");
 
     private final Archive archive;
 
@@ -130,6 +129,20 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
                 log.warn("The 'signer-pub-key' and 'jwks-uri' configuration options are mutually exclusive, the 'jwks-uri' will be ignored.");
             }
         }
+
+        if (fraction.getTokenHeader() != null) {
+            log.debugf("tokenHeader: %s", fraction.getTokenHeader());
+            war.addAsManifestResource(new StringAsset(fraction.getTokenHeader().get()), "MP-JWT-TOKEN-HEADER");
+        }
+        if (fraction.getTokenCookie() != null) {
+            log.debugf("tokenCookie: %s", fraction.getTokenCookie());
+            war.addAsManifestResource(new StringAsset(fraction.getTokenCookie()), "MP-JWT-TOKEN-COOKIE");
+        }
+        if (fraction.getDefaultGroupsClaim() != null) {
+            log.debugf("defaultGroupsClaim: %s", fraction.getDefaultGroupsClaim());
+            war.addAsManifestResource(new StringAsset(fraction.getDefaultGroupsClaim()), "MP-JWT-DEFAULT-GROUPS-CLAIM");
+        }
+
         if (log.isTraceEnabled()) {
             log.trace("war: " + war.toString(true));
         }

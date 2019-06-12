@@ -62,6 +62,16 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @Configurable("thorntail.microprofile.jwt.default-missing-method-permissions-deny-access")
     private Defaultable<Boolean> defaultMissingMethodPermissionsDenyAccess = bool(true);
 
+    @AttributeDocumentation("HTTP header which is expected to contain a JWT token, default value is 'Authorization'")
+    @Configurable("thorntail.microprofile.jwt.token.header")
+    private Defaultable<String> tokenHeader = string("Authorization");
+    @AttributeDocumentation("Cookie name containing a JWT token. This property is ignored unless the 'thorntail.microprofile.jwt.token.header' is set to 'Cookie'")
+    @Configurable("thorntail.microprofile.jwt.token.cookie")
+    private String tokenCookie;
+    @AttributeDocumentation("Default group name. This property can be used to support the JWT tokens without a 'groups' claim.")
+    @Configurable("thorntail.microprofile.jwt.claims.groups")
+    private String defaultGroupsClaim;
+
     /**
      * Realm name
      */
@@ -129,6 +139,30 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
 
     public boolean isDefaultMissingMethodPermissionsDenyAccess() {
         return defaultMissingMethodPermissionsDenyAccess.get();
+    }
+
+    public Defaultable<String> getTokenHeader() {
+        return tokenHeader;
+    }
+
+    public void setTokenHeader(Defaultable<String> tokenHeader) {
+        this.tokenHeader = tokenHeader;
+    }
+
+    public String getTokenCookie() {
+        return tokenCookie;
+    }
+
+    public void setTokenCookie(String tokenCookie) {
+        this.tokenCookie = tokenCookie;
+    }
+
+    public String getDefaultGroupsClaim() {
+        return defaultGroupsClaim;
+    }
+
+    public void setDefaultGroupsClaim(String defaultGroupsClaim) {
+        this.defaultGroupsClaim = defaultGroupsClaim;
     }
 
     public Defaultable<String> getJwtRealm() {
