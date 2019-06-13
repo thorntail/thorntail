@@ -20,9 +20,9 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
-<suite name="MicroProfile 1.2 TCKs" verbose="1" preserve-order="true" configfailurepolicy="continue" >
+<suite name="MicroProfile TCKs" verbose="1" preserve-order="true" configfailurepolicy="continue">
 
-  <test name="microprofile-jwt-auth 1.0 TCK">
+  <test name="MicroProfile JWT Auth TCK">
     <groups>
       <define name="base-groups">
         <include name="arquillian" description="Arquillian internal"/>
