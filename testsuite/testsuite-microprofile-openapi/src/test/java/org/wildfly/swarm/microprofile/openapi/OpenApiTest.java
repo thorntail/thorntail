@@ -16,27 +16,24 @@
 
 package org.wildfly.swarm.microprofile.openapi;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.http.client.fluent.Request;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
 
-import java.net.URI;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 @DefaultDeployment
 public class OpenApiTest {
-
-    private static String getUrlContent(String url) throws Exception {
-        return IOUtils.toString(new URI(url), "UTF-8");
-    }
-
     @Test
+    @RunAsClient
     public void testOpenApi() throws Exception {
-        String content = getUrlContent("http://localhost:8080/openapi");
-        Assert.assertNotNull(content);
+        String content = Request.Get("http://localhost:8080/openapi").execute().returnContent().asString();
+        assertNotNull(content);
+        assertTrue(content.contains("/api/foo/hello"));
     }
-
 }
