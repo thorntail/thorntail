@@ -72,6 +72,10 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @Configurable("thorntail.microprofile.jwt.claims.groups")
     private String defaultGroupsClaim;
 
+    @AttributeDocumentation("JSON path to the claim containing an array of groups. It can be used a token has no 'groups' claim but has the groups set in a different claim")
+    @Configurable("thorntail.microprofile.jwt.groups.path")
+    private String groupsPath;
+
     /**
      * Realm name
      */
@@ -163,6 +167,14 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
 
     public void setDefaultGroupsClaim(String defaultGroupsClaim) {
         this.defaultGroupsClaim = defaultGroupsClaim;
+    }
+
+    public String getGroupsPath() {
+        return groupsPath;
+    }
+
+    public void setGroupsPath(String groupsPath) {
+        this.groupsPath = groupsPath;
     }
 
     public Defaultable<String> getJwtRealm() {

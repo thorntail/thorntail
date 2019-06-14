@@ -30,6 +30,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 import io.smallrye.jwt.KeyUtils;
+import io.smallrye.jwt.SmallryeJwtUtils;
 import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 
 /**
@@ -124,7 +125,7 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
         if (super.getTokenHeader() != null) {
             contextInfo.setTokenHeader(super.getTokenHeader());
         }
-        setTokenCookie(contextInfo, super.getTokenCookie());
+        SmallryeJwtUtils.setContextTokenCookie(contextInfo, super.getTokenCookie());
         if (super.getDefaultGroupsClaim() != null && super.getDefaultGroupsClaim().isPresent()) {
             contextInfo.setDefaultGroupsClaim(super.getDefaultGroupsClaim().get());
         }

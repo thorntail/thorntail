@@ -142,6 +142,10 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             log.debugf("defaultGroupsClaim: %s", fraction.getDefaultGroupsClaim());
             war.addAsManifestResource(new StringAsset(fraction.getDefaultGroupsClaim()), "MP-JWT-DEFAULT-GROUPS-CLAIM");
         }
+        if (fraction.getGroupsPath() != null) {
+            log.debugf("groupsPath: %s", fraction.getGroupsPath());
+            war.addAsManifestResource(new StringAsset(fraction.getGroupsPath()), "MP-JWT-GROUPS-PATH");
+        }
 
         if (log.isTraceEnabled()) {
             log.trace("war: " + war.toString(true));

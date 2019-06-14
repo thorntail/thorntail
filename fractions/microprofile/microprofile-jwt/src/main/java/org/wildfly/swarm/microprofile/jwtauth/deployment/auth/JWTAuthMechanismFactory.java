@@ -126,6 +126,10 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
             if (defaultGroupsClaim != null) {
                 contextInfo.setDefaultGroupsClaim(defaultGroupsClaim);
             }
+            String groupsPath = getResource(properties, "groupsPath", "MP-JWT-GROUPS-PATH");
+            if (groupsPath != null) {
+                contextInfo.setGroupsPath(groupsPath);
+            }
         } else {
             contextInfo = optContextInfo.get();
         }
