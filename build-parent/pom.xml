@@ -28,14 +28,15 @@
 
     <version.org.snakeyaml>1.18</version.org.snakeyaml>
 
-    <version.wildfly.config-api>1.6.1</version.wildfly.config-api>
+    <version.wildfly.config-api>1.7.0</version.wildfly.config-api>
 
-    <version.keycloak.config-api>1.6.5</version.keycloak.config-api>
+    <version.keycloak.config-api>1.7.0</version.keycloak.config-api>
     <version.keycloak>4.8.3.Final</version.keycloak>
-    <version.mongo.config-api>1.6.3</version.mongo.config-api>
-    <version.cassandra.config-api>1.6.3</version.cassandra.config-api>
-    <version.neo4j.config-api>1.6.3</version.neo4j.config-api>
-    <version.orientdb.config-api>1.6.3</version.orientdb.config-api>
+
+    <version.mongo.config-api>1.7.0</version.mongo.config-api>
+    <version.cassandra.config-api>1.7.0</version.cassandra.config-api>
+    <version.neo4j.config-api>1.7.0</version.neo4j.config-api>
+    <version.orientdb.config-api>1.7.0</version.orientdb.config-api>
     <version.wildfly.nosql.feature-pack>1.0.2.Final</version.wildfly.nosql.feature-pack>
 
     <version.jboss-modules>1.8.7.Final</version.jboss-modules>
@@ -91,12 +92,8 @@
     <version.opentracing.concurrent>0.2.0</version.opentracing.concurrent>
     <version.opentracing.jaxrs>0.4.1</version.opentracing.jaxrs>
     <version.opentracing.interceptors>0.0.4</version.opentracing.interceptors>
-    <version.jaeger>0.30.6</version.jaeger>
-    <version.jaeger.apache.thrift>0.11.0</version.jaeger.apache.thrift>
-    <version.jaeger.apache.httpclient>4.2.5</version.jaeger.apache.httpclient>
-    <version.jaeger.commons.logging>1.1.1</version.jaeger.commons.logging>
-    <version.jaeger.commons.codec>1.6</version.jaeger.commons.codec>
-    <version.jaeger.apache.httpcore>4.2.4</version.jaeger.apache.httpcore>
+    <version.jaeger>0.34.0</version.jaeger>
+    <version.jaeger.apache.thrift>0.12.0</version.jaeger.apache.thrift>
     <version.jaeger.gson>2.8.2</version.jaeger.gson>
 
     <version.maven.resolver.provider>3.6.0</version.maven.resolver.provider>
@@ -105,26 +102,26 @@
     <version.org.glassfish.javax.json>1.1.2</version.org.glassfish.javax.json>
 
     <!-- MicroProfile APIs -->
-    <!-- NOTE: we cannot use MP BOM as it does not define dependencyManagement -->
     <version.microprofile-config>1.3</version.microprofile-config>
-    <version.microprofile-health>1.0</version.microprofile-health>
+    <version.microprofile-health>2.0.1</version.microprofile-health>
     <version.microprofile-fault-tolerance>2.0</version.microprofile-fault-tolerance>
     <version.microprofile-jwt-auth>1.1.1</version.microprofile-jwt-auth>
     <version.microprofile-metrics>1.1.1</version.microprofile-metrics>
     <version.microprofile.restclient>1.2.1</version.microprofile.restclient>
     <version.microprofile-openapi>1.1.2</version.microprofile-openapi>
     <version.microprofile-opentracing>1.3.1</version.microprofile-opentracing>
-    <!-- MP Config implementation -->
-    <version.microprofile-config-wildfly>1.6.1</version.microprofile-config-wildfly>
+
+    <!-- MP Config WildFly subsystem -->
+    <version.microprofile-config-wildfly>1.7.1</version.microprofile-config-wildfly>
 
     <!-- SmallRye versions -->
-    <version.smallrye.config>1.3.5</version.smallrye.config>
-    <version.smallrye.health>1.0.2</version.smallrye.health>
-    <version.smallrye.openapi>1.1.1</version.smallrye.openapi>
+    <version.smallrye.config-1.3>1.0.0</version.smallrye.config-1.3>
+    <version.smallrye.health-2.0>1.0.1</version.smallrye.health-2.0>
+    <version.smallrye.openapi-1.1>1.0.1</version.smallrye.openapi-1.1>
     <version.smallrye.opentracing>1.3.0</version.smallrye.opentracing>
     <version.smallrye.metrics>1.1.3</version.smallrye.metrics>
     <version.smallrye.restclient>1.2.2</version.smallrye.restclient>
-    <version.smallrye.jwt>1.0.1-SNAPSHOT</version.smallrye.jwt>
+    <version.smallrye.jwt-1.1>1.0.1-SNAPSHOT</version.smallrye.jwt-1.1>
     <version.smallrye-fault-tolerance>2.0.5</version.smallrye-fault-tolerance>
 
   </properties>
@@ -448,8 +445,8 @@
 
       <dependency>
         <groupId>io.smallrye</groupId>
-        <artifactId>smallrye-config</artifactId>
-        <version>${version.smallrye.config}</version>
+        <artifactId>smallrye-config-1.3</artifactId>
+        <version>${version.smallrye.config-1.3}</version>
       </dependency>
 
       <dependency>
@@ -509,8 +506,8 @@
       <!-- SmallRye -->
       <dependency>
         <groupId>io.smallrye</groupId>
-        <artifactId>smallrye-health</artifactId>
-        <version>${version.smallrye.health}</version>
+        <artifactId>smallrye-health-2.0</artifactId>
+        <version>${version.smallrye.health-2.0}</version>
       </dependency>
 
       <dependency>
@@ -539,8 +536,8 @@
 
       <dependency>
         <groupId>io.smallrye</groupId>
-        <artifactId>smallrye-open-api</artifactId>
-        <version>${version.smallrye.openapi}</version>
+        <artifactId>smallrye-open-api-1.1</artifactId>
+        <version>${version.smallrye.openapi-1.1}</version>
         <exclusions>
           <exclusion>
             <groupId>org.jboss</groupId>
@@ -556,7 +553,7 @@
       <dependency>
         <groupId>io.smallrye</groupId>  
         <artifactId>smallrye-jwt-1.1</artifactId>
-        <version>${version.smallrye.jwt}</version>
+        <version>${version.smallrye.jwt-1.1}</version>
       </dependency>
 
       <!-- The following are not used, they are here to make PME align proper versions-->

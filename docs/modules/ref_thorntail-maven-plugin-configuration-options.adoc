@@ -299,6 +299,3 @@ This JAR is not created automatically, so make sure you execute the `package` go
 |Used by
 |`run`, `start`
 |===
-+
-NOTE: Before version 2.3.0.Final, this property was called `wildfly-swarm.useUberJar`, and only setting it to `true` enabled this behavior: `-Dwildfly-swarm.useUberJar=true`.
-You can continue using the old name in later releases, but consider using the new variant, which no longer requires you to set a value: `-Dthorntail.useUberJar`.

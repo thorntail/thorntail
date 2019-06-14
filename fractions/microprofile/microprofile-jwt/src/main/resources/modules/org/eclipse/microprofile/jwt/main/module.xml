@@ -16,7 +16,7 @@
 <module xmlns="urn:jboss:module:1.5" name="org.eclipse.microprofile.jwt">
    <resources>
       <artifact name="org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:${version.microprofile-jwt-auth}" />
-      <artifact name="io.smallrye:smallrye-jwt-1.1:${version.smallrye.jwt}" />
+      <artifact name="io.smallrye:smallrye-jwt-1.1:${version.smallrye.jwt-1.1}" />
    </resources>
    <dependencies>
       <module name="javax.enterprise.api" />
@@ -27,5 +27,7 @@
       <module name="org.jboss.logging" />
       <module name="org.eclipse.microprofile.config.api" export="true"/>
       <module name="org.wildfly.extension.microprofile.config" export="true"/>
+      <module name="org.jboss.weld.core"/>
+      <module name="org.jboss.weld.spi"/>
    </dependencies>
 </module>

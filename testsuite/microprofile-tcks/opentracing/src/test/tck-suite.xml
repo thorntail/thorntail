@@ -1,6 +1,6 @@
-<suite name="MicroProfile 1.2 TCKs" verbose="1" preserve-order="true" configfailurepolicy="continue" >
+<suite name="MicroProfile TCKs" verbose="1" preserve-order="true" configfailurepolicy="continue">
 
-  <test name="microprofile-health-check 1.0 TCK">
+  <test name="MicroProfile OpenTracing TCK">
     <packages>
       <package name="org.eclipse.microprofile.opentracing.tck.*">
       </package>

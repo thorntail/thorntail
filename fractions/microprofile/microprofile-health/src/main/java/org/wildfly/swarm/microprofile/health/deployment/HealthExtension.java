@@ -49,13 +49,8 @@ public class HealthExtension implements Extension {
         }
     }
 
-    public void observeResources(@Observes ProcessAnnotatedType<? extends SmallRyeHealthReporter> event) {
-
-        AnnotatedType<? extends SmallRyeHealthReporter> annotatedType = event.getAnnotatedType();
-
-        if (SmallRyeHealthReporter.class == annotatedType.getJavaClass()) {
-            delegate = annotatedType;
-        }
+    public void observeResources(@Observes ProcessAnnotatedType<SmallRyeHealthReporter> event) {
+        delegate = event.getAnnotatedType();
     }
 
     public void afterDeploymentValidation(@Observes final AfterDeploymentValidation abd, BeanManager beanManager) {
