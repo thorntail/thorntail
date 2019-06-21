@@ -15,12 +15,17 @@
  */
 package org.wildfly.swarm.scanner;
 
+import org.wildfly.swarm.config.DeploymentScanner;
 import org.wildfly.swarm.spi.api.Fraction;
+import org.wildfly.swarm.spi.api.annotations.Configurable;
+import org.wildfly.swarm.spi.api.annotations.MarshalDMR;
 import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 /**
  * @author Heiko Braun
  */
+@MarshalDMR
 @WildFlyExtension(module = "org.jboss.as.deployment-scanner")
-public class ScannerFraction implements Fraction<ScannerFraction> {
+@Configurable("thorntail.deployment-scanner")
+public class ScannerFraction extends DeploymentScanner<ScannerFraction> implements Fraction<ScannerFraction> {
 }
