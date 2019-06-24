@@ -24,7 +24,7 @@ import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 /**
  * @author Heiko Braun
  */
-@DeploymentModule(name = "io.smallrye.restclient", metaInf = IMPORT, export = true, services = Module.ServiceHandling.IMPORT)
+@DeploymentModule(name = "org.jboss.resteasy.microprofile-restclient", metaInf = IMPORT, export = true, services = Module.ServiceHandling.IMPORT)
 public class RestClientFraction implements Fraction<RestClientFraction> {
 
 }

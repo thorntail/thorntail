@@ -33,7 +33,7 @@
     <version.mysql>5.1.39</version.mysql>
     <version.postgresql>9.4.1208</version.postgresql>
 
-    <version.resteasy>3.6.2.Final</version.resteasy>
+    <version.resteasy>3.8.0.Final</version.resteasy>
     <version.remoting>3.0.0.Final</version.remoting>
     <version.wildfly-controller>7.0.0.Final</version.wildfly-controller>
     <version.jackson>2.9.5</version.jackson>

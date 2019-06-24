@@ -17,12 +17,15 @@ package org.wildfly.swarm.microprofile.restclient.metrics;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
 @Path("/v1")
+@Produces(MediaType.TEXT_PLAIN)
 public interface HelloMetricsClient {
 
     static final String TIMED_NAME = "hello-time";
