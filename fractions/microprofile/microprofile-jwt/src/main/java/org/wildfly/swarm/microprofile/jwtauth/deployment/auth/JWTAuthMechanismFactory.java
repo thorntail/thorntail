@@ -84,7 +84,7 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
             if (publicKeyPemEnc == null) { // signerPubKey and MP-JWT-Signer was empty, now trying for JWKS URI.
                 String jwksUri = getResource(properties, "jwksUri", "MP-JWT-JWKS");
                 if (jwksUri != null) {
-                    contextInfo.setJwksUri(jwksUri);
+                    contextInfo.setPublicKeyLocation(jwksUri);
 
                     String jwksRefreshInterval = getResource(properties, "jwksRefreshInterval", "MP-JWT-JWKS-REFRESH");
                     if (jwksRefreshInterval == null) {

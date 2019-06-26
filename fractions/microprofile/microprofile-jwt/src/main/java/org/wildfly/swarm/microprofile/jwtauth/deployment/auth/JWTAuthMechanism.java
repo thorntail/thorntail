@@ -133,6 +133,7 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
 
     private static class UndertowBearerTokenExtractor extends AbstractBearerTokenExtractor {
         private HttpServerExchange httpExchange;
+
         UndertowBearerTokenExtractor(JWTAuthContextInfo authContextInfo, HttpServerExchange exchange) {
             super(authContextInfo);
             this.httpExchange = exchange;

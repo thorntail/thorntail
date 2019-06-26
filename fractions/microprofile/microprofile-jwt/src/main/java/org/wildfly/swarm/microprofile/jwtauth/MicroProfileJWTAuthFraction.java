@@ -68,12 +68,13 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @AttributeDocumentation("Cookie name containing a JWT token. This property is ignored unless the 'thorntail.microprofile.jwt.token.header' is set to 'Cookie'")
     @Configurable("thorntail.microprofile.jwt.token.cookie")
     private String tokenCookie;
+
     @AttributeDocumentation("Default group name. This property can be used to support the JWT tokens without a 'groups' claim.")
     @Configurable("thorntail.microprofile.jwt.claims.groups")
     private String defaultGroupsClaim;
 
-    @AttributeDocumentation("JSON path to the claim containing an array of groups. It can be used a token has no 'groups' claim but has the groups set in a different claim")
-    @Configurable("thorntail.microprofile.jwt.groups.path")
+    @AttributeDocumentation("Path to the claim containing an array of groups, for example: 'realm/groups'. It can be used if a token has no 'groups' claim but has the groups set in a different claim")
+    @Configurable("thorntail.microprofile.jwt.path.groups")
     private String groupsPath;
 
     /**

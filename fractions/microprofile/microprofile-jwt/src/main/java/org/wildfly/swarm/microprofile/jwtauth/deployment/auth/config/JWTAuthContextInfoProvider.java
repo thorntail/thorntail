@@ -114,9 +114,9 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
         // The MP-JWT location can be a PEM, JWK or JWKS
         Optional<String> mpJwtLocation = super.getMpJwtLocation();
         if (mpJwtLocation.isPresent() && !NONE.equals(mpJwtLocation.get())) {
-            super.setMpJwtLocation(contextInfo);
+            contextInfo.setPublicKeyLocation(super.getMpJwtLocation().get());
         } else if (jwksUri.isPresent() && !NONE.equals(jwksUri.get())) {
-            contextInfo.setJwksUri(jwksUri.get());
+            contextInfo.setPublicKeyLocation(jwksUri.get());
         }
         if (jwksRefreshInterval.isPresent()) {
             contextInfo.setJwksRefreshInterval(jwksRefreshInterval.get());
