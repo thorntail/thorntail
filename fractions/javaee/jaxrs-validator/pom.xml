@@ -50,7 +50,13 @@
     <!-- Provided APIs -->
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-validator-provider-11</artifactId>
+      <artifactId>resteasy-validator-provider</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.hibernate.validator</groupId>
+          <artifactId>hibernate-validator</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Meta SPI -->

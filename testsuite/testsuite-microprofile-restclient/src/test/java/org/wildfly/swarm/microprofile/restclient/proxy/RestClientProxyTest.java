@@ -39,7 +39,7 @@ import org.junit.runner.RunWith;
 import org.wildfly.swarm.microprofile.restclient.Counter;
 import org.wildfly.swarm.microprofile.restclient.HelloResource;
 
-import io.smallrye.restclient.RestClientProxy;
+import org.jboss.resteasy.microprofile.client.RestClientProxy;
 
 /**
  *

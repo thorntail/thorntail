@@ -27,7 +27,7 @@ import javax.ws.rs.core.MultivaluedMap;
  * <br>
  * Date: 2/21/19
  */
-public class IncomingHeadersProvider implements io.smallrye.restclient.header.IncomingHeadersProvider {
+public class IncomingHeadersProvider implements org.jboss.resteasy.microprofile.client.header.IncomingHeadersProvider {
 
 
     public static final UnmodifiableMultivaluedMap<String, String> EMPTY_MAP =
@@ -38,7 +38,7 @@ public class IncomingHeadersProvider implements io.smallrye.restclient.header.In
      */
     @Override
     public MultivaluedMap<String, String> getIncomingHeaders() {
-        HttpRequest request = (HttpRequest) ResteasyProviderFactory.getContextData(HttpRequest.class);
+        HttpRequest request = ResteasyProviderFactory.getContextData(HttpRequest.class);
         if (request != null) {
             return request.getHttpHeaders().getRequestHeaders();
         } else {
