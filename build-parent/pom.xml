@@ -68,7 +68,7 @@
 
     <version.com.orbitz.consul>1.2.1</version.com.orbitz.consul>
 
-    <version.openshift.client>7.0.0.Final</version.openshift.client>
+    <version.openshift.client>8.0.0.Final</version.openshift.client>
     <version.com.squareup.okhttp>3.9.0</version.com.squareup.okhttp>
     <version.com.squareup.okio>1.13.0</version.com.squareup.okio>
 
