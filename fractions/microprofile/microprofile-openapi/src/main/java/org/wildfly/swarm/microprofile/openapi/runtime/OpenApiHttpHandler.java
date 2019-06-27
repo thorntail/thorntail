@@ -84,8 +84,9 @@ public class OpenApiHttpHandler implements HttpHandler {
         Format format = Format.YAML;
 
         // Check Accept, then query parameter "format" for JSON; else use YAML.
-        if ((accept != null && accept.contains(Format.JSON.getMimeType())) ||
-                (formatParam != null && Format.JSON.getMimeType().equalsIgnoreCase(formatParam))) {
+        if ((accept != null && accept.contains(Format.JSON.getMimeType()))
+                || Format.JSON.name().equalsIgnoreCase(formatParam)
+                || Format.JSON.getMimeType().equalsIgnoreCase(formatParam)) {
             format = Format.JSON;
         }
 
