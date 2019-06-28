@@ -67,8 +67,8 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
      */
     @Configurable("thorntail.microprofile.jwt.realm")
     @Configurable("thorntail.microprofile.jwtauth.realm")
-    @AttributeDocumentation("If set, a security domain with this name that supports MicroProfile JWT is automatically created in the security subsystem."
-                            + " If the @LoginConfig realName property is configured then it must have the same value.")
+    @AttributeDocumentation("Defines the security domain which should be used for MicroProfile JWT but be ignored if the security domain with this name already exists. "
+                            + "If this option is set then the realmName property of the @LoginConfig annotation does not have to be configured but if it is then it must have the same value as this option")
     private Defaultable<String> jwtRealm = string("");
 
     /**
