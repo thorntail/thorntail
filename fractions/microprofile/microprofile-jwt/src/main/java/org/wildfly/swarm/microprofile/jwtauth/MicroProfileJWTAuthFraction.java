@@ -65,6 +65,7 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @AttributeDocumentation("HTTP header which is expected to contain a JWT token, default value is 'Authorization'")
     @Configurable("thorntail.microprofile.jwt.token.header")
     private Defaultable<String> tokenHeader = string("Authorization");
+
     @AttributeDocumentation("Cookie name containing a JWT token. This property is ignored unless the 'thorntail.microprofile.jwt.token.header' is set to 'Cookie'")
     @Configurable("thorntail.microprofile.jwt.token.cookie")
     private String tokenCookie;
