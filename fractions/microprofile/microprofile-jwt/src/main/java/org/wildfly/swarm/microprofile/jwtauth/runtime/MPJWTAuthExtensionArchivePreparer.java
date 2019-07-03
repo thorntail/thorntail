@@ -79,8 +79,18 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         Collection<AnnotationInstance> lcAnnotations = index.getAnnotations(LOGIN_CONFIG);
         for (AnnotationInstance lc : lcAnnotations) {
             AnnotationValue authMethod = lc.value("authMethod");
-            AnnotationValue realmName = lc.value("realmName");
-            String realm = realmName != null ? realmName.asString() : "";
+            AnnotationValue realmNameProp = lc.value("realmName");
+            String realm = null;
+            if (realmNameProp == null) {
+                realm = fraction.getJwtRealm().get();
+            } else if (!fraction.getJwtRealm().get().isEmpty()
+                && !fraction.getJwtRealm().get().equals(realmNameProp.asString())) {
+                log.errorf("LoginConfig realmName %s and 'thorntail.microprofile.jwt.realm' %s values must be equal",
+                           fraction.getJwtRealm().get(), realmNameProp.asString());
+                return;
+            } else {
+                realm = realmNameProp.asString();
+            }
             // Set the web.xml login-config auth-method and jboss-web.xml security domain
             if (authMethod != null) {
                 WebXmlAsset webXml = war.findWebXmlAsset();
