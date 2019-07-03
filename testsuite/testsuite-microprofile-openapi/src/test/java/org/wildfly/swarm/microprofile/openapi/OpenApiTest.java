@@ -16,7 +16,9 @@
 
 package org.wildfly.swarm.microprofile.openapi;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.util.EntityUtils;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
@@ -32,8 +34,75 @@ public class OpenApiTest {
     @Test
     @RunAsClient
     public void testOpenApi() throws Exception {
-        String content = Request.Get("http://localhost:8080/openapi").execute().returnContent().asString();
+        HttpResponse response = Request.Get("http://localhost:8080/openapi").execute().returnResponse();
+        assertTrue(response.getFirstHeader("Content-Type").getValue().contains("application/yaml"));
+        String content = EntityUtils.toString(response.getEntity());
         assertNotNull(content);
         assertTrue(content.contains("/api/foo/hello"));
+    }
+
+    @Test
+    @RunAsClient
+    public void acceptYaml() throws Exception {
+        HttpResponse response = Request.Get("http://localhost:8080/openapi")
+                .addHeader("Accept", "application/yaml")
+                .execute()
+                .returnResponse();
+        assertTrue(response.getFirstHeader("Content-Type").getValue().contains("application/yaml"));
+    }
+
+    @Test
+    @RunAsClient
+    public void acceptJson() throws Exception {
+        HttpResponse response = Request.Get("http://localhost:8080/openapi")
+                .addHeader("Accept", "application/json")
+                .execute()
+                .returnResponse();
+        assertTrue(response.getFirstHeader("Content-Type").getValue().contains("application/json"));
+    }
+
+    @Test
+    @RunAsClient
+    public void acceptNonsense() throws Exception {
+        HttpResponse response = Request.Get("http://localhost:8080/openapi")
+                .addHeader("Accept", "foo/bar")
+                .execute()
+                .returnResponse();
+        assertTrue(response.getFirstHeader("Content-Type").getValue().contains("application/yaml"));
+    }
+
+    @Test
+    @RunAsClient
+    public void formatYaml() throws Exception {
+        HttpResponse response = Request.Get("http://localhost:8080/openapi?format=YAML").execute().returnResponse();
+        assertTrue(response.getFirstHeader("Content-Type").getValue().contains("application/yaml"));
+    }
+
+    @Test
+    @RunAsClient
+    public void formatJson() throws Exception {
+        HttpResponse response = Request.Get("http://localhost:8080/openapi?format=JSON").execute().returnResponse();
+        assertTrue(response.getFirstHeader("Content-Type").getValue().contains("application/json"));
+    }
+
+    @Test
+    @RunAsClient
+    public void formatJsonLowercase() throws Exception {
+        HttpResponse response = Request.Get("http://localhost:8080/openapi?format=json").execute().returnResponse();
+        assertTrue(response.getFirstHeader("Content-Type").getValue().contains("application/json"));
+    }
+
+    @Test
+    @RunAsClient
+    public void formatJsonLegacy() throws Exception {
+        HttpResponse response = Request.Get("http://localhost:8080/openapi?format=application/json").execute().returnResponse();
+        assertTrue(response.getFirstHeader("Content-Type").getValue().contains("application/json"));
+    }
+
+    @Test
+    @RunAsClient
+    public void formatNonsense() throws Exception {
+        HttpResponse response = Request.Get("http://localhost:8080/openapi?format=foo-bar").execute().returnResponse();
+        assertTrue(response.getFirstHeader("Content-Type").getValue().contains("application/yaml"));
     }
 }

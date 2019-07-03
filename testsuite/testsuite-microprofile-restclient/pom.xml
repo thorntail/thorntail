@@ -45,9 +45,8 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
                <systemProperties>
-                  <!-- Set the log level for smallrye  -->
                   <property>
-                     <name>swarm.logging.loggers.[io.smallrye].level</name>
+                     <name>thorntail.logging.loggers.[org.jboss.resteasy.microprofile.client].level</name>
                      <value>INFO</value>
                   </property>
                </systemProperties>
