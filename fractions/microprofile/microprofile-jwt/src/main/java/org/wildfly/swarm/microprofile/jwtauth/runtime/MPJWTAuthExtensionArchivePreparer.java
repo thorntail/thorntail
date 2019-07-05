@@ -56,7 +56,7 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
 
     public static final String RESTEASY_PROVIDERS = "resteasy.providers";
     private static Logger log = Logger.getLogger(MPJWTAuthExtensionArchivePreparer.class);
-
+    private static final String MP_JWT_AUTH_METHOD = "MP-JWT";
     private static final DotName LOGIN_CONFIG = DotName.createSimple("org.eclipse.microprofile.auth.LoginConfig");
 
     private final Archive archive;
@@ -74,9 +74,14 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
 
     @Override
     public void process() throws Exception {
+        if (!fraction.isJwtEnabled().get()) {
+            return;
+        }
         WARArchive war = archive.as(WARArchive.class);
         // Check for LoginConfig annotation
         Collection<AnnotationInstance> lcAnnotations = index.getAnnotations(LOGIN_CONFIG);
+
+        boolean loginConfigMpJwtAvailable = false;
         for (AnnotationInstance lc : lcAnnotations) {
             AnnotationValue authMethod = lc.value("authMethod");
             AnnotationValue realmNameProp = lc.value("realmName");
@@ -92,14 +97,14 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
                 realm = realmNameProp.asString();
             }
             // Set the web.xml login-config auth-method and jboss-web.xml security domain
-            if (authMethod != null) {
-                WebXmlAsset webXml = war.findWebXmlAsset();
-                webXml.setLoginConfig(authMethod.asString(), realm);
+            if (authMethod != null && MP_JWT_AUTH_METHOD.equals(authMethod.asString()) && realm.length() > 0) {
+                selectSecurityDomain(war, realm);
+                loginConfigMpJwtAvailable = true;
             }
-            if (realm.length() > 0) {
-                JBossWebAsset jBossWeb = war.findJbossWebAsset();
-                jBossWeb.setSecurityDomain(realm);
-            }
+        }
+
+        if (!loginConfigMpJwtAvailable && !fraction.getJwtRealm().get().isEmpty()) {
+            selectSecurityDomain(war, fraction.getJwtRealm().get());
         }
 
         // Handle the verification configuration on the fraction
@@ -166,6 +171,13 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         if (fraction.getRolesPropertiesMap() != null) {
             createRolePropertiesFileFromMap();
         }
+    }
+
+    private void selectSecurityDomain(WARArchive war, String realm) {
+        WebXmlAsset webXml = war.findWebXmlAsset();
+        webXml.setLoginConfig(MP_JWT_AUTH_METHOD, realm);
+        JBossWebAsset jBossWeb = war.findJbossWebAsset();
+        jBossWeb.setSecurityDomain(realm);
     }
 
     private void createRolePropertiesFileFromMap() {

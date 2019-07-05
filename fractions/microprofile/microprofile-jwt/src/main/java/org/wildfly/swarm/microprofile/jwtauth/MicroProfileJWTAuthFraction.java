@@ -103,6 +103,19 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @AttributeDocumentation("Roles properties map")
     private Map<String, String> rolesPropertiesMap;
 
+    @AttributeDocumentation("If both this and 'thorntail.microprofile.jwt.realm' properties are enabled then the @LoginConfig annotation does not have to be present."
+                            + "If this option is disabled then the MP JWT authentication mechanism will not be activated")
+    @Configurable("thorntail.microprofile.jwt.enabled")
+    private Defaultable<Boolean> jwtEnabled = bool(true);
+
+    public Defaultable<Boolean> isJwtEnabled() {
+        return jwtEnabled;
+    }
+
+    public void setJwtEnabled(boolean enabled) {
+        this.jwtEnabled = bool(enabled);
+    }
+
     public Defaultable<String> getTokenIssuer() {
         return tokenIssuer;
     }
