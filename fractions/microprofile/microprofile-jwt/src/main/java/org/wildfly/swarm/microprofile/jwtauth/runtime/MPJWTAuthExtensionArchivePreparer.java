@@ -103,10 +103,13 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             }
         }
 
-        if (!loginConfigMpJwtAvailable && !fraction.getJwtRealm().get().isEmpty()) {
-            selectSecurityDomain(war, fraction.getJwtRealm().get());
+        if (!loginConfigMpJwtAvailable) {
+            if (!fraction.getJwtRealm().get().isEmpty()) {
+                selectSecurityDomain(war, fraction.getJwtRealm().get());
+            } else {
+                return;
+            }
         }
-
         // Handle the verification configuration on the fraction
         if (fraction.getTokenIssuer().isPresent()) {
             log.debugf("Issuer: %s", fraction.getTokenIssuer().get());
