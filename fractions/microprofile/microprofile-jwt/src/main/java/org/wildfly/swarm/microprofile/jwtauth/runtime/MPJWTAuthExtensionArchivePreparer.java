@@ -36,12 +36,13 @@ import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.microprofile.jwtauth.MicroProfileJWTAuthFraction;
-import org.wildfly.swarm.microprofile.jwtauth.MpJwtFilterRegistrar;
 import org.wildfly.swarm.spi.api.DeploymentProcessor;
 import org.wildfly.swarm.spi.runtime.annotations.DeploymentScoped;
 import org.wildfly.swarm.undertow.WARArchive;
 import org.wildfly.swarm.undertow.descriptors.JBossWebAsset;
 import org.wildfly.swarm.undertow.descriptors.WebXmlAsset;
+
+import io.smallrye.jwt.auth.jaxrs.JWTAuthorizationFilterRegistrar;
 
 /**
  * A DeploymentProcessor implementation for the MP-JWT custom authentication mechanism that adds support
@@ -138,6 +139,24 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
                 log.warn("The 'signer-pub-key' and 'jwks-uri' configuration options are mutually exclusive, the 'jwks-uri' will be ignored.");
             }
         }
+
+        if (fraction.getTokenHeader() != null) {
+            log.debugf("tokenHeader: %s", fraction.getTokenHeader());
+            war.addAsManifestResource(new StringAsset(fraction.getTokenHeader().get()), "MP-JWT-TOKEN-HEADER");
+        }
+        if (fraction.getTokenCookie() != null) {
+            log.debugf("tokenCookie: %s", fraction.getTokenCookie());
+            war.addAsManifestResource(new StringAsset(fraction.getTokenCookie()), "MP-JWT-TOKEN-COOKIE");
+        }
+        if (fraction.getDefaultGroupsClaim() != null) {
+            log.debugf("defaultGroupsClaim: %s", fraction.getDefaultGroupsClaim());
+            war.addAsManifestResource(new StringAsset(fraction.getDefaultGroupsClaim()), "MP-JWT-DEFAULT-GROUPS-CLAIM");
+        }
+        if (fraction.getGroupsPath() != null) {
+            log.debugf("groupsPath: %s", fraction.getGroupsPath());
+            war.addAsManifestResource(new StringAsset(fraction.getGroupsPath()), "MP-JWT-GROUPS-PATH");
+        }
+
         if (log.isTraceEnabled()) {
             log.trace("war: " + war.toString(true));
         }
@@ -162,7 +181,7 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         WebXmlAsset webXmlAsset = jaxrsArchive.findWebXmlAsset();
         String userProviders = webXmlAsset.getContextParam(RESTEASY_PROVIDERS);
 
-        String filterRegistrar = MpJwtFilterRegistrar.class.getName();
+        String filterRegistrar = JWTAuthorizationFilterRegistrar.class.getName();
 
         String providers =
                 userProviders == null

@@ -30,6 +30,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 import io.smallrye.jwt.KeyUtils;
+import io.smallrye.jwt.SmallryeJwtUtils;
 import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 
 /**
@@ -59,7 +60,6 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
     @Inject
     @ConfigProperty(name = "mpjwt.jwksRefreshInterval", defaultValue = "60")
     private Optional<Integer> jwksRefreshInterval;
-
     /**
      * Produce the JWTAuthContextInfo from a combination of the MP-JWT properties and the extended
      * fraction defined properties.
@@ -114,15 +114,22 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
         // The MP-JWT location can be a PEM, JWK or JWKS
         Optional<String> mpJwtLocation = super.getMpJwtLocation();
         if (mpJwtLocation.isPresent() && !NONE.equals(mpJwtLocation.get())) {
-            super.setMpJwtLocation(contextInfo);
+            contextInfo.setPublicKeyLocation(super.getMpJwtLocation().get());
         } else if (jwksUri.isPresent() && !NONE.equals(jwksUri.get())) {
-            contextInfo.setJwksUri(jwksUri.get());
+            contextInfo.setPublicKeyLocation(jwksUri.get());
         }
         if (jwksRefreshInterval.isPresent()) {
             contextInfo.setJwksRefreshInterval(jwksRefreshInterval.get());
         }
 
-        super.setTokenHeadersAndGroups(contextInfo);
+        if (super.getTokenHeader() != null) {
+            contextInfo.setTokenHeader(super.getTokenHeader());
+        }
+        SmallryeJwtUtils.setContextTokenCookie(contextInfo, super.getTokenCookie());
+        if (super.getDefaultGroupsClaim() != null && super.getDefaultGroupsClaim().isPresent()) {
+            contextInfo.setDefaultGroupsClaim(super.getDefaultGroupsClaim().get());
+        }
+
         return Optional.of(contextInfo);
     }
 

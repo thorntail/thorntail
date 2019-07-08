@@ -52,8 +52,11 @@ public class TokenUtils {
         claims.setClaim("upn", "jdoe@example.com");
         claims.setExpirationTimeMinutesInTheFuture(1);
 
+        return createTokenFromJson(claims.toJson());
+    }
+    public static String createTokenFromJson(String json) throws Exception {
         JsonWebSignature jws = new JsonWebSignature();
-        jws.setPayload(claims.toJson());
+        jws.setPayload(json);
         jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
         jws.setKey(getPrivateKey());
         return jws.getCompactSerialization();

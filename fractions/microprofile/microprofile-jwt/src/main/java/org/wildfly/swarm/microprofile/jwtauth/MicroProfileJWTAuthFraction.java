@@ -62,6 +62,22 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @Configurable("thorntail.microprofile.jwt.default-missing-method-permissions-deny-access")
     private Defaultable<Boolean> defaultMissingMethodPermissionsDenyAccess = bool(true);
 
+    @AttributeDocumentation("HTTP header which is expected to contain a JWT token, default value is 'Authorization'")
+    @Configurable("thorntail.microprofile.jwt.token.header")
+    private Defaultable<String> tokenHeader = string("Authorization");
+
+    @AttributeDocumentation("Cookie name containing a JWT token. This property is ignored unless the 'thorntail.microprofile.jwt.token.header' is set to 'Cookie'")
+    @Configurable("thorntail.microprofile.jwt.token.cookie")
+    private String tokenCookie;
+
+    @AttributeDocumentation("Default group name. This property can be used to support the JWT tokens without a 'groups' claim.")
+    @Configurable("thorntail.microprofile.jwt.claims.groups")
+    private String defaultGroupsClaim;
+
+    @AttributeDocumentation("Path to the claim containing an array of groups, for example: 'realm/groups'. It can be used if a token has no 'groups' claim but has the groups set in a different claim")
+    @Configurable("thorntail.microprofile.jwt.path.groups")
+    private String groupsPath;
+
     /**
      * Realm name
      */
@@ -129,6 +145,38 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
 
     public boolean isDefaultMissingMethodPermissionsDenyAccess() {
         return defaultMissingMethodPermissionsDenyAccess.get();
+    }
+
+    public Defaultable<String> getTokenHeader() {
+        return tokenHeader;
+    }
+
+    public void setTokenHeader(Defaultable<String> tokenHeader) {
+        this.tokenHeader = tokenHeader;
+    }
+
+    public String getTokenCookie() {
+        return tokenCookie;
+    }
+
+    public void setTokenCookie(String tokenCookie) {
+        this.tokenCookie = tokenCookie;
+    }
+
+    public String getDefaultGroupsClaim() {
+        return defaultGroupsClaim;
+    }
+
+    public void setDefaultGroupsClaim(String defaultGroupsClaim) {
+        this.defaultGroupsClaim = defaultGroupsClaim;
+    }
+
+    public String getGroupsPath() {
+        return groupsPath;
+    }
+
+    public void setGroupsPath(String groupsPath) {
+        this.groupsPath = groupsPath;
     }
 
     public Defaultable<String> getJwtRealm() {

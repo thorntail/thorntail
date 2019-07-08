@@ -120,7 +120,7 @@
     <version.smallrye.openapi-1.1>1.0.1</version.smallrye.openapi-1.1>
     <version.smallrye.opentracing-1.3>1.0.0</version.smallrye.opentracing-1.3>
     <version.smallrye.metrics>1.1.3</version.smallrye.metrics>
-    <version.smallrye.jwt-1.1>1.0.0</version.smallrye.jwt-1.1>
+    <version.smallrye.jwt-1.1>2.0.0</version.smallrye.jwt-1.1>
     <version.smallrye-fault-tolerance>2.0.5</version.smallrye-fault-tolerance>
 
   </properties>

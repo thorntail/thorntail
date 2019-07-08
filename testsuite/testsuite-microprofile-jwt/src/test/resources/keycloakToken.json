@@ -1,0 +1,31 @@
+{
+ "jti":"5e33c59e-8397-4d80-a4ea-52d27f150add",
+ "exp":1311281970,
+ "nbf":0,
+ "iat":1311280970,
+ "iss":"http://localhost:8080/auth/realms/thorntail-cmd-client",
+ "aud":"account",
+ "sub":"aca6c1f6-5a68-4bb4-87da-d20d89648e43",
+ "typ":"Bearer",
+ "azp":"thorntail-cmd-client-example",
+ "auth_time":0,
+ "session_state":"656ab112-286c-4bbb-912a-eab154c72dc9",
+ "acr":"1",
+ "realm_access": {
+    "roles":[
+       "MappedRole"
+    ]
+ },
+ "resource_access": {
+    "account": {
+       "roles":[
+         "manage-account",
+         "manage-account-links",
+         "view-profile"
+       ]
+    }
+ },
+ "scope":"profile email",
+ "email_verified":false,
+ "preferred_username":"user1"
+}
