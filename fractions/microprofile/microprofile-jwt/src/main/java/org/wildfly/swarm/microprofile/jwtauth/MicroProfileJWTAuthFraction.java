@@ -84,7 +84,7 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @Configurable("thorntail.microprofile.jwt.realm")
     @Configurable("thorntail.microprofile.jwtauth.realm")
     @AttributeDocumentation("Defines the security domain which should be used for MicroProfile JWT. If no security domain with this name exists, one will be created using sensible defaults. "
-                            + " If this option is set, then the realmName property of the @LoginConfig annotation does not have to be configured; but if it is, then it must have the same value as this option.")
+                            + " If this option is set, then the @LoginConfig annotation is not needed but if it is present then its realmName property, if set, must have the same value as this option.")
     private Defaultable<String> jwtRealm = string("");
 
     /**
@@ -102,6 +102,18 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @Configurable("thorntail.microprofile.jwtauth.roles.map")
     @AttributeDocumentation("Roles properties map")
     private Map<String, String> rolesPropertiesMap;
+
+    @AttributeDocumentation("Set this to false to disable the MP JWT authentication mechanism. Defaults to true.")
+    @Configurable("thorntail.microprofile.jwt.enabled")
+    private Defaultable<Boolean> jwtEnabled = bool(true);
+
+    public Defaultable<Boolean> isJwtEnabled() {
+        return jwtEnabled;
+    }
+
+    public void setJwtEnabled(boolean enabled) {
+        this.jwtEnabled = bool(enabled);
+    }
 
     public Defaultable<String> getTokenIssuer() {
         return tokenIssuer;
