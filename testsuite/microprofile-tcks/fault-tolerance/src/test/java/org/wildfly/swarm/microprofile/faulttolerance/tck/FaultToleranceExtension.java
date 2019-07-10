@@ -29,7 +29,6 @@ public class FaultToleranceExtension implements LoadableExtension {
     @Override
     public void register(ExtensionBuilder builder) {
         builder.service(ApplicationArchiveProcessor.class, FaultToleranceApplicationArchiveProcessor.class);
-        builder.service(AuxiliaryArchiveAppender.class, FaultToleranceAuxiliaryArchiveAppender.class);
         builder.service(DeploymentExceptionTransformer.class, TckDeploymentExceptionTransformer.class);
     }
 
