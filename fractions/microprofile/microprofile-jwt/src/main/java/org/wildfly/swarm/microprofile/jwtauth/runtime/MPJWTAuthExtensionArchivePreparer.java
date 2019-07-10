@@ -29,7 +29,6 @@ import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
@@ -72,6 +71,7 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         this.index = index;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void process() throws Exception {
         if (!fraction.isJwtEnabled().get()) {
@@ -119,17 +119,25 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         String publicKey = fraction.getPublicKey();
         if (publicKey != null) {
             log.debugf("PublicKey: %s", publicKey);
-
-            if (publicKey.startsWith("file:")) {
-                File fileRef = new File(publicKey.substring(5, publicKey.length()));
-                war.addAsManifestResource(new FileAsset(fileRef), "MP-JWT-SIGNER");
-            } else if (publicKey.startsWith("classpath:")) {
-                String cpref  = publicKey.substring(10, publicKey.length());
-                Node node = archive.get("WEB-INF/classes/" + cpref);
-                war.addAsManifestResource(node.getAsset(), "MP-JWT-SIGNER");
+            if (publicKey.startsWith("file:") || publicKey.startsWith("classpath:")) {
+                log.warn("Using 'thorntail.microprofile.jwt.token.signer-pub-key' for the 'file:' or 'classpath:' key "
+                        + "assets is deprecated, use the 'thorntail.microprofile.jwt.token.signer-pub-key-location' "
+                        + "property instead");
+                if (publicKey.startsWith("file:")) {
+                    File fileRef = new File(publicKey.substring(5, publicKey.length()));
+                    war.addAsManifestResource(new FileAsset(fileRef), "MP-JWT-SIGNER");
+                } else if (publicKey.startsWith("classpath:")) {
+                    war.addAsManifestResource(new StringAsset(publicKey), "MP-JWT-SIGNER-KEY-LOCATION");
+                }
             } else {
                 war.addAsManifestResource(new StringAsset(publicKey), "MP-JWT-SIGNER");
             }
+        }
+
+        String publicKeyLocation = fraction.getPublicKeyLocation();
+        if (publicKeyLocation != null) {
+            log.debugf("PublicKey location: %s", publicKeyLocation);
+            war.addAsManifestResource(new StringAsset(publicKeyLocation), "MP-JWT-SIGNER-KEY-LOCATION");
         }
 
         war.addAsManifestResource(new StringAsset("" + fraction.getExpGracePeriodSecs().get()), "MP-JWT-EXP-GRACE");
@@ -139,15 +147,16 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         }
 
         if (fraction.getJwksUri() != null) {
+            log.warn("Using 'thorntail.microprofile.jwt.token.jwks-uri' for the HTTPS based JWK sets is deprecated, "
+                    + "use the 'thorntail.microprofile.jwt.token.signer-pub-key-location' "
+                    + "property instead");
             log.debugf("JwksUri: %s", fraction.getJwksUri());
-            war.addAsManifestResource(new StringAsset(fraction.getJwksUri()), "MP-JWT-JWKS");
-            war.addAsManifestResource(new StringAsset(fraction.getJwksRefreshInterval().get().toString()), "MP-JWT-JWKS-REFRESH");
-
-            if (fraction.getPublicKey() != null) { // warn that both JWKS and signing key is present
-                log.warn("The 'signer-pub-key' and 'jwks-uri' configuration options are mutually exclusive, the 'jwks-uri' will be ignored.");
-            }
+            war.addAsManifestResource(new StringAsset(fraction.getJwksUri()), "MP-JWT-SIGNER-KEY-LOCATION");
         }
-
+        if (fraction.getPublicKeyLocation() != null && fraction.getPublicKeyLocation().startsWith("https:")
+            || fraction.getJwksUri() != null) {
+            war.addAsManifestResource(new StringAsset(fraction.getJwksRefreshInterval().get().toString()), "MP-JWT-JWKS-REFRESH");
+        }
         if (fraction.getTokenHeader() != null) {
             log.debugf("tokenHeader: %s", fraction.getTokenHeader());
             war.addAsManifestResource(new StringAsset(fraction.getTokenHeader().get()), "MP-JWT-TOKEN-HEADER");

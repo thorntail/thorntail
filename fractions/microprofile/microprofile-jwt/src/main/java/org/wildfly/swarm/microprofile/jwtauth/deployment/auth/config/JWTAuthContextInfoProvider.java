@@ -80,6 +80,8 @@ public class JWTAuthContextInfoProvider extends io.smallrye.jwt.config.JWTAuthCo
                 NONE.equals(super.getMpJwtPublicKey().get()) && NONE.equals(super.getMpJwtLocation().get())) {
             return Optional.empty();
         }
+        log.warn("The use of all mpjwt.* properties is deprecated, use thorntail.microprofile.jwt.* properties instead");
+
         JWTAuthContextInfo contextInfo = new JWTAuthContextInfo();
         // Look to MP-JWT values first
         if (super.getMpJwtPublicKey().isPresent() && !NONE.equals(super.getMpJwtPublicKey().get())) {

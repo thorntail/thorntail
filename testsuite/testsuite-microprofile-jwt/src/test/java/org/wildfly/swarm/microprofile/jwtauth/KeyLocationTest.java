@@ -18,7 +18,6 @@ package org.wildfly.swarm.microprofile.jwtauth;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.wildfly.swarm.microprofile.jwtauth.utils.TokenUtils.createToken;
 
-import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -32,36 +31,21 @@ import org.wildfly.swarm.microprofile.jwtauth.utils.TokenUtils;
 import org.wildfly.swarm.undertow.WARArchive;
 
 @RunWith(Arquillian.class)
-public class AppWithNoLoginConfigWithConfiguredJwtRealmTest {
+public class KeyLocationTest {
     @Deployment
     public static Archive<?> createDeployment() {
-        return initDeployment().addAsResource("project-simple-login-config.yml", "project-defaults.yml");
+        return initDeployment().addAsResource("project-key-location.yml", "project-defaults.yml");
     }
 
     protected static WARArchive initDeployment() {
         WARArchive deployment = ShrinkWrap.create(WARArchive.class);
         deployment.addClass(ApplicationScopedSubjectExposingResource.class);
-        deployment.addClass(ApplicationWithoutLoginConfig.class);
+        deployment.addClass(SimpleLoginConfigApplication.class);
         deployment.addAsResource(new ClassLoaderAsset("keys/public-key.pem"), "public-key.pem");
         return deployment;
     }
 
-    @RunAsClient
-    @Test
-    public void subjectShouldNotLeakToNonSecuredRequest() throws Exception {
-        // project-no-roles-props.yml restricts the number of worker threads to 1,
-        // that is, all requests are processed by the same single thread
 
-        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
-                .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
-                .execute().returnContent().asString();
-        assertThat(response).isEqualTo(TokenUtils.SUBJECT);
-
-        Content content = Request.Get("http://localhost:8080/mpjwt/subject/unsecured")
-                .execute().returnContent();
-        assertThat(content).isNull();
-    }
-    
     @RunAsClient
     @Test
     public void subjectShouldBeRequestSpecific() throws Exception {
