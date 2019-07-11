@@ -90,10 +90,9 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
                     contextInfo.setPublicKeyLocation(publicKeyLocation);
                     if (publicKeyLocation.startsWith("https:")) {
                         String jwksRefreshInterval = getResource(properties, "jwksRefreshInterval", "MP-JWT-JWKS-REFRESH");
-                        if (jwksRefreshInterval == null) {
-                            throw new IllegalStateException("JWKS Refresh Interval should be set when JWKS URI is used.");
+                        if (jwksRefreshInterval != null) {
+                            contextInfo.setJwksRefreshInterval(Integer.valueOf(jwksRefreshInterval));
                         }
-                        contextInfo.setJwksRefreshInterval(Integer.valueOf(jwksRefreshInterval));
                     }
                 } else {
                     log.debug("Neither a key content nor a key location was set.");

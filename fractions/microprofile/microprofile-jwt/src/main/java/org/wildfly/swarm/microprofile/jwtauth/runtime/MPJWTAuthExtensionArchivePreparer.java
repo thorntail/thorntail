@@ -116,8 +116,8 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             war.addAsManifestResource(new StringAsset(fraction.getTokenIssuer().get()), "MP-JWT-ISSUER");
         }
 
-        String publicKey = fraction.getPublicKey();
-        if (publicKey != null) {
+        if (fraction.getPublicKey() != null) {
+            String publicKey = fraction.getPublicKey();
             log.debugf("PublicKey: %s", publicKey);
             if (publicKey.startsWith("file:") || publicKey.startsWith("classpath:")) {
                 log.warn("Using 'thorntail.microprofile.jwt.token.signer-pub-key' for the 'file:' or 'classpath:' key "
@@ -134,10 +134,14 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             }
         }
 
-        String publicKeyLocation = fraction.getPublicKeyLocation();
-        if (publicKeyLocation != null) {
-            log.debugf("PublicKey location: %s", publicKeyLocation);
-            war.addAsManifestResource(new StringAsset(publicKeyLocation), "MP-JWT-SIGNER-KEY-LOCATION");
+        if (fraction.getPublicKeyLocation() != null) {
+            if (fraction.getPublicKey() != null) {
+                log.warn("'thorntail.microprofile.jwt.token.signer-pub-key' property has already been set,"
+                        + " 'thorntail.microprofile.jwt.token.signer-pub-key-location' property will be ignored");
+            } else {
+                log.debugf("PublicKey location: %s", fraction.getPublicKeyLocation());
+                war.addAsManifestResource(new StringAsset(fraction.getPublicKeyLocation()), "MP-JWT-SIGNER-KEY-LOCATION");
+            }
         }
 
         war.addAsManifestResource(new StringAsset("" + fraction.getExpGracePeriodSecs().get()), "MP-JWT-EXP-GRACE");
@@ -150,8 +154,13 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             log.warn("Using 'thorntail.microprofile.jwt.token.jwks-uri' for the HTTPS based JWK sets is deprecated, "
                     + "use the 'thorntail.microprofile.jwt.token.signer-pub-key-location' "
                     + "property instead");
-            log.debugf("JwksUri: %s", fraction.getJwksUri());
-            war.addAsManifestResource(new StringAsset(fraction.getJwksUri()), "MP-JWT-SIGNER-KEY-LOCATION");
+            if (fraction.getPublicKeyLocation() != null || fraction.getPublicKey() != null) {
+                log.warn("One of 'thorntail.microprofile.jwt.token.signer-pub-key' or 'thorntail.microprofile.jwt.token.signer-pub-key-location'"
+                        + " properties has already been set. 'thorntail.microprofile.jwt.token.jwks-uri' propery will be ignored");
+            } else {
+                log.debugf("JwksUri: %s", fraction.getJwksUri());
+                war.addAsManifestResource(new StringAsset(fraction.getJwksUri()), "MP-JWT-SIGNER-KEY-LOCATION");
+            }
         }
         if (fraction.getPublicKeyLocation() != null && fraction.getPublicKeyLocation().startsWith("https:")
             || fraction.getJwksUri() != null) {
