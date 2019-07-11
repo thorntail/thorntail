@@ -35,7 +35,7 @@ public abstract class AbstractRolesAllowedTest {
         WARArchive deployment = ShrinkWrap.create(WARArchive.class);
         deployment.addClass(RolesEndpointClassLevel.class);
         deployment.addClass(TestApplication.class);
-        deployment.addAsManifestResource(new ClassLoaderAsset("keys/public-key.pem"), "/MP-JWT-SIGNER");
+        deployment.addAsResource(new ClassLoaderAsset("keys/public-key.pem"), "public-key.pem");
         return deployment;
     }
     

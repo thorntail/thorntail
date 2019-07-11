@@ -1,12 +1,13 @@
-swarm:
+thorntail:
   io:
     workers:
       default:
         task-max-threads: 1 # required for PrincipalLeakTest
   microprofile:
-    jwtauth:
+    jwt:
       token:
-        issuedBy: "http://testsuite-jwt-issuer.io"
+        signer-pub-key-location: public-key.pem
+        issued-by: "http://testsuite-jwt-issuer.io"
   security:
     security-domains:
       testSuiteRealm:

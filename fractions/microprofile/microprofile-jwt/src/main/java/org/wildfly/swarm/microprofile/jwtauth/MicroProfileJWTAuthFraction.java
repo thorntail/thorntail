@@ -45,7 +45,7 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @Configurable("thorntail.microprofile.jwtauth.token.signerPubKey")
     private String publicKey;
 
-    @AttributeDocumentation("Location of the public key of the JWT token signer. The key can be in PEM or JWK formats, in the latter case it can be part of the JWK Set")
+    @AttributeDocumentation("Location of the public key of the JWT token signer. Can be prefixed 'file:', 'classpath:' (optional for the classpath resources) or 'https:'. Only JWK Sets can be HTTPS location based.")
     @Configurable("thorntail.microprofile.jwt.token.signer-pub-key-location")
     private String publicKeyLocation;
 
