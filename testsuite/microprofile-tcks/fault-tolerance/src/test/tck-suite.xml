@@ -28,20 +28,6 @@
       </packages>
 
       <classes>
-         <!-- Issues in the TCK -->
-         <!-- https://github.com/eclipse/microprofile-fault-tolerance/pull/410 -->
-         <class name="org.eclipse.microprofile.fault.tolerance.tck.bulkhead.BulkheadAsynchRetryTest">
-            <methods>
-               <exclude name="testRetriesJoinBackOfQueue"/>
-            </methods>
-         </class>
-         <!-- https://github.com/eclipse/microprofile-fault-tolerance/pull/411 -->
-         <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.BulkheadMetricTest">
-            <methods>
-               <exclude name="bulkheadMetricAsyncTest"/>
-            </methods>
-         </class>
-
          <!-- https://github.com/eclipse/microprofile-fault-tolerance/issues/408 -->
          <class name="org.eclipse.microprofile.fault.tolerance.tck.TimeoutUninterruptableTest">
             <methods>

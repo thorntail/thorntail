@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.metrics.annotation.Counted;
 
-@Counted(monotonic = true)
+@Counted
 @Path("/v1")
 public interface HelloMetricsClassLevelClient {
 

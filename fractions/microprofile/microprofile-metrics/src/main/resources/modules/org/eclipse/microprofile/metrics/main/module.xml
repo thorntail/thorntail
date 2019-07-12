@@ -21,5 +21,6 @@
     <module name="javax.enterprise.api" />
     <module name="org.jboss.weld.core"/>
     <module name="org.jboss.weld.spi"/>
+    <module name="org.eclipse.microprofile.config.api"/>
   </dependencies>
 </module>

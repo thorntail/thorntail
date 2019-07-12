@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.microprofile.metrics.registry;
 
+import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.Timer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -53,9 +54,9 @@ public class AllMetricsOfGivenTypeTest {
     public void testGetMetricsOfGivenType() {
         hello.hello();
         hello.howdy();
-        SortedMap<String, Timer> timers = summary.getAppMetrics().getTimers();
+        SortedMap<MetricID, Timer> timers = summary.getAppMetrics().getTimers();
         assertEquals(1, timers.size());
-        assertTrue(timers.containsKey("howdy-time"));
-        assertFalse(timers.containsKey("hello-count"));
+        assertTrue(timers.containsKey(new MetricID("howdy-time")));
+        assertFalse(timers.containsKey(new MetricID("hello-count")));
     }
 }

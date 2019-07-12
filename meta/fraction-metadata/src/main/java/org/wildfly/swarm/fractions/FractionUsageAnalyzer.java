@@ -108,12 +108,10 @@ public class FractionUsageAnalyzer {
 
         sources.forEach(this::scanFile);
 
-        Set<String> detectedFractionNames =
-                detectors.stream()
-                        .filter(FractionDetector::wasDetected)
-                        .map(FractionDetector::artifactId)
-                        .distinct()
-                        .collect(Collectors.toSet());
+        Set<String> detectedFractionNames = detectors.stream()
+                .filter(FractionDetector::wasDetected)
+                .map(FractionDetector::artifactId)
+                .collect(Collectors.toSet());
 
         if (sources.stream().anyMatch(e -> e.getName().endsWith(".war"))) {
             detectedFractionNames.add("undertow");
