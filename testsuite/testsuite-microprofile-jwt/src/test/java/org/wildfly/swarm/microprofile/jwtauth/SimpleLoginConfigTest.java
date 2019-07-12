@@ -41,7 +41,7 @@ public class SimpleLoginConfigTest {
         WARArchive deployment = ShrinkWrap.create(WARArchive.class);
         deployment.addClass(ApplicationScopedSubjectExposingResource.class);
         deployment.addClass(SimpleLoginConfigApplication.class);
-        deployment.addAsManifestResource(new ClassLoaderAsset("keys/public-key.pem"), "/MP-JWT-SIGNER");
+        deployment.addAsResource(new ClassLoaderAsset("keys/public-key.pem"), "public-key.pem");
         return deployment;
     }
 

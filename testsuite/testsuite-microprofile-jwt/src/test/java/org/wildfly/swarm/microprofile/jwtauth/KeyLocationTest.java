@@ -18,7 +18,6 @@ package org.wildfly.swarm.microprofile.jwtauth;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.wildfly.swarm.microprofile.jwtauth.utils.TokenUtils.createToken;
 
-import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -28,29 +27,36 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.swarm.microprofile.jwtauth.utils.TokenUtils;
 import org.wildfly.swarm.undertow.WARArchive;
 
 @RunWith(Arquillian.class)
-public class AppWithNoLoginConfigAndConfiguredJwtRealmTest {
+public class KeyLocationTest {
     @Deployment
     public static Archive<?> createDeployment() {
-        return initDeployment().addAsResource("project-empty-roles.yml", "project-defaults.yml");
+        return initDeployment().addAsResource("project-key-location.yml", "project-defaults.yml");
     }
 
     protected static WARArchive initDeployment() {
         WARArchive deployment = ShrinkWrap.create(WARArchive.class);
         deployment.addClass(ApplicationScopedSubjectExposingResource.class);
-        deployment.addClass(ApplicationWithoutLoginConfig.class);
+        deployment.addClass(SimpleLoginConfigApplication.class);
         deployment.addAsResource(new ClassLoaderAsset("keys/public-key.pem"), "public-key.pem");
         return deployment;
     }
 
+
     @RunAsClient
     @Test
-    public void tokenIsNotProcessed() throws Exception {
-        Content content = Request.Get("http://localhost:8080/mpjwt/subject/secured")
-                .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
-                .execute().returnContent();
-        assertThat(content).isNull();
+    public void subjectShouldBeRequestSpecific() throws Exception {
+        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+                .setHeader("Authorization", "Bearer " + createToken(TokenUtils.SUBJECT, "MappedRole"))
+                .execute().returnContent().asString();
+        assertThat(response).isEqualTo(TokenUtils.SUBJECT);
+
+        response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+                .setHeader("Authorization", "Bearer " + createToken(TokenUtils.SUBJECT2, "MappedRole"))
+                .execute().returnContent().asString();
+        assertThat(response).isEqualTo(TokenUtils.SUBJECT2);
     }
 }

@@ -1,8 +1,9 @@
-swarm:
+thorntail:
   microprofile:
-    jwtauth:
+    jwt:
       realm: testSuiteRealm
       roles:
         file: emptyRoles.properties
       token:
-        issuedBy: "http://testsuite-jwt-issuer.io"
+        signer-pub-key-location: public-key.pem
+        issued-by: "http://testsuite-jwt-issuer.io"

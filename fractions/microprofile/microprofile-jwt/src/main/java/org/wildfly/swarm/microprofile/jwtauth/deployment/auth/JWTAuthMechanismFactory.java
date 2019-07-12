@@ -81,18 +81,21 @@ public class JWTAuthMechanismFactory implements AuthenticationMechanismFactory {
             }
 
             String publicKeyPemEnc = getResource(properties, "signerPubKey", "MP-JWT-SIGNER");
-            if (publicKeyPemEnc == null) { // signerPubKey and MP-JWT-Signer was empty, now trying for JWKS URI.
-                String jwksUri = getResource(properties, "jwksUri", "MP-JWT-JWKS");
-                if (jwksUri != null) {
-                    contextInfo.setPublicKeyLocation(jwksUri);
-
-                    String jwksRefreshInterval = getResource(properties, "jwksRefreshInterval", "MP-JWT-JWKS-REFRESH");
-                    if (jwksRefreshInterval == null) {
-                        throw new IllegalStateException("JWKS Refresh Interval should be set when JWKS URI is used.");
+            if (publicKeyPemEnc == null) { // MP-JWT-Signer was empty, now trying for the key location.
+                String publicKeyLocation = getResource(properties, "signerPubKeyLocation", "MP-JWT-SIGNER-KEY-LOCATION");
+                if (publicKeyLocation == null) {
+                    publicKeyLocation = getResource(properties, "jwksUri", "MP-JWT-SIGNER-KEY-LOCATION");
+                }
+                if (publicKeyLocation != null) {
+                    contextInfo.setPublicKeyLocation(publicKeyLocation);
+                    if (publicKeyLocation.startsWith("https:")) {
+                        String jwksRefreshInterval = getResource(properties, "jwksRefreshInterval", "MP-JWT-JWKS-REFRESH");
+                        if (jwksRefreshInterval != null) {
+                            contextInfo.setJwksRefreshInterval(Integer.valueOf(jwksRefreshInterval));
+                        }
                     }
-                    contextInfo.setJwksRefreshInterval(Integer.valueOf(jwksRefreshInterval));
                 } else {
-                    log.debug("Neither a static key nor a JWKS URI was set.");
+                    log.debug("Neither a key content nor a key location was set.");
                 }
             } else { // PEM key was provided, now parse and set it.
                 // Workaround the double decode issue; https://issues.jboss.org/browse/WFLY-9135

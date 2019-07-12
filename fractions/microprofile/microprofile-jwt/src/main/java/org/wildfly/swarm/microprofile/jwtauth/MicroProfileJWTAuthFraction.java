@@ -40,21 +40,26 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
     @Configurable("thorntail.microprofile.jwtauth.token.issuedBy")
     private Defaultable<String> tokenIssuer = string("http://localhost");
 
-    @AttributeDocumentation("The public key of the JWT token signer. Can be prefixed 'file:' or 'classpath:' for key assets, otherwise the key contents are expected")
+    @AttributeDocumentation("The public key of the JWT token signer. Can be prefixed 'file:' or 'classpath:' to refer to external assets, but this is deprecated; use 'thorntail.microprofile.jwt.token.signer-pub-key-location' instead")
     @Configurable("thorntail.microprofile.jwt.token.signer-pub-key")
     @Configurable("thorntail.microprofile.jwtauth.token.signerPubKey")
     private String publicKey;
+
+    @AttributeDocumentation("Location of the public key of the JWT token signer. By default, or when the 'classpath:' prefix is present, this is a classpath resource. Can be prefixed with 'file:' to refer to an external file. Can also be a HTTPS URL of a JWK Set.")
+    @Configurable("thorntail.microprofile.jwt.token.signer-pub-key-location")
+    private String publicKeyLocation;
 
     @AttributeDocumentation("The JWT token expiration grace period in seconds ")
     @Configurable("thorntail.microprofile.jwt.token.exp-grace-period")
     @Configurable("thorntail.microprofile.jwtauth.token.expGracePeriod")
     private Defaultable<Integer> expGracePeriodSecs = integer(60);
 
-    @AttributeDocumentation("The JWKS URI from which to load public keys (if 'signer-pub-key' is set, this setting is ignored).")
+    @AttributeDocumentation("The JWKS URI from which to load public keys. This property is deprecated, use the 'thorntail.microprofile.jwt.token.signer-pub-key-location' property instead")
     @Configurable("thorntail.microprofile.jwt.token.jwks-uri")
+    @Deprecated
     private String jwksUri;
 
-    @AttributeDocumentation("The interval at which the JWKS URI should be queried for keys (in minutes).")
+    @AttributeDocumentation("The interval at which the JWKS URI should be queried for keys (in minutes). It is ignored if the value of either signer-pub-key-location or jwks-uri is not HTTPS URI")
     @Configurable("thorntail.microprofile.jwt.token.jwks-refresh-interval")
     private Defaultable<Integer> jwksRefreshInterval = integer(60);
 
@@ -131,6 +136,14 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
         this.publicKey = publicKey;
     }
 
+    public String getPublicKeyLocation() {
+        return publicKeyLocation;
+    }
+
+    public void setPublicKeyLocation(String publicKeyLocation) {
+        this.publicKeyLocation = publicKeyLocation;
+    }
+
     public Defaultable<Integer> getExpGracePeriodSecs() {
         return expGracePeriodSecs;
     }
@@ -139,10 +152,12 @@ public class MicroProfileJWTAuthFraction implements Fraction<MicroProfileJWTAuth
         this.expGracePeriodSecs = expGracePeriodSecs;
     }
 
+    @Deprecated
     public String getJwksUri() {
         return jwksUri;
     }
 
+    @Deprecated
     public void setJwksUri(String jwksUri) {
         this.jwksUri = jwksUri;
     }

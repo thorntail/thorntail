@@ -42,7 +42,7 @@ public class AppWithNoLoginConfigWithConfiguredJwtRealmTest {
         WARArchive deployment = ShrinkWrap.create(WARArchive.class);
         deployment.addClass(ApplicationScopedSubjectExposingResource.class);
         deployment.addClass(ApplicationWithoutLoginConfig.class);
-        deployment.addAsManifestResource(new ClassLoaderAsset("keys/public-key.pem"), "/MP-JWT-SIGNER");
+        deployment.addAsResource(new ClassLoaderAsset("keys/public-key.pem"), "public-key.pem");
         return deployment;
     }
 
