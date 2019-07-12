@@ -22,13 +22,6 @@
 
   <packaging>jar</packaging>
 
-<!--
-  <properties>
-    <swarm.fraction.cdi>false</swarm.fraction.cdi>
-    <swarm.fraction.bootstrap>org.wildfly.swarm.arquillian.daemon</swarm.fraction.bootstrap>
-  </properties>
--->
-
   <build>
     <resources>
       <resource>

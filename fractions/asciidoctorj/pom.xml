@@ -36,7 +36,6 @@
     <properties>
         <swarm.fraction.stability>experimental</swarm.fraction.stability>
         <swarm.fraction.tags>Documentation</swarm.fraction.tags>
-        <version.asciidoctorj>1.5.5</version.asciidoctorj>
     </properties>
 
     <build>

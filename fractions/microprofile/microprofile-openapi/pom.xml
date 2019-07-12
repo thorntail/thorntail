@@ -80,7 +80,7 @@
     <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-api</artifactId>
-      <version>8.0</version>
+      <version>${version.javaee-api}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -125,7 +125,7 @@
     <dependency>
       <groupId>org.skyscreamer</groupId>
       <artifactId>jsonassert</artifactId>
-      <version>1.5.0</version>
+      <version>${version.org.skyscreamer.jsonassert}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -143,7 +143,7 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.2</version>
+      <version>${version.commons-logging}</version>
       <scope>test</scope>
     </dependency>
 

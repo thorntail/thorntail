@@ -40,7 +40,7 @@
     <dependency>
        <groupId>org.jboss.cdi.tck</groupId>
        <artifactId>cdi-tck-ext-lib</artifactId>
-       <version>1.2.10.Final</version>
+       <version>${version.org.jboss.cdi.tck}</version>
        <exclusions>
           <exclusion>
              <groupId>javax.enterprise</groupId>

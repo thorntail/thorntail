@@ -25,7 +25,6 @@
   <properties>
     <swarm.fraction.stability>experimental</swarm.fraction.stability>
     <swarm.fraction.tags>Logging, Openshift</swarm.fraction.tags>
-    <fluentd.version>0.3.2</fluentd.version>
   </properties>
 
   <build>
@@ -69,7 +68,7 @@
     <dependency>
       <groupId>org.fluentd</groupId>
       <artifactId>fluent-logger</artifactId>
-      <version>${fluentd.version}</version>
+      <version>${version.fluentd}</version>
       <scope>provided</scope>
     </dependency>
 

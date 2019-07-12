@@ -92,19 +92,19 @@
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-jaxrs2</artifactId>
-      <version>${version.brave}</version>
+      <version>${version.zipkin.brave}</version>
     </dependency>
 
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-http</artifactId>
-      <version>${version.brave}</version>
+      <version>${version.zipkin.brave}</version>
     </dependency>
 
     <dependency>
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-core</artifactId>
-      <version>${version.brave}</version>
+      <version>${version.zipkin.brave}</version>
     </dependency>
 
     <dependency>

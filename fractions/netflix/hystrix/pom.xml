@@ -25,7 +25,6 @@
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Fault Tolerance,Netflix OSS</swarm.fraction.tags>
-    <version.hdrHistogram>2.1.9</version.hdrHistogram>
   </properties>
 
   <build>

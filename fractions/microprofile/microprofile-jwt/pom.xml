@@ -24,7 +24,6 @@
   <properties>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>Eclipse MicroProfile,JWT,Security,Web</swarm.fraction.tags>
-    <version.jose4j>0.6.0</version.jose4j>
   </properties>
 
   <build>
@@ -112,7 +111,7 @@
     <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-api</artifactId>
-      <version>8.0</version>
+      <version>${version.javaee-api}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
