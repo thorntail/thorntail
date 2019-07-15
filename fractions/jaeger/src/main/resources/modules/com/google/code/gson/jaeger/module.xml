@@ -1,6 +1,6 @@
 <module xmlns="urn:jboss:module:1.3" name="com.google.code.gson" slot="jaeger">
   <resources>
-    <artifact name="com.google.code.gson:gson:${version.jaeger.gson}"/>
+    <artifact name="com.google.code.gson:gson:${version.gson}"/>
   </resources>
 
   <dependencies>

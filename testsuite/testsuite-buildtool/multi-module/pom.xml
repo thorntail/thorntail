@@ -27,7 +27,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
@@ -41,7 +40,7 @@
       <dependency>
         <groupId>org.jboss.arquillian.extension</groupId>
         <artifactId>arquillian-rest-warp-bom</artifactId>
-        <version>1.0.0.Alpha4</version>
+        <version>${version.org.arquillian.warp-rest}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -55,15 +54,15 @@
 
   <dependencies>
 
-    <!-- Java EE 7 dependency -->
+    <!-- Java EE dependency -->
     <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-api</artifactId>
-      <version>8.0</version>
+      <version>${version.javaee-api}</version>
       <scope>provided</scope>
     </dependency>
 
-    <!-- Wildfly Swarm Fractions -->
+    <!-- Fractions -->
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>cdi</artifactId>

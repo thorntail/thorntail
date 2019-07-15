@@ -21,10 +21,6 @@
 
   <packaging>jar</packaging>
 
-  <properties>
-    <version.h2>1.4.187</version.h2>
-  </properties>
-
   <build>
     <resources>
       <resource>

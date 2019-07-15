@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="urn:jboss:module:1.3" name="io.zipkin.brave">
   <resources>
-    <artifact name="io.zipkin.brave:brave-jaxrs2:${version.brave}"/>
-    <artifact name="io.zipkin.brave:brave-http:${version.brave}"/>
-    <artifact name="io.zipkin.brave:brave-core:${version.brave}"/>
+    <artifact name="io.zipkin.brave:brave-jaxrs2:${version.zipkin.brave}"/>
+    <artifact name="io.zipkin.brave:brave-http:${version.zipkin.brave}"/>
+    <artifact name="io.zipkin.brave:brave-core:${version.zipkin.brave}"/>
     <artifact name="io.zipkin.reporter:zipkin-reporter:${version.zipkin.reporter}"/>
     <artifact name="io.zipkin.reporter:zipkin-sender-urlconnection:${version.zipkin.reporter}"/>
     <artifact name="io.zipkin.java:zipkin:${version.zipkin}"/>

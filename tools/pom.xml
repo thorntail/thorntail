@@ -62,7 +62,7 @@
     <dependency>
       <groupId>net.lingala.zip4j</groupId>
       <artifactId>zip4j</artifactId>
-      <version>1.3.2</version>
+      <version>${version.zip4j}</version>
     </dependency>
   </dependencies>
 

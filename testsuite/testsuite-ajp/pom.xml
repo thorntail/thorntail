@@ -34,7 +34,7 @@
     <dependency>
       <groupId>org.kohsuke</groupId>
       <artifactId>ajp-client</artifactId>
-      <version>1.0</version>
+      <version>${version.ajp-client}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

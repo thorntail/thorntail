@@ -73,7 +73,7 @@
       <plugin>
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
-        <version>1.5.7.1</version>
+        <version>${version.asciidoctor-maven-plugin}</version>
         <inherited>false</inherited>
         <dependencies>
           <dependency>

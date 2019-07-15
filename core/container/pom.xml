@@ -39,7 +39,7 @@
          <plugin>
             <groupId>io.reformanda.semper</groupId>
             <artifactId>dependencyversion-maven-plugin</artifactId>
-            <version>1.0.1</version>
+            <version>${version.dependencyversion-maven-plugin}</version>
             <executions>
                <execution>
                   <id>set-versions</id>
