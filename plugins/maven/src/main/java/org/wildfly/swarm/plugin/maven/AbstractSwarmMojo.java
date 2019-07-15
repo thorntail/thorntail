@@ -86,6 +86,9 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
     @Parameter(alias = "skipAll", defaultValue = "false", property = "thorntail.skipAll")
     protected boolean skipAll;
 
+    @Parameter(alias = "jvmArguments", property = "thorntail.jvmArguments")
+    protected List<String> jvmArguments = new ArrayList<>();
+
     @Parameter(alias = "properties")
     protected Properties properties;
 

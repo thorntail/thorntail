@@ -70,9 +70,6 @@ public class StartMojo extends AbstractSwarmMojo {
     @Parameter(alias = "debug", property = SwarmProperties.DEBUG_PORT)
     public Integer debugPort;
 
-    @Parameter(alias = "jvmArguments", property = "thorntail.jvmArguments")
-    public List<String> jvmArguments = new ArrayList<>();
-
     @Parameter(alias = "arguments")
     public List<String> arguments = new ArrayList<>();
 
