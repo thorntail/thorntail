@@ -55,6 +55,7 @@
     <version.javaee-api>8.0</version.javaee-api>
 
     <version.com.fasterxml.jackson>2.9.9</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.9.9.1</version.com.fasterxml.jackson.databind>
     <version.com.squareup.okhttp>3.9.0</version.com.squareup.okhttp>
     <version.com.squareup.okio>1.13.0</version.com.squareup.okio>
     <version.cxf>3.2.5-jbossorg-1</version.cxf>
