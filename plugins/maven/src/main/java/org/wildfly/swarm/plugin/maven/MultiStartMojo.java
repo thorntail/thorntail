@@ -61,6 +61,9 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
     private static final String THORNTAIL_PROCESS = "thorntail-process";
 
+    @Parameter(alias = "jvmArguments", property = "thorntail.jvmArguments")
+    public List<String> jvmArguments = new ArrayList<>();
+
     @Parameter(alias = "processes")
     protected List<XmlPlexusConfiguration> processes;
 
