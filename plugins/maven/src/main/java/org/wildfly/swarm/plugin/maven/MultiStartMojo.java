@@ -61,6 +61,9 @@ public class MultiStartMojo extends AbstractSwarmMojo {
 
     private static final String THORNTAIL_PROCESS = "thorntail-process";
 
+    @Parameter(alias = "jvmArguments", property = "thorntail.jvmArguments")
+    public List<String> jvmArguments = new ArrayList<>();
+
     @Parameter(alias = "processes")
     protected List<XmlPlexusConfiguration> processes;
 
@@ -141,7 +144,7 @@ public class MultiStartMojo extends AbstractSwarmMojo {
     }
 
     @SuppressWarnings("unchecked")
-    protected void startArtifact(Artifact artifact, XmlPlexusConfiguration process) throws InvalidPluginDescriptorException, PluginResolutionException, PluginDescriptorParsingException, PluginNotFoundException, PluginConfigurationException, MojoFailureException, MojoExecutionException, PluginManagerException {
+    protected void startArtifact(Artifact artifact, XmlPlexusConfiguration process) throws MojoFailureException {
         List<SwarmProcess> procs = (List<SwarmProcess>) getPluginContext().get(THORNTAIL_PROCESS);
 
         if (procs == null) {
@@ -152,9 +155,16 @@ public class MultiStartMojo extends AbstractSwarmMojo {
         SwarmExecutor executor = new SwarmExecutor();
 
         executor.withExecutableJar(artifact.getFile().toPath());
-
+        executor.withJVMArguments(this.jvmArguments);
         executor.withProperties(this.properties);
         executor.withEnvironment(this.environment);
+
+        PlexusConfiguration jvmArgs = process.getChild("jvmArguments");
+
+        for (PlexusConfiguration each : jvmArgs.getChildren()) {
+            executor.withJVMArgument(each.getValue());
+        }
+
 
         PlexusConfiguration props = process.getChild("properties");
 
