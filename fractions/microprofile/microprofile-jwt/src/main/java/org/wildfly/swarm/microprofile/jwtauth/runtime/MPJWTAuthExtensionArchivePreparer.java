@@ -17,6 +17,7 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth.runtime;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.wildfly.swarm.jaxrs.JAXRSArchive;
 import org.wildfly.swarm.microprofile.jwtauth.MicroProfileJWTAuthFraction;
@@ -121,7 +123,11 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
                 log.warn("Using 'thorntail.microprofile.jwt.token.signer-pub-key' for the 'file:' or 'classpath:' key "
                         + "assets is deprecated, use the 'thorntail.microprofile.jwt.token.signer-pub-key-location' "
                         + "property instead");
-                war.addAsManifestResource(new StringAsset(publicKey), "MP-JWT-SIGNER-KEY-LOCATION");
+                if (publicKey.startsWith("file:")) {
+                    addFileKeyAsset(war, publicKey);
+                } else if (publicKey.startsWith("classpath:")) {
+                    war.addAsManifestResource(new StringAsset(publicKey), "MP-JWT-SIGNER-KEY-LOCATION");
+                }
             } else {
                 war.addAsManifestResource(new StringAsset(publicKey), "MP-JWT-SIGNER");
             }
@@ -131,6 +137,9 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
             if (fraction.getPublicKey() != null) {
                 log.warn("'thorntail.microprofile.jwt.token.signer-pub-key' property has already been set,"
                         + " 'thorntail.microprofile.jwt.token.signer-pub-key-location' property will be ignored");
+            } else if (fraction.getPublicKeyLocation().startsWith("file:")) {
+                // smallrye-jwt-1.1 does not support the file key assets yet
+                addFileKeyAsset(war, fraction.getPublicKeyLocation());
             } else {
                 log.debugf("PublicKey location: %s", fraction.getPublicKeyLocation());
                 war.addAsManifestResource(new StringAsset(fraction.getPublicKeyLocation()), "MP-JWT-SIGNER-KEY-LOCATION");
@@ -185,6 +194,12 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         if (fraction.getRolesPropertiesMap() != null) {
             createRolePropertiesFileFromMap();
         }
+    }
+
+    // This function will be removed after the upgrade to the next version of smallrye-jwt-1.1 which supports the file key assets
+    private void addFileKeyAsset(WARArchive war, String publicKeyLocation) {
+        File fileRef = new File(publicKeyLocation.substring(5, publicKeyLocation.length()));
+        war.addAsManifestResource(new FileAsset(fileRef), "MP-JWT-SIGNER");
     }
 
     private void selectSecurityDomain(WARArchive war, String realm) {
