@@ -15,10 +15,7 @@
  */
 package com.mycorp;
 
-import java.net.URL;
-import java.nio.charset.Charset;
-
-import org.apache.commons.io.IOUtils;
+import org.apache.http.client.fluent.Request;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
@@ -37,8 +34,11 @@ public class SwaggerArquillianTest {
     @RunAsClient
     @Test
     public void testEndpoints() throws Exception {
-        String content = IOUtils.toString(new URL("http://127.0.0.1:8080/swagger.json"), Charset.forName("UTF-8"));
-        assertThat(content).contains("\"tags\":[{\"name\":\"theapp\"}]");
+        String content = Request.Get("http://127.0.0.1:8080/swagger.json").execute().returnContent().asString();
+        assertThat(content).contains("\"tags\":[{\"name\":\"theapp\"}]").contains("\"summary\":\"Say howdy\"");
+
+        content = Request.Get("http://127.0.0.1:8080/swagger.yaml").execute().returnContent().asString();
+        assertThat(content).contains("name: \"theapp\"").contains("summary: \"Say howdy\"");
     }
 
 }

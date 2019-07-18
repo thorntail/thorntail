@@ -4,6 +4,7 @@
     <artifact name="com.fasterxml.jackson.datatype:jackson-datatype-guava:${version.com.fasterxml.jackson}"/>
     <artifact name="com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${version.com.fasterxml.jackson}"/>
     <artifact name="com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${version.com.fasterxml.jackson}"/>
+    <artifact name="org.yaml:snakeyaml:${version.org.snakeyaml}" />
   </resources>
 
   <dependencies>
