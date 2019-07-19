@@ -14,7 +14,7 @@
     <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
-  <groupId>org.wildfly.swarm.cli</groupId>
+  <groupId>io.thorntail.cli</groupId>
   <artifactId>cli</artifactId>
 
   <name>JBoss CLI</name>
