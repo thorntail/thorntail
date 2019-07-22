@@ -1,7 +1,4 @@
-
 var https = require('https')
-
-console.log( "release notes for: ", process.argv[2] );
 
 var version = process.argv[2];
 
