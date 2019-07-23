@@ -105,10 +105,10 @@
 
     <!-- tracing -->
     <version.opentracing>0.31.0</version.opentracing>
-    <version.opentracing.concurrent>0.2.0</version.opentracing.concurrent>
+    <version.opentracing.concurrent>0.2.1</version.opentracing.concurrent>
     <version.opentracing.interceptors>0.0.4</version.opentracing.interceptors>
     <version.opentracing.jaxrs>0.4.1</version.opentracing.jaxrs>
-    <version.opentracing.servlet>0.2.0</version.opentracing.servlet>
+    <version.opentracing.servlet>0.2.3</version.opentracing.servlet>
     <version.opentracing.tracerresolver>0.1.5</version.opentracing.tracerresolver>
     <version.jaeger>0.34.0</version.jaeger>
     <version.jaeger.apache.thrift>0.12.0</version.jaeger.apache.thrift>
