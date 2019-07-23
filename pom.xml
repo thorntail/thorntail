@@ -173,7 +173,7 @@
     <version.jolokia>1.3.4</version.jolokia>
     <version.joox>1.6.0</version.joox>
     <version.jopt-simple>4.9</version.jopt-simple>
-    <version.jose4j>0.6.0</version.jose4j>
+    <version.jose4j>0.6.5</version.jose4j>
     <version.minimal-json>0.9.4</version.minimal-json>
     <version.openshift.client>8.0.0.Final</version.openshift.client>
     <version.org.glassfish.javax.json>1.1.2</version.org.glassfish.javax.json>
