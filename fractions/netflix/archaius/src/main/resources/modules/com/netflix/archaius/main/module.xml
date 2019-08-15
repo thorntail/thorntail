@@ -8,7 +8,7 @@
     <module name="org.slf4j"/>
     <module name="org.apache.commons.lang"/>
     <module name="org.apache.commons.logging"/>
-    <module name="com.google.guava" slot="netflix"/>
+    <module name="com.google.guava"/>
   </dependencies>
 
 </module>

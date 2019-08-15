@@ -46,11 +46,6 @@
     </dependency>
 
     <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>netflix-guava</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <scope>provided</scope>

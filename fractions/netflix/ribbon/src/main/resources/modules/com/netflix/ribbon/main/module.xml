@@ -16,7 +16,7 @@
     <module name="com.netflix.archaius"/>
     <module name="com.netflix.servo"/>
     <module name="org.slf4j"/>
-    <module name="com.google.guava" slot="netflix"/>
+    <module name="com.google.guava"/>
     <module name="javax.api"/>
     <module name="org.wildfly.swarm.netflix.ribbon" slot="runtime"/>
     <module name="org.wildfly.swarm.netflix.hystrix" slot="runtime"/>
