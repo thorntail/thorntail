@@ -44,10 +44,6 @@
       <groupId>io.thorntail</groupId>
       <artifactId>logging</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>netflix-guava</artifactId>
-    </dependency>
 
     <!-- Provided APIs -->
     <dependency>

@@ -31,11 +31,6 @@
       </dependency>
       <dependency>
         <groupId>io.thorntail</groupId>
-        <artifactId>netflix-guava</artifactId>
-        <version>2.5.1.Final-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>io.thorntail</groupId>
         <artifactId>hystrix</artifactId>
         <version>2.5.1.Final-SNAPSHOT</version>
       </dependency>
@@ -165,7 +160,6 @@
   </dependencyManagement>
 
   <modules>
-    <module>guava</module>
     <module>hystrix</module>
     <module>archaius</module>
     <module>rxjava</module>

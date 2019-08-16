@@ -2,8 +2,7 @@
   <resources>
     <artifact name="com.orbitz.consul:consul-client:${version.com.orbitz.consul}"/>
     <!-- does not appear there is a Wildfly Module for jackson-datatype-guava -->
-    <artifact name="com.fasterxml.jackson.datatype:jackson-datatype-guava:2.9.5"/>
-    <artifact name="com.google.guava:guava:22.0"/>
+    <artifact name="com.fasterxml.jackson.datatype:jackson-datatype-guava:${version.com.fasterxml.jackson}"/>
   </resources>
 
   <dependencies>
