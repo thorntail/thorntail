@@ -97,19 +97,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>io.thorntail</groupId>
-            <artifactId>microprofile-config-wildfly-feature-pack</artifactId>
-            <version>${version.microprofile-config-wildfly}</version>
-            <type>zip</type>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.wildfly.core</groupId>
             <artifactId>wildfly-core-feature-pack</artifactId>
             <type>zip</type>
@@ -136,6 +123,20 @@
         <dependency>
             <groupId>org.wildfly</groupId>
             <artifactId>wildfly-feature-pack</artifactId>
+            <type>zip</type>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- needs to come _after_ WildFly feature packs, because in case of conflicts, the last one wins -->
+        <dependency>
+            <groupId>io.thorntail</groupId>
+            <artifactId>microprofile-config-wildfly-feature-pack</artifactId>
+            <version>${version.microprofile-config-wildfly}</version>
             <type>zip</type>
             <scope>provided</scope>
             <exclusions>
