@@ -111,7 +111,7 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>fluent-hc</artifactId>
-        <version>${version.fluent-hc}</version>
+        <version>${version.httpclient}</version>
       </dependency>
 
       <dependency>
