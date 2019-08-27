@@ -21,7 +21,7 @@ include::../modules/proc_setting-system-properties-using-the-maven-plugin.adoc[l
 
 include::../modules/proc_setting-system-properties-using-the-command-line.adoc[leveloffset=+2]
 
-include::../modules/proc_specifying-jdbc-drivers-for-hollow-jars.adoc[leveloffset=+2]
+include::../modules/proc_specifying-external-jdbc-drivers.adoc[leveloffset=+2]
 
 [id='configuring-a-thorntail-application-using-environment-variables_{context}']
 == Environment Variables
