@@ -4,7 +4,7 @@
     <artifact name="io.opentracing.contrib:opentracing-jaxrs2:${version.opentracing.jaxrs}"/>
     <artifact name="io.opentracing.contrib:opentracing-concurrent:${version.opentracing.concurrent}"/>
     <artifact name="io.opentracing.contrib:opentracing-interceptors:${version.opentracing.interceptors}"/>
-    <artifact name="io.smallrye:smallrye-opentracing-1.3:${version.smallrye.opentracing-1.3}"/>
+    <artifact name="io.smallrye:smallrye-opentracing:${version.smallrye.opentracing}"/>
   </resources>
 
   <dependencies>

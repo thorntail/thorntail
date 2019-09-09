@@ -67,7 +67,7 @@
     <version.guava>25.0-jre</version.guava> <!-- also used in Netflix fractions -->
     <version.httpclient>4.5.4</version.httpclient>
     <version.httpcore>4.4.5</version.httpcore>
-    <version.jandex>2.0.5.Final</version.jandex>
+    <version.jandex>2.1.1.Final</version.jandex>
     <version.jandex-maven-plugin>1.0.4</version.jandex-maven-plugin>
     <version.javax.activation>1.1.1</version.javax.activation>
     <version.javax.enterprise.concurrent-api>1.0</version.javax.enterprise.concurrent-api>
@@ -94,7 +94,7 @@
     <version.microprofile-fault-tolerance>2.0.1</version.microprofile-fault-tolerance>
     <version.microprofile-health>2.0.1</version.microprofile-health>
     <version.microprofile-jwt-auth>1.1.1</version.microprofile-jwt-auth>
-    <version.microprofile-metrics>2.0.1</version.microprofile-metrics>
+    <version.microprofile-metrics>2.0.2</version.microprofile-metrics>
     <version.microprofile-openapi>1.1.2</version.microprofile-openapi>
     <version.microprofile-opentracing>1.3.1</version.microprofile-opentracing>
     <version.microprofile.restclient>1.3.3</version.microprofile.restclient>
@@ -102,13 +102,13 @@
     <!-- MP Config WildFly subsystem -->
     <version.microprofile-config-wildfly>1.8.0</version.microprofile-config-wildfly>
 
-    <version.smallrye.config-1.3>1.0.0</version.smallrye.config-1.3>
-    <version.smallrye.fault-tolerance-2.0>1.0.1</version.smallrye.fault-tolerance-2.0>
-    <version.smallrye.health-2.0>1.0.3</version.smallrye.health-2.0>
-    <version.smallrye.jwt-1.1>2.0.1</version.smallrye.jwt-1.1>
-    <version.smallrye.metrics-2.0>1.1.0</version.smallrye.metrics-2.0>
-    <version.smallrye.openapi-1.1>1.0.2</version.smallrye.openapi-1.1>
-    <version.smallrye.opentracing-1.3>1.0.0</version.smallrye.opentracing-1.3>
+    <version.smallrye.config>1.3.6</version.smallrye.config>
+    <version.smallrye.fault-tolerance>2.0.9</version.smallrye.fault-tolerance>
+    <version.smallrye.health>2.0.0</version.smallrye.health>
+    <version.smallrye.jwt>2.0.2</version.smallrye.jwt>
+    <version.smallrye.metrics>2.1.4</version.smallrye.metrics>
+    <version.smallrye.openapi>1.1.8</version.smallrye.openapi>
+    <version.smallrye.opentracing>1.3.2</version.smallrye.opentracing>
 
     <!-- ===== other ===== -->
     <!-- ShrinkWrap -->
