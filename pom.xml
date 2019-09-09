@@ -41,12 +41,12 @@
     <version.thorntail.fraction.plugin>97</version.thorntail.fraction.plugin>
     <version.thorntail-jdk-specific>1</version.thorntail-jdk-specific>
 
-    <version.wildfly.config-api>1.7.0</version.wildfly.config-api>
-    <version.keycloak.config-api>1.7.0</version.keycloak.config-api>
-    <version.cassandra.config-api>1.7.0</version.cassandra.config-api>
-    <version.mongo.config-api>1.7.0</version.mongo.config-api>
-    <version.neo4j.config-api>1.7.0</version.neo4j.config-api>
-    <version.orientdb.config-api>1.7.0</version.orientdb.config-api>
+    <version.wildfly.config-api>1.8.0</version.wildfly.config-api>
+    <version.keycloak.config-api>1.8.1</version.keycloak.config-api>
+    <version.cassandra.config-api>1.8.0</version.cassandra.config-api>
+    <version.mongo.config-api>1.8.0</version.mongo.config-api>
+    <version.neo4j.config-api>1.8.0</version.neo4j.config-api>
+    <version.orientdb.config-api>1.8.0</version.orientdb.config-api>
 
     <!-- ===== WildFly and components that need to be aligned with it or carefully overridden ===== -->
     <version.org.wildfly.core>7.0.0.Final</version.org.wildfly.core>
@@ -100,7 +100,7 @@
     <version.microprofile.restclient>1.3.3</version.microprofile.restclient>
 
     <!-- MP Config WildFly subsystem -->
-    <version.microprofile-config-wildfly>1.7.1</version.microprofile-config-wildfly>
+    <version.microprofile-config-wildfly>1.8.0</version.microprofile-config-wildfly>
 
     <version.smallrye.config-1.3>1.0.0</version.smallrye.config-1.3>
     <version.smallrye.fault-tolerance-2.0>1.0.1</version.smallrye.fault-tolerance-2.0>
