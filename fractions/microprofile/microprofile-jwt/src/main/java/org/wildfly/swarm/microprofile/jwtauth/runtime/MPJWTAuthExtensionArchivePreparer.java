@@ -138,7 +138,7 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
                 log.warn("'thorntail.microprofile.jwt.token.signer-pub-key' property has already been set,"
                         + " 'thorntail.microprofile.jwt.token.signer-pub-key-location' property will be ignored");
             } else if (fraction.getPublicKeyLocation().startsWith("file:")) {
-                // smallrye-jwt-1.1 does not support the file key assets yet
+                // smallrye-jwt does not support the file key assets yet
                 addFileKeyAsset(war, fraction.getPublicKeyLocation());
             } else {
                 log.debugf("PublicKey location: %s", fraction.getPublicKeyLocation());
@@ -196,7 +196,7 @@ public class MPJWTAuthExtensionArchivePreparer implements DeploymentProcessor {
         }
     }
 
-    // This function will be removed after the upgrade to the next version of smallrye-jwt-1.1 which supports the file key assets
+    // This function will be removed after the upgrade to the next version of smallrye-jwt which supports the file key assets
     private void addFileKeyAsset(WARArchive war, String publicKeyLocation) {
         File fileRef = new File(publicKeyLocation.substring(5, publicKeyLocation.length()));
         war.addAsManifestResource(new FileAsset(fileRef), "MP-JWT-SIGNER");
