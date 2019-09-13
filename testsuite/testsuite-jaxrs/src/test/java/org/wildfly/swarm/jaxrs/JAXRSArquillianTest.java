@@ -15,19 +15,16 @@
  */
 package org.wildfly.swarm.jaxrs;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
+import org.apache.http.client.fluent.Request;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.WebDriver;
+
+import java.io.IOException;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -36,28 +33,20 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 @RunWith(Arquillian.class)
 public class JAXRSArquillianTest {
-
     @Deployment(testable = false)
     public static Archive createDeployment() throws Exception {
-        URL url = Thread.currentThread().getContextClassLoader().getResource("project-test-defaults-path.yml");
-        assertThat(url).isNotNull();
-        File projectDefaults = new File(url.toURI());
-        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
-        deployment.addClass(CustomJsonProvider.class);
-        deployment.addClass(MyResource.class);
-        deployment.setContextRoot("rest");
-        deployment.addAsResource(projectDefaults, "/project-defaults.yml");
-        deployment.addAllDependencies();
-        return deployment;
+        return ShrinkWrap.create(JAXRSArchive.class, "myapp.war")
+                .addClass(CustomJsonProvider.class)
+                .addClass(MyResource.class)
+                .setContextRoot("rest")
+                .addAsResource("project-test-defaults-path.yml", "/project-defaults.yml")
+                .addAllDependencies();
     }
 
-    @RunAsClient
     @Test
+    @RunAsClient
     public void testSimple() throws IOException {
-        browser.navigate().to("http://localhost:8080/rest");
-        assertThat(browser.getPageSource()).contains("Howdy at ");
+        String content = Request.Get("http://localhost:8080/rest").execute().returnContent().asString();
+        assertThat(content).contains("Howdy at ");
     }
-
-    @Drone
-    WebDriver browser;
 }

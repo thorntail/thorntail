@@ -1,5 +1,0 @@
-swarm:
-  deployment:
-    app.war:
-      jaxrs:
-        application-path: /api

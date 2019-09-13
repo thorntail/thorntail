@@ -45,7 +45,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
+      <artifactId>fluent-hc</artifactId>
       <scope>test</scope>
     </dependency>
 
