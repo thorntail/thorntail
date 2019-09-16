@@ -211,6 +211,9 @@ public final class GradleDependencyResolutionHelper {
                 // Should never happen.
                 throw new IllegalStateException("Gradle dependency resolution logic is broken. Unable to get scope for dependency: " + lookup);
             }
+            if ("import".equals(scope) || resolvedDep.getModuleArtifacts().isEmpty()) {
+                return;
+            }
             DependencyDescriptor key = asDescriptor(scope, resolvedDep);
             Set<DependencyDescriptor> value;
             if (resolveChildrenTransitively) {
@@ -218,6 +221,7 @@ public final class GradleDependencyResolutionHelper {
             } else {
                 value = resolvedDep.getChildren()
                         .stream()
+                        .filter(rd -> !rd.getModuleArtifacts().isEmpty())
                         .map(rd -> asDescriptor(scope, rd))
                         .collect(Collectors.toSet());
             }
@@ -407,6 +411,9 @@ public final class GradleDependencyResolutionHelper {
         final String TEST = "test";
         final String PROVIDED = "provided";
         final String RUNTIME = "runtime";
+
+        REMAPPED_SCOPES.put("platform-runtime", "import");
+        REMAPPED_SCOPES.put("enforced-platform-runtime", "import");
 
         REMAPPED_SCOPES.put("compile", COMPILE);
         REMAPPED_SCOPES.put("api", COMPILE);
