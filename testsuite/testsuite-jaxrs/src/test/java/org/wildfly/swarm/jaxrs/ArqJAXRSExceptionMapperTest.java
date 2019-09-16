@@ -15,11 +15,7 @@
  */
 package org.wildfly.swarm.jaxrs;
 
-import java.io.File;
-import java.net.URL;
-import java.nio.charset.Charset;
-
-import org.apache.commons.io.IOUtils;
+import org.apache.http.client.fluent.Request;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -35,35 +31,26 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 @RunWith(Arquillian.class)
 public class ArqJAXRSExceptionMapperTest {
-
     @Deployment(testable = false)
     public static Archive createDeployment() throws Exception {
-        URL url = Thread.currentThread().getContextClassLoader().getResource("project-test-defaults-path.yml");
-        assertThat(url).isNotNull();
-        File projectDefaults = new File(url.toURI());
-        JAXRSArchive deployment = ShrinkWrap.create(JAXRSArchive.class, "myapp.war");
-        deployment.addClass(JsonProcessingExceptionMapper.class);
-        deployment.addClass(CustomExceptionMapper.class);
-        deployment.addClass(CustomException.class);
-        deployment.addResource(JsonParsingExceptionResource.class);
-        deployment.addResource(CustomExceptionResource.class);
-        deployment.addAsResource(projectDefaults, "/project-defaults.yml");
-        deployment.addAllDependencies();
-        return deployment;
+        return ShrinkWrap.create(JAXRSArchive.class, "myapp.war")
+                .addClasses(CustomException.class, CustomExceptionMapper.class, CustomExceptionResource.class,
+                        JsonParsingExceptionResource.class, JsonProcessingExceptionMapper.class)
+                .addAsResource("project-test-defaults-path.yml", "/project-defaults.yml")
+                .addAllDependencies();
     }
 
     @Test
     @RunAsClient
     public void testCustom() throws Exception {
-        String content = IOUtils.toString(new URL("http://localhost:8080/custom/throw"), Charset.forName("UTF-8"));
+        String content = Request.Get("http://localhost:8080/custom/throw").execute().returnContent().asString();
         assertThat(content).contains("mapped custom: Custom exception");
     }
 
     @Test
     @RunAsClient
     public void testJson() throws Exception {
-        String content = IOUtils.toString(new URL("http://localhost:8080/json/throw"), Charset.forName("UTF-8"));
+        String content = Request.Get("http://localhost:8080/json/throw").execute().returnContent().asString();
         assertThat(content).contains("mapped json: that didn't work");
     }
-
 }
