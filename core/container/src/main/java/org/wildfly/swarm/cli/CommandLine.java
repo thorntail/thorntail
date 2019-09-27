@@ -95,7 +95,7 @@ public class CommandLine {
             .withDescription("Set a system property")
             .withDefault(Properties::new)
             .then((cmd, opt, value) -> {
-                String[] nameValue = value.split("=");
+                String[] nameValue = value.split("=", 2);
                 Properties props = cmd.get(opt);
                 String propName = nameValue[0];
                 String propValue = "true";
