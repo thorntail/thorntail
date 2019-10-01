@@ -30,18 +30,19 @@ import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
 import org.wildfly.swarm.maven.utils.RepositorySystemSessionWrapper;
+import org.wildfly.swarm.runner.RunnerConstants;
 import org.wildfly.swarm.runner.cache.ArtifactResolutionCache;
 import org.wildfly.swarm.runner.cache.DependencyResolutionCache;
 import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -59,22 +60,8 @@ public class CachingArtifactResolvingHelper implements ArtifactResolvingHelper {
 
     public CachingArtifactResolvingHelper() {
         repoSystem = newRepositorySystem();
-
         session = newSession(repoSystem);
-
-        this.remoteRepositories.add(buildRemoteRepository(
-                session,
-                "jboss-public-repository-group",
-                "https://repository.jboss.org/nexus/content/groups/public/",
-                null,
-                null));
-        this.remoteRepositories.add(buildRemoteRepository(
-                session,
-                "maven-central",
-                "https://repo.maven.apache.org/maven2/",
-                null,
-                null));
-
+        addDefaultRepositories();
         addUserRepositories();
     }
 
@@ -111,6 +98,23 @@ public class CachingArtifactResolvingHelper implements ArtifactResolvingHelper {
         return resolveInParallel(toResolve);
     }
 
+    public void addDefaultRepositories() {
+        if (RunnerConstants.IGNORE_DEFAULT_REPOSITORIES == null) {
+            this.remoteRepositories.add(buildRemoteRepository(
+                    session,
+                    "jboss-public-repository-group",
+                    "https://repository.jboss.org/nexus/content/groups/public/",
+                    null,
+                    null));
+            this.remoteRepositories.add(buildRemoteRepository(
+                    session,
+                    "maven-central",
+                    "https://repo.maven.apache.org/maven2/",
+                    null,
+                    null));
+        }
+    }
+
     private Set<ArtifactSpec> resolveInParallel(Collection<ArtifactSpec> toResolve) throws InterruptedException {
         ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 10);
         List<Callable<ArtifactSpec>> callable = toResolve.stream()
@@ -138,7 +142,7 @@ public class CachingArtifactResolvingHelper implements ArtifactResolvingHelper {
     }
 
     private void addUserRepositories() {
-        String repositoriesProperty = System.getProperty("thorntail.runner.repositories");
+        String repositoriesProperty = RunnerConstants.USER_REPOSITORIES;
         if (repositoriesProperty != null) {
             Stream.of(repositoriesProperty.split(","))
                     .forEach(this::addUserRepository);

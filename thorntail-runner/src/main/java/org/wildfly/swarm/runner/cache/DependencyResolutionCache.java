@@ -16,6 +16,7 @@
 package org.wildfly.swarm.runner.cache;
 
 import org.eclipse.aether.util.ChecksumUtils;
+import org.wildfly.swarm.runner.RunnerConstants;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
 import java.io.File;
@@ -29,8 +30,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.wildfly.swarm.runner.cache.RunnerCacheConstants.CACHE_STORAGE_DIR;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
@@ -94,7 +93,7 @@ public class DependencyResolutionCache {
             return null;
         }
 
-        return Paths.get(CACHE_STORAGE_DIR, key + (defaultExcludes ? "-with-excludes" : ""));
+        return Paths.get(RunnerConstants.CACHE_STORAGE_DIR, key + (defaultExcludes ? "-with-excludes" : ""));
     }
 
 

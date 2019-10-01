@@ -1,7 +1,5 @@
 package org.wildfly.swarm.runner;
 
-
-import org.eclipse.aether.repository.NoLocalRepositoryManagerException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.wildfly.swarm.runner.maven.CachingArtifactResolvingHelper;
@@ -26,7 +24,7 @@ public class CachingArtifactResolvingHelperTest {
 
 
     @BeforeClass
-    public static void init() throws NoLocalRepositoryManagerException {
+    public static void init() {
         helper = new CachingArtifactResolvingHelper();
     }
 
