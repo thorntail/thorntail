@@ -15,6 +15,7 @@
  */
 package org.wildfly.swarm.runner.cache;
 
+import org.wildfly.swarm.runner.RunnerConstants;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
 import java.io.File;
@@ -31,16 +32,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.wildfly.swarm.runner.cache.RunnerCacheConstants.CACHE_STORAGE_DIR;
-
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
  * <br>
  * Date: 9/7/18
  */
 public class ArtifactResolutionCache {
-    private static final String RESOLUTION_CACHE_FILE = "resolution-cache";
-    public static final Path CACHE_PATH = Paths.get(CACHE_STORAGE_DIR, RESOLUTION_CACHE_FILE);
+    public static final Path CACHE_PATH = Paths.get(RunnerConstants.CACHE_STORAGE_DIR, "resolution-cache");
 
     public static final ArtifactResolutionCache INSTANCE = new ArtifactResolutionCache();
 

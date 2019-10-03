@@ -16,7 +16,6 @@
 package org.wildfly.swarm.runner;
 
 import org.wildfly.swarm.jdk.specific.ClassLoaders;
-import org.wildfly.swarm.runner.cache.RunnerCacheConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,8 +28,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
@@ -68,6 +67,11 @@ import static java.util.Arrays.asList;
  *         Expects a comma separated list of repositoryUrl[#username#password].
  *     </li>
  *     <li>
+ *         <b>thorntail.runner.ignore-default-repositories</b> - disable default configured maven repositories
+ *         By default Runner searches for artifacts in Maven Central and repository.jboss.org.
+ *         You can disable this for security reasons.
+ *     </li>
+ *     <li>
  *         <b>thorntail.runner.local-repository</b> - location of the local repository.
  *         By default, Runner will use ${user.home}/.m2/repository to store any resolved artifacts.
  *         This is the default Maven location. This property let's you choose a different location.
@@ -77,13 +81,11 @@ import static java.util.Arrays.asList;
  */
 public class Runner {
 
-    private static final String PRESERVE_JAR = "thorntail.runner.preserve-jar";
-
     private Runner() {
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.printf("Starting Thorntail Runner. Runner caches will be stored in %s\n", RunnerCacheConstants.CACHE_STORAGE_DIR);
+        System.out.printf("Starting Thorntail Runner. Runner caches will be stored in %s\n", RunnerConstants.CACHE_STORAGE_DIR);
         URLClassLoader loader = createClassLoader();
         run((Object) args, loader);
     }
@@ -112,8 +114,8 @@ public class Runner {
         buildJar(fatJar);
 
 
-        if (System.getProperties().getProperty(PRESERVE_JAR) == null) {
-            System.out.println("Built " + fatJar.getAbsolutePath() + ", the file will be deleted on shutdown. To keep it, use -D" + PRESERVE_JAR);
+        if (RunnerConstants.PRESERVE_JAR == null) {
+            System.out.println("Built " + fatJar.getAbsolutePath() + ", the file will be deleted on shutdown. To keep it, use -Dthorntail.runner.preserve-jar");
             fatJar.deleteOnExit();
         }
 
