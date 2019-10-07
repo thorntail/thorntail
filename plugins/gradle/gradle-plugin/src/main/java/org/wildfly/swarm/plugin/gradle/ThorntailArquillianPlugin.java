@@ -78,6 +78,9 @@ public class ThorntailArquillianPlugin extends AbstractThorntailPlugin {
                 URL resource = ThorntailArquillianPlugin.class.getClassLoader().getResource(BUILD_SCRIPT_FRAGMENT);
                 if (resource != null) {
                     try {
+                        if (!project.getBuildDir().exists()) {
+                            project.getBuildDir().mkdirs();
+                        }
                         File scriptFile = new File(project.getBuildDir(), "thorntail-arquillian-script.gradle");
                         if (!scriptFile.exists()) {
                             scriptFile.createNewFile();
