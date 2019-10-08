@@ -44,6 +44,8 @@ public class ThorntailArquillianPlugin extends AbstractThorntailPlugin {
 
     private static final String BUILD_SCRIPT_FRAGMENT = "META-INF/thorntail-scripts/configure-tasks.groovy";
 
+    private boolean projectConfigured = false;
+
     /**
      * Constructs a new instance of {@code PackagePlugin}, which is initialized with the Gradle tooling model builder registry.
      *
@@ -57,6 +59,12 @@ public class ThorntailArquillianPlugin extends AbstractThorntailPlugin {
 
     @Override
     public void apply(Project project) {
+        if (projectConfigured) {
+            // Nothing to do.
+            return;
+        }
+        projectConfigured = true;
+
         super.apply(project);
 
         //noinspection Convert2Lambda

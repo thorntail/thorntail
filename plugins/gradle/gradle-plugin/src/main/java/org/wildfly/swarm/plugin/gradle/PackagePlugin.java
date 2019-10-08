@@ -59,7 +59,7 @@ public class PackagePlugin extends AbstractThorntailPlugin {
     public void apply(Project project) {
         super.apply(project);
         PluginManager pluginManager = project.getPluginManager();
-        if (pluginManager.hasPlugin(ThorntailArquillianPlugin.PLUGIN_ID)) {
+        if (!pluginManager.hasPlugin(ThorntailArquillianPlugin.PLUGIN_ID)) {
             pluginManager.apply(ThorntailArquillianPlugin.class);
         }
         project.afterEvaluate(__ -> {
