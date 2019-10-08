@@ -62,6 +62,10 @@ public class GradleDependencyAdapter {
 
             File projectDir = rootPath.toFile();
             GradleConnector connector = GradleConnector.newConnector().forProjectDirectory(projectDir);
+            String gradleVersion = System.getenv(GradleToolingHelper.THORNTAIL_ARQUILLIAN_GRADLE_VERSION);
+            if (gradleVersion != null) {
+                connector.useGradleVersion(gradleVersion);
+            }
             ProjectConnection connection = connector.connect();
             try {
                 // 1. Attempt to fetch the dependencies via the Thorntail model.

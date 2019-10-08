@@ -27,6 +27,17 @@ import org.wildfly.swarm.tools.DeclaredDependencies;
  */
 public final class GradleToolingHelper {
 
+    /**
+     * The System environment that will passed from the plugin to testing tasks which will contain the Gradle version
+     * being used for the current test execution. This environment variable is setup in order to facilitate the testing
+     * of the project against a newer version of Gradle instead of having to upgrade the Gradle wrapper.properties file.
+     * <p>
+     * Also, useful when the project root folder does not contain the Gradle wrapper properties, as is the case with the
+     * Thorntail Gradle examples. Since we cannot anticipate all possible scenarios, it is advisable to use the same
+     * version of Gradle that started this build.
+     */
+    public static final String THORNTAIL_ARQUILLIAN_GRADLE_VERSION = "THORNTAIL_ARQUILLIAN_GRADLE_VERSION";
+
     private GradleToolingHelper() {
     }
 
