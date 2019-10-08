@@ -218,7 +218,7 @@ public class BuildTool {
             original.as(ZipImporter.class).importFrom(inputStream);
         }
 
-        Archive repackaged = this.filterWebInfLib ? new WebInfLibFilteringArchive(original, this.dependencyManager) : original;
+        Archive repackaged = new WebInfLibFilteringArchive(original, this.dependencyManager);
         repackaged.as(ZipExporter.class).exportTo(file, true);
         this.log.info("Repackaged .war: " + file);
     }
