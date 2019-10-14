@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015-2017 Red Hat, Inc, and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -204,6 +204,10 @@ public class BuildTool {
 
 
     public void repackageWar(File file) throws IOException {
+        if (!filterWebInfLib) {
+            return;
+        }
+
         this.log.info("Repackaging .war: " + file);
 
         Path backupPath = get(file);
@@ -214,7 +218,7 @@ public class BuildTool {
             original.as(ZipImporter.class).importFrom(inputStream);
         }
 
-        Archive repackaged = this.filterWebInfLib ? new WebInfLibFilteringArchive(original, this.dependencyManager) : original;
+        Archive repackaged = new WebInfLibFilteringArchive(original, this.dependencyManager);
         repackaged.as(ZipExporter.class).exportTo(file, true);
         this.log.info("Repackaged .war: " + file);
     }
