@@ -1,0 +1,10 @@
+= CLI
+
+WARNING: This fraction is not useful on its own.
+
+This fraction only exists so that Thorntail can build and ship a `cli-thorntail.jar` uberjar.
+This uberjar essentially provides the WildFly CLI -- the command-line management tool.
+It is available from Maven Central under the `io.thorntail.cli:cli` coordinates.
+You can run it, just like any other Thorntail uberjar, using `java -jar cli-2.5.0.Final-thorntail.jar`, and it accepts command-line arguments just like the WildFly CLI.
+Most likely, you will want to use the `-c` argument, so that the CLI automatically connects to the management interface of a running application: `java -jar cli-2.5.0.Final-thorntail.jar -c`.
+Note that the application must include the `management` fraction, otherwise the management interface will not be exposed and the CLI tool won't be able to connect to it.
