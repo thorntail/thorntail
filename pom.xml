@@ -30,7 +30,7 @@
 
   <properties>
     <!-- ===== code quality ===== -->
-    <version.checkstyle>7.4</version.checkstyle>
+    <version.checkstyle>8.18</version.checkstyle>
     <version.findbugs>2.0.3</version.findbugs>
     <version.wildfly.swarm.checkstyle>3</version.wildfly.swarm.checkstyle>
 
