@@ -27,11 +27,21 @@ public class TicketEndpoint {
     @PersistenceContext(unitName = "primary")
     private EntityManager em;
 
+    // If Hibernate fraction fails to add Hibernate dependency to application, session variable will be null
+    @PersistenceContext(unitName = "primary")
+    private org.hibernate.Session session;
+
+    // Ensure that TicketEndpoint can be compiled with (Envers) AuditQuery class reference, no runtime check is needed.
+    private org.hibernate.envers.query.AuditQuery auditQuery;
+
     @POST
     @Consumes("text/xml")
     public Response create(TicketDTO dto) {
         Ticket entity = dto.fromDTO(null, em);
         em.persist(entity);
+        if (session == null) {
+            throw new RuntimeException("Hibernate fraction failed to inject persistence context into org.hibernate.Session");
+        }
         return Response.created(UriBuilder.fromResource(TicketEndpoint.class).path(String.valueOf(entity.getId())).build()).build();
     }
 

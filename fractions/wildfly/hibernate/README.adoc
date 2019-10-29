@@ -1,0 +1,4 @@
+= Hibernate
+
+Provides support and integration for applications using Hibernate ORM.
+This is useful when the standard JPA is not enough and Hibernate specific features are required.

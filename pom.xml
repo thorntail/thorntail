@@ -624,6 +624,12 @@
 
       <dependency>
         <groupId>io.thorntail</groupId>
+        <artifactId>hibernate</artifactId>
+        <version>2.5.1.Final-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.thorntail</groupId>
         <artifactId>hibernate-search</artifactId>
         <version>2.5.1.Final-SNAPSHOT</version>
       </dependency>
@@ -1162,6 +1168,7 @@
     <module>fractions/netflix</module>
 
     <module>fractions/wildfly/elytron</module>
+    <module>fractions/wildfly/hibernate</module>
     <module>fractions/wildfly/hibernate-validator</module>
     <module>fractions/wildfly/io</module>
     <module>fractions/wildfly/logging</module>
