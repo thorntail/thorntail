@@ -261,9 +261,27 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
         return reordered;
     }
 
+    /**
+     * Marks given {@code directDep} as "complete", which means that this instance of {@code DeclaredDependencies}
+     * already has information about all transitive dependencies brought in by the {@code directDep}. Calling this
+     * method only makes sense if the caller has access to the complete dependency tree.
+     */
+    public void markComplete(ArtifactSpec directDep) {
+        if (completeTransitiveDependencies == null) {
+            completeTransitiveDependencies = new HashSet<>();
+        }
+        completeTransitiveDependencies.add(directDep);
+    }
+
+    public boolean isComplete(ArtifactSpec directDep) {
+        return completeTransitiveDependencies != null && completeTransitiveDependencies.contains(directDep);
+    }
+
     private static final Set<String> PRIORITIZED_SCOPES = Stream.of("compile", "provided").collect(Collectors.toSet());
 
     private final DependencyTree<ArtifactSpec> presolvedDependencies = new DependencyTree<>();
 
     private Set<ArtifactSpec> allTransient;
+
+    private Set<ArtifactSpec> completeTransitiveDependencies;
 }
