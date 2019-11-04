@@ -135,8 +135,8 @@ public abstract class AbstractSwarmMojo extends AbstractMojo {
         if (mainClass != null && !mainClass.equals("")) {
             getLog().warn(
                     "\n------\n" +
-                    "Custom main() usage is intended to be deprecated in a future release and is no longer supported, \n" +
-                            "please refer to http://docs.thorntail.io for YAML configuration that replaces it." +
+                    "Custom main() usage is deprecated and is no longer supported.\n" +
+                    "Please refer to https://docs.thorntail.io for YAML configuration that replaces it." +
                     "\n------"
             );
         }
