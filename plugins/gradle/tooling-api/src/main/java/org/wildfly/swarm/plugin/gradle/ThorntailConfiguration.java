@@ -133,8 +133,8 @@ public interface ThorntailConfiguration extends Serializable {
      * Get the main class name that will be invoked when executing the Thorntail application.
      *
      * @return the main class name that will be invoked when executing the Thorntail application.
-     * @deprecated Custom main() usage is intended to be deprecated in a future release and is no longer supported, please refer
-     * to http://docs.wildfly-swarm.io for YAML configuration that replaces it.
+     * @deprecated Custom main() usage is deprecated and is no longer supported. Please refer
+     * to https://docs.thorntail.io for YAML configuration that replaces it.
      */
     @Deprecated
     String getMainClassName();
@@ -143,8 +143,8 @@ public interface ThorntailConfiguration extends Serializable {
      * Set the main class name that will be invoked when executing the Thorntail application.
      *
      * @param className the main class name that will be invoked when executing the Thorntail application.
-     * @deprecated Custom main() usage is intended to be deprecated in a future release and is no longer supported, please refer
-     * to http://docs.wildfly-swarm.io for YAML configuration that replaces it.
+     * @deprecated Custom main() usage is deprecated and is no longer supported. Please refer
+     * to https://docs.thorntail.io for YAML configuration that replaces it.
      */
     @Deprecated
     void setMainClassName(String className);
