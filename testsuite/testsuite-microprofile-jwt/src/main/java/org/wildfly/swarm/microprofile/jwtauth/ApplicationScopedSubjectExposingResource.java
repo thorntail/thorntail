@@ -15,13 +15,19 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth;
 
+import java.util.Optional;
+
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
+import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.ClaimValue;
+import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @Path("subject")
@@ -31,11 +37,55 @@ public class ApplicationScopedSubjectExposingResource {
     @Inject
     private JsonWebToken token;
 
+    @Inject
+    @Claim(standard = Claims.sub)
+    private ClaimValue<String> sub;
+
+    @Inject
+    @Claim(standard = Claims.sub)
+    private ClaimValue<Optional<String>> optionalSub;
+
+    @Inject
+    @Claim(standard = Claims.sub)
+    private Provider<String> providerSub;
+
+    @Inject
+    @Claim(standard = Claims.sub)
+    private Provider<Optional<String>> providerOptionalSub;
+
     @GET
     @RolesAllowed("MappedRole")
     @Path("secured")
     public String getSubjectSecured() {
         return token.getSubject();
+    }
+
+    @GET
+    @RolesAllowed("MappedRole")
+    @Path("secured/claim-value")
+    public String getSubjectSecuredClaimValue() {
+        return sub.getValue();
+    }
+
+    @GET
+    @RolesAllowed("MappedRole")
+    @Path("secured/claim-value-optional")
+    public String getSubjectSecuredClaimValueOptional() {
+        return optionalSub.getValue().get();
+    }
+
+    @GET
+    @RolesAllowed("MappedRole")
+    @Path("secured/provider")
+    public String getSubjectSecuredProvider() {
+        return providerSub.get();
+    }
+
+    @GET
+    @RolesAllowed("MappedRole")
+    @Path("secured/provider-optional")
+    public String getSubjectSecuredProviderOptional() {
+        return providerOptionalSub.get().get();
     }
 
     @GET

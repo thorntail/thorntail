@@ -52,26 +52,48 @@ public class ApplicationScopedPrincipalLeakTest {
     public void subjectShouldNotLeakToNonSecuredRequest() throws Exception {
         // project-no-roles-props.yml restricts the number of worker threads to 1,
         // that is, all requests are processed by the same single thread
-
-        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
-                .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
-                .execute().returnContent().asString();
-        assertThat(response).isEqualTo(TokenUtils.SUBJECT);
-
         Content content = Request.Get("http://localhost:8080/mpjwt/subject/unsecured")
                 .execute().returnContent();
         assertThat(content).isNull();
     }
-    
+
     @RunAsClient
     @Test
-    public void subjectShouldBeRequestSpecific() throws Exception {
-        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+    public void subjectFromJsonWebToken() throws Exception {
+        checkSecuredSubject("");
+    }
+
+    @RunAsClient
+    @Test
+    public void subjectFromClaimValue() throws Exception {
+        checkSecuredSubject("/claim-value");
+    }
+
+    @RunAsClient
+    @Test
+    public void subjectFromOptionalClaimValue() throws Exception {
+        checkSecuredSubject("/claim-value-optional");
+    }
+
+    @RunAsClient
+    @Test
+    public void subjectFromProvider() throws Exception {
+        checkSecuredSubject("/provider");
+    }
+ 
+    @RunAsClient
+    @Test
+    public void subjectFromOptionalProvider() throws Exception {
+        checkSecuredSubject("/provider-optional");
+    }
+
+    private void checkSecuredSubject(String pathSegment) throws Exception {
+        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured" + pathSegment)
                 .setHeader("Authorization", "Bearer " + createToken(TokenUtils.SUBJECT, "MappedRole"))
                 .execute().returnContent().asString();
         assertThat(response).isEqualTo(TokenUtils.SUBJECT);
 
-        response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+        response = Request.Get("http://localhost:8080/mpjwt/subject/secured" + pathSegment)
                 .setHeader("Authorization", "Bearer " + createToken(TokenUtils.SUBJECT2, "MappedRole"))
                 .execute().returnContent().asString();
         assertThat(response).isEqualTo(TokenUtils.SUBJECT2);

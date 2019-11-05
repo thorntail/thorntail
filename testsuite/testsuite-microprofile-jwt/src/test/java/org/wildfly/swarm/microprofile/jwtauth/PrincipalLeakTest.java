@@ -57,14 +57,26 @@ public class PrincipalLeakTest {
     public void subjectShouldNotLeakToNonSecuredRequest() throws Exception {
         // project-no-roles-props.yml restricts the number of worker threads to 1,
         // that is, all requests are processed by the same single thread
-
+        Content content = Request.Get("http://localhost:8080/mpjwt/subject/unsecured")
+                .execute().returnContent();
+        assertThat(content).isNull();
+    }
+    
+    @RunAsClient
+    @Test
+    public void subjectFromClaimString() throws Exception {
         String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
                 .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
                 .execute().returnContent().asString();
         assertThat(response).isEqualTo(TokenUtils.SUBJECT);
-
-        Content content = Request.Get("http://localhost:8080/mpjwt/subject/unsecured")
-                .execute().returnContent();
-        assertThat(content).isNull();
+    }
+    
+    @RunAsClient
+    @Test
+    public void subjectFromJsonString() throws Exception {
+        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured/json-string")
+                .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
+                .execute().returnContent().asString();
+        assertThat(response).isEqualTo(TokenUtils.SUBJECT);
     }
 }
