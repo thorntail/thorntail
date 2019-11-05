@@ -73,14 +73,14 @@ public final class TestingProject {
     }
 
     public void prepare(Path dir) throws IOException {
-        String swarmVersion = System.getProperty("project.version"); // from Maven
+        String thorntailVersion = System.getProperty("project.version"); // from Maven
 
         // pom.xml
         Path pomXml = dir.resolve("pom.xml");
         String pomXmlContent = new String(Files.readAllBytes(pomXml), StandardCharsets.UTF_8)
-                .replace("<!--PLACEHOLDER:swarm-version-->", swarmVersion)
+                .replace("<!--PLACEHOLDER:thorntail-version-->", thorntailVersion)
                 .replace("<!--PLACEHOLDER:packaging-->", packaging.packagingType())
-                .replace("<!--PLACEHOLDER:dependencies-->", dependenciesSnippet(swarmVersion))
+                .replace("<!--PLACEHOLDER:dependencies-->", dependenciesSnippet(thorntailVersion))
                 .replace("<!--PLACEHOLDER:configuration-->", swarmPluginConfigurationSnippet());
         Files.write(pomXml, pomXmlContent.getBytes(StandardCharsets.UTF_8));
 
@@ -118,14 +118,6 @@ public final class TestingProject {
 
     private String dependenciesSnippet(String swarmVersion) {
         StringBuilder result = new StringBuilder();
-
-        if (packaging == Packaging.JAR && dependencies == Dependencies.JAVA_EE_APIS) {
-            // for the Main class
-            result.append("<dependency>\n" +
-                          "  <groupId>io.thorntail</groupId>\n" +
-                          "  <artifactId>undertow</artifactId>\n" +
-                          "</dependency>\n");
-        }
 
         for (IncludedTechnology technology : includedTechnologies) {
             result.append(technology.dependencySnippet(dependencies));
@@ -165,6 +157,11 @@ public final class TestingProject {
     }
 
     public boolean canRunTests() {
+        if (packaging == Packaging.JAR) {
+            // the tests expect HTTP endpoints, which are only exposed with WARs
+            return false;
+        }
+
         if (dependencies == Dependencies.JAVA_EE_APIS) {
             return doesAutodetectionHappen();
         }
@@ -176,17 +173,13 @@ public final class TestingProject {
         Set<String> expectedFractions = includedTechnologies
                 .stream()
                 .map(IncludedTechnology::fraction)
-                .collect(Collectors.toCollection(HashSet::new));
+                .collect(Collectors.toCollection(HashSet::new)); // so that the `expectedFractions` set can be mutated
         if (doesAutodetectionHappen()) {
             additionalDependency.shouldBringFraction().ifPresent(expectedFractions::add);
         }
 
         if (dependencies == Dependencies.JAVA_EE_APIS && !doesAutodetectionHappen()) {
-            expectedFractions = new HashSet<>();
-            if (packaging == Packaging.JAR) {
-                // always included for the custom main class
-                expectedFractions.add(IncludedTechnology.SERVLET.fraction());
-            }
+            expectedFractions.clear();
         }
 
         additionalFraction.shouldBringFraction().ifPresent(expectedFractions::add);

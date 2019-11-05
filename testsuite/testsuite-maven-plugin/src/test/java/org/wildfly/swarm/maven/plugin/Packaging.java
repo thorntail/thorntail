@@ -16,8 +16,9 @@
 package org.wildfly.swarm.maven.plugin;
 
 /**
- * How should the testing project be packaged. This isn't exactly the same as Maven project packaging,
- * because it distinguishes between cases with and without custom {@code main} method.
+ * How should the testing project be packaged. This is essentially equivalent to Maven project packaging.
+ * (If we tested custom {@code main} methods, we'd have a separate value for with and without custom {@code main},
+ * and so this wouldn't be the same as Maven packaging. Custom {@code main} methods, however, are no longer supported.)
  */
 public enum Packaging {
     WAR("war"),
