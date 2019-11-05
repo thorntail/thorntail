@@ -21,7 +21,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <version.org.wildfly.swarm><!--PLACEHOLDER:swarm-version--></version.org.wildfly.swarm>
+    <version.io.thorntail><!--PLACEHOLDER:thorntail-version--></version.io.thorntail>
   </properties>
 
   <dependencyManagement>
@@ -29,7 +29,7 @@
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>bom</artifactId>
-        <version>${version.org.wildfly.swarm}</version>
+        <version>${version.io.thorntail}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -74,7 +74,7 @@
       <plugin>
         <groupId>io.thorntail</groupId>
         <artifactId>thorntail-maven-plugin</artifactId>
-        <version>${version.org.wildfly.swarm}</version>
+        <version>${version.io.thorntail}</version>
         <configuration>
           <!--PLACEHOLDER:configuration-->
         </configuration>

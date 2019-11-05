@@ -89,28 +89,30 @@ public class MavenPluginTest {
                     new TestingProject(Packaging.WAR, Dependencies.FRACTIONS, Autodetection.FORCE,
                                        new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.JAX_RS},
                                        AdditionalDependency.NON_JAVA_EE, AdditionalFraction.NONE),
-                    // SWARM-870
-/*
                     new TestingProject(Packaging.WAR, Dependencies.JAVA_EE_APIS, Autodetection.FORCE,
                                        new IncludedTechnology[]{IncludedTechnology.SERVLET},
                                        AdditionalDependency.NON_JAVA_EE, AdditionalFraction.ALREADY_PRESENT),
-*/
-                    // SWARM-814
                     new TestingProject(Packaging.WAR, Dependencies.JAVA_EE_APIS, Autodetection.WHEN_MISSING,
                                        new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.EJB},
-                                       AdditionalDependency.NONE, AdditionalFraction.NONE)
-                    // SWARM-970
+                                       AdditionalDependency.NONE, AdditionalFraction.NONE),
+                    new TestingProject(Packaging.WAR, Dependencies.FRACTIONS, Autodetection.NEVER,
+                                       new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.JAX_RS},
+                                       AdditionalDependency.NON_JAVA_EE, AdditionalFraction.NOT_YET_PRESENT),
+                    // THORN-2502
 /*
+                    new TestingProject(Packaging.WAR, Dependencies.JAVA_EE_APIS, Autodetection.WHEN_MISSING,
+                                       new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.JAX_RS},
+                                       AdditionalDependency.USING_JAVA_EE, AdditionalFraction.NONE),
+*/
                     new TestingProject(Packaging.WAR, Dependencies.FRACTIONS, Autodetection.FORCE,
                                        new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.EJB},
                                        AdditionalDependency.NONE, AdditionalFraction.NONE),
-*/
-                    // SWARM-869
-/*
-                    new TestingProject(Packaging.JAR_WITH_MAIN, Dependencies.FRACTIONS, Autodetection.WHEN_MISSING,
+                    new TestingProject(Packaging.JAR, Dependencies.FRACTIONS, Autodetection.WHEN_MISSING,
                                        new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.JAX_RS},
                                        AdditionalDependency.USING_JAVA_EE, AdditionalFraction.NOT_YET_PRESENT),
-*/
+                    new TestingProject(Packaging.JAR, Dependencies.JAVA_EE_APIS, Autodetection.FORCE,
+                                       new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.JAX_RS},
+                                       AdditionalDependency.NONE, AdditionalFraction.ALREADY_PRESENT)
             );
         }
 
@@ -120,12 +122,8 @@ public class MavenPluginTest {
                 for (Autodetection autodetection : Autodetection.values()) {
                     for (AdditionalDependency additionalDependency : AdditionalDependency.values()) {
                         for (AdditionalFraction additionalFraction : AdditionalFraction.values()) {
-                            // a lot of these fail because of SWARM-869
-                            if (autodetection == Autodetection.WHEN_MISSING && additionalFraction != AdditionalFraction.NONE) {
-                                continue;
-                            }
-                            // a lot of these fail because of SWARM-870
-                            if (autodetection != Autodetection.NEVER && additionalFraction == AdditionalFraction.ALREADY_PRESENT) {
+                            // a lot of these fail because of THORN-2502
+                            if (additionalDependency == AdditionalDependency.USING_JAVA_EE) {
                                 continue;
                             }
 
@@ -139,11 +137,6 @@ public class MavenPluginTest {
                                     new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.JAX_RS},
                                     additionalDependency, additionalFraction
                             ));
-
-                            // a lot of these fail because of SWARM-970
-                            if (dependencies == Dependencies.FRACTIONS && autodetection == Autodetection.FORCE) {
-                                continue;
-                            }
                             testingProjects.add(new TestingProject(
                                     packaging, dependencies, autodetection,
                                     new IncludedTechnology[]{IncludedTechnology.SERVLET, IncludedTechnology.EJB},
@@ -220,11 +213,6 @@ public class MavenPluginTest {
         String goal = "package";
         if (testingProject.canRunTests()) {
             goal = "verify";
-
-            // a lot of these fail because of SWARM-873
-            if (testingProject.additionalDependency == AdditionalDependency.USING_JAVA_EE) {
-                goal = "package";
-            }
         }
 
         try {
