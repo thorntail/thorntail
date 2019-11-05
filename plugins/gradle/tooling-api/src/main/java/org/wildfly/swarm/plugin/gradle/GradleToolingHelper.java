@@ -48,10 +48,11 @@ public final class GradleToolingHelper {
         DeclaredDependencies dependencies = new DeclaredDependencies();
         depMap.forEach((directDep, resolvedDeps) -> {
             ArtifactSpec parent = toArtifactSpec(directDep);
-            dependencies.addResolved(parent);
+            dependencies.add(parent);
             if (resolvedDeps != null) {
-                resolvedDeps.forEach(d -> dependencies.addResolved(parent, toArtifactSpec(d)));
+                resolvedDeps.forEach(d -> dependencies.add(parent, toArtifactSpec(d)));
             }
+            dependencies.markComplete(parent);
         });
         return dependencies;
     }

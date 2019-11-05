@@ -35,7 +35,7 @@ public class DeclaredDependenciesTest {
     public void testUnsolvedDirect() {
         dependencyStream().forEach(declaredDependencies::add);
 
-        Collection<ArtifactSpec> directDependencies = declaredDependencies.getDirectDependencies(true, false);
+        Collection<ArtifactSpec> directDependencies = declaredDependencies.getDirectDependencies();
         Iterator<ArtifactSpec> iterator = directDependencies.iterator();
 
         assertOrder(iterator);

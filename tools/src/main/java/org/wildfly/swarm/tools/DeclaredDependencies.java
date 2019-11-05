@@ -20,7 +20,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -34,7 +33,7 @@ import org.wildfly.swarm.bootstrap.env.DependencyTree;
 import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 
 /**
- * The declaration of direct and transient dependencies declared by a project build.
+ * The declaration of direct and transitive dependencies declared by a project build.
  * These maye be unresolved, which means you cannot assume they are available in any local repository.
  *
  * @author Heiko Braun
@@ -44,82 +43,24 @@ import org.wildfly.swarm.bootstrap.util.MavenArtifactDescriptor;
 public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
 
     /**
-     * Add a "pre-solved" direct dependency which has no transient dependencies.
-     *
-     * @param parent the dependency specification.
-     */
-    public void addResolved(ArtifactSpec parent) {
-        presolvedDependencies.add(parent);
-    }
-
-    /**
-     * Add a "pre-solved" direct dependency and its associated transient dependency that does not need further resolution.
-     *
-     * @param parent the direct dependency specification.
-     * @param child  the transient child dependency for the given parent.
-     */
-    public void addResolved(ArtifactSpec parent, ArtifactSpec child) {
-        presolvedDependencies.add(parent, child);
-    }
-
-    /**
      * Get the collection of direct dependencies defined in this instance.
      *
      * @return the collection of direct dependencies defined in this instance.
      */
     public Collection<ArtifactSpec> getDirectDependencies() {
-        return getDirectDependencies(true, true);
+        return new LinkedHashSet<>(getDirectDeps());
     }
 
     /**
-     * Get the collection of direct dependencies included in this instance.
+     * Get the collection of all transitive dependencies defined in this instance.
      *
-     * @param includeUnsolved  include dependencies that may need further
-     * @param includePresolved include the dependencies that do not need further resolution.
-     * @return the collection of direct dependencies included in this instance.
-     */
-    public Collection<ArtifactSpec> getDirectDependencies(boolean includeUnsolved, boolean includePresolved) {
-        Set<ArtifactSpec> deps = new LinkedHashSet<>();
-        if (includeUnsolved) {
-            deps.addAll(getDirectDeps());
-        }
-        if (includePresolved) {
-            deps.addAll(presolvedDependencies.getDirectDeps());
-        }
-        return deps;
-    }
-
-    /**
-     * Get the collection of all transient dependencies defined in this instance.
-     *
-     * @return the collection of all transient dependencies defined in this instance.
+     * @return the collection of all transitive dependencies defined in this instance.
      */
     public Set<ArtifactSpec> getTransientDependencies() {
-        if (null == allTransient) {
-            allTransient = getTransientDependencies(true, true);
-        }
-        return allTransient;
-    }
-
-    /**
-     * Get the collection of transient dependencies defined in this instance.
-     *
-     * @param includeUnsolved  include dependencies that may need further
-     * @param includePresolved include the dependencies that do not need further resolution.
-     * @return the collection of transient dependencies defined in this instance.
-     */
-    public Set<ArtifactSpec> getTransientDependencies(boolean includeUnsolved, boolean includePresolved) {
         Set<ArtifactSpec> deps = new HashSet<>();
-        List<DependencyTree<ArtifactSpec>> sources = new ArrayList<>();
-        if (includeUnsolved) {
-            sources.add(this);
-        }
-        if (includePresolved) {
-            sources.add(presolvedDependencies);
-        }
-        sources.forEach(s -> s.getDirectDeps().stream()
+        this.getDirectDeps().stream()
                 .filter(d -> !isThorntailRunner(d))
-                .forEach(d -> deps.addAll(s.getTransientDeps(d))));
+                .forEach(d -> deps.addAll(this.getTransientDeps(d)));
         return deps;
     }
 
@@ -130,32 +71,26 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
      */
     public Collection<ArtifactSpec> getRuntimeExplicitAndTransientDependencies() {
         Collection<ArtifactSpec> allDeps = new HashSet<>();
-        Arrays.asList(this, presolvedDependencies).forEach(source -> {
-            source.getDirectDeps()
-                    .stream()
-                    .filter(spec -> !spec.scope.equals("test"))
-                    .forEach(spec -> {
-                        allDeps.add(spec);
-                        allDeps.addAll(source.getTransientDeps(spec));
-                    });
-        });
-
+        this.getDirectDeps()
+                .stream()
+                .filter(spec -> !spec.scope.equals("test"))
+                .forEach(spec -> {
+                    allDeps.add(spec);
+                    allDeps.addAll(this.getTransientDeps(spec));
+                });
         return allDeps;
     }
 
     /**
-     * Get the transient dependencies defined for the given artifact specification.
+     * Get the transitive dependencies defined for the given artifact specification.
      *
      * @param artifact the artifact specification.
-     * @return the transient dependencies defined for the given artifact specification.
+     * @return the transitive dependencies defined for the given artifact specification.
      */
     public Collection<ArtifactSpec> getTransientDependencies(ArtifactSpec artifact) {
         Set<ArtifactSpec> deps = new HashSet<>();
         if (this.isDirectDep(artifact)) {
             deps.addAll(getTransientDeps(artifact));
-        }
-        if (presolvedDependencies.isDirectDep(artifact)) {
-            deps.addAll(presolvedDependencies.getTransientDeps(artifact));
         }
         return deps;
     }
@@ -230,16 +165,13 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
     public void writeTo(File file) {
         try {
             Writer w = new FileWriter(file);
-            List<DependencyTree<ArtifactSpec>> dependencyTrees = Arrays.asList(this, presolvedDependencies);
-            for (DependencyTree<ArtifactSpec> tree : dependencyTrees) {
-                for (ArtifactSpec key : tree.getDirectDeps()) {
-                    w.write(key.mavenGav());
-                    w.write(":\n");
-                    for (ArtifactSpec s : tree.getTransientDeps(key)) {
-                        w.write("  - ");
-                        w.write(s.mavenGav());
-                        w.write("\n");
-                    }
+            for (ArtifactSpec key : this.getDirectDeps()) {
+                w.write(key.mavenGav());
+                w.write(":\n");
+                for (ArtifactSpec s : this.getTransientDeps(key)) {
+                    w.write("  - ");
+                    w.write(s.mavenGav());
+                    w.write("\n");
                 }
             }
             w.close();
@@ -278,10 +210,6 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
     }
 
     private static final Set<String> PRIORITIZED_SCOPES = Stream.of("compile", "provided").collect(Collectors.toSet());
-
-    private final DependencyTree<ArtifactSpec> presolvedDependencies = new DependencyTree<>();
-
-    private Set<ArtifactSpec> allTransient;
 
     private Set<ArtifactSpec> completeTransitiveDependencies;
 }
