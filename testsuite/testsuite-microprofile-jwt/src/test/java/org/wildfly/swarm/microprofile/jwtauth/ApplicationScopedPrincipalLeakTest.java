@@ -59,31 +59,31 @@ public class ApplicationScopedPrincipalLeakTest {
 
     @RunAsClient
     @Test
-    public void subjectFromJsonWebToken() throws Exception {
+    public void subjectFromJsonWebTokenToSecuredRequest() throws Exception {
         checkSecuredSubject("");
     }
 
     @RunAsClient
     @Test
-    public void subjectFromClaimValue() throws Exception {
+    public void subjectFromClaimValueToSecuredRequest() throws Exception {
         checkSecuredSubject("/claim-value");
     }
 
     @RunAsClient
     @Test
-    public void subjectFromOptionalClaimValue() throws Exception {
+    public void subjectFromOptionalClaimValueToSecuredRequest() throws Exception {
         checkSecuredSubject("/claim-value-optional");
     }
 
     @RunAsClient
     @Test
-    public void subjectFromProvider() throws Exception {
+    public void subjectFromProviderToSecuredRequest() throws Exception {
         checkSecuredSubject("/provider");
     }
  
     @RunAsClient
     @Test
-    public void subjectFromOptionalProvider() throws Exception {
+    public void subjectFromOptionalProviderToSecuredRequest() throws Exception {
         checkSecuredSubject("/provider-optional");
     }
 

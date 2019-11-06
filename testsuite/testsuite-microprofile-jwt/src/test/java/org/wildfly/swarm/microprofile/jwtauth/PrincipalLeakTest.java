@@ -64,7 +64,7 @@ public class PrincipalLeakTest {
     
     @RunAsClient
     @Test
-    public void subjectFromClaimString() throws Exception {
+    public void subjectFromClaimStringToSecuredRequest() throws Exception {
         String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
                 .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
                 .execute().returnContent().asString();
@@ -73,7 +73,7 @@ public class PrincipalLeakTest {
     
     @RunAsClient
     @Test
-    public void subjectFromJsonString() throws Exception {
+    public void subjectFromJsonStringToSecuredRequest() throws Exception {
         String response = Request.Get("http://localhost:8080/mpjwt/subject/secured/json-string")
                 .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
                 .execute().returnContent().asString();
