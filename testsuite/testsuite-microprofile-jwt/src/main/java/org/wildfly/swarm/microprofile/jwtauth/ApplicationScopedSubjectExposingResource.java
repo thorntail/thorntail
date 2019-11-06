@@ -53,13 +53,6 @@ public class ApplicationScopedSubjectExposingResource {
     @Claim(standard = Claims.sub)
     private Provider<Optional<String>> providerOptionalSub;
 
-   @GET
-    @RolesAllowed("MappedRole")
-    @Path("secured")
-    public String getSubjectSecured() {
-        return token.getSubject();
-    }
-
     @GET
     @RolesAllowed("MappedRole")
     @Path("secured/json-web-token")
@@ -68,9 +61,24 @@ public class ApplicationScopedSubjectExposingResource {
     }
 
     @GET
+    @Path("unsecured/json-web-token")
+    @PermitAll
+    public String getSubjectUnsecured() {
+        return token.getSubject();
+    }
+
+
+    @GET
     @RolesAllowed("MappedRole")
     @Path("secured/claim-value")
     public String getSubjectSecuredClaimValue() {
+        return sub.getValue();
+    }
+
+    @GET
+    @PermitAll
+    @Path("unsecured/claim-value")
+    public String getSubjectUnsecuredClaimValue() {
         return sub.getValue();
     }
 
@@ -82,9 +90,23 @@ public class ApplicationScopedSubjectExposingResource {
     }
 
     @GET
+    @PermitAll
+    @Path("unsecured/claim-value-optional")
+    public String getSubjectUnsecuredClaimValueOptional() {
+        return optionalSub.getValue().isPresent() ? optionalSub.getValue().get() : null;
+    }
+
+    @GET
     @RolesAllowed("MappedRole")
     @Path("secured/provider")
     public String getSubjectSecuredProvider() {
+        return providerSub.get();
+    }
+
+    @GET
+    @PermitAll
+    @Path("unsecured/provider")
+    public String getSubjectUnsecuredProvider() {
         return providerSub.get();
     }
 
@@ -96,10 +118,9 @@ public class ApplicationScopedSubjectExposingResource {
     }
 
     @GET
-    @Path("unsecured")
     @PermitAll
-    public String getSubjectUnsecured() {
-        return token.getSubject();
+    @Path("unsecured/provider-optional")
+    public String getSubjectUnsecuredProviderOptional() {
+        return providerOptionalSub.get().isPresent() ? providerOptionalSub.get().get() : null;
     }
-
 }

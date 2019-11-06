@@ -52,12 +52,12 @@ public class AppWithNoLoginConfigWithConfiguredJwtRealmTest {
         // project-no-roles-props.yml restricts the number of worker threads to 1,
         // that is, all requests are processed by the same single thread
 
-        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured/json-web-token")
                 .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
                 .execute().returnContent().asString();
         assertThat(response).isEqualTo(TokenUtils.SUBJECT);
 
-        Content content = Request.Get("http://localhost:8080/mpjwt/subject/unsecured")
+        Content content = Request.Get("http://localhost:8080/mpjwt/subject/unsecured/json-web-token")
                 .execute().returnContent();
         assertThat(content).isNull();
     }
@@ -65,12 +65,12 @@ public class AppWithNoLoginConfigWithConfiguredJwtRealmTest {
     @RunAsClient
     @Test
     public void subjectShouldBeRequestSpecific() throws Exception {
-        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured/json-web-token")
                 .setHeader("Authorization", "Bearer " + createToken(TokenUtils.SUBJECT, "MappedRole"))
                 .execute().returnContent().asString();
         assertThat(response).isEqualTo(TokenUtils.SUBJECT);
 
-        response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+        response = Request.Get("http://localhost:8080/mpjwt/subject/secured/json-web-token")
                 .setHeader("Authorization", "Bearer " + createToken(TokenUtils.SUBJECT2, "MappedRole"))
                 .execute().returnContent().asString();
         assertThat(response).isEqualTo(TokenUtils.SUBJECT2);

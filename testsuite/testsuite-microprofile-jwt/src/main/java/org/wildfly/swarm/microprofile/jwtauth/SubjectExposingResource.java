@@ -62,4 +62,11 @@ public class SubjectExposingResource {
         return subject;
     }
 
+    @GET
+    @Path("unsecured/json-string")
+    @PermitAll
+    public String getSubjectUnsecuredJsonString() {
+        return jsonSubject == null ? null : jsonSubject.toString();
+    }
+
 }

@@ -51,35 +51,35 @@ public class ApplicationScopedPrincipalLeakTest {
     @Test
     public void subjectFromJsonWebToken() throws Exception {
         checkSecuredSubject("/json-web-token");
-        checkSubjectShouldNotLeakToNonSecuredRequest();
+        checkSubjectShouldNotLeakToNonSecuredRequest("/json-web-token");
     }
 
     @RunAsClient
     @Test
     public void subjectFromClaimValue() throws Exception {
         checkSecuredSubject("/claim-value");
-        checkSubjectShouldNotLeakToNonSecuredRequest();
+        checkSubjectShouldNotLeakToNonSecuredRequest("/claim-value");
     }
 
     @RunAsClient
     @Test
     public void subjectFromOptionalClaimValueToSecuredRequest() throws Exception {
         checkSecuredSubject("/claim-value-optional");
-        checkSubjectShouldNotLeakToNonSecuredRequest();
+        checkSubjectShouldNotLeakToNonSecuredRequest("/claim-value-optional");
     }
 
     @RunAsClient
     @Test
     public void subjectFromProviderToSecuredRequest() throws Exception {
         checkSecuredSubject("/provider");
-        checkSubjectShouldNotLeakToNonSecuredRequest();
+        checkSubjectShouldNotLeakToNonSecuredRequest("/provider");
     }
  
     @RunAsClient
     @Test
     public void subjectFromOptionalProviderToSecuredRequest() throws Exception {
         checkSecuredSubject("/provider-optional");
-        checkSubjectShouldNotLeakToNonSecuredRequest();
+        checkSubjectShouldNotLeakToNonSecuredRequest("/provider-optional");
     }
 
     private void checkSecuredSubject(String pathSegment) throws Exception {
@@ -94,10 +94,10 @@ public class ApplicationScopedPrincipalLeakTest {
         assertThat(response).isEqualTo(TokenUtils.SUBJECT2);
     }
 
-    private void checkSubjectShouldNotLeakToNonSecuredRequest() throws Exception {
+    private void checkSubjectShouldNotLeakToNonSecuredRequest(String pathSegment) throws Exception {
         // project-no-roles-props.yml restricts the number of worker threads to 1,
         // that is, all requests are processed by the same single thread
-        Content content = Request.Get("http://localhost:8080/mpjwt/subject/unsecured")
+        Content content = Request.Get("http://localhost:8080/mpjwt/subject/unsecured" + pathSegment)
                 .execute().returnContent();
         assertThat(content).isNull();
     }
