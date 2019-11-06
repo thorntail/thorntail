@@ -53,10 +53,17 @@ public class ApplicationScopedSubjectExposingResource {
     @Claim(standard = Claims.sub)
     private Provider<Optional<String>> providerOptionalSub;
 
-    @GET
+   @GET
     @RolesAllowed("MappedRole")
     @Path("secured")
     public String getSubjectSecured() {
+        return token.getSubject();
+    }
+
+    @GET
+    @RolesAllowed("MappedRole")
+    @Path("secured/json-web-token")
+    public String getSubjectSecuredJwt() {
         return token.getSubject();
     }
 
@@ -92,7 +99,7 @@ public class ApplicationScopedSubjectExposingResource {
     @Path("unsecured")
     @PermitAll
     public String getSubjectUnsecured() {
-        return token != null ? token.getSubject() : null;
+        return token.getSubject();
     }
 
 }
