@@ -49,31 +49,56 @@ public class ApplicationScopedPrincipalLeakTest {
 
     @RunAsClient
     @Test
-    public void subjectShouldNotLeakToNonSecuredRequest() throws Exception {
-        // project-no-roles-props.yml restricts the number of worker threads to 1,
-        // that is, all requests are processed by the same single thread
-
-        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
-                .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
-                .execute().returnContent().asString();
-        assertThat(response).isEqualTo(TokenUtils.SUBJECT);
-
-        Content content = Request.Get("http://localhost:8080/mpjwt/subject/unsecured")
-                .execute().returnContent();
-        assertThat(content).isNull();
+    public void subjectFromJsonWebToken() throws Exception {
+        checkSecuredSubject("/json-web-token");
+        checkSubjectShouldNotLeakToNonSecuredRequest("/json-web-token");
     }
-    
+
     @RunAsClient
     @Test
-    public void subjectShouldBeRequestSpecific() throws Exception {
-        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+    public void subjectFromClaimValue() throws Exception {
+        checkSecuredSubject("/claim-value");
+        checkSubjectShouldNotLeakToNonSecuredRequest("/claim-value");
+    }
+
+    @RunAsClient
+    @Test
+    public void subjectFromOptionalClaimValueToSecuredRequest() throws Exception {
+        checkSecuredSubject("/claim-value-optional");
+        checkSubjectShouldNotLeakToNonSecuredRequest("/claim-value-optional");
+    }
+
+    @RunAsClient
+    @Test
+    public void subjectFromProviderToSecuredRequest() throws Exception {
+        checkSecuredSubject("/provider");
+        checkSubjectShouldNotLeakToNonSecuredRequest("/provider");
+    }
+ 
+    @RunAsClient
+    @Test
+    public void subjectFromOptionalProviderToSecuredRequest() throws Exception {
+        checkSecuredSubject("/provider-optional");
+        checkSubjectShouldNotLeakToNonSecuredRequest("/provider-optional");
+    }
+
+    private void checkSecuredSubject(String pathSegment) throws Exception {
+        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured" + pathSegment)
                 .setHeader("Authorization", "Bearer " + createToken(TokenUtils.SUBJECT, "MappedRole"))
                 .execute().returnContent().asString();
         assertThat(response).isEqualTo(TokenUtils.SUBJECT);
 
-        response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+        response = Request.Get("http://localhost:8080/mpjwt/subject/secured" + pathSegment)
                 .setHeader("Authorization", "Bearer " + createToken(TokenUtils.SUBJECT2, "MappedRole"))
                 .execute().returnContent().asString();
         assertThat(response).isEqualTo(TokenUtils.SUBJECT2);
+    }
+
+    private void checkSubjectShouldNotLeakToNonSecuredRequest(String pathSegment) throws Exception {
+        // project-no-roles-props.yml restricts the number of worker threads to 1,
+        // that is, all requests are processed by the same single thread
+        Content content = Request.Get("http://localhost:8080/mpjwt/subject/unsecured" + pathSegment)
+                .execute().returnContent();
+        assertThat(content).isNull();
     }
 }

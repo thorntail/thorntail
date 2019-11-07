@@ -48,7 +48,7 @@ public class AppWithNoLoginConfigAndConfiguredJwtRealmTest {
     @RunAsClient
     @Test
     public void tokenIsNotProcessed() throws Exception {
-        Content content = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+        Content content = Request.Get("http://localhost:8080/mpjwt/subject/secured/json-web-token")
                 .setHeader("Authorization", "Bearer " + createToken("MappedRole"))
                 .execute().returnContent();
         assertThat(content).isNull();

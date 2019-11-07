@@ -49,12 +49,12 @@ public class KeyLocationTest {
     @RunAsClient
     @Test
     public void subjectShouldBeRequestSpecific() throws Exception {
-        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+        String response = Request.Get("http://localhost:8080/mpjwt/subject/secured/json-web-token")
                 .setHeader("Authorization", "Bearer " + createToken(TokenUtils.SUBJECT, "MappedRole"))
                 .execute().returnContent().asString();
         assertThat(response).isEqualTo(TokenUtils.SUBJECT);
 
-        response = Request.Get("http://localhost:8080/mpjwt/subject/secured")
+        response = Request.Get("http://localhost:8080/mpjwt/subject/secured/json-web-token")
                 .setHeader("Authorization", "Bearer " + createToken(TokenUtils.SUBJECT2, "MappedRole"))
                 .execute().returnContent().asString();
         assertThat(response).isEqualTo(TokenUtils.SUBJECT2);

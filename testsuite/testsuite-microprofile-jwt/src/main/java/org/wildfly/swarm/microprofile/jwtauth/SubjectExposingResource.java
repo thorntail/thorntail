@@ -15,14 +15,15 @@
  */
 package org.wildfly.swarm.microprofile.jwtauth;
 
-import org.eclipse.microprofile.jwt.Claim;
-import org.eclipse.microprofile.jwt.Claims;
-
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.json.JsonString;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+
+import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.Claims;
 
 /**
  * @author Michal Szynkiewicz, michal.l.szynkiewicz@gmail.com
@@ -36,6 +37,10 @@ public class SubjectExposingResource {
     @Claim(standard = Claims.sub)
     private String subject;
 
+    @Inject
+    @Claim(standard = Claims.sub)
+    private JsonString jsonSubject;
+
     @GET
     @RolesAllowed("MappedRole")
     @Path("secured")
@@ -44,10 +49,24 @@ public class SubjectExposingResource {
     }
 
     @GET
+    @RolesAllowed("MappedRole")
+    @Path("secured/json-string")
+    public String getSubjectSecuredJsonString() {
+        return jsonSubject.toString().replaceAll("\"", "");
+    }
+
+    @GET
     @Path("unsecured")
     @PermitAll
     public String getSubjectUnsecured() {
         return subject;
+    }
+
+    @GET
+    @Path("unsecured/json-string")
+    @PermitAll
+    public String getSubjectUnsecuredJsonString() {
+        return jsonSubject == null ? null : jsonSubject.toString();
     }
 
 }
