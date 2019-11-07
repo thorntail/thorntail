@@ -31,6 +31,7 @@ import io.smallrye.jwt.auth.cdi.ClaimValueProducer;
 import io.smallrye.jwt.auth.cdi.CommonJwtProducer;
 import io.smallrye.jwt.auth.cdi.JsonValueProducer;
 import io.smallrye.jwt.auth.cdi.PrincipalProducer;
+import io.smallrye.jwt.auth.cdi.ProviderExtensionSupport;
 import io.smallrye.jwt.auth.cdi.RawClaimTypeProducer;
 
 /**
