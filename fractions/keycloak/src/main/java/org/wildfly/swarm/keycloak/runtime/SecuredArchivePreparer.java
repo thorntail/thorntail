@@ -119,7 +119,7 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
             String appArtifact = System.getProperty(BootstrapProperties.APP_ARTIFACT);
 
             if (appArtifact != null) {
-                try (InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact)) {
+                try (InputStream in = loadAppArtifact(appArtifact)) {
                     Archive<?> tmpArchive = ShrinkWrap.create(JARArchive.class);
                     tmpArchive.as(ZipImporter.class).importFrom(in);
                     Node jsonNode = tmpArchive.get(resourceName);
@@ -138,6 +138,14 @@ public class SecuredArchivePreparer implements DeploymentProcessor {
             }
         }
         return keycloakJson;
+    }
+
+    private static InputStream loadAppArtifact(String appArtifact) {
+        InputStream result = Thread.currentThread().getContextClassLoader().getResourceAsStream("_bootstrap/" + appArtifact);
+        if (result == null) {
+            result = ClassLoader.getSystemClassLoader().getResourceAsStream("_bootstrap/" + appArtifact);
+        }
+        return result;
     }
 
     private static Node getKeycloakJsonNodeFromWebInf(Archive<?> tmpArchive, String resourceName, boolean useForwardSlash) {
