@@ -22,13 +22,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.wildfly.swarm.config.messaging.activemq.DiscoveryGroup;
 import org.wildfly.swarm.config.messaging.activemq.HTTPConnector;
-import org.wildfly.swarm.config.messaging.activemq.PooledConnectionFactory;
+import org.wildfly.swarm.config.messaging.activemq.Transaction;
 import org.wildfly.swarm.config.messaging.activemq.server.BroadcastGroup;
 import org.wildfly.swarm.config.messaging.activemq.server.ClusterConnection;
 import org.wildfly.swarm.config.messaging.activemq.server.ConnectionFactory;
 import org.wildfly.swarm.config.messaging.activemq.server.HTTPAcceptor;
 import org.wildfly.swarm.config.messaging.activemq.server.JMSQueueConsumer;
 import org.wildfly.swarm.config.messaging.activemq.server.JMSTopicConsumer;
+import org.wildfly.swarm.config.messaging.activemq.server.PooledConnectionFactory;
 
 /**
  * @author Bob McWhirter
@@ -60,7 +61,7 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
             address.deadLetterAddress("jms.queue.DLQ");
             address.expiryAddress("jms.queue.ExpiryQueue");
             address.maxSizeBytes(10485760L);
-            address.pageSizeBytes(2097152L);
+            address.pageSizeBytes(2097152);
             address.messageCounterHistoryDayLimit(10);
         });
 
@@ -84,7 +85,7 @@ public class EnhancedServer extends org.wildfly.swarm.config.messaging.activemq.
                                         .entry("java:jboss/DefaultJMSConnectionFactory")
                                         .entry("java:/JmsXA")
                                         .connector(IN_VM)
-                                        .transaction("xa"));
+                                        .transaction(Transaction.XA));
         return this;
     }
 

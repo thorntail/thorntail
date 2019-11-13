@@ -2,8 +2,8 @@ package org.wildfly.swarm.messaging.runtime;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.wildfly.swarm.config.messaging.activemq.PooledConnectionFactory;
 import org.wildfly.swarm.config.messaging.activemq.RemoteConnector;
+import org.wildfly.swarm.config.messaging.activemq.server.PooledConnectionFactory;
 import org.wildfly.swarm.messaging.EnhancedServer;
 import org.wildfly.swarm.messaging.MessagingFraction;
 

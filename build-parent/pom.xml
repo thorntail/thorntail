@@ -520,8 +520,8 @@
       </dependency>
       <dependency>
         <groupId>org.glassfish</groupId>
-        <artifactId>javax.json</artifactId>
-        <version>${version.org.glassfish.javax.json}</version>
+        <artifactId>jakarta.json</artifactId>
+        <version>${version.org.glassfish.jakarta.json}</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -572,16 +572,6 @@
         <groupId>io.opentracing.contrib</groupId>
         <artifactId>opentracing-concurrent</artifactId>
         <version>${version.opentracing.concurrent}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.enterprise.concurrent</groupId>
-        <artifactId>javax.enterprise.concurrent-api</artifactId>
-        <version>${version.javax.enterprise.concurrent-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.activation</groupId>
-        <artifactId>activation</artifactId>
-        <version>${version.javax.activation}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.xnio</groupId>
