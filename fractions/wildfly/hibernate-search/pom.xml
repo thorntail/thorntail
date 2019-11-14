@@ -53,19 +53,6 @@
       <artifactId>transactions</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.wildfly</groupId>
-      <artifactId>wildfly-feature-pack</artifactId>
-      <type>zip</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
     <!-- Provided APIs -->
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -80,7 +67,7 @@
       <artifactId>hibernate-search-serialization-avro</artifactId>
     </dependency>
 
-    <!-- TODO WF18 this probably shouldn't be here -->
+    <!-- TODO WF18 previously we only had wildfly-feature-pack -->
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>

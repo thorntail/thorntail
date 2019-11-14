@@ -212,8 +212,8 @@
     <version.xmlunit>2.6.0</version.xmlunit>
 
     <version.h2>1.4.193</version.h2>
-    <version.mysql>5.1.39</version.mysql>
-    <version.postgresql>9.4.1208</version.postgresql>
+    <version.mysql>5.1.48</version.mysql>
+    <version.postgresql>9.4.1212</version.postgresql>
 
     <version.org.jboss.cdi.tck>1.2.10.Final</version.org.jboss.cdi.tck>
 
@@ -1096,6 +1096,17 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>redhat-ga</id>
+      <name>Red Hat JBoss Enterprise Maven Repository</name>
+      <url>https://maven.repository.redhat.com/ga/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -1103,6 +1114,17 @@
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
       <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>redhat-ga</id>
+      <name>Red Hat JBoss Enterprise Maven Repository</name>
+      <url>https://maven.repository.redhat.com/ga/</url>
       <releases>
         <enabled>true</enabled>
       </releases>
