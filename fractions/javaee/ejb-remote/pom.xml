@@ -46,6 +46,10 @@
     </dependency>
     <dependency>
       <groupId>io.thorntail</groupId>
+      <artifactId>infinispan</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.thorntail</groupId>
       <artifactId>messaging</artifactId>
       <optional>true</optional>
     </dependency>

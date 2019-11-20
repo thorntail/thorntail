@@ -13,28 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.wildfly.swarm.ejb;
+package org.wildfly.swarm.ejb.remote;
 
-import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.wildfly.swarm.arquillian.DefaultDeployment;
+import javax.ejb.Stateless;
 
-import javax.ejb.EJB;
-
-import static org.junit.Assert.assertEquals;
-
-/**
- * @author Bob McWhirter
- */
-@RunWith(Arquillian.class)
-@DefaultDeployment(type = DefaultDeployment.Type.JAR)
-public class EJBArquillianTest {
-    @EJB(lookup = "java:module/GreeterEJB")
-    private GreeterEJB greeter;
-
-    @Test
-    public void testFromInside() {
-        assertEquals("Howdy from EJB", greeter.message());
+@Stateless
+public class Hello {
+    public String hello() {
+        return "Hello world";
     }
 }

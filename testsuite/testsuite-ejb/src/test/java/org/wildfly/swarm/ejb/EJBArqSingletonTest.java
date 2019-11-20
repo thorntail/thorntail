@@ -15,14 +15,14 @@
  */
 package org.wildfly.swarm.ejb;
 
-import javax.naming.InitialContext;
-
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
 
+import javax.naming.InitialContext;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Bob McWhirter
@@ -34,6 +34,6 @@ public class EJBArqSingletonTest {
     public void testHowdy() throws Exception {
         InitialContext context = new InitialContext();
         MySingleton bean = (MySingleton) context.lookup("java:module/MySingletonBean");
-        Assert.assertEquals("howdy!", bean.sayHowdy());
+        assertEquals("howdy!", bean.sayHowdy());
     }
 }

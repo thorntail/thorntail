@@ -15,33 +15,27 @@
  */
 package org.wildfly.swarm.ejb.remote;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.swarm.spi.api.JARArchive;
+import org.wildfly.swarm.arquillian.DefaultDeployment;
+
+import javax.ejb.EJB;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- * @author Ken Finnigan
+ * This doesn't really test EJB remoting, just local EJB.
+ * So the test only verifies that the {@code ejb-remote} fraction can successfully deploy.
  */
 @RunWith(Arquillian.class)
+@DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class EJBRemoteArquillianTest {
-
-    @Deployment(testable = false)
-    public static Archive createDeployment() {
-        JARArchive deployment = ShrinkWrap.create(JARArchive.class);
-        deployment.add(EmptyAsset.INSTANCE, "nothing");
-        return deployment;
-    }
+    @EJB(lookup = "java:module/Hello")
+    private Hello bean;
 
     @Test
-    @RunAsClient
-    public void testNothing() {
-
+    public void hello() {
+        assertEquals("Hello world", bean.hello());
     }
-
 }
