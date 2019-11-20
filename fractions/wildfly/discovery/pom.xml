@@ -15,16 +15,16 @@
   </parent>
 
   <groupId>io.thorntail</groupId>
-  <artifactId>ejb</artifactId>
+  <artifactId>discovery</artifactId>
 
-  <name>EJB</name>
-  <description>Use EJBs in your application</description>
+  <name>Discovery</name>
+  <description>Discovery</description>
 
   <packaging>jar</packaging>
 
   <properties>
+    <swarm.fraction.internal>true</swarm.fraction.internal>
     <swarm.fraction.stability>stable</swarm.fraction.stability>
-    <swarm.fraction.tags>JavaEE</swarm.fraction.tags>
   </properties>
 
   <build>
@@ -44,49 +44,6 @@
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>logging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>discovery</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>ee</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>jca</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>security</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>jakarta.inject</groupId>
-      <artifactId>jakarta.inject-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.enterprise</groupId>
-      <artifactId>jakarta.enterprise.cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Provided APIs -->
-    <dependency>
-      <groupId>org.jboss.spec.javax.ejb</groupId>
-      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.ejb3</groupId>
-      <artifactId>jboss-ejb3-ext-api</artifactId>
-    </dependency>
-
-    <!-- Meta SPI -->
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>meta-spi</artifactId>
     </dependency>
 
     <dependency>
@@ -125,7 +82,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
   </dependencies>
 
 </project>
