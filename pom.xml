@@ -86,7 +86,7 @@
     <version.xnio>3.7.3.Final</version.xnio>
 
     <!-- ===== Keycloak ===== -->
-    <version.keycloak>4.8.3.Final</version.keycloak>
+    <version.keycloak>8.0.0</version.keycloak>
 
     <!-- ===== MicroProfile and SmallRye ===== -->
     <version.microprofile-config>1.3</version.microprofile-config>
