@@ -33,7 +33,7 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
-@Ignore
+@Ignore // requires running in OpenShift
 public class ArqTopologyOpenShiftTest {
 
     @Deployment
