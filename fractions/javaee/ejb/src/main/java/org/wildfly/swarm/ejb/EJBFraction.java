@@ -54,8 +54,8 @@ public class EJBFraction extends EJB3<EJBFraction> implements Fraction<EJBFracti
 
     public EJBFraction applyDefaults() {
         Map<Object, Object> threadPoolSettings = new HashMap<>();
-        threadPoolSettings.put("time", 100L);
-        threadPoolSettings.put("unit", "MILLISECONDS");
+        threadPoolSettings.put("time", 60L);
+        threadPoolSettings.put("unit", "SECONDS");
 
         defaultStatefulBeanAccessTimeout(5000L)
                 .defaultSingletonBeanAccessTimeout(5000L)
