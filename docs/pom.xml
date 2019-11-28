@@ -86,6 +86,7 @@
           <attributes>
             <docinfo>shared</docinfo>
             <version>${project.version}</version>
+            <communityVersion>${version.wildfly.swarm}</communityVersion>
             <product>${swarm.product.build}</product>
             <WildFly>WildFly</WildFly>
             <Thorntail>Thorntail</Thorntail>
