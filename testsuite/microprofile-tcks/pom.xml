@@ -89,7 +89,7 @@
          <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
-            <version>${version.org.arquillian}</version>
+            <version>${version.org.arquillian.testng}</version>
             <scope>test</scope>
          </dependency>
 

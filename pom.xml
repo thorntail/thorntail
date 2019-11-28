@@ -204,6 +204,8 @@
     <version.org.arquillian>1.4.0.Final</version.org.arquillian>
     <version.org.arquillian.drone>2.0.1.Final</version.org.arquillian.drone>
     <version.org.arquillian.graphene>2.1.0.Final</version.org.arquillian.graphene>
+    <!-- Do not upgrade until https://issues.jboss.org/browse/ARQ-2144 is fixed -->
+    <version.org.arquillian.testng>1.1.14.Final</version.org.arquillian.testng>
     <version.org.arquillian.warp-rest>1.0.0.Alpha4</version.org.arquillian.warp-rest>
     <version.org.skyscreamer.jsonassert>1.5.0</version.org.skyscreamer.jsonassert>
     <!-- Do not upgrade until https://issues.jboss.org/browse/ARQ-2144 is fixed -->
