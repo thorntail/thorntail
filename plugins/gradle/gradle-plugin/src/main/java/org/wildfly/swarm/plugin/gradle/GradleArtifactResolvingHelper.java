@@ -38,6 +38,10 @@ public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {
             repo.setName("jboss-public");
             repo.setUrl("https://repository.jboss.org/nexus/content/groups/public/");
         });
+        this.project.getRepositories().maven(repo -> {
+            repo.setName("redhat-ga");
+            repo.setUrl("https://maven.repository.redhat.com/ga/");
+        });
     }
 
     @Override

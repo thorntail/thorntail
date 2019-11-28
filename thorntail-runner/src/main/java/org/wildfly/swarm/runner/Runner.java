@@ -63,12 +63,12 @@ import static java.util.Arrays.asList;
  *     </li>
  *     <li>
  *         <b>thorntail.runner.repositories</b> - additional maven repositories to look for artifacts.
- *         By default Runner searches for artifacts in Maven Central and repository.jboss.org.
+ *         By default Runner searches for artifacts in Maven Central, repository.jboss.org and maven.repository.redhat.com.
  *         Expects a comma separated list of repositoryUrl[#username#password].
  *     </li>
  *     <li>
  *         <b>thorntail.runner.ignore-default-repositories</b> - disable default configured maven repositories
- *         By default Runner searches for artifacts in Maven Central and repository.jboss.org.
+ *         By default Runner searches for artifacts in Maven Central, repository.jboss.org and maven.repository.redhat.com.
  *         You can disable this for security reasons.
  *     </li>
  *     <li>

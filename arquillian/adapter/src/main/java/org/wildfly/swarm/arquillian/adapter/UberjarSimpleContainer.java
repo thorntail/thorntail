@@ -196,7 +196,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
         } else {
             additionalRepos = "";
         }
-        additionalRepos = additionalRepos + "https://repository.jboss.org/nexus/content/groups/public/";
+        additionalRepos = additionalRepos + "https://repository.jboss.org/nexus/content/groups/public/,https://maven.repository.redhat.com/ga/";
         executor.withProperty("remote.maven.repo", additionalRepos);
 
 

@@ -60,6 +60,8 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
 
     private static AtomicReference<ShrinkwrapArtifactResolvingHelper> INSTANCE = new AtomicReference<>();
 
+    private static final String MAVEN_LAYOUT_DEFAULT = "default";
+
     public static ShrinkwrapArtifactResolvingHelper defaultInstance() {
         return INSTANCE.updateAndGet(e -> {
             if (e != null) {
@@ -69,15 +71,21 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
             MavenRemoteRepository jbossPublic =
                     MavenRemoteRepositories.createRemoteRepository("jboss-public-repository-group",
                                                                    "https://repository.jboss.org/nexus/content/groups/public/",
-                                                                   "default");
+                                                                   MAVEN_LAYOUT_DEFAULT);
             jbossPublic.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
             jbossPublic.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
+            MavenRemoteRepository redhatGa =
+                    MavenRemoteRepositories.createRemoteRepository("redhat-ga",
+                                                                   "https://maven.repository.redhat.com/ga/",
+                                                                   MAVEN_LAYOUT_DEFAULT);
+            redhatGa.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
+            redhatGa.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
             MavenRemoteRepository gradleTools =
                     MavenRemoteRepositories.createRemoteRepository("gradle",
                                                                    "https://repo.gradle.org/gradle/libs-releases-local",
-                                                                   "default");
+                                                                   MAVEN_LAYOUT_DEFAULT);
             gradleTools.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
             gradleTools.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
@@ -85,6 +93,7 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
             final ConfigurableMavenResolverSystem resolver = Maven.configureResolver()
                     .withMavenCentralRepo(true)
                     .withRemoteRepo(jbossPublic)
+                    .withRemoteRepo(redhatGa)
                     .withRemoteRepo(gradleTools)
                     .workOffline(offline);
 
@@ -93,7 +102,7 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
                 Arrays.asList(additionalRepos.split(","))
                         .forEach(r -> {
                             MavenRemoteRepository repo =
-                                    MavenRemoteRepositories.createRemoteRepository(r, r, "default");
+                                    MavenRemoteRepositories.createRemoteRepository(r, r, MAVEN_LAYOUT_DEFAULT);
                             repo.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
                             repo.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
                             resolver.withRemoteRepo(repo);

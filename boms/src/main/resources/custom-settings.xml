@@ -15,6 +15,10 @@
                <id>jboss</id>
                <url>https://repository.jboss.org/nexus/content/groups/public</url>
             </repository>
+            <repository>
+               <id>redhat-ga</id>
+               <url>https://maven.repository.redhat.com/ga/</url>
+            </repository>
          </repositories>
          <pluginRepositories>
             <pluginRepository>
@@ -24,6 +28,10 @@
             <pluginRepository>
                <id>jboss</id>
                <url>https://repository.jboss.org/nexus/content/groups/public</url>
+            </pluginRepository>
+            <pluginRepository>
+               <id>redhat-ga</id>
+               <url>https://maven.repository.redhat.com/ga/</url>
             </pluginRepository>
          </pluginRepositories>
       </profile>
