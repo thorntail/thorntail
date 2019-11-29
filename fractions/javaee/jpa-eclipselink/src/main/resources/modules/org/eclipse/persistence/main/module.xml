@@ -7,14 +7,13 @@
 <module xmlns="urn:jboss:module:1.5" name="org.eclipse.persistence">
     <resources>
         <artifact name="org.wildfly:jipijapa-eclipselink:${version.wildfly}"/>
-        <artifact name="org.eclipse.persistence:eclipselink:${version.eclipse.link}">
+        <artifact name="org.eclipse.persistence:eclipselink:${version.eclipselink}">
             <filter>
                 <exclude path="javax/**" />
             </filter>
         </artifact>
     </resources>
     <dependencies>
-        <module name="asm.asm" />
         <module name="javax.api"/>
         <module name="javax.annotation.api"/>
         <module name="javax.enterprise.api"/>
@@ -22,9 +21,7 @@
         <module name="javax.transaction.api"/>
         <module name="javax.validation.api"/>
         <module name="javax.xml.bind.api"/>
-        <module name="javax.ws.rs.api"/>
         <module name="org.antlr"/>
-        <module name="org.apache.commons.collections"/>
         <module name="org.dom4j"/>
         <module name="org.jboss.as.jpa.spi"/>
         <module name="org.jboss.logging"/>

@@ -67,7 +67,7 @@
     <version.guava>25.0-jre</version.guava> <!-- also used in Netflix fractions -->
     <version.httpclient>4.5.4</version.httpclient>
     <version.httpcore>4.4.5</version.httpcore>
-    <version.jandex>2.1.1.Final</version.jandex>
+    <version.jandex>2.1.2.Final</version.jandex>
     <version.jandex-maven-plugin>1.0.4</version.jandex-maven-plugin>
     <version.jboss-logmanager-ext>1.0.0.Alpha5</version.jboss-logmanager-ext>
     <version.jboss-modules>1.9.1.Final</version.jboss-modules>
@@ -176,7 +176,7 @@
     <!-- unsorted -->
     <version.asciidoctorj>1.5.5</version.asciidoctorj>
     <version.com.orbitz.consul>1.2.1</version.com.orbitz.consul>
-    <version.eclipse.link>2.7.4</version.eclipse.link>
+    <version.eclipselink>2.7.5</version.eclipselink>
     <version.fluentd>0.3.2</version.fluentd>
     <version.flyway>4.2.0</version.flyway>
     <version.jersey>1.19.1</version.jersey>

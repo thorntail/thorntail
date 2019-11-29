@@ -67,7 +67,6 @@
       <artifactId>hibernate-search-serialization-avro</artifactId>
     </dependency>
 
-    <!-- TODO WF18 previously we only had wildfly-feature-pack -->
     <dependency>
       <groupId>org.wildfly.core</groupId>
       <artifactId>wildfly-core-feature-pack</artifactId>
