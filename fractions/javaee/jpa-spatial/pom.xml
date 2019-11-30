@@ -48,6 +48,7 @@
       <artifactId>jts</artifactId>
       <version>${version.vividsolutions-jts}</version>
     </dependency>
+
   </dependencies>
 
 </project>

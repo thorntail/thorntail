@@ -136,23 +136,23 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <groupId>javax.el</groupId>
-          <artifactId>javax.el-api</artifactId>
+          <groupId>jakarta.el</groupId>
+          <artifactId>jakarta.el-api</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>javax.interceptor</groupId>
-          <artifactId>javax.interceptor-api</artifactId>
+          <groupId>jakarta.interceptor</groupId>
+          <artifactId>jakarta.interceptor-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

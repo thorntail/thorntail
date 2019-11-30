@@ -75,6 +75,11 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
                                                           null,
                                                           ENABLED_POLICY,
                                                           DISABLED_POLICY));
+        this.remoteRepositories.add(buildRemoteRepository("redhat-ga",
+                                                          "https://maven.repository.redhat.com/ga/",
+                                                          null,
+                                                          ENABLED_POLICY,
+                                                          DISABLED_POLICY));
     }
 
     public void remoteRepository(ArtifactRepository repo) {

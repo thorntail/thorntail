@@ -66,6 +66,11 @@
         <version>${version.wildfly-config-api-runtime}</version>
       </dependency>
       <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jandex</artifactId>
+        <version>${version.jandex}</version>
+      </dependency>
+      <dependency>
         <groupId>org.jboss.shrinkwrap</groupId>
         <artifactId>shrinkwrap-bom</artifactId>
         <version>${version.shrinkwrap}</version>

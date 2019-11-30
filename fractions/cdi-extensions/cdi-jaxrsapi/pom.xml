@@ -47,8 +47,12 @@
 
     <!-- Provided APIs -->
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -89,7 +93,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-servlet-feature-pack</artifactId>

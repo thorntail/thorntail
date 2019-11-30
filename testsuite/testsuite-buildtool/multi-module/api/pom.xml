@@ -12,44 +12,4 @@
 
   <artifactId>multi-module-api</artifactId>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>false</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <dependencies>
-
-    <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-    </dependency>
-
-    <!-- http://mvnrepository.com/artifact/com.google.code.gson/gson -->
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>${version.gson}</version>
-    </dependency>
-
-    <!-- http://mvnrepository.com/artifact/com.sun.jersey/jersey-client -->
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-client</artifactId>
-      <version>${version.jersey}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-json</artifactId>
-      <version>${version.jersey}</version>
-    </dependency>
-
-  </dependencies>
 </project>

@@ -54,11 +54,11 @@
 
   <dependencies>
 
-    <!-- Java EE dependency -->
+    <!-- Jakarta EE dependency -->
     <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
-      <version>${version.javaee-api}</version>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-api</artifactId>
+      <version>${version.jakartaee-api}</version>
       <scope>provided</scope>
     </dependency>
 

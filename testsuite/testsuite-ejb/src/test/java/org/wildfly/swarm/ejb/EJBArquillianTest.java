@@ -15,30 +15,26 @@
  */
 package org.wildfly.swarm.ejb;
 
-import javax.ejb.EJB;
-
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
+
+import javax.ejb.EJB;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Bob McWhirter
  */
-@Ignore
 @RunWith(Arquillian.class)
 @DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class EJBArquillianTest {
+    @EJB(lookup = "java:module/GreeterEJB")
+    private GreeterEJB greeter;
 
     @Test
     public void testFromInside() {
-        assertEquals(greeter.message(), "Howdy from EJB");
+        assertEquals("Howdy from EJB", greeter.message());
     }
-
-    @EJB(lookup = "java:global/ejb-test/GreeterEJB")
-    private GreeterEJB greeter;
-
 }

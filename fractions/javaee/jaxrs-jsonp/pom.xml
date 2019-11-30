@@ -46,7 +46,7 @@
     <!-- Provided APIs -->
     <dependency>
       <groupId>org.glassfish</groupId>
-      <artifactId>javax.json</artifactId>
+      <artifactId>jakarta.json</artifactId>
     </dependency>
 
     <!-- Meta SPI -->

@@ -285,6 +285,11 @@ public class Main {
                                                                                "https://repository.jboss.org/nexus/content/groups/public/",
                                                                                "default")
                                         .setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE)
+                                        .setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER))
+                .withRemoteRepo(MavenRemoteRepositories.createRemoteRepository("redhat-ga",
+                                                                               "https://maven.repository.redhat.com/ga/",
+                                                                               "default")
+                                        .setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE)
                                         .setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER));
 
         repos.forEach(r -> resolver.withRemoteRepo(MavenRemoteRepositories.createRemoteRepository(r, r, "default")

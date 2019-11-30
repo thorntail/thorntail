@@ -15,16 +15,13 @@
  */
 package org.wildfly.swarm.fractions;
 
-import static org.fest.assertions.Assertions.assertThat;
+import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.fest.assertions.Assertions;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Bob McWhirter
@@ -57,25 +54,25 @@ public class FractionListTest {
     }
 
     @Test
-    public void testList() throws IOException {
+    public void testList() {
         FractionList list = FractionList.get();
 
         Collection<FractionDescriptor> descriptors = list.getFractionDescriptors();
 
         FractionDescriptor ee = descriptors.stream().filter(e -> e.getArtifactId().equals("ee")).findFirst().get();
 
-        Assertions.assertThat(list.getFractionDescriptor(FractionDescriptor.THORNTAIL_GROUP_ID, "ee")).isEqualTo(ee);
+        assertThat(list.getFractionDescriptor(FractionDescriptor.THORNTAIL_GROUP_ID, "ee")).isEqualTo(ee);
 
-        Assertions.assertThat(ee.getGroupId()).isEqualTo(FractionDescriptor.THORNTAIL_GROUP_ID);
-        Assertions.assertThat(ee.getArtifactId()).isEqualTo("ee");
-        Assertions.assertThat(ee.getDependencies()).hasSize(3);
+        assertThat(ee.getGroupId()).isEqualTo(FractionDescriptor.THORNTAIL_GROUP_ID);
+        assertThat(ee.getArtifactId()).isEqualTo("ee");
+        assertThat(ee.getDependencies()).hasSize(3);
 
-        Assertions.assertThat(ee.getDependencies().stream().filter(e -> e.getArtifactId().equals("container")).collect(Collectors.toList())).isNotEmpty();
-        Assertions.assertThat(ee.getDependencies().stream().filter(e -> e.getArtifactId().equals("naming")).collect(Collectors.toList())).isNotEmpty();
+        assertThat(ee.getDependencies().stream().filter(e -> e.getArtifactId().equals("container")).collect(Collectors.toList())).isNotEmpty();
+        assertThat(ee.getDependencies().stream().filter(e -> e.getArtifactId().equals("naming")).collect(Collectors.toList())).isNotEmpty();
     }
 
     @Test
-    public void testMultipleGets() throws IOException {
+    public void testMultipleGets() {
         FractionList l1 = FractionList.get();
         FractionList l2 = FractionList.get();
         FractionList l3 = FractionList.get();
@@ -86,7 +83,7 @@ public class FractionListTest {
     }
 
     @Test
-    public void testGroupIdAndArtifactIdAndNameAndDescriptionAreNeverNull() throws Exception {
+    public void testGroupIdAndArtifactIdAndNameAndDescriptionAreNeverNull() {
         Collection<FractionDescriptor> descriptors = FractionList.get().getFractionDescriptors();
         assertThat(descriptors).onProperty("groupId").isNotNull();
         assertThat(descriptors).onProperty("artifactId").isNotNull();
@@ -96,10 +93,10 @@ public class FractionListTest {
     }
 
     @Test
-    public void testNameAndDescription() throws Exception {
+    public void testNameAndDescription() {
         FractionDescriptor cdi = FractionList.get().getFractionDescriptor(FractionDescriptor.THORNTAIL_GROUP_ID, "jaxrs");
-        Assertions.assertThat(cdi.getName()).isEqualTo("JAX-RS");
-        Assertions.assertThat(cdi.getDescription()).isEqualTo("RESTful Web Services with RESTEasy");
+        assertThat(cdi.getName()).isEqualTo("JAX-RS");
+        assertThat(cdi.getDescription()).isEqualTo("RESTful Web Services with RESTEasy");
     }
 
     @Test
@@ -112,11 +109,9 @@ public class FractionListTest {
     }
 
     @Test
-    @Ignore
     public void testArchaiusFractionShouldBeInternal() {
         FractionDescriptor archaius = FractionList.get().getFractionDescriptor(FractionDescriptor.THORNTAIL_GROUP_ID, "archaius");
-        Assertions.assertThat(archaius.isInternal()).isTrue();
-        ;
+        assertThat(archaius.isInternal()).isTrue();
     }
 
 }

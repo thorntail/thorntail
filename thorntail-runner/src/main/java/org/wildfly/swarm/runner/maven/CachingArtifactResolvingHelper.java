@@ -108,6 +108,12 @@ public class CachingArtifactResolvingHelper implements ArtifactResolvingHelper {
                     null));
             this.remoteRepositories.add(buildRemoteRepository(
                     session,
+                    "redhat-ga",
+                    "https://maven.repository.redhat.com/ga/",
+                    null,
+                    null));
+            this.remoteRepositories.add(buildRemoteRepository(
+                    session,
                     "maven-central",
                     "https://repo.maven.apache.org/maven2/",
                     null,

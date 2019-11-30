@@ -67,7 +67,8 @@ public class InfinispanCustomizer implements Customizer {
         this.fraction.cacheContainer("server",
                 cc -> cc.defaultCache(DEFAULT)
                         .module("org.wildfly.clustering.server")
-                        .localCache(DEFAULT, c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH))));
+                        .localCache(DEFAULT, c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.BATCH)))
+        );
 
         if (!this.undertow.isUnsatisfied()) {
             this.fraction.cacheContainer("web",
@@ -76,7 +77,12 @@ public class InfinispanCustomizer implements Customizer {
                             .localCache(PASSIVATION,
                                     c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
                                             .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
-                                            .fileStore(fs -> fs.passivation(true).purge(false))));
+                                            .fileStore(fs -> fs.passivation(true).purge(false)))
+                            .localCache("sso",
+                                    c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
+                                            .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH)))
+                            .localCache("routing")
+            );
         }
 
         if (!this.ejb.isUnsatisfied()) {
@@ -87,20 +93,22 @@ public class InfinispanCustomizer implements Customizer {
                             .localCache(PASSIVATION,
                                     c -> c.lockingComponent(lc -> lc.isolation(LockingComponent.Isolation.REPEATABLE_READ))
                                             .transactionComponent(tc -> tc.mode(TransactionComponent.Mode.BATCH))
-                                            .fileStore(fs -> fs.passivation(true).purge(false))));
+                                            .fileStore(fs -> fs.passivation(true).purge(false)))
+            );
         }
 
         if (!this.jpa.isUnsatisfied()) {
             this.fraction.cacheContainer("hibernate",
                     cc -> cc.module("org.infinispan.hibernate-cache")
                             .localCache("entity",
-                                    c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NON_XA))
+                                    c -> c.transactionComponent(t -> t.mode(TransactionComponent.Mode.NONE))
                                             .objectMemory(om -> om.size(10000L))
                                             .expirationComponent(e -> e.maxIdle(100000L)))
                             .localCache("local-query",
                                     c -> c.objectMemory(om -> om.size(10000L))
                                             .expirationComponent(e -> e.maxIdle(100000L)))
-                            .localCache("timestamps"));
+                            .localCache("timestamps")
+            );
         }
 
     }

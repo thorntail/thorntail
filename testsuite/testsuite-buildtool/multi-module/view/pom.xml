@@ -13,6 +13,18 @@
 
   <packaging>war</packaging>
 
+  <dependencies>
+    <dependency>
+      <groupId>io.thorntail.testsuite</groupId>
+      <artifactId>multi-module-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>fluent-hc</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <finalName>endpoint</finalName>
     <plugins>
@@ -41,22 +53,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
-
     </plugins>
   </build>
-
-  <dependencies>
-
-    <dependency>
-      <groupId>io.thorntail.testsuite</groupId>
-      <artifactId>multi-module-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>${version.commons-io}</version>
-    </dependency>
-  </dependencies>
-
 
 </project>

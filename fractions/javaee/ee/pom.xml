@@ -51,13 +51,13 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -81,7 +81,7 @@
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
-      <artifactId>javax.el-impl</artifactId>
+      <artifactId>jakarta.el</artifactId>
     </dependency>
 
     <dependency>
