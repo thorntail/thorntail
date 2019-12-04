@@ -192,6 +192,7 @@ public class PackageMojo extends AbstractSwarmMojo {
                     declaredDependencies.add(directDep, transientDep);
                 }
             }
+            declaredDependencies.markComplete(directDep);
         }
 
         tool.declaredDependencies(declaredDependencies);

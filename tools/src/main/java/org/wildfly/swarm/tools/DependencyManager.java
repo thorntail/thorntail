@@ -27,7 +27,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.jar.JarFile;
@@ -154,9 +156,19 @@ public class DependencyManager implements ResolvedDependencies {
         // resolve the explicit deps to local files
         // expand to transitive if these are not pre-solved
         boolean resolveExplicitsTransitively = !declaredDependencies.isPresolved() || autodetect;
-        Collection<ArtifactSpec> resolvedExplicitDependencies = resolveExplicitsTransitively ?
-                resolver.resolveAllArtifactsTransitively(explicitDependencies, false) :
-                resolver.resolveAllArtifactsNonTransitively(explicitDependencies);
+        Map<Boolean, List<ArtifactSpec>> partitioned = explicitDependencies.stream()
+                .collect(Collectors.partitioningBy(declaredDependencies::isComplete));
+        List<ArtifactSpec> complete = partitioned.get(true);
+        List<ArtifactSpec> incomplete = partitioned.get(false);
+
+        Collection<ArtifactSpec> resolvedIncompleteExplicitDependencies = resolveExplicitsTransitively ?
+                resolver.resolveAllArtifactsTransitively(incomplete, false) :
+                resolver.resolveAllArtifactsNonTransitively(incomplete);
+        Collection<ArtifactSpec> resolvedCompleteExplicitDependencies = resolver.resolveAllArtifactsNonTransitively(complete);
+
+        Collection<ArtifactSpec> resolvedExplicitDependencies = new LinkedHashSet<>();
+        resolvedExplicitDependencies.addAll(resolvedCompleteExplicitDependencies);
+        resolvedExplicitDependencies.addAll(resolvedIncompleteExplicitDependencies);
 
         this.dependencies.addAll(resolvedExplicitDependencies);
 
