@@ -48,12 +48,14 @@ import org.gradle.api.logging.LogLevel;
 import org.gradle.api.plugins.ExtraPropertiesExtension;
 import org.gradle.initialization.ProjectAccessListener;
 import org.wildfly.swarm.fractions.FractionDescriptor;
+import org.wildfly.swarm.fractions.FractionList;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
 /**
  * The {@code GradleDependencyResolutionHelper} helps with resolving and translating a project's dependencies in to various
  * forms that are usable by the Thorntail tooling for Gradle.
  */
+@SuppressWarnings("UnstableApiUsage")
 public final class GradleDependencyResolutionHelper {
 
     private static String pluginVersion;
@@ -90,7 +92,8 @@ public final class GradleDependencyResolutionHelper {
      * @return true if the descriptor represents a Gradle project, false otherwise.
      */
     public static boolean isProject(Project project, DependencyDescriptor descriptor) {
-        final String specGAV = String.format("%s:%s:%s", descriptor.getGroup(), descriptor.getName(), descriptor.getVersion());
+        final String specGAV = String.format(GROUP_ARTIFACT_VERSION_FORMAT, descriptor.getGroup(), descriptor.getName(),
+                descriptor.getVersion());
         return getAllProjects(project).containsKey(specGAV) || getIncludedProjectIdentifiers(project).contains(specGAV);
     }
 
@@ -113,6 +116,11 @@ public final class GradleDependencyResolutionHelper {
             return Collections.emptySet();
         }
 
+        // Early return if there is nothing to resolve.
+        if (specs.isEmpty()) {
+            return Collections.emptySet();
+        }
+
         final Configuration config = project.getConfigurations().detachedConfiguration().setTransitive(transitive);
         final DependencySet dependencySet = config.getDependencies();
         final Map<String, Project> projectGAVCoordinates = getAllProjects(project);
@@ -121,7 +129,7 @@ public final class GradleDependencyResolutionHelper {
         Set<ArtifactSpec> result = new HashSet<>();
         specs.forEach(s -> {
             // 1. Do we need to resolve this entry?
-            final String specGAV = String.format("%s:%s:%s", s.groupId(), s.artifactId(), s.version());
+            final String specGAV = String.format(GROUP_ARTIFACT_VERSION_FORMAT, s.groupId(), s.artifactId(), s.version());
             boolean resolved = s.file != null;
             boolean projectEntry = projectGAVCoordinates.containsKey(specGAV);
 
@@ -192,7 +200,7 @@ public final class GradleDependencyResolutionHelper {
                 });
         requestedConfiguration.getHierarchy().forEach(cfg -> {
             cfg.getDependencies().forEach(dep -> {
-                String key = String.format("%s:%s", dep.getGroup(), dep.getName());
+                String key = String.format(GROUP_ARTIFACT_FORMAT, dep.getGroup(), dep.getName());
                 dependencyScopeMap.put(key, REMAPPED_SCOPES.getOrDefault(cfg.getName(), defaultScopeForUnknownConfigurations));
             });
         });
@@ -202,10 +210,15 @@ public final class GradleDependencyResolutionHelper {
         // ------
         // Assuming that the given configuration can be resolved, get the resolved artifacts and populate the return Map.
         //
+        Set<String> availableFractions = FractionList.get().getFractionDescriptors()
+                .stream()
+                .map(d -> String.format(GROUP_ARTIFACT_FORMAT, d.getGroupId(), d.getArtifactId()))
+                .collect(Collectors.toSet());
+
         ResolvedConfiguration resolvedConfig = requestedConfiguration.getResolvedConfiguration();
         Map<DependencyDescriptor, Set<DependencyDescriptor>> dependencyMap = new HashMap<>();
         resolvedConfig.getFirstLevelModuleDependencies().forEach(resolvedDep -> {
-            String lookup = String.format("%s:%s", resolvedDep.getModuleGroup(), resolvedDep.getModuleName());
+            String lookup = String.format(GROUP_ARTIFACT_FORMAT, resolvedDep.getModuleGroup(), resolvedDep.getModuleName());
             String scope = dependencyScopeMap.get(lookup);
             if (scope == null) {
                 // Should never happen.
@@ -214,22 +227,51 @@ public final class GradleDependencyResolutionHelper {
             if ("import".equals(scope) || resolvedDep.getModuleArtifacts().isEmpty()) {
                 return;
             }
-            DependencyDescriptor key = asDescriptor(scope, resolvedDep);
-            Set<DependencyDescriptor> value;
             if (resolveChildrenTransitively) {
-                value = getDependenciesTransitively(scope, resolvedDep);
+                resolveDependencies(availableFractions, scope, resolvedDep, resolvedDep, dependencyMap);
             } else {
-                value = resolvedDep.getChildren()
+                DependencyDescriptor key = asDescriptor(scope, resolvedDep);
+                Set<DependencyDescriptor> value = resolvedDep.getChildren()
                         .stream()
                         .filter(rd -> !rd.getModuleArtifacts().isEmpty())
                         .map(rd -> asDescriptor(scope, rd))
                         .collect(Collectors.toSet());
+                dependencyMap.put(key, value);
             }
-            dependencyMap.put(key, value);
         });
 
         printDependencyMap(dependencyMap, project);
         return dependencyMap;
+    }
+
+    /**
+     * Traverse the dependency tree and resolve the dependencies that will be associated with the given {@code root}
+     * dependency. This method will move the entire dependency tree for known fractions to the top level so that the
+     * build tool can do its packaging piece properly.
+     *
+     * @param knownFractions the list of known fractions. This collection should represent each fraction by its
+     *                       GAV coordinates in the form {@code group:artifact}
+     * @param scope          the scope associated with the {@code root} dependency.
+     * @param root           the root dependency, which effectively translates to the key in the dependency map.
+     * @param node           the current node (under the root dependency) that is being resolved.
+     * @param depsMaps       the dependency map that needs to be populated with the child dependencies.
+     */
+    private static void resolveDependencies(Collection<String> knownFractions, String scope, ResolvedDependency root,
+                                            ResolvedDependency node, Map<DependencyDescriptor, Set<DependencyDescriptor>> depsMaps) {
+
+        String key = String.format(GROUP_ARTIFACT_FORMAT, node.getModuleGroup(), node.getModuleName());
+        DependencyDescriptor descriptor = asDescriptor(scope, node);
+        if (depsMaps.containsKey(descriptor)) {
+            return;
+        }
+        if (knownFractions.contains(key)) {
+            depsMaps.put(descriptor, getDependenciesTransitively(scope, node));
+            return;
+        }
+        if (!node.getModuleArtifacts().isEmpty()) {
+            depsMaps.computeIfAbsent(asDescriptor(scope, root), __ -> new HashSet<>(3)).add(descriptor);
+        }
+        node.getChildren().forEach(rd -> resolveDependencies(knownFractions, scope, root, rd, depsMaps));
     }
 
     /**
@@ -312,6 +354,7 @@ public final class GradleDependencyResolutionHelper {
                 builder.append(NEW_LINE);
             });
             project.getLogger().info(builder.toString());
+            // displayMessage(builder.toString());
         }
     }
 
@@ -358,7 +401,7 @@ public final class GradleDependencyResolutionHelper {
                             Object value = field.get(entry);
                             if (value instanceof ModuleVersionIdentifier) {
                                 ModuleVersionIdentifier mv = (ModuleVersionIdentifier) value;
-                                identifiers.add(String.format("%s:%s:%s", mv.getGroup(), mv.getName(), mv.getVersion()));
+                                identifiers.add(String.format(GROUP_ARTIFACT_VERSION_FORMAT, mv.getGroup(), mv.getName(), mv.getVersion()));
                             } else {
                                 project.getLogger().debug("Unable to determine field type: {}", field);
                             }
@@ -400,6 +443,31 @@ public final class GradleDependencyResolutionHelper {
         }
         return value;
     }
+
+    /*
+     * Debugging the logic within class is quite challenging since the execution happens within the Gradle daemon. The
+     * below method will launch a JFrame and display the message that you provide. Uncomment when debugging this class.
+     *
+     * @param message the message to display in the UI.
+     */
+    /*
+    private static void displayMessage(String message) {
+        javax.swing.JFrame.setDefaultLookAndFeelDecorated(true);
+        javax.swing.JFrame frame = new javax.swing.JFrame();
+        frame.setTitle("Thorntail Debug Window");
+        frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+        javax.swing.JTextArea textArea = new javax.swing.JTextArea();
+        javax.swing.JScrollPane pane = new javax.swing.JScrollPane(textArea);
+        textArea.setText(message);
+        frame.add(pane);
+        frame.pack();
+        frame.setVisible(true);
+    }
+     */
+
+    private static final String GROUP_ARTIFACT_FORMAT = "%s:%s";
+
+    private static final String GROUP_ARTIFACT_VERSION_FORMAT = "%s:%s:%s";
 
     // Translate the different Gradle dependency scopes in to values that map to ShrinkWrap's scope type.
     // c.f.: https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_plugin_and_dependency_management

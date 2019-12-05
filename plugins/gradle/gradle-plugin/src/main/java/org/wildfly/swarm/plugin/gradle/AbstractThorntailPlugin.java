@@ -18,10 +18,15 @@ package org.wildfly.swarm.plugin.gradle;
 
 import javax.inject.Inject;
 
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.ConfigurationContainer;
+import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.tooling.provider.model.ToolingModelBuilder;
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
+
+import static org.wildfly.swarm.plugin.gradle.GradleDependencyResolutionHelper.determinePluginVersion;
 
 /**
  * The base plugin that initializes the tooling model.
@@ -35,6 +40,7 @@ public class AbstractThorntailPlugin implements Plugin<Project> {
     public static final String THORNTAIL_EXTENSION = "thorntail";
 
     private final ToolingModelBuilderRegistry registry;
+    private Project project;
 
     /**
      * Constructs a new instance of {@code AbstractThorntailPlugin}, which is initialized with the Gradle tooling model builder registry.
@@ -48,6 +54,7 @@ public class AbstractThorntailPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
+        this.project = project;
         // Skip if the plugin has already been applied.
         if (project.getExtensions().findByType(ThorntailExtension.class) == null) {
             ThorntailExtension extension = new ThorntailExtension(project);
@@ -55,6 +62,32 @@ public class AbstractThorntailPlugin implements Plugin<Project> {
 
             // Register a model builder as well.
             registry.register(new ThorntailToolingModelBuilder());
+
+            //noinspection Convert2Lambda
+            project.afterEvaluate(new Action<Project>() {
+                @Override
+                public void execute(Project p) {
+                    addDependency("runtimeOnly", "io.thorntail:bootstrap:" + determinePluginVersion());
+                }
+            });
+        }
+    }
+
+    /**
+     * Convenience method for adding a dependency identified by the specified GAV coordinates to the given configuration.
+     *
+     * @param configuration the name of the configuration.
+     * @param gav           the GAV coordinates.
+     */
+    protected void addDependency(String configuration, String gav) {
+        final ConfigurationContainer cfgContainer = project.getConfigurations();
+        DependencyHandler handler = project.getDependencies();
+        // Add the bootstrap library to the runtime classpath.
+        if (cfgContainer.findByName(configuration) != null) {
+            handler.add(configuration, gav);
+        } else {
+            System.err.printf("Unable to lookup configuration by name: %s, Thorntail integration might not work.%n",
+                    configuration);
         }
     }
 
@@ -82,7 +115,6 @@ public class AbstractThorntailPlugin implements Plugin<Project> {
          * @param project   the Gradle project reference.
          * @return the fully built {@link ThorntailConfiguration} model.
          */
-        @SuppressWarnings("unchecked")
         @Override
         public Object buildAll(String modelName, Project project) {
             if (!canBuild(modelName)) {
