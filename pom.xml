@@ -35,7 +35,7 @@
     <version.wildfly.swarm.checkstyle>3</version.wildfly.swarm.checkstyle>
 
     <!-- ===== Thorntail and Config APIs ===== -->
-    <version.certified-community>2.5.0.Final</version.certified-community>
+    <version.certified-community>2.6.0.Final</version.certified-community>
     <version.wildfly.swarm>${project.version}</version.wildfly.swarm>
 
     <version.thorntail.fraction.plugin>98</version.thorntail.fraction.plugin>

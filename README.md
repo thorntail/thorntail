@@ -5,7 +5,7 @@
 
 ![Thorntail: Rightsize your JavaEE Applications](http://thorntail.io/images/thorntail_horizontal_rgb_600px_reverse.png)
 
-> Issues for v2/master are being tracked using the [JBoss issue tracking system](https://issues.jboss.org/projects/THORN/issues?filter=allopenissues) (JIRA).
+> Issues for v2/master are being tracked using the [Red Hat issue tracking system](https://issues.redhat.com/projects/THORN/issues?filter=allopenissues) (JIRA).
 > Issues for v4 are being tracked in GitHub Issues.
 > Bug reports and feature requests are greatly appreciated.
 

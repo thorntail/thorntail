@@ -7,7 +7,7 @@
 * Trigger a build of https://ci.wildfly-swarm.io/view/Release/job/thorntail-release/build?delay=0sec
     * Specifying release and next version (with -SNAPSHOT suffix), for example, 2.0.0.Final and 2.0.1.Final-SNAPSHOT.
 
-* Wait until the build updates the `master` branch with the next development version and then update `/boms/bom-certified/pom.xml` and `/docs/howto/pom.xml` with this version as well, because it doesn't happen in the above command (maybe add something to CI job to do this?).
+* Wait until the build updates the `master` branch with the next development version and then update `/boms/bom-certified/pom.xml` and `/docs/howto/pom.xml` with this version as well, because it doesn't happen in the above command (maybe add something to CI job to do this?). Updating `version.certified-community` in `/pom.xml` is also a good idea, though it isn't stricly required.
 
 * Wait for release to be available in Maven Central before continuing with examples and JIRA releases
 
@@ -65,13 +65,13 @@
 
 # JIRA Releasing
 
-* Go to https://issues.jboss.org/projects/THORN?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=unreleased and select `...` under Actions for the row matching the release we are performing.
+* Go to https://issues.redhat.com/projects/THORN?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page&status=unreleased and select `...` under Actions for the row matching the release we are performing.
 
 * Select `Release` from the drop down.
 
 * Set the current date, which is the date of the release and then click `Release`.
 
-* Open https://issues.jboss.org/issues/?jql=project%20%3D%20THORN%20AND%20status%20in%20(Resolved%2C%20%22Ready%20for%20QA%22%2C%20%22QA%20In%20Progress%22%2C%20Verified)%20AND%20fixVersion%20%3D%20EMPTY to find all issues that have been resolved without a `fixVersion` set.
+* Open https://issues.redhat.com/issues/?jql=project%20%3D%20THORN%20AND%20status%20in%20(Resolved%2C%20%22Ready%20for%20QA%22%2C%20%22QA%20In%20Progress%22%2C%20Verified)%20AND%20fixVersion%20%3D%20EMPTY to find all issues that have been resolved without a `fixVersion` set.
 
 * Select `Tools` from top right corner, then `all {x} issues` under `Bulk Change`.
 
@@ -81,7 +81,7 @@
 
 * Review the changes it will make and select `Confirm`. You will need to acknowledge the updates once they're complete.
 
-* Open https://issues.jboss.org/issues/?jql=project%20%3D%20THORN%20AND%20status%20!%3D%20Closed%20AND%20fixVersion%20%3D%202.0.0.Final replacing the version that we're releasing in the query.
+* Open https://issues.redhat.com/issues/?jql=project%20%3D%20THORN%20AND%20status%20!%3D%20Closed%20AND%20fixVersion%20%3D%202.0.0.Final replacing the version that we're releasing in the query.
 
 * Once again we need to perform a `Bulk Update` of all the issues, which should now include those that we set the `fixVersion` on in the previous steps.
 

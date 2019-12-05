@@ -2,7 +2,7 @@ var https = require('https')
 
 var version = process.argv[2];
 
-https.get( 'https://issues.jboss.org/rest/api/latest/search?maxResults=100&jql=project=THORN+AND+fixVersion=' + version + '+order+by+key+asc', function(result, err) {
+https.get( 'https://issues.redhat.com/rest/api/latest/search?maxResults=100&jql=project=THORN+AND+fixVersion=' + version + '+order+by+key+asc', function(result, err) {
 
   var buf = "";
 
@@ -32,14 +32,14 @@ https.get( 'https://issues.jboss.org/rest/api/latest/search?maxResults=100&jql=p
     } );
 
     console.log( "== Changelog" );
-    console.log( "Release notes for " + version + " are available https://issues.jboss.org/secure/ReleaseNote.jspa?projectId=12317020&version=" + jiraVersion + "[here]." );
+    console.log( "Release notes for " + version + " are available https://issues.redhat.com/secure/ReleaseNote.jspa?projectId=12317020&version=" + jiraVersion + "[here]." );
     console.log();
 
     Object.keys( partitions ).forEach( function(type) {
       console.log( "=== " + type );
       partitions[type].forEach( function(e) {
         if ( e.fields.resolution ) {
-          console.log( '* [https://issues.jboss.org/browse/' + e.key + '[' + e.key + ']] ' + e.fields.summary + ' (' + e.fields.resolution.name + ')' );
+          console.log( '* [https://issues.redhat.com/browse/' + e.key + '[' + e.key + ']] ' + e.fields.summary + ' (' + e.fields.resolution.name + ')' );
         }
       } );
       console.log();
@@ -47,7 +47,7 @@ https.get( 'https://issues.jboss.org/rest/api/latest/search?maxResults=100&jql=p
     if (breaking.length > 0) {
       console.log("== Breaking changes");
       breaking.forEach(function(e) {
-        console.log('* [https://issues.jboss.org/browse/' + e.key + '[' + e.key + ']] ' + e.fields.summary);
+        console.log('* [https://issues.redhat.com/browse/' + e.key + '[' + e.key + ']] ' + e.fields.summary);
       });
     }
   } );
