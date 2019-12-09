@@ -25,6 +25,8 @@ import org.wildfly.swarm.tools.ArtifactResolvingHelper;
 import org.wildfly.swarm.tools.ArtifactSpec;
 
 /**
+ * An implementation of the {@link ArtifactResolvingHelper} for Gradle based builds.
+ *
  * @author Bob McWhirter
  */
 public class GradleArtifactResolvingHelper implements ArtifactResolvingHelper {

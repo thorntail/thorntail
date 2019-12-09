@@ -1,5 +1,3 @@
-import org.gradle.api.tasks.testing.Test
-
 /*
  * Copyright 2018 Red Hat, Inc, and individual contributors.
  *
@@ -15,6 +13,8 @@ import org.gradle.api.tasks.testing.Test
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+import org.gradle.api.tasks.testing.Test
 
 // Given our current integration model, we end up in a scenario where we are unable to perform all integrations from
 // Java layer as that would mean that we now need to have a dependency on a newer version of the Gradle plugin.

@@ -103,7 +103,7 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
      */
     public boolean isPresolved() {
         // Check if the tool has added unsolved dependencies to this instance that need further resolution.
-        boolean unsolvedDependenciesExist = getDirectDeps().stream().anyMatch(d -> !getTransientDeps(d).isEmpty());
+        boolean unsolvedDependenciesExist = getDirectDeps().stream().anyMatch(d -> !isComplete(d));
         return !unsolvedDependenciesExist;
     }
 

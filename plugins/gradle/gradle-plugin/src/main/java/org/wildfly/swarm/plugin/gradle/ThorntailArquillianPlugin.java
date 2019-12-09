@@ -18,8 +18,6 @@ package org.wildfly.swarm.plugin.gradle;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
 
 import javax.inject.Inject;
@@ -33,6 +31,8 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+
+import static org.wildfly.swarm.plugin.gradle.GradleDependencyResolutionHelper.determinePluginVersion;
 
 /**
  * Gradle plugin for enabling Arquillian tests based on Thorntail. This is useful in cases where a Gradle project doesn't
@@ -71,17 +71,13 @@ public class ThorntailArquillianPlugin extends AbstractThorntailPlugin {
         project.afterEvaluate(new Action<Project>() {
             @Override
             public void execute(Project __) {
-                final String CONFIGURATION = "testRuntimeClasspath";
-                // Add the Gradle tooling dependency if it is missing.
-                String gav = "org.gradle:gradle-tooling-api:" + project.getGradle().getGradleVersion();
-                Configuration config = project.getConfigurations().findByName("testRuntimeClasspath");
-                if (config != null) {
-                    DependencyHandler handler = project.getDependencies();
-                    handler.add(config.getName(), handler.create(gav));
-                } else {
-                    System.err.println("Unable to add Gradle Tooling APIs to the " + CONFIGURATION +
-                            ". Thorntail Arquillian integration might not work.");
-                }
+
+                // Add a dependency on the Arquillian library
+                addDependency("testImplementation", "io.thorntail:arquillian:" + determinePluginVersion());
+
+                // Add the Gradle tooling dependencies to the test runtime.
+                addDependency("testRuntimeOnly", "org.gradle:gradle-tooling-api:" + project.getGradle().getGradleVersion());
+                addDependency("testRuntimeOnly", "io.thorntail:gradle-arquillian-adapter:" + determinePluginVersion());
 
                 URL resource = ThorntailArquillianPlugin.class.getClassLoader().getResource(BUILD_SCRIPT_FRAGMENT);
                 if (resource != null) {
