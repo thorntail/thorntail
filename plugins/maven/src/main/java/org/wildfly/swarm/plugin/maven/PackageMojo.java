@@ -50,6 +50,7 @@ import org.wildfly.swarm.tools.DeclaredDependencies;
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME
 )
 public class PackageMojo extends AbstractSwarmMojo {
+    static final String REPACKAGE_WAR_ONLY_IN_UBERJAR = "uberjar-only";
 
     static final String UBERJAR_SUFFIX = "thorntail";
 
@@ -59,7 +60,7 @@ public class PackageMojo extends AbstractSwarmMojo {
     protected boolean bundleDependencies;
 
     @Parameter(alias = "filterWebInfLib", defaultValue = "true", property = "thorntail.filterWebInfLib")
-    protected boolean filterWebInfLib;
+    protected String filterWebInfLib;
 
     /**
      * Make a fully executable jar for *nix machines by prepending a launch script to the jar.
@@ -107,7 +108,6 @@ public class PackageMojo extends AbstractSwarmMojo {
     @SuppressWarnings("deprecation")
     @Override
     public void executeSpecific() throws MojoExecutionException, MojoFailureException {
-
         if (this.skip) {
             getLog().info("Skipping packaging");
             return;
@@ -116,6 +116,10 @@ public class PackageMojo extends AbstractSwarmMojo {
             getLog().info("Not processing project with pom packaging");
             return;
         }
+
+        boolean doRepackageWar = Boolean.parseBoolean(filterWebInfLib);
+        boolean doFilterWebInfLib = doRepackageWar || REPACKAGE_WAR_ONLY_IN_UBERJAR.equalsIgnoreCase(filterWebInfLib);
+
         initProperties(false);
         final Artifact primaryArtifact = this.project.getArtifact();
         final String finalName = this.project.getBuild().getFinalName();
@@ -141,7 +145,7 @@ public class PackageMojo extends AbstractSwarmMojo {
                 .properties(this.properties)
                 .mainClass(this.mainClass)
                 .bundleDependencies(this.bundleDependencies)
-                .filterWebInfLib(this.filterWebInfLib)
+                .filterWebInfLib(doFilterWebInfLib)
                 .executable(executable)
                 .executableScript(executableScript)
                 .fractionDetectionMode(fractionDetectMode)
@@ -237,7 +241,7 @@ public class PackageMojo extends AbstractSwarmMojo {
             swarmJarArtifact.setFile(jar);
             this.project.addAttachedArtifact(swarmJarArtifact);
 
-            if (this.project.getPackaging().equals(WAR)) {
+            if (this.project.getPackaging().equals(WAR) && doRepackageWar) {
                 tool.repackageWar(primaryArtifactFile);
             }
         } catch (Exception e) {
