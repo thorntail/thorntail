@@ -67,7 +67,8 @@ A `.properties` file with environment variables to use when executing the applic
 |===
 
 filterWebInfLib::
-If true, the plugin removes artifacts that are provided by the Thorntail runtime from the `WEB-INF/lib` directory of the project WAR file.
+If `true`, the plugin removes artifacts that are provided by the Thorntail runtime from the `WEB-INF/lib` directory of the project WAR file.
+If `uberjar-only`, this transformation is only done on the WAR file that is put into the uberjar, and the standalone WAR file remains untouched.
 Otherwise, the contents of `WEB-INF/lib` remain untouched.
 +
 [cols="1,2a"]
