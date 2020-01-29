@@ -54,6 +54,9 @@ public class PropertiesConfigNodeFactory {
         while (names.hasMoreElements()) {
             String propName = names.nextElement().toString();
             String propValue = input.getProperty(propName);
+            if (NullPlaceholder.VALUE.equals(propValue)) {
+                propValue = null;
+            }
 
             ConfigKey key = ConfigKey.parse(propName);
 

@@ -56,6 +56,9 @@ public class EnvironmentConfigNodeFactory {
             String after = normalizeName(name);
             if (after.startsWith("swarm.") || after.startsWith("thorntail.")) {
                 String value = input.get(name);
+                if (NullPlaceholder.VALUE.equals(value)) {
+                    value = null;
+                }
                 ConfigKey key = ConfigKey.parse(after);
                 config.recursiveChild(key, value);
             }
