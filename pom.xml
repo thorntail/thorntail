@@ -30,7 +30,7 @@
 
   <properties>
     <!-- ===== code quality ===== -->
-    <version.checkstyle>8.18</version.checkstyle>
+    <version.checkstyle>8.29</version.checkstyle>
     <version.findbugs>2.0.3</version.findbugs>
     <version.wildfly.swarm.checkstyle>3</version.wildfly.swarm.checkstyle>
 
@@ -235,6 +235,7 @@
     <version.dependencyversion-maven-plugin>1.0.1</version.dependencyversion-maven-plugin>
     <version.wagon-webdav-jackrabbit>2.10</version.wagon-webdav-jackrabbit>
     <version.wiremock-maven-plugin>4.1.0</version.wiremock-maven-plugin>
+    <version.checkstyle.plugin>3.1.0</version.checkstyle.plugin>
 
     <maven.min.version>3.2.1</maven.min.version>
 
