@@ -89,7 +89,7 @@ public class ShrinkwrapArtifactResolvingHelper implements ArtifactResolvingHelpe
             gradleTools.setChecksumPolicy(MavenChecksumPolicy.CHECKSUM_POLICY_IGNORE);
             gradleTools.setUpdatePolicy(MavenUpdatePolicy.UPDATE_POLICY_NEVER);
 
-            Boolean offline = Boolean.valueOf(System.getProperty("swarm.resolver.offline", "false"));
+            Boolean offline = Boolean.valueOf(System.getProperty("thorntail.resolver.offline", "false"));
             final ConfigurableMavenResolverSystem resolver = Maven.configureResolver()
                     .withMavenCentralRepo(true)
                     .withRemoteRepo(jbossPublic)

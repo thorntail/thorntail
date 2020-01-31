@@ -23,7 +23,7 @@ public class NetworkVariableSupplier implements UsageVariableSupplier {
         }
 
         String[] parts = name.split("\\.");
-        if (parts.length > 0 && parts[0].equals("swarm")) {
+        if (parts.length > 0 && parts[0].equals("thorntail")) {
             if (parts.length == 3) {
                 for (Interface each : this.interfaces) {
                     if (parts[1].equals(each.getName())) {
