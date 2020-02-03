@@ -27,7 +27,7 @@ import org.wildfly.swarm.arquillian.CreateSwarm;
  * @uathor Ken Finnigan
  */
 public class AnnotationBasedMain {
-    public static final String ANNOTATED_CLASS_NAME = "swarm.arquillian.createswarm.class";
+    public static final String ANNOTATED_CLASS_NAME = "thorntail.arquillian.createswarm.class";
 
     protected AnnotationBasedMain() {
     }
