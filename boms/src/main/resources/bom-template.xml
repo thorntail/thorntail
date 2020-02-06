@@ -49,6 +49,7 @@
   <properties>
     <version.shrinkwrap>${version.org.jboss.shrinkwrap}</version.shrinkwrap>
     <version.shrinkwrap-descriptors>${version.org.jboss.shrinkwrap.descriptors}</version.shrinkwrap-descriptors>
+    <version.shrinkwrap-resolver>${version.org.jboss.shrinkwrap.resolver}</version.shrinkwrap-resolver>
     <version.thorntail>${project.version}</version.thorntail>
     <version.wildfly-config-api-runtime>${version.wildfly.config-api}</version.wildfly-config-api-runtime>
   </properties>
@@ -83,6 +84,13 @@
         <version>${version.shrinkwrap-descriptors}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.resolver</groupId>
+        <artifactId>shrinkwrap-resolver-bom</artifactId>
+        <version>${version.shrinkwrap-resolver}</version>
+        <scope>import</scope>
+        <type>pom</type>
       </dependency>
       #{dependencies}
     </dependencies>
