@@ -1,0 +1,22 @@
+[id='microprofile']
+= MicroProfile
+
+== Note about YAML configuration
+
+Some MicroProfile specifications define configuration properties that use `/` as a delimiter, because the `.` character is used in fully qualified class names.
+When writing the YAML configuration, it is required to split around `.` and _not_ around `/`.
+
+.YAML configuration for MicroProfile Rest Client
+====
+For example, MicroProfile Rest Client specifies that you can configure URL of an external service with a configuration property named `com.example.demo.client.Service/mp-rest/url`.
+This translates to the following YAML:
+
+[source,yaml]
+----
+com:
+  example:
+    demo:
+      client:
+        Service/mp-rest/url: http://localhost:8080/...
+----
+====
