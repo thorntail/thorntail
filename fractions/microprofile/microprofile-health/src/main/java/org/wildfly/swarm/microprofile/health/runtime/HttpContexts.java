@@ -18,6 +18,7 @@ package org.wildfly.swarm.microprofile.health.runtime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.enterprise.inject.Vetoed;
@@ -69,13 +70,13 @@ public class HttpContexts implements HttpHandler {
             threads(exchange);
             return;
         } else if (HEALTH.equals(exchange.getRequestPath())) {
-            health(exchange, SmallRyeHealthReporter::getHealth);
+            health(exchange, SmallRyeHealthReporter::getHealth, this::defaultUpHealthInfo);
             return;
         } else if (HEALTH_LIVE.equals(exchange.getRequestPath())) {
-            health(exchange, SmallRyeHealthReporter::getLiveness);
+            health(exchange, SmallRyeHealthReporter::getLiveness, this::defaultUpHealthInfo);
             return;
         } else if (HEALTH_READY.equals(exchange.getRequestPath())) {
-            health(exchange, SmallRyeHealthReporter::getReadiness);
+            health(exchange, SmallRyeHealthReporter::getReadiness, this::defaultDownHealthInfo);
             return;
         }
 
@@ -91,7 +92,8 @@ public class HttpContexts implements HttpHandler {
         exchange.getResponseHeaders().put(new HttpString("Access-Control-Max-Age"), "1209600");
     }
 
-    private void health(HttpServerExchange exchange, Function<SmallRyeHealthReporter, SmallRyeHealth> healthFunction) {
+    private void health(HttpServerExchange exchange, Function<SmallRyeHealthReporter, SmallRyeHealth> healthFunction,
+            Consumer<HttpServerExchange> defaultHealthInfo) {
         if (monitor.getHealthReporter() != null) {
             SmallRyeHealthReporter reporter = (SmallRyeHealthReporter) monitor.getHealthReporter();
             SmallRyeHealth health;
@@ -114,14 +116,21 @@ public class HttpContexts implements HttpHandler {
             exchange.getResponseSender().send(health.getPayload().toString());
             exchange.endExchange();
         } else {
-            defaultHealthInfo(exchange);
+            defaultHealthInfo.accept(exchange);
         }
     }
 
-    private void defaultHealthInfo(HttpServerExchange exchange) {
+    private void defaultUpHealthInfo(HttpServerExchange exchange) {
         exchange.setStatusCode(200);
         responseHeaders(exchange);
         exchange.getResponseSender().send("{\"status\":\"UP\", \"checks\":[]}");
+        exchange.endExchange();
+    }
+
+    private void defaultDownHealthInfo(HttpServerExchange exchange) {
+        exchange.setStatusCode(503);
+        responseHeaders(exchange);
+        exchange.getResponseSender().send("{\"status\":\"DOWN\", \"checks\":[]}");
         exchange.endExchange();
     }
 

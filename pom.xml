@@ -529,7 +529,7 @@
         <artifactId>bootstrap</artifactId>
         <version>2.6.1.Final-SNAPSHOT</version>
       </dependency>
-      
+
       <dependency>
         <groupId>io.thorntail</groupId>
         <artifactId>maven-utils</artifactId>
@@ -1408,6 +1408,7 @@
         <module>testsuite/testsuite-microprofile-jwt</module>
         <module>testsuite/testsuite-microprofile-metrics</module>
         <module>testsuite/testsuite-microprofile-fault-tolerance</module>
+        <module>testsuite/testsuite-microprofile-health</module>
         <module>testsuite/testsuite-local-dependencies</module>
         <module>testsuite/testsuite-logging</module>
         <module>testsuite/testsuite-management</module>
