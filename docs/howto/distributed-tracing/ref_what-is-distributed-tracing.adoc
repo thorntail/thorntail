@@ -6,7 +6,7 @@ In the microservices architecture, where multiple services serve a single user r
 One technique that makes debugging easier is called _distributed tracing_.
 Distributed tracing is collecting information about service invocations, correlating it to find all invocations related to a single user request, and visualizing the data in a form that helps you understand the hierarchy of invocations and makes finding problems easier.
 
-{Thorntail} provides a fraction for MicroProfile OpenTracing, an API for distributed tracing, built on JAX-RS and OpenTracing.
+{Thorntail} provides a fraction for Eclipse MicroProfile OpenTracing, an API for distributed tracing, built on JAX-RS and OpenTracing.
 Another fraction is provided to configure Jaeger, a popular tracer.
 Inside the application, you need nothing except these fractions.
 Outside of the application, a tracer typically runs.

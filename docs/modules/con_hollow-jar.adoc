@@ -46,7 +46,7 @@ ifndef::product[]
 full:: The main Java EE related capabilities
 endif::[]
 web:: Functionality focused on web technologies
-microprofile:: Functionality defined by all Eclipse MicroProfile specifications
+microprofile:: Functionality defined by all Eclipse Eclipse MicroProfile specifications
 
 The hollow JARs are available under the following coordinates:
 

@@ -20,10 +20,10 @@ thorntail:
 ====
 
 This simple rule applies always, there are no exceptions and no additional delimiters.
-Most notably, some MicroProfile specifications define configuration properties that use `/` as a delimiter, because the `.` character is used in fully qualified class names.
+Most notably, some Eclipse MicroProfile specifications define configuration properties that use `/` as a delimiter, because the `.` character is used in fully qualified class names.
 When writing the YAML configuration, it is still required to split around `.` and _not_ around `/`.
 
-.YAML configuration for MicroProfile Rest Client
+.YAML configuration for Eclipse MicroProfile Rest Client
 ====
 For example, MicroProfile Rest Client specifies that you can configure URL of an external service with a configuration property named `com.example.demo.client.Service/mp-rest/url`.
 This translates to the following YAML:

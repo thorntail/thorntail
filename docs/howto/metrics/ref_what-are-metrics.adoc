@@ -12,7 +12,7 @@ To make solving problems easier, applications must expose machine-readable data 
 These kinds of data are referred to as _metrics_.
 Collecting metrics, visualizing them, setting alerts, discovering trends, etc. are very important to keep a service healthy.
 
-{Thorntail} provides a fraction for MicroProfile Metrics, an easy-to-use API for exposing metrics.
+{Thorntail} provides a fraction for Eclipse MicroProfile Metrics, an easy-to-use API for exposing metrics.
 Among other formats, it supports exporting data in the native format of Prometheus, a popular monitoring solution.
 Inside the application, you need nothing except this fraction.
 Outside of the application, Prometheus typically runs.

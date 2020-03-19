@@ -41,14 +41,14 @@ Here, you can see that not only JAX-RS resource methods can be traced.
 This is a regular method in a CDI bean.
 Unlike JAX-RS resources, which are traced automatically, other methods need the explicit `@Traced` annotation.
 
-The most important part is this usage of MicroProfile OpenTracing API:
+The most important part is this usage of Eclipse MicroProfile OpenTracing API:
 
 [source,java]
 ----
 include::src/main/java/org/wildfly/swarm/howto/tracing/MyService.java[tag=client-registration,indent=0]
 ----
 
-This snippet shows how MicroProfile OpenTracing integrates with JAX-RS Client to ensure the trace is propagated across services.
+This snippet shows how Eclipse MicroProfile OpenTracing integrates with JAX-RS Client to ensure the trace is propagated across services.
 Without the integration, it would be impossible to correlate the invocations as part of a single user request.
 
 [NOTE]
@@ -93,4 +93,3 @@ Click on one of the traces to show detailed information about that particular re
 
 For all these invocations, you can see how long they took and when they occurred as part of the entire request processing.
 --
-

@@ -4,7 +4,7 @@
 
 https://projects.eclipse.org/projects/technology.microprofile[MicroProfile] is a project aimed at optimizing Enterpise Java for the microservices architecture.
 
-{Thorntail} implements https://projects.eclipse.org/projects/technology.microprofile/releases/microprofile-2.2[MicroProfile 2.2] and provides a stand-alone MicroProfile server that you can use to deploy compliant WAR applications.
+{Thorntail} implements https://projects.eclipse.org/projects/technology.microprofile/releases/microprofile-2.2[MicroProfile 2.2] and provides a stand-alone Eclipse MicroProfile server that you can use to deploy compliant WAR applications.
 
 ifndef::product[]
 [discrete]

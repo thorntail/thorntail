@@ -72,7 +72,7 @@ include::src/main/java/org/wildfly/swarm/howto/tracing/MySimpleResource.java[tag
 ----
 
 All JAX-RS resources are automatically traced.
-You can customize this behavior using the `@Traced` annotation from MicroProfile OpenTracing.
+You can customize this behavior using the `@Traced` annotation from Eclipse MicroProfile OpenTracing.
 --
 
 . Launch your application:
