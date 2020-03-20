@@ -1,4 +1,6 @@
-= Eclipse MicroProfile Rest Client
+= MicroProfile Rest Client
+
+This fraction implements the https://github.com/eclipse/microprofile-rest-client[Eclipse MicroProfile Rest Client specification]
 
 == CDI Interceptors Support
 

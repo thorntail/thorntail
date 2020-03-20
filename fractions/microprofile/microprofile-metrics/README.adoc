@@ -1,6 +1,6 @@
-= Eclipse MicroProfile Metrics
+= MicroProfile Metrics
 
-This fraction implements the https://github.com/eclipse/microprofile-metrics/releases/tag/1.0[MicroProfile Metrics 1.0 specification].
+This fraction implements the https://github.com/eclipse/microprofile-metrics/[Eclipse MicroProfile Metrics specification].
 
 To use this in your project you need the following in your pom.xml
 
@@ -12,7 +12,7 @@ To use this in your project you need the following in your pom.xml
     </dependency>
 ----
 
-There is no need to include the Eclipse MicroProfile Metrics API dependency, as it comes with the fraction.
+There is no need to include the  MicroProfile Metrics API dependency, as it comes with the fraction.
 
 By default the base metrics and vendor metrics of the server are exposed as required by the spec.
 

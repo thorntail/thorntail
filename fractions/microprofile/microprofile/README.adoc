@@ -1,5 +1,7 @@
 [id='microprofile']
-= Eclipse MicroProfile
+= MicroProfile
+
+You can use this fraction to add a dependency on all fractions that implement the Eclipse MicroProfile specifications.
 
 == Note about YAML configuration
 
