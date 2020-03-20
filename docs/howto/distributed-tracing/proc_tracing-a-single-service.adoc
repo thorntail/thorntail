@@ -72,7 +72,7 @@ include::src/main/java/org/wildfly/swarm/howto/tracing/MySimpleResource.java[tag
 ----
 
 All JAX-RS resources are automatically traced.
-You can customize this behavior using the `@Traced` annotation from Eclipse MicroProfile OpenTracing.
+You can customize this behavior using the `@Traced` annotation from MicroProfile OpenTracing.
 --
 
 . Launch your application:
@@ -102,4 +102,3 @@ You can see all the requests you performed and basic information about them.
 .Additional resources
 
 * For more information about configuring Jaeger sampling, see the link:https://www.jaegertracing.io/docs/latest/sampling/[Jaeger documentation^].
-

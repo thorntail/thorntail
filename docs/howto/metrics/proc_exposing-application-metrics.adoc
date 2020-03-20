@@ -37,7 +37,7 @@ include::prometheus.yml[tag=thorntail]
 ----
 +
 The default behavior of {Thorntail}-based applications is to expose metrics at the `/metrics` endpoint.
-This is what the Eclipse MicroProfile Metrics specification requires, and also what Prometheus expects.
+This is what the MicroProfile Metrics specification requires, and also what Prometheus expects.
 --
 
 * The Prometheus server started on `localhost`:
@@ -102,11 +102,10 @@ Hello from counted and timed endpoint
 . Alternatively, select `application:hello_time_mean_seconds` to see the mean time of all the invocations.
 
 Note that all metrics you created are prefixed with `application:`.
-There are other metrics, automatically exposed by {Thorntail} as the Eclipse MicroProfile Metrics specification requires.
+There are other metrics, automatically exposed by {Thorntail} as the MicroProfile Metrics specification requires.
 Those metrics are prefixed with `base:` and `vendor:` and expose information about the JVM in which the application runs.
 --
 
 .Additional resources
 
-* For additional types of metrics, see the link:https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics documentation^].
-
+* For additional types of metrics, see the link:https://github.com/eclipse/microprofile-metrics[Eclipse MicroProfile Metrics documentation^].
