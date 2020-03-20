@@ -1,5 +1,5 @@
 [id='microprofile-fault-tolerance']
-= Eclipse MicroProfile Fault Tolerance
+= MicroProfile Fault Tolerance
 
 This fraction implements the https://github.com/eclipse/microprofile-fault-tolerance[Eclipse MicroProfile Fault Tolerance API^].
 The implementation depends on the xref:_hystrix[Hystrix fraction], which is added transitively into your application.

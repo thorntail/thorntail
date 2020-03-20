@@ -25,7 +25,7 @@ NOTE: The `org.eclipse.microprofile.faulttolerance.Asynchronous` annotation is c
 
 == RestClientProxy
 
-In addition to the Eclipse MicroProfile Rest Client specification, every Rest Client proxy implements `org.jboss.resteasy.microprofile.client.RestClientProxy` interface which allows you to:
+In addition to the MicroProfile Rest Client specification, every Rest Client proxy implements `org.jboss.resteasy.microprofile.client.RestClientProxy` interface which allows you to:
 
 * obtain the underlying `javax.ws.rs.client.Client` instance
 * release all associated resources, for example:
