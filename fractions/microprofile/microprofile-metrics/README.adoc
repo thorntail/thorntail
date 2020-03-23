@@ -12,7 +12,7 @@ To use this in your project you need the following in your pom.xml
     </dependency>
 ----
 
-There is no need to include the  MicroProfile Metrics API dependency, as it comes with the fraction.
+There is no need to include the MicroProfile Metrics API dependency, as it comes with the fraction.
 
 By default the base metrics and vendor metrics of the server are exposed as required by the spec.
 
