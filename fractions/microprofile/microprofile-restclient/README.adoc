@@ -1,5 +1,7 @@
 = MicroProfile Rest Client
 
+This fraction implements the https://github.com/eclipse/microprofile-rest-client[Eclipse MicroProfile Rest Client specification].
+
 == CDI Interceptors Support
 
 In general, Rest Client proxies are not created by the CDI container and therefore method invocations do not pass through CDI interceptors.

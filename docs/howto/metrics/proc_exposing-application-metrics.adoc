@@ -108,5 +108,4 @@ Those metrics are prefixed with `base:` and `vendor:` and expose information abo
 
 .Additional resources
 
-* For additional types of metrics, see the link:https://github.com/eclipse/microprofile-metrics[MicroProfile Metrics documentation^].
-
+* For additional types of metrics, see the link:https://github.com/eclipse/microprofile-metrics[Eclipse MicroProfile Metrics documentation^].

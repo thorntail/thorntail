@@ -102,4 +102,3 @@ You can see all the requests you performed and basic information about them.
 .Additional resources
 
 * For more information about configuring Jaeger sampling, see the link:https://www.jaegertracing.io/docs/latest/sampling/[Jaeger documentation^].
-

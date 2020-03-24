@@ -58,4 +58,3 @@ ifndef::product[    <artifactId>[full|web|microprofile]</artifactId>]
 ifdef::product[    <artifactId>[web|microprofile]</artifactId>]
 </dependency>
 ----
-

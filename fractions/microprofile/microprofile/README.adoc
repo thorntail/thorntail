@@ -1,9 +1,11 @@
 [id='microprofile']
 = MicroProfile
 
+You can use this fraction to add a dependency on all fractions that implement the Eclipse MicroProfile specifications.
+
 == Note about YAML configuration
 
-Some MicroProfile specifications define configuration properties that use `/` as a delimiter, because the `.` character is used in fully qualified class names.
+Some Eclipse MicroProfile specifications define configuration properties that use `/` as a delimiter, because the `.` character is used in fully qualified class names.
 When writing the YAML configuration, it is required to split around `.` and _not_ around `/`.
 
 .YAML configuration for MicroProfile Rest Client
