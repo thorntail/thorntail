@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<module xmlns="urn:jboss:module:1.5" name="org.mvcspec.ozark">
+<module xmlns="urn:jboss:module:1.5" name="org.eclipse.krazo">
   <resources>
     <artifact name="javax.mvc:javax.mvc-api:${version.mvc}"/>
-    <artifact name="org.mvc-spec.ozark:ozark-core:${version.ozark}"/>
-    <artifact name="org.mvc-spec.ozark:ozark-resteasy:${version.ozark}"/>
+    <artifact name="org.eclipse.krazo:krazo-core:${version.krazo}"/>
+    <artifact name="org.eclipse.krazo:krazo-resteasy:${version.krazo}"/>
   </resources>
   <dependencies>
     <module name="javax.servlet.api"/>
