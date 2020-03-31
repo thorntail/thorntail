@@ -19,12 +19,12 @@
   <artifactId>mvc</artifactId>
 
   <name>MVC</name>
-  <description>MVC 1.0 with Ozark for developing Web UIs</description>
+  <description>MVC 1.0 with Krazo for developing Web UIs</description>
 
   <packaging>jar</packaging>
 
   <properties>
-    <swarm.fraction.stability>experimental</swarm.fraction.stability>
+    <swarm.fraction.stability>stable</swarm.fraction.stability>
     <swarm.fraction.tags>JavaEE,Web</swarm.fraction.tags>
   </properties>
 
@@ -59,15 +59,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.mvc-spec.ozark</groupId>
-      <artifactId>ozark-core</artifactId>
-      <version>${version.ozark}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mvc-spec.ozark</groupId>
-      <artifactId>ozark-resteasy</artifactId>
-      <version>${version.ozark}</version>
+      <groupId>org.eclipse.krazo</groupId>
+      <artifactId>krazo-resteasy</artifactId>
+      <version>${version.krazo}</version>
       <scope>provided</scope>
     </dependency>
 

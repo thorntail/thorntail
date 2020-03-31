@@ -170,8 +170,8 @@
     <version.groovy>2.5.8</version.groovy>
 
     <!-- MVC -->
-    <version.mvc>1.0-pfd</version.mvc>
-    <version.ozark>1.0.0-m04</version.ozark>
+    <version.mvc>1.0.0</version.mvc>
+    <version.krazo>1.0.0</version.krazo>
 
     <!-- unsorted -->
     <version.asciidoctorj>1.5.5</version.asciidoctorj>
