@@ -145,8 +145,15 @@ public class WarBuilder {
         File file = path.toFile();
         if (file.isFile()) {
             try {
-                String projectDir = Paths.get("src", "main", "webapp").toFile().getAbsolutePath();
-
+                String projectDir = System.getProperty("thorntail.runner.webapp-location");
+                if (projectDir != null) {
+                    projectDir = Paths.get(projectDir).toFile().getAbsolutePath();
+                    if (file.getAbsolutePath().contains("WEB-INF" + File.separator + "classes")) { // Ignore classes.
+                        return;
+                    }
+                } else {
+                    projectDir = Paths.get("src", "main", "webapp").toFile().getAbsolutePath();
+                }
                 String fileName = file.getAbsolutePath().replace(projectDir, "");
                 writeFileToZip(output, file, fileName);
             } catch (IOException e) {
