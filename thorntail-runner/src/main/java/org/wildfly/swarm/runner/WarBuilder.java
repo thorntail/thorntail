@@ -108,7 +108,7 @@ public class WarBuilder {
                 return;
             }
             Files.walk(webappPath)
-                    .forEach(this::addWebappResourceToWar);
+                    .forEach(resourcePath -> addWebAppResourceToWar(resourcePath, webappPath));
         } catch (IOException e) {
             throw new RuntimeException("Unable to get webapp dir");
         }
@@ -121,7 +121,7 @@ public class WarBuilder {
 
         if (webappLocationProperty != null) {
             webappPath = Paths.get(webappLocationProperty);
-            if (!webappPath.toFile().exists()) {
+            if (!Files.isDirectory(webappPath)) {
                 // user provided a location for webapp dir but it's invalid
                 System.err.println("Invalid web app location directory provided: " + webappLocationProperty);
                 System.exit(1);
@@ -141,16 +141,19 @@ public class WarBuilder {
         }
     }
 
-    private void addWebappResourceToWar(Path path) {
-        File file = path.toFile();
-        if (file.isFile()) {
+    private void addWebAppResourceToWar(Path resourcePath, Path webappDirPath) {
+        if (Files.isRegularFile(resourcePath)) {
             try {
-                String projectDir = Paths.get("src", "main", "webapp").toFile().getAbsolutePath();
+                String fileName = webappDirPath.relativize(resourcePath).toString();
 
-                String fileName = file.getAbsolutePath().replace(projectDir, "");
-                writeFileToZip(output, file, fileName);
+                if (fileName.contains("WEB-INF" + File.separator + "classes")
+                        || fileName.contains("WEB-INF" + File.separator + "lib")) {
+                    return;
+                }
+
+                writeFileToZip(output, resourcePath.toFile(), fileName);
             } catch (IOException e) {
-                throw new RuntimeException("Unable to add file: " + path.toAbsolutePath() + "  from webapp to the war", e);
+                throw new RuntimeException("Unable to add file: " + resourcePath.toAbsolutePath() + "  from webapp to the war", e);
             }
         }
     }
