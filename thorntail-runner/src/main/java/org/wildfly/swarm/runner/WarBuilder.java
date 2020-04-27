@@ -148,7 +148,9 @@ public class WarBuilder {
                 String projectDir = System.getProperty("thorntail.runner.webapp-location");
                 if (projectDir != null) {
                     projectDir = Paths.get(projectDir).toFile().getAbsolutePath();
-                    if (file.getAbsolutePath().contains("WEB-INF" + File.separator + "classes")) { // Ignore classes.
+                    if (file.getAbsolutePath().contains("WEB-INF" + File.separator + "classes") || // Ignore classes.
+                            file.getAbsolutePath().contains("WEB-INF" + File.separator + "lib") // Ignore JARs.
+                    ) {
                         return;
                     }
                 } else {
