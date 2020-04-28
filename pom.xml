@@ -38,7 +38,7 @@
     <version.certified-community>2.6.0.Final</version.certified-community>
     <version.wildfly.swarm>${project.version}</version.wildfly.swarm>
 
-    <version.thorntail.fraction.plugin>98</version.thorntail.fraction.plugin>
+    <version.thorntail.fraction.plugin>99</version.thorntail.fraction.plugin>
     <version.thorntail-jdk-specific>2</version.thorntail-jdk-specific>
 
     <version.wildfly.config-api>1.9.0</version.wildfly.config-api>
