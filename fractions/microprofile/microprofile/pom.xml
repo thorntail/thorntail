@@ -87,6 +87,11 @@
       <groupId>io.thorntail</groupId>
       <artifactId>microprofile-restclient</artifactId>
     </dependency>
+    <!-- Fractions introduced by MicroProfile 2.0 -->
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>jaxrs-jsonb</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.wildfly.core</groupId>
