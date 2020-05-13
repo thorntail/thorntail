@@ -136,7 +136,6 @@
         <dependency>
             <groupId>io.thorntail</groupId>
             <artifactId>microprofile-config-wildfly-feature-pack</artifactId>
-            <version>${version.microprofile-config-wildfly}</version>
             <type>zip</type>
             <scope>provided</scope>
             <exclusions>
