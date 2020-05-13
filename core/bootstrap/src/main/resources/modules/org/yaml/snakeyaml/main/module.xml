@@ -13,11 +13,23 @@
     <system export="true">
       <paths>
         <path name="org/yaml/snakeyaml"/>
+        <path name="org/yaml/snakeyaml/composer"/>
         <path name="org/yaml/snakeyaml/constructor"/>
+        <path name="org/yaml/snakeyaml/emitter"/>
+        <path name="org/yaml/snakeyaml/error"/>
+        <path name="org/yaml/snakeyaml/events"/>
+        <path name="org/yaml/snakeyaml/extensions"/>
+        <path name="org/yaml/snakeyaml/extensions/compactnotation"/>
+        <path name="org/yaml/snakeyaml/introspector"/>
+        <path name="org/yaml/snakeyaml/nodes"/>
+        <path name="org/yaml/snakeyaml/parser"/>
+        <path name="org/yaml/snakeyaml/reader"/>
         <path name="org/yaml/snakeyaml/representer"/>
         <path name="org/yaml/snakeyaml/resolver"/>
-        <path name="org/yaml/snakeyaml/parser"/>
-        <path name="org/yaml/snakeyaml/nodes"/>
+        <path name="org/yaml/snakeyaml/scanner"/>
+        <path name="org/yaml/snakeyaml/serializer"/>
+        <path name="org/yaml/snakeyaml/tokens"/>
+        <path name="org/yaml/snakeyaml/util"/>
       </paths>
     </system>
   </dependencies>

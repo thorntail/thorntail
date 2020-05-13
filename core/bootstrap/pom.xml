@@ -61,7 +61,7 @@
             <configuration>
               <excludeTransitive>true</excludeTransitive>
               <includeGroupIds>org.jboss.modules,org.yaml</includeGroupIds>
-              <excludes>**\/MavenArtifactUtil.class,**\/ArtifactCoordinates.class,**\/MavenSettings.class</excludes>
+              <excludes>**\/MavenArtifactUtil.class,**\/ArtifactCoordinates.class,**\/MavenSettings.class,**\/TypeDescription.class,**\/PropertySubstitute.class</excludes>
               <outputDirectory>${project.build.directory}/classes</outputDirectory>
             </configuration>
           </execution>
