@@ -95,6 +95,8 @@ public class ConfigurableManager implements AutoCloseable {
 
     private final List<Object> deferred = new ArrayList<>();
 
+    private final Map<Class<?>, Method[]> sortedMethods = new HashMap<>();
+
     private final ConfigView configView;
 
     public ConfigurableManager(ConfigView configView, DeploymentContext deploymentContext) {
@@ -267,7 +269,7 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     protected Method findGetKeyMethod(Object object) {
-        Method[] methods = object.getClass().getMethods();
+        Method[] methods = getSortedMethods(object.getClass());
 
         for (Method method : methods) {
             if (!Modifier.isPublic(method.getModifiers())) {
@@ -639,7 +641,8 @@ public class ConfigurableManager implements AutoCloseable {
         SubresourceInfo anno = field.getAnnotation(SubresourceInfo.class);
         if (anno != null) {
             String name = anno.value();
-            Method[] methods = instance.getClass().getMethods();
+            Method[] methods = getSortedMethods(instance.getClass());
+
             for (Method method : methods) {
                 if (!method.getName().equals(name)) {
                     continue;
@@ -686,7 +689,7 @@ public class ConfigurableManager implements AutoCloseable {
 
     protected Method getNonKeyedFactoryMethod(Object instance, Field field) {
         String name = field.getName();
-        Method[] methods = instance.getClass().getMethods();
+        Method[] methods = getSortedMethods(instance.getClass());
         for (Method method : methods) {
             if (!method.getName().equals(name)) {
                 continue;
@@ -727,7 +730,7 @@ public class ConfigurableManager implements AutoCloseable {
     }
 
     protected Method getSubresourcesMethod(Object instance) {
-        Method[] methods = instance.getClass().getMethods();
+        Method[] methods = getSortedMethods(instance.getClass());
         for (Method method : methods) {
             if (Modifier.isStatic(method.getModifiers())) {
                 continue;
@@ -798,10 +801,41 @@ public class ConfigurableManager implements AutoCloseable {
         SwarmConfigMessages.MESSAGES.configuration(str.toString());
     }
 
+    private Method[] getSortedMethods(Class<?> clazz) {
+        return sortedMethods.computeIfAbsent(clazz, ignored -> {
+            Method[] methods = clazz.getMethods();
+
+            // methods from subclass must always come before methods from superclass
+            //
+            // this is because we sometimes "override" a method from the generated Config API class directly
+            // in the fraction class, but they have different signatures (Enhanced*Consumer vs. ordinary *Consumer)
+            // and so are not real overrides -- in such case, the class.getMethods() call above can return these methods
+            // in arbitrary order, yet we always want the "overridden" method to win
+            Arrays.sort(methods, (m1, m2) -> {
+                Class<?> c1 = m1.getDeclaringClass();
+                Class<?> c2 = m2.getDeclaringClass();
+
+                if (c1.equals(c2)) {
+                    // this case must be tested first, because subtyping is reflexive
+                    return 0;
+                } else if (c1.isAssignableFrom(c2)) {
+                    return 1;
+                } else if (c2.isAssignableFrom(c1)) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            });
+
+            return methods;
+        });
+    }
+
     public void close() {
         this.seenObjects.clear();
         this.configurables.clear();
         this.deferred.clear();
+        this.sortedMethods.clear();
     }
 
     private Set<ConfigKey> seenObjects = new HashSet<>();
