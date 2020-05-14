@@ -16,7 +16,7 @@
     </parent>
 
     <artifactId>testsuite-microprofile</artifactId>
-    <name>Test Suite: Integration tests for MicroProfile elements</name>
+    <name>Test Suite: MicroProfile</name>
     <description>Test Suite: Tests to make sure MicroProfile fractions work well together</description>
 
     <dependencies>
