@@ -52,7 +52,8 @@ public class HTTP2Customizer implements Customizer {
         }
     }
 
-    public static final String REQUIRED_CIPHER = "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256";
+    public static final String REQUIRED_CIPHER =        "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256";
+    public static final String REQUIRED_CIPHER_IBMJDK = "SSL_ECDHE_RSA_WITH_AES_128_GCM_SHA256";
 
     protected boolean supportsHTTP2() {
         try {
@@ -60,7 +61,7 @@ public class HTTP2Customizer implements Customizer {
             SSLEngine engine = context.createSSLEngine();
             String[] ciphers = engine.getEnabledCipherSuites();
             for (String i : ciphers) {
-                if (i.equals(REQUIRED_CIPHER)) {
+                if (REQUIRED_CIPHER.equals(i) || REQUIRED_CIPHER_IBMJDK.equals(i)) {
                     return true;
                 }
             }

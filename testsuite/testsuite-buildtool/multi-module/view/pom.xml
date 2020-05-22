@@ -11,6 +11,9 @@
 
   <artifactId>multi-module-view</artifactId>
 
+  <name>Test Suite: Buildtool: MultiModule tests: View</name>
+  <description>Test Suite: Buildtool: MultiModule tests: View</description>
+
   <packaging>war</packaging>
 
   <dependencies>

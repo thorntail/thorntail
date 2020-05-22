@@ -12,4 +12,7 @@
 
   <artifactId>multi-module-api</artifactId>
 
+  <name>Test Suite: Buildtool: MultiModule tests: API</name>
+  <description>Test Suite: Buildtool: MultiModule tests: API</description>
+
 </project>

@@ -10,6 +10,9 @@
 
   <artifactId>testsuite-jaeger-microprofile-opentracing</artifactId>
 
+  <name>Test Suite: Jaeger + MicroProfile OpenTracing</name>
+  <description>Test Suite: Jaeger + MicroProfile OpenTracing</description>
+
   <dependencies>
     <dependency>
       <groupId>io.thorntail</groupId>

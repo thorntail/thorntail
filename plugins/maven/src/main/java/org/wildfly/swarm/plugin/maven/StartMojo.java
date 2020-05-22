@@ -236,7 +236,7 @@ public class StartMojo extends AbstractSwarmMojo {
         return executor;
     }
 
-    List<Path> findNeededFractions(final Set<Artifact> existingDeps,
+    List<Path> findNeededFractions(final List<Artifact> existingDeps,
                                    final Path source,
                                    final boolean scanDeps) throws MojoFailureException {
         getLog().info("Scanning for needed Thorntail fractions with mode: " + fractionDetectMode);
@@ -311,9 +311,19 @@ public class StartMojo extends AbstractSwarmMojo {
         final Set<Artifact> artifacts = this.project.getArtifacts();
         boolean hasSwarmDeps = false;
 
+        List<Artifact> artifactsSorted = new ArrayList<>(artifacts.size());
+        for (Artifact artifact : artifacts) {
+            if (artifact.getGroupId().equals(FractionDescriptor.THORNTAIL_GROUP_ID)
+                    && artifact.getArtifactId().equals(DependencyManager.WILDFLY_SWARM_BOOTSTRAP_ARTIFACT_ID)) {
+                artifactsSorted.add(0, artifact);
+            } else {
+                artifactsSorted.add(artifact);
+            }
+        }
+
         final DeclaredDependencies declaredDependencies = new DeclaredDependencies();
 
-        for (Artifact each : artifacts) {
+        for (Artifact each : artifactsSorted) {
 
             String parentDep = each.getDependencyTrail().get(1);
 
@@ -358,7 +368,7 @@ public class StartMojo extends AbstractSwarmMojo {
         if (fractionDetectMode != BuildTool.FractionDetectionMode.never) {
             if (fractionDetectMode == BuildTool.FractionDetectionMode.force ||
                     !hasSwarmDeps) {
-                List<Path> fractionDeps = findNeededFractions(artifacts, archiveContent, scanDependencies);
+                List<Path> fractionDeps = findNeededFractions(artifactsSorted, archiveContent, scanDependencies);
                 for (Path p : fractionDeps) {
                     if (!elements.contains(p)) {
                         elements.add(p);

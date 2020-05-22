@@ -11,6 +11,9 @@
 
   <artifactId>multi-module-test</artifactId>
 
+  <name>Test Suite: Buildtool: MultiModule tests</name>
+  <description>Test Suite: Buildtool: MultiModule tests</description>
+
   <modules>
     <module>api</module>
     <module>view</module>

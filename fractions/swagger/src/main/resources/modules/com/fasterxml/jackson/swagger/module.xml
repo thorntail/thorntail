@@ -4,7 +4,6 @@
     <artifact name="com.fasterxml.jackson.datatype:jackson-datatype-guava:${version.com.fasterxml.jackson}"/>
     <artifact name="com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${version.com.fasterxml.jackson}"/>
     <artifact name="com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${version.com.fasterxml.jackson}"/>
-    <artifact name="org.yaml:snakeyaml:${version.org.snakeyaml}" />
   </resources>
 
   <dependencies>
@@ -14,5 +13,6 @@
     <module name="com.fasterxml.jackson.core.jackson-databind" export="true"/>
     <module name="com.fasterxml.jackson.core.jackson-annotations" export="true"/>
     <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" export="true"/>
+    <module name="org.yaml.snakeyaml"/>
   </dependencies>
 </module>
