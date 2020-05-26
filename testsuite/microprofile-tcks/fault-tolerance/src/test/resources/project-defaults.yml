@@ -1,23 +1,4 @@
-swarm:
-  hystrix:
-    threadpool:
-      default:
-        # Needed for extreme load in some bulkhead tests
-        allowMaximumSizeToDivergeFromCoreSize: true
-        maximumSize: 40
-    command:
-      default:
-        execution:
-          isolation:
-            thread:
-              # Do not interrupt command execution when a timeout occurs - needed for bulkhead tests
-              interruptOnTimeout: false
-              # Async actions don't have a timeout by default (because MP FT spec doesn't require it), but we define one
-              # to make sure tests don't hang (the io_smallrye_faulttolerance_asyncTimeout config property must be set to true)
-              # Of course the timeout value needs to be high enough -- some tests require at least 20 seconds
-              timeoutInMilliseconds: 60000
-        fallback:
-          isolation:
-            semaphore:
-              # Used in BulkheadFallbackRejectTest
-              maxConcurrentRequests: 50
+io:
+  smallrye:
+    faulttolerance:
+      globalThreadPoolSize: 1000

@@ -77,7 +77,7 @@
             <artifactId>microprofile-config-wildfly-config-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.smallrye</groupId>
+            <groupId>io.smallrye.config</groupId>
             <artifactId>smallrye-config</artifactId>
         </dependency>
         <!-- CDI fraction is required to be able to inject Config -->
