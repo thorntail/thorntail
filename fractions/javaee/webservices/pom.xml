@@ -117,5 +117,18 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- needs to come _after_ WildFly feature packs, because in case of conflicts, the last one wins -->
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>microprofile-config-wildfly-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 </project>
