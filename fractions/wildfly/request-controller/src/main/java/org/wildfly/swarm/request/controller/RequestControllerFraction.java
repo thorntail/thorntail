@@ -27,7 +27,7 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @MarshalDMR
 @WildFlyExtension(module = "org.wildfly.extension.request-controller")
-public class RequestControllerFraction extends RequestController<RequestControllerFraction> implements Fraction {
+public class RequestControllerFraction extends RequestController<RequestControllerFraction> implements Fraction<RequestControllerFraction> {
 
     public static RequestControllerFraction createDefaultFraction() {
         return new RequestControllerFraction();

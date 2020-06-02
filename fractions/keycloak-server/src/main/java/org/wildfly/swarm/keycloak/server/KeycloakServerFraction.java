@@ -30,7 +30,7 @@ import static org.wildfly.swarm.keycloak.server.KeycloakServerProperties.DEFAULT
 @WildFlyExtension(module = "org.keycloak.keycloak-server-subsystem")
 @WildFlySubsystem("keycloak-server")
 @MarshalDMR
-public class KeycloakServerFraction extends KeycloakServer<KeycloakServerFraction> implements Fraction {
+public class KeycloakServerFraction extends KeycloakServer<KeycloakServerFraction> implements Fraction<KeycloakServerFraction> {
 
     public static final String JPA = "jpa";
 
@@ -42,7 +42,7 @@ public class KeycloakServerFraction extends KeycloakServer<KeycloakServerFractio
     }
 
     @Override
-    public Fraction applyDefaults() {
+    public KeycloakServerFraction applyDefaults(boolean hasConfiguration) {
         webContext(DEFAULT_WEB_CONTEXT);
         masterRealmName(DEFAULT_REALM_NAME);
         scheduledTaskInterval(900L);

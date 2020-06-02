@@ -25,6 +25,6 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
  */
 @WildFlyExtension(module = "org.wildfly.extension.bean-validation")
 @MarshalDMR
-public class BeanValidationFraction extends BeanValidation<BeanValidationFraction> implements Fraction {
+public class BeanValidationFraction extends BeanValidation<BeanValidationFraction> implements Fraction<BeanValidationFraction> {
 
 }
