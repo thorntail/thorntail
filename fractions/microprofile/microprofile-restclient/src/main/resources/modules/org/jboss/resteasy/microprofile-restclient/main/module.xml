@@ -13,6 +13,5 @@
         <module name="org.eclipse.microprofile.config.api" export="true"/>
         <module name="org.eclipse.microprofile.restclient" export="true" services="import"/>
         <module name="org.jboss.resteasy.resteasy-jaxrs" export="true"/>
-        <module name="org.wildfly.swarm.microprofile.restclient" services="export" export="true" slot="deployment"/>
     </dependencies>
 </module>

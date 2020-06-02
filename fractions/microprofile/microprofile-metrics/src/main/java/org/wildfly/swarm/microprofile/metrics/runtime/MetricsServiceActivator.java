@@ -51,7 +51,7 @@ public class MetricsServiceActivator implements ServiceActivator {
 
         ServiceBuilder<MetricsService> serviceBuilder = metricsServiceBuilder
                 .addDependency(ServerEnvironmentService.SERVICE_NAME, ServerEnvironment.class, service.getServerEnvironmentInjector())
-                .addDependency(ServiceName.parse("jboss.eclipse.microprofile.config.config-provider"))
+                .addDependency(ServiceName.parse("jboss.eclipse.microprofile.config.marker"))
                 .addDependency(Services.JBOSS_SERVER_CONTROLLER, ModelController.class, service.getModelControllerInjector());
 
         serviceBuilder.setInitialMode(ServiceController.Mode.ACTIVE)

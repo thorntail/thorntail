@@ -2,20 +2,14 @@
 = MicroProfile Fault Tolerance
 
 This fraction implements the https://github.com/eclipse/microprofile-fault-tolerance[Eclipse MicroProfile Fault Tolerance API^].
-The implementation depends on the xref:_hystrix[Hystrix fraction], which is added transitively into your application.
-Use xref:configuring-a-thorntail-application_{context}[standard configuration mechanisms] to configure https://github.com/Netflix/Hystrix/wiki/Configuration[Hystrix properties] in your application.
+It is based on https://github.com/smallrye/smallrye-fault-tolerance[SmallRye Fault Tolerance].
 
-== Bulkhead fallback rejection
+== Configuration
 
-If you use the `@Bulkhead` pattern together with some `@Fallback` logic to limit the number of concurrent requests, an invocation may still result in an exception.
+SmallRye Fault Tolerance supports all the configuration options of MicroProfile Fault Tolerance and, additionally, the following options:
 
-=== Semaphore Isolation
-
-For semaphore-style `@Bulkhead` a `BulkheadException` may be thrown if the maximum concurrent limit is reached.
-To avoid that, set the `thorntail.hystrix.command.default.fallback.isolation.semaphore.maxConcurrentRequests` property to increase the limit.
-
-=== Thread Isolation
-
-For `@Bulkhead` used together with `@Asynchronous` a `RejectedExecutionException` may be thrown if the maximum concurrent limit is reached.
-To avoid that, set the `thorntail.hystrix.threadpool.default.maximumSize` property to increase the limit.
-Also don't forget to set the `thorntail.hystrix.threadpool.default.allowMaximumSizeToDivergeFromCoreSize` property to `true`.
+- `io.smallrye.faulttolerance.globalThreadPoolSize`: size of the thread pool used for running `@Asynchronous` actions.
+This does not include bulkhead thread pools.
+Defaults to `100`.
+- `io.smallrye.faulttolerance.timeoutExecutorThreads`: size of the thread pool used for scheduling timeouts.
+Defaults to `5`.

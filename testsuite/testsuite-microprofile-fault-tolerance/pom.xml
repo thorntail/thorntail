@@ -39,10 +39,6 @@
                      <name>thorntail.logging.loggers.[io.smallrye.faulttolerance].level</name>
                      <value>INFO</value>
                   </property>
-                  <property>
-                     <name>thorntail.logging.loggers.[com.netflix.hystrix].level</name>
-                     <value>INFO</value>
-                  </property>
                   <!-- Uncomment to debug arquillian test -->
                   <!-- property>
                      <name>thorntail.debug.port</name>
