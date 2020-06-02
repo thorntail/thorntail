@@ -1397,8 +1397,8 @@
         <module>testsuite/testsuite-jaxrs-jsonb</module>
         <module>testsuite/testsuite-jca</module>
         <module>testsuite/testsuite-jmx</module>
-        <module>testsuite/testsuite-jmx-remote-remoting</module>
         <module>testsuite/testsuite-jmx-remote-management</module>
+        <module>testsuite/testsuite-jmx-remote-remoting</module>
         <module>testsuite/testsuite-jmx-remote-undertow</module>
         <module>testsuite/testsuite-jpa</module>
         <module>testsuite/testsuite-jpa-mysql</module>
@@ -1407,14 +1407,14 @@
         <module>testsuite/testsuite-jsonb</module>
         <module>testsuite/testsuite-jsonp</module>
         <module>testsuite/testsuite-jsp</module>
-        <module>testsuite/testsuite-microprofile</module>
-        <module>testsuite/testsuite-microprofile-jwt</module>
-        <module>testsuite/testsuite-microprofile-metrics</module>
-        <module>testsuite/testsuite-microprofile-fault-tolerance</module>
-        <module>testsuite/testsuite-microprofile-health</module>
         <module>testsuite/testsuite-local-dependencies</module>
         <module>testsuite/testsuite-logging</module>
         <module>testsuite/testsuite-management</module>
+        <module>testsuite/testsuite-microprofile</module>
+        <module>testsuite/testsuite-microprofile-fault-tolerance</module>
+        <module>testsuite/testsuite-microprofile-health</module>
+        <module>testsuite/testsuite-microprofile-jwt</module>
+        <module>testsuite/testsuite-microprofile-metrics</module>
         <module>testsuite/testsuite-modules</module>
         <module>testsuite/testsuite-monitor</module>
         <module>testsuite/testsuite-msc</module>
@@ -1451,8 +1451,6 @@
       </properties>
 
       <modules>
-        <module>testsuite/testsuite-jose-jose4j</module>
-        <module>testsuite/testsuite-jose</module>
         <module>testsuite/testsuite-asciidoctorj</module>
         <module>testsuite/testsuite-batch-jberet</module>
         <module>testsuite/testsuite-cdi-jaxrsapi</module>
@@ -1467,6 +1465,8 @@
         <module>testsuite/testsuite-jgroups</module>
         <module>testsuite/testsuite-jolokia</module>
         <module>testsuite/testsuite-jolokia-keycloak</module>
+        <module>testsuite/testsuite-jose</module>
+        <module>testsuite/testsuite-jose-jose4j</module>
         <module>testsuite/testsuite-keycloak</module>
         <module>testsuite/testsuite-keycloak-mpjwt</module>
         <module>testsuite/testsuite-keycloak-server</module>
@@ -1481,8 +1481,8 @@
         <module>testsuite/testsuite-microprofile-restclient</module>
         <module>testsuite/testsuite-mod_cluster</module>
         <module>testsuite/testsuite-mvc</module>
-        <module>testsuite/testsuite-jaeger-opentracing</module>
         <module>testsuite/testsuite-jaeger-microprofile-opentracing</module>
+        <module>testsuite/testsuite-jaeger-opentracing</module>
         <module>testsuite/testsuite-opentracing</module>
         <module>testsuite/testsuite-scriptengine</module>
         <module>testsuite/testsuite-spring</module>
@@ -1510,10 +1510,10 @@
         </property>
       </activation>
       <modules>
-        <module>testsuite/testsuite-mongodb</module>
-        <module>testsuite/testsuite-orientdb</module>
         <module>testsuite/testsuite-cassandra</module>
+        <module>testsuite/testsuite-mongodb</module>
         <module>testsuite/testsuite-neo4j</module>
+        <module>testsuite/testsuite-orientdb</module>
       </modules>
     </profile>
 
@@ -1563,14 +1563,14 @@
       </activation>
       <modules>
         <module>testsuite/microprofile-tcks</module>
-        <module>testsuite/microprofile-tcks/health</module>
         <module>testsuite/microprofile-tcks/config</module>
+        <module>testsuite/microprofile-tcks/fault-tolerance</module>
+        <module>testsuite/microprofile-tcks/health</module>
         <module>testsuite/microprofile-tcks/jwt-auth</module>
         <module>testsuite/microprofile-tcks/metrics</module>
-        <module>testsuite/microprofile-tcks/fault-tolerance</module>
-        <module>testsuite/microprofile-tcks/restclient</module>
         <module>testsuite/microprofile-tcks/openapi</module>
         <module>testsuite/microprofile-tcks/opentracing</module>
+        <module>testsuite/microprofile-tcks/restclient</module>
       </modules>
     </profile>
 
