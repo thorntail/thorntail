@@ -66,10 +66,15 @@
       <artifactId>opentracing-tracerresolver</artifactId>
       <version>${version.opentracing.tracerresolver}</version>
     </dependency>
+
     <dependency>
-      <groupId>jakarta.platform</groupId>
-      <artifactId>jakarta.jakartaee-api</artifactId>
-      <version>${version.jakartaee-api}</version>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>

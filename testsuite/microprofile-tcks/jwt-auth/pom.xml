@@ -18,19 +18,21 @@
    <name>MicroProfile TCK: JWT</name>
 
    <dependencies>
-
       <dependency>
          <groupId>io.thorntail</groupId>
          <artifactId>microprofile-jwt</artifactId>
       </dependency>
+
       <dependency>
          <groupId>io.thorntail</groupId>
          <artifactId>cdi</artifactId>
       </dependency>
+
       <dependency>
          <groupId>io.thorntail</groupId>
          <artifactId>jaxrs</artifactId>
       </dependency>
+
       <dependency>
          <groupId>io.thorntail</groupId>
          <artifactId>jaxrs-jsonp</artifactId>
@@ -97,12 +99,6 @@
          <version>${version.resteasy}</version>
          <scope>test</scope>
       </dependency>
-
-      <dependency>
-         <groupId>commons-logging</groupId>
-         <artifactId>commons-logging</artifactId>
-      </dependency>
-
    </dependencies>
 
    <build>

@@ -17,27 +17,21 @@
    <name>MicroProfile TCK: Fault Tolerance</name>
 
    <dependencies>
+      <dependency>
+         <groupId>io.thorntail</groupId>
+         <artifactId>microprofile-fault-tolerance</artifactId>
+      </dependency>
 
       <dependency>
          <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
          <artifactId>microprofile-fault-tolerance-tck</artifactId>
-      </dependency>
-
-      <dependency>
-         <groupId>io.thorntail</groupId>
-         <artifactId>microprofile-fault-tolerance</artifactId>
          <scope>test</scope>
-         <exclusions>
-            <exclusion>
-               <groupId>org.jboss.arquillian.junit</groupId>
-               <artifactId>arquillian-junit-container</artifactId>
-            </exclusion>
-         </exclusions>
       </dependency>
 
       <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
+         <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -49,6 +43,7 @@
       <dependency>
          <groupId>org.hamcrest</groupId>
          <artifactId>hamcrest-all</artifactId>
+         <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -101,9 +96,6 @@
                      <value>8787</value>
                   </property-->
                </systemProperties>
-               <systemPropertyVariables>
-                  <io_smallrye_faulttolerance_asyncTimeout>true</io_smallrye_faulttolerance_asyncTimeout>
-               </systemPropertyVariables>
             </configuration>
          </plugin>
       </plugins>

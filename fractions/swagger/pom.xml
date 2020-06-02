@@ -93,6 +93,12 @@
       <groupId>io.swagger</groupId>
       <artifactId>swagger-jaxrs</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.validation</groupId>
+          <artifactId>validation-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

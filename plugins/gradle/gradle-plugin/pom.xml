@@ -51,6 +51,13 @@
     <dependency>
       <groupId>org.gradle</groupId>
       <artifactId>gradle-core</artifactId>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.objenesis</groupId>
+          <artifactId>objenesis</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.gradle</groupId>

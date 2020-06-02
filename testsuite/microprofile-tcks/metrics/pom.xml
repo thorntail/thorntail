@@ -18,20 +18,21 @@
    <name>MicroProfile TCK: Metrics</name>
 
    <dependencies>
-
       <dependency>
-         <groupId>org.eclipse.microprofile.metrics</groupId>
-         <artifactId>microprofile-metrics-rest-tck</artifactId>
+         <groupId>io.thorntail</groupId>
+         <artifactId>microprofile-metrics</artifactId>
       </dependency>
 
       <dependency>
          <groupId>org.eclipse.microprofile.metrics</groupId>
          <artifactId>microprofile-metrics-api-tck</artifactId>
+         <scope>test</scope>
       </dependency>
 
       <dependency>
-         <groupId>io.thorntail</groupId>
-         <artifactId>microprofile-metrics</artifactId>
+         <groupId>org.eclipse.microprofile.metrics</groupId>
+         <artifactId>microprofile-metrics-rest-tck</artifactId>
+         <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -41,13 +42,9 @@
       </dependency>
 
       <dependency>
-         <groupId>commons-logging</groupId>
-         <artifactId>commons-logging</artifactId>
-      </dependency>
-
-      <dependency>
          <groupId>org.jboss.spec.javax.xml.bind</groupId>
          <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+         <scope>test</scope>
       </dependency>
 
       <!-- This is needed for tests with @ShouldThrowException - the real

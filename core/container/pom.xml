@@ -161,6 +161,12 @@
       <artifactId>weld-se-core</artifactId>
       <version>${version.weld-se}</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.enterprise</groupId>
+          <artifactId>cdi-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

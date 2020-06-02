@@ -111,6 +111,12 @@
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-undertow</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.glassfish</groupId>
+          <artifactId>javax.el</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Provided APIs -->

@@ -76,6 +76,12 @@
       <groupId>org.jboss.logmanager</groupId>
       <artifactId>jboss-logmanager-ext</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.json</groupId>
+          <artifactId>javax.json-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

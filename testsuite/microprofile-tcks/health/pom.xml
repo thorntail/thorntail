@@ -18,25 +18,21 @@
    <name>MicroProfile TCK: Health</name>
 
    <dependencies>
-
-      <dependency>
-         <groupId>org.eclipse.microprofile.health</groupId>
-         <artifactId>microprofile-health-tck</artifactId>
-      </dependency>
-
-      <dependency>
-         <groupId>commons-logging</groupId>
-         <artifactId>commons-logging</artifactId>
-      </dependency>
-
       <dependency>
          <groupId>io.thorntail</groupId>
          <artifactId>microprofile-health</artifactId>
       </dependency>
 
       <dependency>
+         <groupId>org.eclipse.microprofile.health</groupId>
+         <artifactId>microprofile-health-tck</artifactId>
+         <scope>test</scope>
+      </dependency>
+
+      <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
+         <scope>test</scope>
       </dependency>
 
       <dependency>

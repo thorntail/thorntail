@@ -93,6 +93,16 @@
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-jaxrs2</artifactId>
       <version>${version.zipkin.brave}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.inject</groupId>
+          <artifactId>javax.inject</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -105,18 +115,36 @@
       <groupId>io.zipkin.brave</groupId>
       <artifactId>brave-core</artifactId>
       <version>${version.zipkin.brave}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.zipkin.java</groupId>
+          <artifactId>zipkin</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>io.zipkin.reporter</groupId>
       <artifactId>zipkin-reporter</artifactId>
       <version>${version.zipkin.reporter}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.zipkin.java</groupId>
+          <artifactId>zipkin</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>io.zipkin.reporter</groupId>
       <artifactId>zipkin-sender-urlconnection</artifactId>
       <version>${version.zipkin.reporter}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.zipkin.java</groupId>
+          <artifactId>zipkin</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
 
