@@ -5,8 +5,8 @@
 The {Thorntail} Maven plugin accepts the following configuration options:
 
 bundleDependencies::
-If true, dependencies are included in the `-thorntail.jar` file.
-Otherwise, they are resolved from `$M2_REPO` or from the network at runtime.
+If `true`, dependencies are included in the `-thorntail.jar` file.
+Otherwise, they are resolved from local Maven repository or from the network at runtime.
 +
 [cols="1,2a"]
 |===
@@ -19,6 +19,20 @@ Otherwise, they are resolved from `$M2_REPO` or from the network at runtime.
 |Used by
 |`package`
 |===
+
+[NOTE]
+--
+In case you set `bundleDependencies` to `false`, here's how the local Maven repository is found at runtime:
+
+. If a `settings.xml` file is found and it defines a local repository, then it is used.
+  When looking for the `settings.xml` file, the following locations are considered:
+.. If the `jboss.modules.settings.xml.url` system property is defined, then it is used.
+   Its value needs to be a `+file://...+` URL of the `settings.xml` file.
+.. Otherwise, if `~/.m2/settings.xml` file exists, then it is used.
+.. Otherwise, if `$M2_HOME/conf/settings.xml` file exists, then it is used.
+. Otherwise, if the `maven.repo.local` system property is defined, then it is used.
+. Otherwise, the standard location `~/.m2/repository` is used.
+--
 
 debug::
 The port to use for debugging.
