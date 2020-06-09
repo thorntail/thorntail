@@ -58,6 +58,14 @@ The JAR file execution requires normal Java debug agent parameters.
 |===
 --
 
+thorntail.io.tmpdir:: Temporary directory Thorntail uses for unpacking the uberjar and for other temporary files.
++
+[cols="1,2a"]
+|===
+|Default
+|`java.io.tmpdir`
+|===
+
 .Datasource-related system properties
 
 With JDBC driver autodetection, use the following properties to configure the datasource:

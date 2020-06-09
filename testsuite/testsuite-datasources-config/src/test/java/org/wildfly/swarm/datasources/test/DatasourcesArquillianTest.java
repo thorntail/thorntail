@@ -24,18 +24,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.swarm.arquillian.DefaultDeployment;
 
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Bob McWhirter
  */
 @RunWith(Arquillian.class)
 @DefaultDeployment(type = DefaultDeployment.Type.JAR)
 public class DatasourcesArquillianTest {
-
     @ArquillianResource
     InitialContext context;
 
     @Test
     public void testDatasource() throws NamingException {
-        assert (context.lookup("java:jboss/datasources/MyDS") != null);
+        assertNotNull(context.lookup("java:jboss/datasources/MyDS"));
     }
 }

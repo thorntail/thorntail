@@ -79,6 +79,12 @@
       <groupId>com.orbitz.consul</groupId>
       <artifactId>consul-client</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -108,6 +114,19 @@
     <dependency>
       <groupId>org.wildfly</groupId>
       <artifactId>wildfly-feature-pack</artifactId>
+      <type>zip</type>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- needs to come _after_ WildFly feature packs, because in case of conflicts, the last one wins -->
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>microprofile-config-wildfly-feature-pack</artifactId>
       <type>zip</type>
       <scope>provided</scope>
       <exclusions>

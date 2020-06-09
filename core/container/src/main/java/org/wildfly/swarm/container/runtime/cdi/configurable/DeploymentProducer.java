@@ -37,6 +37,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ArchiveAsset;
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.wildfly.swarm.container.runtime.cdi.DeploymentContext;
@@ -112,12 +113,16 @@ public class DeploymentProducer {
 
         if (archive instanceof LibraryContainer) {
             for (Map.Entry<ArchivePath, Node> entry : archive.getContent(a -> a.get().endsWith(JAR_SUFFIX)).entrySet()) {
-                if (entry.getValue().getAsset() instanceof ArchiveAsset) {
-                    ArchiveAsset archiveAsset = (ArchiveAsset) entry.getValue().getAsset();
+                Asset asset = entry.getValue().getAsset();
+                if (asset instanceof ArchiveAsset) {
+                    ArchiveAsset archiveAsset = (ArchiveAsset) asset;
                     index(archiveAsset.getArchive(), indexes);
-                } else {
-                    try (InputStream contentStream = entry.getValue().getAsset().openStream()) {
-                        JARArchive jarArchive = ShrinkWrap.create(JARArchive.class, entry.getKey().get()).as(ZipImporter.class).importFrom(contentStream)
+                } else if (asset != null) {
+                    // `asset` can be `null` in case the `archive` contains a _directory_ named *.jar
+                    try (InputStream contentStream = asset.openStream()) {
+                        JARArchive jarArchive = ShrinkWrap.create(JARArchive.class, entry.getKey().get())
+                                .as(ZipImporter.class)
+                                .importFrom(contentStream)
                                 .as(JARArchive.class);
                         index(jarArchive, indexes);
                     }

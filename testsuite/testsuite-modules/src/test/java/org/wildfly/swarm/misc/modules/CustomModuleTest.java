@@ -36,7 +36,7 @@ import org.wildfly.swarm.arquillian.DefaultDeployment;
  */
 @RunWith(Arquillian.class)
 @DefaultDeployment(type = DefaultDeployment.Type.JAR)
-public class ArqModulesTest {
+public class CustomModuleTest {
 
     @Test
     public void testModuleDirectoryResources() throws ModuleLoadException, IOException {

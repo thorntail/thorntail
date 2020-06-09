@@ -204,12 +204,10 @@ public class CachingArtifactResolvingHelper implements ArtifactResolvingHelper {
             dependencyCache.storeCachedDependencies(specs, dependencyNodes, defaultExcludes);
         }
 
-        Collection<ArtifactSpec> result = resolveDependencies(dependencyNodes);
-        return result;
+        return resolveDependencies(dependencyNodes);
     }
 
     private Collection<ArtifactSpec> resolveDependencies(List<ArtifactSpec> dependencyNodes) {
-        long start = System.currentTimeMillis();
         // if dependencies were previously resolved, we don't need to resolve using remote repositories
         dependencyNodes = new ArrayList<>(dependencyNodes);
 

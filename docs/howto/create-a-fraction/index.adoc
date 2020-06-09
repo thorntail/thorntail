@@ -148,7 +148,7 @@ import java.util.Set;
 import java.util.HashSet;
 import org.wildfly.swarm.spi.api.Fraction;
 
-public class CheeseFraction implements Fraction {
+public class CheeseFraction implements Fraction<CheeseFraction> {
   // arbitrary configuration parameters are allowed
 
   public void cheese(String type) {

@@ -22,6 +22,163 @@
   <description>Build Parent to bring in required dependencies</description>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${version.maven-enforcer-plugin}</version>
+          <executions>
+            <execution>
+              <id>enforce-dependencies</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <dependencyConvergence/>
+                  <bannedDependencies>
+                    <excludes>
+                      <!-- ban Jakarta artifacts, if WildFly uses JBoss Spec ones -->
+                      <exclude>jakarta.annotation:jakarta.annotation-api</exclude>
+                      <exclude>jakarta.batch:jakarta.batch-api</exclude>
+                      <exclude>jakarta.ejb:jakarta.ejb-api</exclude>
+                      <exclude>jakarta.el:jakarta.el-api</exclude>
+                      <exclude>jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api</exclude>
+                      <exclude>jakarta.faces:jakarta.faces-api</exclude>
+                      <exclude>jakarta.interceptor:jakarta.interceptor-api</exclude>
+                      <exclude>jakarta.jms:jakarta.jms-api</exclude>
+                      <exclude>jakarta.management.j2ee:management-spec</exclude>
+                      <exclude>jakarta.resource:jakarta.resource-api</exclude>
+                      <exclude>jakarta.security.auth.message:jakarta.security.auth.message-api</exclude>
+                      <exclude>jakarta.security.jacc:jakarta.security.jacc-api</exclude>
+                      <exclude>jakarta.servlet:jakarta.servlet-api</exclude>
+                      <exclude>jakarta.servlet.jsp:jakarta.servlet.jsp-api</exclude>
+                      <exclude>jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api</exclude>
+                      <exclude>jakarta.transaction:jakarta.transaction-api</exclude>
+                      <exclude>jakarta.websocket:jakarta.websocket-api</exclude>
+                      <exclude>jakarta.ws.rs:jakarta.ws.rs-api</exclude>
+                      <exclude>jakarta.xml.bind:jakarta.xml.bind-api</exclude>
+                      <exclude>jakarta.xml.rpc:jakarta.xml.rpc-api</exclude>
+                      <exclude>jakarta.xml.soap:jakarta.xml.soap-api</exclude>
+                      <exclude>jakarta.xml.ws:jakarta.xml.ws-api</exclude>
+                      <!-- ban JBoss Spec artifacts, if WildFly uses Jakarta ones -->
+                      <exclude>org.jboss.spec.javax.json:jboss-json-api_1.0_spec</exclude>
+                      <exclude>org.jboss.spec.javax.json:jboss-json-api_1.1_spec</exclude>
+                      <!-- ban JBoss Spec artifacts, if WildFly uses Apache Taglibs ones -->
+                      <exclude>org.jboss.spec.javax.servlet.jstl:jboss-jstl-api_1.2_spec</exclude>
+                      <!-- ban old JBoss Spec artifacts, we want the new ones -->
+                      <exclude>org.jboss.spec.javax.annotation:jboss-annotations-api_1.1_spec</exclude>
+                      <exclude>org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec</exclude>
+                      <exclude>org.jboss.spec.javax.ejb:jboss-ejb-api_3.0_spec</exclude>
+                      <exclude>org.jboss.spec.javax.ejb:jboss-ejb-api_3.1_spec</exclude>
+                      <exclude>org.jboss.spec.javax.el:jboss-el-api_2.2_spec</exclude>
+                      <exclude>org.jboss.spec.javax.faces:jboss-jsf-api_2.0_spec</exclude>
+                      <exclude>org.jboss.spec.javax.faces:jboss-jsf-api_2.1_spec</exclude>
+                      <exclude>org.jboss.spec.javax.faces:jboss-jsf-api_2.2_spec</exclude>
+                      <exclude>org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec</exclude>
+                      <exclude>org.jboss.spec.javax.jms:jboss-jms-api_1.1_spec</exclude>
+                      <exclude>org.jboss.spec.javax.resource:jboss-connector-api_1.5_spec</exclude>
+                      <exclude>org.jboss.spec.javax.resource:jboss-connector-api_1.6_spec</exclude>
+                      <exclude>org.jboss.spec.javax.security.auth.message:jboss-jaspi-api_1.0_spec</exclude>
+                      <exclude>org.jboss.spec.javax.security.jacc:jboss-jacc-api_1.1_spec</exclude>
+                      <exclude>org.jboss.spec.javax.security.jacc:jboss-jacc-api_1.4_spec</exclude>
+                      <exclude>org.jboss.spec.javax.servlet:jboss-servlet-api_2.5_spec</exclude>
+                      <exclude>org.jboss.spec.javax.servlet:jboss-servlet-api_3.0_spec</exclude>
+                      <exclude>org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec</exclude>
+                      <exclude>org.jboss.spec.javax.servlet.jsp:jboss-jsp-api_2.2_spec</exclude>
+                      <exclude>org.jboss.spec.javax.transaction:jboss-transaction-api_1.1_spec</exclude>
+                      <exclude>org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec</exclude>
+                      <exclude>org.jboss.spec.javax.websocket:jboss-websocket-api_1.0_spec</exclude>
+                      <exclude>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_1.1_spec</exclude>
+                      <exclude>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec</exclude>
+                      <exclude>org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec</exclude>
+                      <exclude>org.jboss.spec.javax.xml.soap:jboss-saaj-api_1.3_spec</exclude>
+                      <exclude>org.jboss.spec.javax.xml.ws:jboss-jaxws-api_2.2_spec</exclude>
+                      <!-- ban javax dependencies in favor of Jakarta or JBoss Spec -->
+                      <exclude>javax.activation:activation</exclude>
+                      <exclude>javax.activation:javax.activation-api</exclude>
+                      <exclude>javax.annotation:javax.annotation-api</exclude>
+                      <exclude>javax.enterprise:cdi-api</exclude>
+                      <exclude>javax.inject:javax.inject</exclude>
+                      <exclude>javax.interceptor:javax.interceptor-api</exclude>
+                      <exclude>javax.jms:javax.jms-api</exclude>
+                      <exclude>javax.json:javax.json-api</exclude>
+                      <exclude>javax.json.bind:javax.json.bind-api</exclude>
+                      <exclude>javax.mail:javax.mail-api</exclude>
+                      <exclude>javax.persistence:javax.persistence-api</exclude>
+                      <exclude>javax.persistence:persistence-api</exclude>
+                      <exclude>javax.security.enterprise:javax.security.enterprise-api</exclude>
+                      <exclude>javax.servlet:servlet-api</exclude>
+                      <exclude>javax.servlet:javax.servlet-api</exclude>
+                      <exclude>javax.transaction:jta</exclude>
+                      <exclude>javax.transaction:javax.transaction-api</exclude>
+                      <exclude>javax.validation:validation-api</exclude>
+                      <exclude>javax.websocket:javax.websocket-api</exclude>
+                      <exclude>javax.ws.rs:javax.ws.rs-api</exclude>
+                      <exclude>javax.xml:jaxrpc-api</exclude>
+                      <exclude>javax.xml.bind:jaxb-api</exclude>
+                      <exclude>javax.xml.soap:saaj-api</exclude>
+                      <exclude>javax.xml.stream:stax-api</exclude>
+                      <exclude>javax.xml.ws:jaxws-api</exclude>
+                      <exclude>org.glassfish:javax.json</exclude>
+                      <exclude>org.glassfish:javax.el</exclude>
+                      <exclude>com.sun.activation:javax.activation</exclude>
+                      <exclude>com.sun.mail:javax.mail</exclude>
+                      <!-- ban Geronimo dependencies -->
+                      <exclude>org.apache.geronimo.specs:*</exclude>
+                      <!-- ban the API uberjars -->
+                      <exclude>jakarta.platform:jakarta.jakartaee-api</exclude>
+                      <exclude>jakarta.platform:jakarta.jakartaee-web-api</exclude>
+                      <exclude>javax:javaee-api</exclude>
+                      <exclude>javax:javaee-web-api</exclude>
+                      <!-- ban old Netty uberjars -->
+                      <exclude>org.jboss.netty:netty</exclude>
+                      <exclude>io.netty:netty</exclude>
+                      <!-- ban JacORB, WildFly now uses the OpenJDK ORB -->
+                      <exclude>org.jacorb:*</exclude>
+                      <!-- ban Log4J (use org.jboss.logmanager:log4j-jboss-logmanager instead) -->
+                      <exclude>log4j:log4j</exclude>
+                      <exclude>org.apache.logging.log4j:log4j-api</exclude>
+                      <exclude>org.apache.logging.log4j:log4j-core</exclude>
+                      <exclude>org.apache.logging.log4j:log4j-slf4j-impl</exclude>
+                      <!-- ban commons-logging (use org.jboss.logging:commons-logging-jboss-logging instead) -->
+                      <exclude>commons-logging:commons-logging</exclude>
+                      <exclude>commons-logging:commons-logging-api</exclude>
+                      <exclude>org.slf4j:jcl-over-slf4j</exclude>
+                      <!-- ban SLF4J implementations (use org.jboss.slf4j:slf4j-jboss-logging instead) -->
+                      <exclude>org.slf4j:slf4j-simple</exclude>
+                      <exclude>org.slf4j:slf4j-nop</exclude>
+                      <exclude>org.slf4j:slf4j-jdk14</exclude>
+                      <exclude>org.slf4j:slf4j-log4j12</exclude>
+                      <exclude>org.slf4j:slf4j-log4j13</exclude>
+                      <!-- ban JBoss Logging implementations -->
+                      <exclude>org.jboss.logging:jboss-logging-generator</exclude>
+                      <exclude>org.jboss.logging:jboss-logging-log4j</exclude>
+                      <exclude>org.jboss.logging:jboss-logging-jdk</exclude>
+                      <exclude>org.jboss.logging:jboss-logging-logmanager</exclude>
+                      <exclude>org.jboss.logging:jboss-logging-spi</exclude>
+                      <exclude>org.jboss.logging:jboss-logging-tools</exclude>
+                      <!-- ban code quality annotation JARs -->
+                      <exclude>com.google.code.findbugs:jsr305</exclude>
+                      <exclude>com.google.code.findbugs:annotations</exclude>
+                      <exclude>com.google.errorprone:error_prone_annotations</exclude>
+                      <exclude>com.google.j2objc:annotations</exclude>
+                      <exclude>org.checkerframework:checker-compat-qual</exclude>
+                      <exclude>org.checkerframework:checker-qual</exclude>
+                      <exclude>org.codehaus.mojo:animal-sniffer-annotations</exclude>
+                      <!-- ban OSGi annotation JAR -->
+                      <exclude>org.osgi:org.osgi.annotation.versioning</exclude>
+                    </excludes>
+                  </bannedDependencies>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>io.thorntail</groupId>
@@ -233,9 +390,24 @@
         <version>${version.maven.plugin.api}</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings</artifactId>
+        <version>${version.maven.plugin.api}</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
         <version>${version.maven-plugin-plugin}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-interpolation</artifactId>
+        <version>${version.plexus-interpolation}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.plexus</groupId>
+        <artifactId>plexus-sec-dispatcher</artifactId>
+        <version>${version.plexus-sec-dispatcher}</version>
       </dependency>
 
       <!-- Needed by fraction-metadata -->

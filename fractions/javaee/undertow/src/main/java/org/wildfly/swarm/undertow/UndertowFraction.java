@@ -49,7 +49,7 @@ import static org.wildfly.swarm.undertow.UndertowProperties.DEFAULT_SERVLET_CONT
 @MarshalDMR
 @WildFlyExtension(module = "org.wildfly.extension.undertow")
 @DeploymentModule(name = "org.jboss.modules")
-public class UndertowFraction extends Undertow<UndertowFraction> implements Fraction {
+public class UndertowFraction extends Undertow<UndertowFraction> implements Fraction<UndertowFraction> {
 
     /**
      * Create the default, HTTP-only fraction.

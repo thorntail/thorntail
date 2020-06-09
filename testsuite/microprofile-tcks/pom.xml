@@ -58,6 +58,13 @@
                <redirectTestOutputToFile>false</redirectTestOutputToFile>
             </configuration>
          </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <configuration>
+               <skip>true</skip>
+            </configuration>
+         </plugin>
       </plugins>
    </build>
 
@@ -90,13 +97,6 @@
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
             <version>${version.org.arquillian.testng}</version>
-            <scope>test</scope>
-         </dependency>
-
-         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${version.commons-logging}</version>
             <scope>test</scope>
          </dependency>
 

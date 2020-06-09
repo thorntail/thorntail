@@ -53,7 +53,7 @@ public class MavenResolvers {
                 LOGGER.info("Dependencies not bundled; resolving from Gradle cache.");
                 INSTANCE.addResolver(new GradleResolver(gradleCachePath));
             } else {
-                LOGGER.info("Dependencies not bundled; resolving from M2REPO.");
+                LOGGER.info("Dependencies not bundled; resolving from local Maven repo.");
                 INSTANCE.addResolver(MavenResolver.createDefaultResolver());
             }
         }

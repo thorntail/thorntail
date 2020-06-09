@@ -107,9 +107,7 @@ public class MavenArtifactResolvingHelper implements ArtifactResolvingHelper {
             } else {
                 try {
                     final ArtifactResult result = resolver.resolveArtifact(this.session,
-                                                                           new ArtifactRequest(artifact,
-                                                                                               this.remoteRepositories,
-                                                                                               null));
+                            new ArtifactRequest(artifact, this.remoteRepositories, null));
                     if (result.isResolved()) {
                         spec.file = result.getArtifact().getFile();
                     }

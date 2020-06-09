@@ -30,6 +30,6 @@ import org.wildfly.swarm.spi.api.annotations.WildFlySubsystem;
 @DeploymentModule(name = "org.keycloak.keycloak-core")
 @DeploymentModule(name = "org.wildfly.swarm.keycloak", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
 @MarshalDMR
-public class KeycloakFraction extends Keycloak<KeycloakFraction> implements Fraction {
+public class KeycloakFraction extends Keycloak<KeycloakFraction> implements Fraction<KeycloakFraction> {
 
 }

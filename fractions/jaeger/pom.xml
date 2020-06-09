@@ -78,6 +78,16 @@
       <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-thrift</artifactId>
       <version>${version.jaeger}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.jaegertracing</groupId>
+          <artifactId>jaeger-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.wildfly.core</groupId>

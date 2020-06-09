@@ -27,10 +27,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class SwarmProcess {
 
-    public SwarmProcess(Process process, OutputStream stdout, Path stdoutFile, OutputStream stderr, Path stderrFile) throws IOException {
-        this(process, null, stdout, stdoutFile, stderr, stderrFile);
-    }
-
     public SwarmProcess(Process process, File processFile, OutputStream stdout, Path stdoutFile, OutputStream stderr, Path stderrFile) throws IOException {
         this.process = process;
         this.latch = new CountDownLatch(1);
@@ -102,15 +98,20 @@ public class SwarmProcess {
     }
 
     public int stop(long timeout, TimeUnit timeUnit) throws InterruptedException {
-
+        boolean stoppedByDeletingProcessFile = false;
         if (this.processFile != null) {
-            this.processFile.delete();
+            boolean processFileDeleted = this.processFile.delete();
+            if (processFileDeleted) {
+                stoppedByDeletingProcessFile = this.process.waitFor(timeout, timeUnit);
+            }
         }
-        this.process.destroy();
-        if (!this.process.waitFor(timeout, timeUnit)) {
-            // Attempt to terminate the process forcibly and also wait for the same amount of time as the base attempt.
-            // This should potentially take care of the issues with the process not terminating on Windows CI build.
-            process.destroyForcibly().waitFor(timeout, timeUnit);
+        if (!stoppedByDeletingProcessFile) {
+            this.process.destroy();
+            if (!this.process.waitFor(timeout, timeUnit)) {
+                // Attempt to terminate the process forcibly and also wait for the same amount of time as the base attempt.
+                // This should potentially take care of the issues with the process not terminating on Windows CI build.
+                process.destroyForcibly().waitFor(timeout, timeUnit);
+            }
         }
 
         try {

@@ -289,14 +289,13 @@ public class UberjarSimpleContainer implements SimpleContainer {
 
         executor.withProperty("java.net.preferIPv4Stack", "true");
 
-        File processFile = File.createTempFile(TempFileManager.WFSWARM_TMP_PREFIX + "mainprocessfile", null);
-
+        File processFile = TempFileManager.INSTANCE.newTempFile("mainprocessfile", null);
         executor.withProcessFile(processFile);
 
         executor.withJVMArguments(getJavaVmArgumentsList());
         executor.withExecutableJar(executable.toPath());
 
-        workingDirectory = TempFileManager.INSTANCE.newTempDirectory("arquillian", null);
+        File workingDirectory = TempFileManager.INSTANCE.newTempDirectory("arquillian", null);
         executor.withWorkingDirectory(workingDirectory.toPath());
 
         this.process = executor.execute();
@@ -358,7 +357,7 @@ public class UberjarSimpleContainer implements SimpleContainer {
     @Override
     public void stop() throws Exception {
         this.process.stop(2, TimeUnit.MINUTES); // Because my laptop is slower than yours.
-        TempFileManager.deleteRecursively(workingDirectory);
+        TempFileManager.INSTANCE.close();
     }
 
     private String ga(final MavenCoordinate coord) {
@@ -397,7 +396,5 @@ public class UberjarSimpleContainer implements SimpleContainer {
     private Set<String> requestedMavenArtifacts = new HashSet<>();
 
     private String javaVmArguments;
-
-    private File workingDirectory;
 }
 

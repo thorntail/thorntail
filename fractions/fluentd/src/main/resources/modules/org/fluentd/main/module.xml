@@ -6,8 +6,6 @@
     <artifact name="org.fluentd:fluent-logger:${fluentd.version}"/>
     <artifact name="org.msgpack:msgpack:0.6.8"/>
     <artifact name="com.googlecode.json-simple:json-simple:1.1.1"/>
-    <artifact name="org.javassist:javassist:3.18.1-GA"/>
-    <artifact name="org.slf4j:slf4j-api:1.7.7.jbossorg-1"/>
     <artifact name="org.jboss.logmanager:jboss-logmanager-ext:${version.jboss-logmanager-ext}"/>
   </resources>
 
@@ -15,5 +13,7 @@
     <module name="org.jboss.logmanager"/>
     <module name="javax.json.api"/>
     <module name="javax.xml.stream.api"/>
+    <module name="org.javassist"/>
+    <module name="org.slf4j"/>
   </dependencies>
 </module>

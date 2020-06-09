@@ -6,7 +6,7 @@
     <artifact name="io.swagger:swagger-annotations:${version.io.swagger}"/>
 
     <artifact name="org.reflections:reflections:${version.swagger.reflections}"/>
-    <artifact name="org.apache.commons:commons-lang3:${version.swagger.commons.lang}"/>
+    <artifact name="org.apache.commons:commons-lang3:${version.commons-lang3}"/>
 
   </resources>
 

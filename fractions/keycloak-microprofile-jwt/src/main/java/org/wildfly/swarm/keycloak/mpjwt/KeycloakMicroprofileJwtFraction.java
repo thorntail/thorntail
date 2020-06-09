@@ -19,5 +19,5 @@ import org.wildfly.swarm.spi.api.Fraction;
 import org.wildfly.swarm.spi.api.annotations.DeploymentModule;
 
 @DeploymentModule(name = "org.wildfly.swarm.keycloak.mpjwt", slot = "deployment", export = true, metaInf = DeploymentModule.MetaInfDisposition.IMPORT)
-public class KeycloakMicroprofileJwtFraction implements Fraction {
+public class KeycloakMicroprofileJwtFraction implements Fraction<KeycloakMicroprofileJwtFraction> {
 }

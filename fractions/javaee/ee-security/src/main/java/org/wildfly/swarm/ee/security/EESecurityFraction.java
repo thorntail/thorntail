@@ -22,6 +22,6 @@ import org.wildfly.swarm.spi.api.annotations.WildFlyExtension;
 
 @WildFlyExtension(module = "org.wildfly.extension.ee-security")
 @MarshalDMR
-public class EESecurityFraction extends EESecurity<EESecurityFraction> implements Fraction {
+public class EESecurityFraction extends EESecurity<EESecurityFraction> implements Fraction<EESecurityFraction> {
 
 }

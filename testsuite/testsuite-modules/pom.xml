@@ -30,8 +30,8 @@
 
   <artifactId>testsuite-modules</artifactId>
 
-  <name>Test Suite: Custom Modules</name>
-  <description>Test Suite: Custom Modules</description>
+  <name>Test Suite: JBoss Modules</name>
+  <description>Test Suite: JBoss Modules</description>
 
   <packaging>jar</packaging>
 
@@ -41,5 +41,32 @@
       <artifactId>arquillian</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>joox-java-6</artifactId>
+      <version>${version.joox}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-core</artifactId>
+      <version>${version.xmlunit}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <current.project.dir>${project.basedir}</current.project.dir>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

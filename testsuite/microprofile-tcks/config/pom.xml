@@ -17,21 +17,25 @@
    <name>MicroProfile TCK: Config</name>
 
    <dependencies>
+      <dependency>
+         <groupId>io.thorntail</groupId>
+         <artifactId>microprofile-config</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>io.thorntail</groupId>
+         <artifactId>undertow</artifactId>
+      </dependency>
 
       <dependency>
          <groupId>org.eclipse.microprofile.config</groupId>
          <artifactId>microprofile-config-tck</artifactId>
-      </dependency>
-
-      <dependency>
-         <groupId>io.thorntail</groupId>
-         <artifactId>microprofile-config</artifactId>
          <scope>test</scope>
       </dependency>
 
       <dependency>
          <groupId>org.testng</groupId>
          <artifactId>testng</artifactId>
+         <scope>test</scope>
       </dependency>
 
       <dependency>
