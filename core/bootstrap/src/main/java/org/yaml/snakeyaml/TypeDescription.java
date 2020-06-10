@@ -109,15 +109,23 @@ public class TypeDescription {
     }
 
     /**
-     * Set tag to be used to load or dump the type (class).
+     * Set tag to be used dump the type (class).
      *
-     * @param tag
-     *            local or global tag
+     * @param tag - local or global tag
+     * @deprecated it will be removed because it is not used
      */
+    @Deprecated
     public void setTag(Tag tag) {
         this.tag = tag;
     }
 
+    /**
+     * Set tag to be used to dump the type (class).
+     *
+     * @param tag - local or global tag
+     * @deprecated it will be removed because it is not used
+     */
+    @Deprecated
     public void setTag(String tag) {
         setTag(new Tag(tag));
     }
@@ -174,7 +182,7 @@ public class TypeDescription {
      */
     @Deprecated
     public void putMapPropertyType(String property, Class<? extends Object> key,
-                                   Class<? extends Object> value) {
+            Class<? extends Object> value) {
         addPropertyParameters(property, key, value);
     }
 
@@ -281,7 +289,7 @@ public class TypeDescription {
      *            actual types for parameterized type (List&lt;?&gt;, Map&lt;?&gt;)
      */
     public void substituteProperty(String pName, Class<?> pType, String getter, String setter,
-                                   Class<?>... argParams) {
+            Class<?>... argParams) {
         substituteProperty(new PropertySubstitute(pName, pType, getter, setter, argParams));
     }
 

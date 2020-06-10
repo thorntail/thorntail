@@ -191,7 +191,7 @@
     <version.minimal-json>0.9.4</version.minimal-json>
     <version.openshift.client>9.0.0.Final</version.openshift.client>
     <version.org.kie>6.4.0.Final</version.org.kie>
-    <version.org.snakeyaml>1.24</version.org.snakeyaml>
+    <version.org.snakeyaml>1.26</version.org.snakeyaml>
     <version.plexus-interpolation>1.21</version.plexus-interpolation>
     <version.plexus-sec-dispatcher>1.4</version.plexus-sec-dispatcher>
     <version.plexus-utils>3.1.0</version.plexus-utils>
