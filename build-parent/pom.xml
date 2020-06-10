@@ -687,6 +687,28 @@
         <version>${version.smallrye.jwt}</version>
       </dependency>
 
+      <!-- Undertow -->
+      <dependency>
+        <groupId>io.undertow</groupId>
+        <artifactId>undertow-core</artifactId>
+        <version>${version.undertow}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.undertow</groupId>
+        <artifactId>undertow-servlet</artifactId>
+        <version>${version.undertow}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.undertow</groupId>
+        <artifactId>undertow-websockets-jsr</artifactId>
+        <version>${version.undertow}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.undertow.jastow</groupId>
+        <artifactId>jastow</artifactId>
+        <version>${version.undertow.jastow}</version>
+      </dependency>
+
       <!-- The following are not used, they are here to make PME align proper versions-->
       <dependency>
           <groupId>org.apache.thrift</groupId>
