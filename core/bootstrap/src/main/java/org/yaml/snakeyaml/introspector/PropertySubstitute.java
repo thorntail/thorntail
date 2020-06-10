@@ -56,7 +56,7 @@ public class PropertySubstitute extends Property {
     private boolean filler;
 
     public PropertySubstitute(String name, Class<?> type, String readMethod, String writeMethod,
-                              Class<?>... params) {
+            Class<?>... params) {
         super(name, type);
         this.readMethod = readMethod;
         this.writeMethod = writeMethod;
@@ -101,9 +101,9 @@ public class PropertySubstitute extends Property {
                         write.invoke(object, entry.getKey(), entry.getValue());
                     }
                 } else if (value.getClass().isArray()) { // TODO: maybe arrays
-                    // need 2 fillers like
-                    // SET(index, value)
-                    // add ADD(value)
+                                                         // need 2 fillers like
+                                                         // SET(index, value)
+                                                         // add ADD(value)
                     int len = Array.getLength(value);
                     for (int i = 0; i < len; i++) {
                         write.invoke(object, Array.get(value, i));
