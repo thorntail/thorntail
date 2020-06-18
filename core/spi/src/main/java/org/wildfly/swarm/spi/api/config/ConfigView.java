@@ -29,7 +29,11 @@ public interface ConfigView extends StageConfig {
 
     Object valueOf(ConfigKey key);
 
-    Resolver<String> resolve(ConfigKey key);
+    Resolver<?> resolverFor(ConfigKey key);
+
+    default Resolver<String> resolve(ConfigKey key) {
+        return resolverFor(key).as(String.class);
+    }
 
     default Resolver<String> resolve(String name) {
         return resolve(ConfigKey.parse(name));
