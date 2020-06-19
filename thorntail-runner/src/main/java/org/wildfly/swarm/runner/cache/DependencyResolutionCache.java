@@ -58,7 +58,7 @@ public class DependencyResolutionCache {
             return;
         }
 
-        List<String> linesToStore = dependencySpecs.stream().map(ArtifactSpec::mscGav).collect(Collectors.toList());
+        List<String> linesToStore = dependencySpecs.stream().map(ArtifactSpec::mavenGav).collect(Collectors.toList());
 
         try {
             storeToFile(cachePath, linesToStore);
@@ -93,7 +93,10 @@ public class DependencyResolutionCache {
             return null;
         }
 
-        return Paths.get(RunnerConstants.CACHE_STORAGE_DIR, key + (defaultExcludes ? "-with-excludes" : ""));
+        // previous format (no classifier) used JBoss Modules format of Maven coordinates
+        // that's insufficient in case we want to use RARs etc.
+        // current format (-v2 classifier) uses Maven (Aether) format of Maven coordinates
+        return Paths.get(RunnerConstants.CACHE_STORAGE_DIR, key + "-v2" + (defaultExcludes ? "-with-excludes" : ""));
     }
 
 
@@ -103,7 +106,7 @@ public class DependencyResolutionCache {
         }
         try {
             return Files.lines(cacheFile)
-                    .map(ArtifactSpec::fromMscGav)
+                    .map(ArtifactSpec::fromMavenGav)
                     .collect(Collectors.toList());
         } catch (IOException e) {
             return null;

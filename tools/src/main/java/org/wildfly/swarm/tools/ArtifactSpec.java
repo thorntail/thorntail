@@ -25,6 +25,12 @@ import org.wildfly.swarm.fractions.FractionDescriptor;
  */
 public class ArtifactSpec extends MavenArtifactDescriptor {
 
+    private static final String INVALID_GAV_MESSAGE = "Invalid gav: ";
+
+    private static final String JAR_PACKAGING = "jar";
+
+    private static final String COMPILE_SCOPE = "compile";
+
     public final String scope;
 
     public String sha1sum;
@@ -51,19 +57,40 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
                         final String version,
                         final String classifier,
                         final String sha1sum) {
-        super(groupId, artifactId, "jar", classifier, version);
+        super(groupId, artifactId, JAR_PACKAGING, classifier, version);
         this.sha1sum = sha1sum;
-        this.scope = "compile";
+        this.scope = COMPILE_SCOPE;
     }
 
+    /**
+     * from JBoss Modules style (not MSC, method name is wrong!): {@code groupId:artifactId:version[:classifier]}
+     */
     public static ArtifactSpec fromMscGav(String gav) {
         String[] parts = gav.split(":");
         if (parts.length == 3) {
-            return new ArtifactSpec("compile", parts[0], parts[1], parts[2], "jar", null, null);
+            return new ArtifactSpec(COMPILE_SCOPE, parts[0], parts[1], parts[2], JAR_PACKAGING, null, null);
         } else if (parts.length == 4) {
-            return new ArtifactSpec("compile", parts[0], parts[1], parts[2], "jar", parts[3], null);
+            return new ArtifactSpec(COMPILE_SCOPE, parts[0], parts[1], parts[2], JAR_PACKAGING, parts[3], null);
         } else {
-            throw new RuntimeException("Invalid gav: " + gav);
+            throw new RuntimeException(INVALID_GAV_MESSAGE + gav);
+        }
+    }
+
+    /**
+     * from Maven (Aether) style: {@code groupId:artifactId[:packaging[:classifier]]:version}
+     */
+    public static ArtifactSpec fromMavenGav(String gav) {
+        String[] parts = gav.split(":");
+        if (parts.length == 3) {
+            return new ArtifactSpec(COMPILE_SCOPE, parts[0], parts[1], parts[2], JAR_PACKAGING, null, null);
+        } else if (parts.length == 4) {
+            return new ArtifactSpec(COMPILE_SCOPE, parts[0], parts[1], parts[3], parts[2], null, null);
+        } else if (parts.length == 5) {
+            return new ArtifactSpec(COMPILE_SCOPE, parts[0], parts[1], parts[4], parts[2], parts[3], null);
+        } else if (parts.length == 6) {
+            return new ArtifactSpec(COMPILE_SCOPE, parts[0], parts[1], parts[4], parts[2], parts[3], null);
+        } else {
+            throw new RuntimeException(INVALID_GAV_MESSAGE + gav);
         }
     }
 
@@ -84,8 +111,7 @@ public class ArtifactSpec extends MavenArtifactDescriptor {
 
     public String jarName() {
         String classifier = classifier();
-        if (classifier != null &&
-                classifier.length() > 0) {
+        if (classifier != null && classifier.length() > 0) {
             classifier = "-" + classifier;
         } else {
             classifier = "";

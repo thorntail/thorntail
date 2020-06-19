@@ -43,6 +43,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -196,6 +197,11 @@ public class FatJarBuilder {
                         .filter(ArtifactOrFile::hasSpec)
                         .map(ArtifactOrFile::spec)
                         .collect(toList());
+
+        Arrays.stream(System.getProperty("thorntail.runner.extra-dependencies", "").split(","))
+                .map(ArtifactSpec::fromMavenGav)
+                .forEach(specs::add);
+
         return new DeclaredDependencies() {
             @Override
             public Collection<ArtifactSpec> getDirectDeps() {

@@ -70,7 +70,7 @@ public class CachingArtifactResolvingHelper implements ArtifactResolvingHelper {
         if (spec.file == null) {
             File maybeFile = artifactCache.getCachedFile(spec);
             if (!artifactCache.isKnownFailure(spec) && maybeFile == null) {
-                System.out.println("no cached file for " + spec.mscGav());
+                System.out.println("no cached file for " + spec.mavenGav());
                 maybeFile = resolveArtifactFile(spec);
                 artifactCache.storeArtifactFile(spec, maybeFile);
             }

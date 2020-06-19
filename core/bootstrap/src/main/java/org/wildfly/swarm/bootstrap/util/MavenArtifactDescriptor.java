@@ -52,6 +52,9 @@ public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescript
         return new MavenArtifactDescriptor().builder().type(JAR_PACKAGING);
     }
 
+    /**
+     * from JBoss Modules style (not MSC, method name is wrong!): {@code groupId:artifactId:version[:classifier]}
+     */
     public static MavenArtifactDescriptor fromMscGav(String gav) throws IOException {
         String[] parts = gav.split(COLON);
         if (parts.length == 3) {
@@ -63,6 +66,9 @@ public class MavenArtifactDescriptor implements Comparable<MavenArtifactDescript
         }
     }
 
+    /**
+     * from Maven (Aether) style: {@code groupId:artifactId[:packaging[:classifier]]:version}
+     */
     public static MavenArtifactDescriptor fromMavenGav(String gav) throws IOException {
         String[] parts = gav.split(COLON);
 
