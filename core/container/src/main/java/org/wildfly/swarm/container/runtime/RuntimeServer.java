@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -68,6 +70,8 @@ import org.wildfly.swarm.internal.SwarmMessages;
 import org.wildfly.swarm.internal.wildfly.SelfContainedContainer;
 import org.wildfly.swarm.spi.api.Customizer;
 import org.wildfly.swarm.spi.api.UserSpaceExtensionFactory;
+import org.wildfly.swarm.spi.api.config.ConfigKey;
+import org.wildfly.swarm.spi.api.config.Resolver;
 import org.wildfly.swarm.spi.runtime.annotations.Post;
 import org.wildfly.swarm.spi.runtime.annotations.Pre;
 
@@ -159,8 +163,16 @@ public class RuntimeServer implements Server {
             }
         });
 
+        Set<String> ignoredCustomizers = ignoredCustomizers();
+
         try (AutoCloseable handle = Performance.time("pre-customizers")) {
             for (Customizer each : this.preCustomizers) {
+                if (ignoredCustomizers.contains(each.getClass().getName())
+                        // to account for Weld proxies
+                        || ignoredCustomizers.contains(each.getClass().getSuperclass().getName())) {
+                    continue;
+                }
+
                 SwarmMessages.MESSAGES.callingPreCustomizer(each);
                 each.customize();
             }
@@ -168,6 +180,12 @@ public class RuntimeServer implements Server {
 
         try (AutoCloseable handle = Performance.time("post-customizers")) {
             for (Customizer each : this.postCustomizers) {
+                if (ignoredCustomizers.contains(each.getClass().getName())
+                        // to account for Weld proxies
+                        || ignoredCustomizers.contains(each.getClass().getSuperclass().getName())) {
+                    continue;
+                }
+
                 SwarmMessages.MESSAGES.callingPostCustomizer(each);
                 each.customize();
             }
@@ -268,6 +286,23 @@ public class RuntimeServer implements Server {
 
             return deployer;
         }
+    }
+
+    private Set<String> ignoredCustomizers() {
+        Set<String> result = new HashSet<>();
+
+        ConfigKey ignoreCustomizersConfigKey = ConfigKey.of("thorntail", "customizers", "ignore");
+
+        Resolver<?> ignoreCustomizersResolver = configurableManager.configView().resolverFor(ignoreCustomizersConfigKey);
+        if (ignoreCustomizersResolver.hasValue()) {
+            if (ignoreCustomizersResolver.as(String.class).getValue() != null) {
+                result = Collections.singleton(ignoreCustomizersResolver.as(String.class).getValue());
+            } else if (ignoreCustomizersResolver.as(List.class).getValue() != null) {
+                result = new HashSet<>(ignoreCustomizersResolver.as(List.class).getValue());
+            }
+        }
+
+        return result;
     }
 
     private void configureUserSpaceExtensions() {

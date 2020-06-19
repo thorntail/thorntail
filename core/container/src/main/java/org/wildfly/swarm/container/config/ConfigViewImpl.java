@@ -171,8 +171,9 @@ public class ConfigViewImpl implements ConfigView {
         return this.strategy.hasKeyOrSubkeys(subPrefix);
     }
 
-    public Resolver<String> resolve(ConfigKey key) {
-        return new Builder<>(this, key).as(String.class);
+    @Override
+    public Resolver<?> resolverFor(ConfigKey key) {
+        return new Builder<>(this, key);
     }
 
     public Stream<ConfigKey> allKeysRecursively() {
