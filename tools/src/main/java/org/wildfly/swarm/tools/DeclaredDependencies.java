@@ -146,7 +146,7 @@ public class DeclaredDependencies extends DependencyTree<ArtifactSpec> {
     public static ArtifactSpec createSpec(String gav, String scope) {
 
         try {
-            MavenArtifactDescriptor maven = ArtifactSpec.fromMavenGav(gav);
+            MavenArtifactDescriptor maven = MavenArtifactDescriptor.fromMavenGav(gav);
             return new ArtifactSpec(
                     scope,
                     maven.groupId(),

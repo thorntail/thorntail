@@ -54,6 +54,10 @@ import static java.util.Arrays.asList;
  *         to keep in WEB-INF/lib even though they are dependencies of Swarm elements
  *     </li>
  *     <li>
+ *         <b>thorntail.runner.extra-dependencies</b> - a comma-separated list of groupId:artifactId[:packaging[:classifier]]:version of artifacts
+ *         to add to the classpath (because the IDE didn't)
+ *     </li>
+ *     <li>
  *         <b>thorntail.runner.main-class</b> - user's main class replacing the default org.wildfly.swarm.Swarm class.
  *         Please note that using custom main class is discouraged.
  *     </li>
