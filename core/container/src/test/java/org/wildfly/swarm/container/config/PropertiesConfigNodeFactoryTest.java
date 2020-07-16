@@ -33,12 +33,14 @@ public class PropertiesConfigNodeFactoryTest {
         Properties props = new Properties() {{
             setProperty("name", "bob");
             setProperty("cheese", "cheddar");
+            setProperty("foobar", "<<null>>");
         }};
 
         ConfigNode node = PropertiesConfigNodeFactory.load(props);
 
         assertThat(node.valueOf(ConfigKey.parse("name"))).isEqualTo("bob");
         assertThat(node.valueOf(ConfigKey.parse("cheese"))).isEqualTo("cheddar");
+        assertThat(node.valueOf(ConfigKey.parse("foobar"))).isNull();
     }
 
     @Test
@@ -46,12 +48,14 @@ public class PropertiesConfigNodeFactoryTest {
         Properties props = new Properties() {{
             setProperty("thorntail.http.port", "8080");
             setProperty("thorntail.data-sources.ExampleDS.url", "jdbc:db");
+            setProperty("thorntail.foo.bar", "<<null>>");
         }};
 
         ConfigNode node = PropertiesConfigNodeFactory.load(props);
 
         assertThat(node.valueOf(ConfigKey.of("thorntail", "http", "port"))).isEqualTo("8080");
         assertThat(node.valueOf(ConfigKey.of("thorntail", "data-sources", "ExampleDS", "url"))).isEqualTo("jdbc:db");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "foo", "bar"))).isNull();
     }
 
     @Test
@@ -59,11 +63,13 @@ public class PropertiesConfigNodeFactoryTest {
         Properties props = new Properties() {{
             setProperty("swarm.http.port", "8080");
             setProperty("swarm.data-sources.ExampleDS.url", "jdbc:db");
+            setProperty("swarm.foo.bar", "<<null>>");
         }};
 
         ConfigNode node = PropertiesConfigNodeFactory.load(props);
 
         assertThat(node.valueOf(ConfigKey.of("thorntail", "http", "port"))).isEqualTo("8080");
         assertThat(node.valueOf(ConfigKey.of("thorntail", "data-sources", "ExampleDS", "url"))).isEqualTo("jdbc:db");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "foo", "bar"))).isNull();
     }
 }
