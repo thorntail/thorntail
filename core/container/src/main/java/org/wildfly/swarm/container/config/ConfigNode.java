@@ -210,7 +210,7 @@ public class ConfigNode implements ConfigTree {
         SimpleKey head = key.head();
 
         if (head == ConfigKey.EMPTY) {
-            if (this.value == null && this.children != null) {
+            if (this.value == null && this.children != null && !this.children.isEmpty()) {
                 return this;
             }
             return this.value;

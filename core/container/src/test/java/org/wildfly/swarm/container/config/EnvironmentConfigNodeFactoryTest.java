@@ -35,6 +35,7 @@ public class EnvironmentConfigNodeFactoryTest {
             put("thorntail.name", "bob");
             put("thorntail.cheese", "cheddar");
             put("not.thorntail.taco", "crunchy");
+            put("thorntail.foobar", "<<null>>");
         }};
 
         ConfigNode node = EnvironmentConfigNodeFactory.load(env);
@@ -42,6 +43,7 @@ public class EnvironmentConfigNodeFactoryTest {
         assertThat(node.valueOf(ConfigKey.parse("thorntail.name"))).isEqualTo("bob");
         assertThat(node.valueOf(ConfigKey.parse("thorntail.cheese"))).isEqualTo("cheddar");
         assertThat(node.valueOf(ConfigKey.parse("not.thorntail.taco"))).isNull();
+        assertThat(node.valueOf(ConfigKey.parse("thorntail.foobar"))).isNull();
     }
 
     @Test
@@ -51,6 +53,7 @@ public class EnvironmentConfigNodeFactoryTest {
             put("swarm.name", "bob");
             put("swarm.cheese", "cheddar");
             put("not.swarm.taco", "crunchy");
+            put("swarm.foobar", "<<null>>");
         }};
 
         ConfigNode node = EnvironmentConfigNodeFactory.load(env);
@@ -58,6 +61,7 @@ public class EnvironmentConfigNodeFactoryTest {
         assertThat(node.valueOf(ConfigKey.parse("thorntail.name"))).isEqualTo("bob");
         assertThat(node.valueOf(ConfigKey.parse("thorntail.cheese"))).isEqualTo("cheddar");
         assertThat(node.valueOf(ConfigKey.parse("not.thorntail.taco"))).isNull();
+        assertThat(node.valueOf(ConfigKey.parse("thorntail.foobar"))).isNull();
     }
 
     @Test
@@ -67,6 +71,8 @@ public class EnvironmentConfigNodeFactoryTest {
             put("thorntail.data-sources.ExampleDS.url", "jdbc:db");
             put("THORNTAIL_DATA_DASH_SOURCES_EXAMPLEDS_JNDI_DASH_NAME", "java:/jboss/datasources/example");
             put("THORNTAIL_DATA_UNDERSCORE_SOURCES_EXAMPLEDS_USER_DASH_NAME", "joe");
+            put("thorntail.foo.bar", "<<null>>");
+            put("THORNTAIL_BAZ_QUUX", "<<null>>");
         }};
 
         ConfigNode node = EnvironmentConfigNodeFactory.load(env);
@@ -75,6 +81,8 @@ public class EnvironmentConfigNodeFactoryTest {
         assertThat(node.valueOf(ConfigKey.of("thorntail", "data-sources", "ExampleDS", "url"))).isEqualTo("jdbc:db");
         assertThat(node.valueOf(ConfigKey.of("thorntail", "data-sources", "ExampleDS", "jndi-name"))).isEqualTo("java:/jboss/datasources/example");
         assertThat(node.valueOf(ConfigKey.of("thorntail", "data_sources", "ExampleDS", "user-name"))).isEqualTo("joe");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "foo", "bar"))).isNull();
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "baz", "quux"))).isNull();
     }
 
     @Test
@@ -84,6 +92,8 @@ public class EnvironmentConfigNodeFactoryTest {
             put("swarm.data-sources.ExampleDS.url", "jdbc:db");
             put("SWARM_DATA_DASH_SOURCES_EXAMPLEDS_JNDI_DASH_NAME", "java:/jboss/datasources/example");
             put("SWARM_DATA_UNDERSCORE_SOURCES_EXAMPLEDS_USER_DASH_NAME", "joe");
+            put("swarm.foo.bar", "<<null>>");
+            put("SWARM_BAZ_QUUX", "<<null>>");
         }};
 
         ConfigNode node = EnvironmentConfigNodeFactory.load(env);
@@ -92,5 +102,7 @@ public class EnvironmentConfigNodeFactoryTest {
         assertThat(node.valueOf(ConfigKey.of("thorntail", "data-sources", "ExampleDS", "url"))).isEqualTo("jdbc:db");
         assertThat(node.valueOf(ConfigKey.of("thorntail", "data-sources", "ExampleDS", "jndi-name"))).isEqualTo("java:/jboss/datasources/example");
         assertThat(node.valueOf(ConfigKey.of("thorntail", "data_sources", "ExampleDS", "user-name"))).isEqualTo("joe");
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "foo", "bar"))).isNull();
+        assertThat(node.valueOf(ConfigKey.of("thorntail", "baz", "quux"))).isNull();
     }
 }
