@@ -1,0 +1,69 @@
+
+[#enabling-https_{context}]
+= Enabling HTTPS
+
+Web applications use HTTPS to improve transport security between clients and servers.
+This section shows you how to enable HTTPS in {Thorntail}.
+
+.Prerequisites
+
+* Keystore in the JKS format. This keystore must include a private key and a corresponding certificate.
++
+--
+If you do not have a keystore, use the `keytool` command to create it:
+
+[source,bash,options="nowrap"]
+----
+keytool -genkeypair -keystore my-keystore.jks -storepass my-password -alias my-https-key -keypass my-password -dname CN=localhost -sigalg SHA1withRSA -validity 100 -keyalg RSA -keysize 2048
+----
+
+This keystore includes a self-signed certificate.
+It is recommended to use the keystore only for testing purposes.
+
+To get a certificate that is trusted by web browsers, you can use link:https://letsencrypt.org/[Let's Encrypt] or any other certificate authority.
+--
+
+.Procedure
+
+. In the `<dependencies>` section of your `pom.xml` file, include the `management` fraction:
++
+.pom.xml
+[source,xml]
+----
+<dependencies>
+include::pom.xml[tag=management-fraction,indent=2]
+</dependencies>
+----
+
+. Add the HTTPS properties to the application configuration file:
++
+.src/main/resources/project-defaults.yml
+[source,xml]
+----
+include::src/main/resources/project-defaults.yml[]
+----
+
+. Start the application and use `curl` to verify that the application is accessible over HTTPS:
++
+[source,bash,options="nowrap"]
+----
+curl -k -v https://localhost:8443/
+----
+
+ifndef::product[]
+
+.Additional resources
+
+For more examples of how to enable HTTPS, see the link:https://github.com/rhoar-qe/thorntail-test-suite/tree/master/protocols[{Thorntail} test suite^].
+It includes:
+
+* One-way TLS
+** Note that this is simply a technical term for what we have just done, setting up an HTTPS server.
+   {Thorntail} supports several ways of setting up one-way TLS, so there are multiple examples.
+   They are all functionally equivalent.
+* Two-way TLS, also known as mutual TLS, also known as client certificate authentication
+* Two-way TLS with authorization
+* Using WildFly legacy security framework
+* Using Elytron, modern replacement of the legacy security framework
+
+endif::product[]
