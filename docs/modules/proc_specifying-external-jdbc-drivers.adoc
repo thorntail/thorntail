@@ -2,7 +2,7 @@
 [id='specifying-external-jdbc-drivers_{context}']
 = Specifying external JDBC drivers
 
-When executing an application (either as a hollow JAR or as an uberjar), you can specify a JDBC driver JAR using the `thorntail.classpath` system property.
+When executing an application, either as an uber JAR or using a hollow JAR, you can specify a JDBC driver JAR using the `thorntail.classpath` system property.
 This way, you do not need to package the driver in the application.
 
 The `thorntail.classpath` property accepts one or more paths to JAR files separated by `;` (a semicolon).
