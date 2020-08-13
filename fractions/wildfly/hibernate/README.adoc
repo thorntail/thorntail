@@ -1,4 +1,6 @@
 = Hibernate
 
-Provides support and integration for applications using Hibernate ORM.
-This is useful when the standard JPA is not enough and Hibernate specific features are required.
+This fraction provides the same functionality as the `jpa` fraction.
+
+Additionally, the `hibernate` fraction provides dependencies on the correct versions of Hibernate artifacts.
+If you use Hibernate APIs in your applications, you can use this fraction to manage the Hibernate versions instead of managing them manually.

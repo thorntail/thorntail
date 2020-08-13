@@ -47,6 +47,7 @@
     <module>test-in-container</module>
     <module>distributed-tracing</module>
     <module>metrics</module>
+    <module>https</module>
   </modules>
 
   <repositories>

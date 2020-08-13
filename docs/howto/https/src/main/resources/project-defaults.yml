@@ -1,0 +1,8 @@
+thorntail:
+  https:
+    keystore:
+      path: my-keystore.jks
+      password: my-password
+    key:
+      alias: my-https-key
+      password: my-password
