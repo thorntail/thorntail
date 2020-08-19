@@ -658,7 +658,7 @@ public class Swarm {
                 if (!each.getName().equals("module-info.class")) {
                     try (InputStream is = each.openStream()) {
                         indexer.index(is);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         // ignore
                     }
                 }
