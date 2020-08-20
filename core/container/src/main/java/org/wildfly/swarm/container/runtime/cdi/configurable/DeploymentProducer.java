@@ -100,9 +100,9 @@ public class DeploymentProducer {
                 try (InputStream contentStream = entry.getValue().getAsset().openStream()) {
                     LOGGER.debugv("Indexing asset: {0} from archive: {1}", entry.getKey().get(), archive.getName());
                     indexer.index(contentStream);
-                } catch (IOException indexerIOException) {
-                    LOGGER.warnv(indexerIOException,
-                            "Failed parsing: {0} from archive: {1}",
+                } catch (Exception indexerException) {
+                    LOGGER.warnv(indexerException,
+                            "Failed indexing {0} from archive {1}",
                             entry.getKey().get(),
                             archive.getName());
                 }
