@@ -67,9 +67,11 @@ public class TempFileManager {
         return tmp;
     }
 
+    /**
+     * Creates a new file on the file system, in the temp dir location, and returns its path.
+     */
     public File newTempFile(String base, String ext) throws IOException {
         File tmp = File.createTempFile(WFSWARM_TMP_PREFIX + base, ext, this.tmpDir);
-        tmp.delete();
         register(tmp);
         return tmp;
     }
