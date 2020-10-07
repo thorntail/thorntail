@@ -87,6 +87,7 @@
     <version.weld-se>3.1.2.Final</version.weld-se>
     <version.wildfly-client-config>1.0.1.Final</version.wildfly-client-config>
     <version.wildfly-common>1.5.1.Final</version.wildfly-common>
+    <version.wildfly-openssl>1.0.11.Final</version.wildfly-openssl>
     <version.xnio>3.7.3.Final</version.xnio>
 
     <!-- ===== Keycloak ===== -->

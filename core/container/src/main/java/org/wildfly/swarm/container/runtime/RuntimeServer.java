@@ -147,6 +147,11 @@ public class RuntimeServer implements Server {
         File configurationFile;
         try {
             configurationFile = TempFileManager.INSTANCE.newTempFile("thorntail-config-", ".xml");
+            // subsequent code (namely, BootstrapPersister.load) relies on the file not existing!
+            // this is not safe (someone can create the file in the short time span between this call
+            // and the BootstrapPersister.load call), but it's not a regression, this unsafety
+            // was always present (TempFileManager.newTempFile used to delete the file)
+            configurationFile.delete();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
