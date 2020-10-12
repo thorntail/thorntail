@@ -23,7 +23,7 @@
     <version.arquillian-drone>2.0.1.Final</version.arquillian-drone>
     <version.arquillian-graphene>2.1.0.Final</version.arquillian-graphene>
     <version.guava>19.0</version.guava>
-    <version.junit>4.12</version.junit>
+    <version.junit>4.13.1</version.junit>
     <version.h2>1.4.193</version.h2>
     <version.jaxrs-api>2.0.0.Final</version.jaxrs-api>
     <version.postgresql>9.4.1212</version.postgresql>
