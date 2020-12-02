@@ -11,7 +11,6 @@
     <groupId>io.thorntail</groupId>
     <artifactId>boms</artifactId>
     <version>2.7.1.Final-SNAPSHOT</version>
-    <relativePath>../</relativePath>
   </parent>
 
   <artifactId>bom-unstable</artifactId>

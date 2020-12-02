@@ -13,7 +13,6 @@
     <groupId>io.thorntail.howto</groupId>
     <artifactId>howto-parent</artifactId>
     <version>2.7.1.Final-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <name>Thorntail HOWTO: Create a Hollow Jar</name>
